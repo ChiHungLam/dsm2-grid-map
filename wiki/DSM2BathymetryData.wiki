@@ -1,5 +1,5 @@
 #summary Bathymetry Data for the Sacramento-San Joaquin Delta
-#labels Phase-Requirements
+#labels Phase-Requirements,Featured
 
 = Introduction =
 
