@@ -1,6 +1,6 @@
 #summary Bathymetry Data for the Sacramento-San Joaquin Delta
 #labels Phase-Requirements,Featured
-
+#sidebar TableOfContents
 = Introduction =
 
 The bathymetry data is a large data set consisting of depth soundings and lidar data. This data has been collected over a period of 1930-present from various agencies ranging from California DWR to NOAA. 
