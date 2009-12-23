@@ -8,4 +8,4 @@ To visualize this data on Google maps, tiles were generated using the raw data a
 
 This data is hosted at http://dsm2bathymetry.appspot.com. The raw data can be obtained by zooming into the area of interest and clicking in an area around it.
 
-_italic_ The future plans are to be able to view this data graphically along a line drawn or calculate the average over an area.
+_The future plans are to be able to view this data graphically along a line drawn or calculate the average over an area._
