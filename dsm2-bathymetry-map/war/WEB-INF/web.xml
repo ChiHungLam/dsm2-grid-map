@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>bathymetryServlet</servlet-name>
+		<servlet-class>gov.ca.maps.bathymetry.tiles.server.BathymetryDataServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>bathymetryServlet</servlet-name>
+		<url-pattern>/bathymap/bathymetry</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>uploadServlet</servlet-name>
+		<servlet-class>gov.ca.maps.bathymetry.tiles.server.FileUploadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>uploadServlet</servlet-name>
+		<url-pattern>/upload_file</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>uploadServlet</servlet-name>
+		<url-pattern>/tiles/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>bathymetryDataUploadServlet</servlet-name>
+		<servlet-class>gov.ca.maps.bathymetry.tiles.server.BathymetryDataFileUploadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>bathymetryDataUploadServlet</servlet-name>
+		<url-pattern>/upload_bathymetry</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

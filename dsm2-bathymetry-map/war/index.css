@@ -1,0 +1,194 @@
+/** Add css rules here for your application. */
+.error_message {
+	color: red;
+	font-size: 0.5em;
+}
+
+/** Example rules used by the template application (remove for your app) */
+h1 {
+	font-size: 2em;
+	font-weight: bold;
+	color: #777777;
+	margin: 40px 0px 70px;
+	text-align: center;
+}
+
+.sendButton {
+	display: block;
+	font-size: 16pt;
+}
+
+/** Most GWT widgets already have a style name defined */
+.gwt-DialogBox {
+	width: 400px;
+}
+
+.dialogVPanel {
+	margin: 5px;
+}
+
+.serverResponseLabelError {
+	color: red;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+	margin: 15px 6px 6px;
+}
+
+table.heading {
+	color: #FFFFFF;
+	background: #000000;
+	width: 100%;
+	border-style: none;
+	border-collapse: collapse;
+}
+
+table.heading td {
+	border-style: none;
+	padding: 0;
+}
+
+table.heading h1 {
+	font-size: 15px;
+	font-weight: bold;
+	color: #FFFFFF;
+	padding-left: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* the text in the title panel containing the map title and casa text */
+.section_header_white {
+	font-size: 10px;
+	font-weight: bold;
+	color: #FFFFFF;
+	padding-left: 25px;
+	font-family: Arial, Helvetica, sans-serif;
+	padding-top: 5px;
+}
+
+/* the Google map itself */
+.map {
+	width: 85%;
+	height: 100%;
+	table .border: 0;
+}
+
+/* text style on the scale panel */
+.scale {
+	color: black;
+	background: lightgray;
+	width: 100%;
+	height: 100%;
+}
+
+/* formatting of the coloured boxes on the scale panel */
+.scale_colour {
+	border-color: #000000;
+	border-style: none;
+	border-width: 1px;
+	width: 16px;
+	height: 16px;
+}
+
+.ae-table-caption,.ae-table caption {
+	-moz-background-clip: border;
+	-moz-background-inline-policy: continuous;
+	-moz-background-origin: padding;
+	-moz-margin-start: -1px;
+	background: #E5ECF9 none repeat scroll 0 0;
+	border: 1px solid #C5D7EF;
+}
+
+.ae-table caption {
+	padding: 3px 5px;
+	text-align: left;
+}
+
+.ae-table th,.ae-table td {
+	background-color: #FFFFFF;
+	margin: 0;
+	padding: 0.35em 1em 0.25em 0.35em;
+}
+
+.ae-table-thead td {
+	-moz-background-clip: border;
+	-moz-background-inline-policy: continuous;
+	-moz-background-origin: padding;
+	background: #C5D7EF none repeat scroll 0 0;
+	font-weight: bold;
+	text-align: left;
+	vertical-align: bottom;
+}
+
+.ae-table tfoot tr td {
+	background-color: #E5ECF9;
+	border-top: 1px solid #C5D7EF;
+}
+
+.ae-table td {
+	border-bottom: 1px solid #C5D7EF;
+	border-top: 1px solid #C5D7EF;
+}
+
+.ae-even td,.ae-even th,.ae-even-top td,.ae-even-tween td,.ae-even-bottom td,ol.ae-even
+	{
+	background-color: #E9E9E9;
+	border-bottom: 1px solid #C5D7EF;
+	border-top: 1px solid #C5D7EF;
+}
+
+.ae-even-top td {
+	border-bottom: 0 none;
+}
+
+.ae-even-bottom td {
+	border-top: 0 none;
+}
+
+.ae-even-tween td {
+	border: 0 none;
+}
+
+.ae-table .ae-tween td {
+	border: 0 none;
+}
+
+.ae-table .ae-tween-top td {
+	border-bottom: 0 none;
+}
+
+.ae-table .ae-tween-bottom td {
+	border-top: 0 none;
+}
+
+#bd .ae-table .cbc {
+	padding-right: 0;
+	width: 1.5em;
+}
+
+.ae-table #ae-live td {
+	background-color: #FFEAC0;
+}
+
+.ae-table-fixed {
+	table-layout: fixed;
+}
+
+.ae-table-fixed td,.ae-table-nowrap {
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.ae-paginate strong {
+	margin: 0 0.5em;
+}
+
+tfoot .ae-paginate {
+	text-align: right;
+}
+
+.ae-table-caption .ae-paginate,.ae-table-caption .ae-orderby {
+	padding: 2px 5px;
+}
+}
