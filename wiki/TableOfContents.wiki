@@ -1,3 +1,3 @@
-#summary Table OfContents
-* [GISInputFile GIS Input Syntax]
-* [DSM2BathymetryData]
+#summary TableOfContents
+  * [GISInputFile GIS Input Syntax]
+  * [DSM2BathymetryData]
