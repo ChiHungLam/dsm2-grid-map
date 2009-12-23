@@ -1,3 +1,4 @@
 #summary TableOfContents
+#labels Featured
   * [GISInputFile GIS Input Syntax]
   * [DSM2BathymetryData]
