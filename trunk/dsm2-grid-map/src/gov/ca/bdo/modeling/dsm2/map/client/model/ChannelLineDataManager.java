@@ -3,6 +3,7 @@ package gov.ca.bdo.modeling.dsm2.map.client.model;
 import gov.ca.bdo.modeling.dsm2.map.client.ChannelClickHandler;
 import gov.ca.bdo.modeling.dsm2.map.client.MapPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.PolylineEncoder;
+import gov.ca.bdo.modeling.dsm2.map.client.WindowUtils;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.Node;
@@ -105,7 +106,7 @@ public class ChannelLineDataManager {
 
 		Node upNode = getNodeManager().getNodeData(channel.getUpNodeId());
 		Node downNode = getNodeManager().getNodeData(channel.getDownNodeId());
-		if (upNode == null || downNode == null) {
+		if ((upNode == null) || (downNode == null)) {
 			return null;
 		}
 		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
@@ -129,12 +130,9 @@ public class ChannelLineDataManager {
 		line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
 
 			public void onMouseOver(PolylineMouseOverEvent event) {
-				changeCursor("pointer");
+				WindowUtils.changeCursor("pointer");
 			}
 
-			public native void changeCursor(String cursor)/*-{
-		this.cursor=cursor;
-	}-*/;
 		});
 		line
 				.addPolylineClickHandler(new ChannelClickHandler(channel,

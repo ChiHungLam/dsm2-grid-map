@@ -10,11 +10,7 @@ import java.util.List;
 
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
-import com.google.gwt.maps.client.event.PolylineCancelLineHandler;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
-import com.google.gwt.maps.client.event.PolylineEndLineHandler;
-import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
-import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
@@ -62,7 +58,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
 		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if (latLngPoints != null && latLngPoints.size() > 0) {
+		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
 			int size = latLngPoints.size();
 			points = new LatLng[size + 2];
 			for (int i = 1; i < points.length - 1; i++) {
@@ -89,38 +85,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					updateDisplay();
 				}
 
-			});
-			line
-					.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
-
-						public void onUpdate(PolylineLineUpdatedEvent event) {
-							channel.setLength(getLengthInFeet());
-						}
-					});
-
-			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
-
-				public void onMouseOver(PolylineMouseOverEvent event) {
-					changeCursor("pointer");
-				}
-
-				public native void changeCursor(String cursor)/*-{
-		this.cursor=cursor;
-	}-*/;
-
-			});
-			line.addPolylineCancelLineHandler(new PolylineCancelLineHandler() {
-
-				public void onCancel(PolylineCancelLineEvent event) {
-					channel.setLength(getLengthInFeet());
-				}
-			});
-
-			line.addPolylineEndLineHandler(new PolylineEndLineHandler() {
-
-				public void onEnd(PolylineEndLineEvent event) {
-					channel.setLength(getLengthInFeet());
-				}
 			});
 		} else {
 			line.addPolylineClickHandler(new PolylineClickHandler() {
@@ -167,7 +131,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
 		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if (latLngPoints != null && latLngPoints.size() > 0) {
+		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
 			int size = latLngPoints.size();
 			points = new LatLng[size + 2];
 			for (int i = 1; i < points.length - 1; i++) {
