@@ -20,9 +20,10 @@ public class MapControlPanel extends Composite {
 
 	private final MapPanel mapPanel;
 	private final ListBox studyBox;
+	private final CheckBox channelHideBox;
 
 	public MapControlPanel(MapPanel panel) {
-		this.mapPanel = panel;
+		mapPanel = panel;
 		FlexTable containerPanel = new FlexTable();
 		//
 		Label studyLabel = new Label("Study");
@@ -45,8 +46,7 @@ public class MapControlPanel extends Composite {
 				mapPanel.hideMarkers(nodeHideBox.getValue());
 			}
 		});
-		//
-		final CheckBox channelHideBox = new CheckBox("Hide Channels");
+		channelHideBox = new CheckBox("Hide Channels");
 		channelHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -224,27 +224,17 @@ public class MapControlPanel extends Composite {
 		containerPanel.setWidget(9, 0, gisInputArea);
 		containerPanel.getFlexCellFormatter().setColSpan(8, 0, 3);
 		containerPanel.getFlexCellFormatter().setColSpan(9, 0, 3);
-		/*
-		 * containerPanel.getFlexCellFormatter().setColSpan(0, 1, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(0, 5, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(1, 1, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(1, 5, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(1, 9, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(2, 1, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(2, 5, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(2, 9, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(3, 1, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(3, 5, 8);
-		 * containerPanel.getFlexCellFormatter().setColSpan(4, 1, 4);
-		 * containerPanel.getFlexCellFormatter().setColSpan(4, 5, 8);
-		 */
 		initWidget(containerPanel);
 	}
 
 	public void setStudies(String[] studyNames) {
-		for (int i = 0; i < studyNames.length; i++) {
-			studyBox.addItem(studyNames[i], studyNames[i]);
+		for (String studyName : studyNames) {
+			studyBox.addItem(studyName, studyName);
 		}
 		studyBox.setSelectedIndex(0);
+	}
+
+	public boolean getHideChannels() {
+		return channelHideBox.getValue();
 	}
 }

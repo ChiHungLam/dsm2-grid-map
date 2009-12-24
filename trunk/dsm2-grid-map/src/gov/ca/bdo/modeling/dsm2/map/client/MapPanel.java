@@ -81,13 +81,13 @@ public class MapPanel extends Composite {
 		map.addMapZoomEndHandler(new MapZoomEndHandler() {
 
 			public void onZoomEnd(MapZoomEndEvent event) {
-				if ((event.getNewZoomLevel() <= 10)
-						&& (event.getOldZoomLevel() > 10)) {
+				if (event.getNewZoomLevel() <= 10
+						&& event.getOldZoomLevel() > 10) {
 					hideChannelLines(true);
 				}
-				if ((event.getOldZoomLevel() >= 10)
-						&& (event.getNewZoomLevel() > 10)) {
-					hideChannelLines(false);
+				if (event.getOldZoomLevel() >= 10
+						&& event.getNewZoomLevel() > 10) {
+					hideChannelLines(controlPanel.getHideChannels());
 				}
 			}
 		});
@@ -126,6 +126,7 @@ public class MapPanel extends Composite {
 	}
 
 	protected void populateGrid() {
+		clearAllMarkers();
 		setNodeManager(new NodeMarkerDataManager(model.getNodes()));
 		setChannelManager(new ChannelLineDataManager(getNodeManager(), model
 				.getChannels()));
@@ -154,8 +155,12 @@ public class MapPanel extends Composite {
 	}
 
 	protected void clearAllMarkers() {
-		getNodeManager().clearNodeMarkers(this);
-		getMap().clearOverlays();
+		if (getNodeManager() != null) {
+			getNodeManager().clearNodeMarkers(this);
+		}
+		if (getMap() != null) {
+			getMap().clearOverlays();
+		}
 	}
 
 	protected void populateNodeMarkers() {
@@ -184,7 +189,7 @@ public class MapPanel extends Composite {
 				}
 				LatLng nodePoint = LatLng.newInstance(node.getLatitude(), node
 						.getLongitude());
-				if ((gate.getLatitude() == 0) || (gate.getLongitude() == 0)) {
+				if (gate.getLatitude() == 0 || gate.getLongitude() == 0) {
 					gate.setLatitude(nodePoint.getLatitude());
 					gate.setLongitude(nodePoint.getLongitude());
 				}
@@ -219,8 +224,7 @@ public class MapPanel extends Composite {
 	protected void populateReservoirMarkers() {
 		Reservoirs reservoirs = model.getReservoirs();
 		for (Reservoir reservoir : reservoirs.getReservoirs()) {
-			if ((reservoir.getLatitude() == 0)
-					|| (reservoir.getLongitude() == 0)) {
+			if (reservoir.getLatitude() == 0 || reservoir.getLongitude() == 0) {
 				List<ReservoirConnection> connections = reservoir
 						.getReservoirConnections();
 				double latitude = 0.0;
@@ -265,8 +269,10 @@ public class MapPanel extends Composite {
 	}
 
 	public void hideMarkers(boolean hide) {
-		for (Node data : getNodeManager().getNodes().getNodes()) {
-			getNodeManager().getMarkerFor(data.getId()).setVisible(!hide);
+		if (hide) {
+			getNodeManager().clearNodeMarkers(this);
+		} else {
+			getNodeManager().displayNodeMarkers(this);
 		}
 	}
 

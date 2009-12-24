@@ -21,7 +21,7 @@ import com.google.gwt.maps.utility.client.markerclusterer.MarkerClustererOptions
 
 public class NodeMarkerDataManager {
 	private Nodes nodes;
-	private HashMap<String, Marker> markerMap;
+	private final HashMap<String, Marker> markerMap;
 	private boolean isLabeled = true;
 	private MarkerClusterer markerClusterer;
 
@@ -31,7 +31,7 @@ public class NodeMarkerDataManager {
 	}
 
 	public void clear() {
-		this.nodes = new Nodes();
+		nodes = new Nodes();
 		markerMap.clear();
 	}
 
@@ -94,7 +94,7 @@ public class NodeMarkerDataManager {
 		}
 		Icon icon = createNodeIcon();
 		MarkNewNodePosition dragEndHandler = new MarkNewNodePosition(mapPanel);
-		for (Node mapMarkerData : this.getAllNodes()) {
+		for (Node mapMarkerData : getAllNodes()) {
 			MarkerOptions options = null;
 			if (isLabeled) {
 				LabeledMarkerOptions opts = LabeledMarkerOptions.newInstance();
@@ -128,7 +128,7 @@ public class NodeMarkerDataManager {
 			if (mapPanel.isInEditMode()) {
 				marker.addMarkerDragEndHandler(dragEndHandler);
 			}
-			this.addMarker(mapMarkerData, marker);
+			addMarker(mapMarkerData, marker);
 			if (!isLabeled) {
 				mapPanel.getMap().addOverlay(marker);
 			}
