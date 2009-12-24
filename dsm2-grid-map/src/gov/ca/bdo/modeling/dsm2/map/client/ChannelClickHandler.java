@@ -16,7 +16,6 @@ import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.AnnotatedTimeLine;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 public class ChannelClickHandler implements PolylineClickHandler {
@@ -41,7 +40,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		// Load the visualization api, passing the onLoadCallback to be called
 		// when loading is done.
 		VisualizationUtils.loadVisualizationApi(visualizationLoadCallback,
-				ScatterChart.PACKAGE, AnnotatedTimeLine.PACKAGE);
+				ScatterChart.PACKAGE);
 	}
 
 	public void doOnClick(PolylineClickEvent event) {
@@ -73,7 +72,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
 		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
+		if (latLngPoints != null && latLngPoints.size() > 0) {
 			int size = latLngPoints.size();
 			points = new LatLng[size + 2];
 			for (int i = 1; i < points.length - 1; i++) {
@@ -146,7 +145,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
 		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
+		if (latLngPoints != null && latLngPoints.size() > 0) {
 			int size = latLngPoints.size();
 			points = new LatLng[size + 2];
 			for (int i = 1; i < points.length - 1; i++) {
