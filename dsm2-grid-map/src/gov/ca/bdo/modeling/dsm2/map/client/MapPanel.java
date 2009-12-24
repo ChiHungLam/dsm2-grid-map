@@ -20,7 +20,6 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.Copyright;
 import com.google.gwt.maps.client.CopyrightCollection;
-import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
@@ -66,7 +65,6 @@ public class MapPanel extends Composite {
 	public MapPanel() {
 		dsm2InputService = (DSM2InputServiceAsync) GWT
 				.create(DSM2InputService.class);
-		MapOptions options = MapOptions.newInstance();
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		int mapSize = 680;
 		getMap().setSize((int) Math.round(mapSize * 1.618) + "", mapSize + "");
@@ -83,12 +81,12 @@ public class MapPanel extends Composite {
 		map.addMapZoomEndHandler(new MapZoomEndHandler() {
 
 			public void onZoomEnd(MapZoomEndEvent event) {
-				if (event.getNewZoomLevel() <= 10
-						&& event.getOldZoomLevel() > 10) {
+				if ((event.getNewZoomLevel() <= 10)
+						&& (event.getOldZoomLevel() > 10)) {
 					hideChannelLines(true);
 				}
-				if (event.getOldZoomLevel() >= 10
-						&& event.getNewZoomLevel() > 10) {
+				if ((event.getOldZoomLevel() >= 10)
+						&& (event.getNewZoomLevel() > 10)) {
 					hideChannelLines(false);
 				}
 			}
@@ -186,7 +184,7 @@ public class MapPanel extends Composite {
 				}
 				LatLng nodePoint = LatLng.newInstance(node.getLatitude(), node
 						.getLongitude());
-				if (gate.getLatitude() == 0 || gate.getLongitude() == 0) {
+				if ((gate.getLatitude() == 0) || (gate.getLongitude() == 0)) {
 					gate.setLatitude(nodePoint.getLatitude());
 					gate.setLongitude(nodePoint.getLongitude());
 				}
@@ -221,7 +219,8 @@ public class MapPanel extends Composite {
 	protected void populateReservoirMarkers() {
 		Reservoirs reservoirs = model.getReservoirs();
 		for (Reservoir reservoir : reservoirs.getReservoirs()) {
-			if (reservoir.getLatitude() == 0 || reservoir.getLongitude() == 0) {
+			if ((reservoir.getLatitude() == 0)
+					|| (reservoir.getLongitude() == 0)) {
 				List<ReservoirConnection> connections = reservoir
 						.getReservoirConnections();
 				double latitude = 0.0;
