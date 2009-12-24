@@ -1,6 +1,5 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -11,9 +10,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.AnnotatedTimeLine;
-import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -99,14 +95,5 @@ public class GridMap implements EntryPoint {
 		} else {
 			mapLoadCallback.run();
 		}
-		Runnable visualizationLoadCallback = new Runnable() {
-			public void run() {
-				Window.setStatus("visualization api loaded");
-			}
-		};
-		// Load the visualization api, passing the onLoadCallback to be called
-		// when loading is done.
-		VisualizationUtils.loadVisualizationApi(visualizationLoadCallback,
-				ScatterChart.PACKAGE, AnnotatedTimeLine.PACKAGE);
 	}
 }
