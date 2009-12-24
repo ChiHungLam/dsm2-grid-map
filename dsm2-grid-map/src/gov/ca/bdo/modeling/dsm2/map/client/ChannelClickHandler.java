@@ -15,6 +15,9 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.AnnotatedTimeLine;
+import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 public class ChannelClickHandler implements PolylineClickHandler {
 	private final Channel channel;
@@ -29,7 +32,19 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		this.mapPanel = mapPanel;
 	}
 
-	public void onClick(PolylineClickEvent event) {
+	public void onClick(final PolylineClickEvent event) {
+		Runnable visualizationLoadCallback = new Runnable() {
+			public void run() {
+				doOnClick(event);
+			}
+		};
+		// Load the visualization api, passing the onLoadCallback to be called
+		// when loading is done.
+		VisualizationUtils.loadVisualizationApi(visualizationLoadCallback,
+				ScatterChart.PACKAGE, AnnotatedTimeLine.PACKAGE);
+	}
+
+	public void doOnClick(PolylineClickEvent event) {
 		ChannelInfoPanel panel = new ChannelInfoPanel(channel);
 		mapPanel.getInfoPanel().clear();
 		mapPanel.getInfoPanel().add(panel);
