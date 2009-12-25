@@ -1,4 +1,4 @@
-package gov.ca.bdo.modeling.dsm2.map.server;
+package gov.ca.bdo.modeling.dsm2.map.server.data;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;

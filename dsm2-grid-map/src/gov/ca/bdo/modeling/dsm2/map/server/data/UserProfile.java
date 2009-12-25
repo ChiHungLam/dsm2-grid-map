@@ -1,4 +1,4 @@
-package gov.ca.bdo.modeling.dsm2.map.server;
+package gov.ca.bdo.modeling.dsm2.map.server.data;
 
 import java.io.Serializable;
 
@@ -8,9 +8,16 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+/**
+ * Store the profile of this user. Will be used to grant/revoke access and also
+ * to enable sharing of information between users
+ * 
+ * @author nsandhu
+ * 
+ */
 @SuppressWarnings("serial")
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class UserProfile implements Serializable{
+public class UserProfile implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
@@ -20,9 +27,9 @@ public class UserProfile implements Serializable{
 	private String accessLevel;
 	@Persistent
 	private String group;
-	
-	public UserProfile(){
-		
+
+	public UserProfile() {
+
 	}
 
 	public String getEmail() {

@@ -1,4 +1,4 @@
-package gov.ca.bdo.modeling.dsm2.map.server;
+package gov.ca.bdo.modeling.dsm2.map.server.utils;
 
 import java.io.Serializable;
 

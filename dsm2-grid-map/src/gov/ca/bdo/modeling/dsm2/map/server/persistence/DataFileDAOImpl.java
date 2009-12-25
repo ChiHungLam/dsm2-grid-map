@@ -1,4 +1,7 @@
-package gov.ca.bdo.modeling.dsm2.map.server;
+package gov.ca.bdo.modeling.dsm2.map.server.persistence;
+
+import gov.ca.bdo.modeling.dsm2.map.server.data.DataFile;
+import gov.ca.bdo.modeling.dsm2.map.server.utils.GenericDAOImpl;
 
 import java.util.List;
 
