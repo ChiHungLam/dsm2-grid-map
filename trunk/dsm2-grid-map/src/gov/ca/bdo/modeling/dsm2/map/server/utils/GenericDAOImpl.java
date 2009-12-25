@@ -1,4 +1,4 @@
-package gov.ca.bdo.modeling.dsm2.map.server;
+package gov.ca.bdo.modeling.dsm2.map.server.utils;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -6,8 +6,8 @@ import java.lang.reflect.ParameterizedType;
 import javax.jdo.PersistenceManager;
 
 public class GenericDAOImpl<T> implements GenericDAO<T> {
-	private Class<T> persistentClass;
-	private PersistenceManager persistenceManager;
+	private final Class<T> persistentClass;
+	private final PersistenceManager persistenceManager;
 
 	@SuppressWarnings("unchecked")
 	public GenericDAOImpl(PersistenceManager pm) {
@@ -46,13 +46,4 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 		PersistenceManager persistenceManager = getPersistenceManager();
 		persistenceManager.refresh(object);
 	}
-	/*
-	 * public List<T> findAll() { PersistenceManager persistenceManager =
-	 * getPersistenceManager(); List<T> results = (List<T>)
-	 * persistenceManager.newQuery(persistentClass).execute();
-	 * persistenceManager.close(); return results;
-	 * 
-	 * }
-	 */
-
 }

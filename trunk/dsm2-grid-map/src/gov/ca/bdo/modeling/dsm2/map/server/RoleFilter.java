@@ -1,5 +1,9 @@
 package gov.ca.bdo.modeling.dsm2.map.server;
 
+import gov.ca.bdo.modeling.dsm2.map.server.data.UserProfile;
+import gov.ca.bdo.modeling.dsm2.map.server.persistence.UserProfileDAO;
+import gov.ca.bdo.modeling.dsm2.map.server.persistence.UserProfileDAOImpl;
+import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,14 +22,15 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+/**
+ * Checks for authorization to access urls
+ * 
+ * @author nsandhu
+ * 
+ */
 public class RoleFilter implements Filter {
 
 	private UserService userService;
-
-	public void destroy() {
-		// TODO Auto-generated method stub
-
-	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -52,6 +57,15 @@ public class RoleFilter implements Filter {
 		}
 	}
 
+	/**
+	 * Checks whether this user should be able to access this uri Currently
+	 * admins (as defined by appengine rules) can access everything All other
+	 * users are at the same authorization level
+	 * 
+	 * @param currentUser
+	 * @param requestURI
+	 * @return
+	 */
 	private boolean isAllowed(User currentUser, String requestURI) {
 		if (currentUser == null) {
 			return false;
@@ -59,21 +73,27 @@ public class RoleFilter implements Filter {
 		if (userService.isUserAdmin()) {
 			return true;
 		}
-		if (isAdminOnly(requestURI)){
+		if (isAdminOnly(requestURI)) {
 			return false;
 		}
-		PersistenceManager persistenceManager = PMF.get().getPersistenceManager();
-		UserProfileDAO dao = new UserProfileDAOImpl(persistenceManager);
-		UserProfile userForEmail = dao.getUserForEmail(currentUser.getEmail());
-		if (userForEmail == null){
-			return false;
-		} else {
-			return true;
+		PersistenceManager persistenceManager = PMF.get()
+				.getPersistenceManager();
+		try {
+			UserProfileDAO dao = new UserProfileDAOImpl(persistenceManager);
+			UserProfile userForEmail = dao.getUserForEmail(currentUser
+					.getEmail());
+			if (userForEmail == null) {
+				return false;
+			} else {
+				return true;
+			}
+		} finally {
+			persistenceManager.close();
 		}
 	}
 
 	private boolean isAdminOnly(String requestURI) {
-		if (requestURI != null && requestURI.endsWith("userProfile")){
+		if ((requestURI != null) && requestURI.endsWith("userProfile")) {
 			return true;
 		}
 		return false;
@@ -81,6 +101,9 @@ public class RoleFilter implements Filter {
 
 	public void init(FilterConfig filterConfig) throws ServletException {
 		userService = UserServiceFactory.getUserService();
+	}
+
+	public void destroy() {
 	}
 
 }

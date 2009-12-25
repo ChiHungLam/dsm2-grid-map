@@ -1,6 +1,10 @@
 package gov.ca.bdo.modeling.dsm2.map.server;
 
 import gov.ca.bdo.modeling.dsm2.map.client.service.UserProfileService;
+import gov.ca.bdo.modeling.dsm2.map.server.data.UserProfile;
+import gov.ca.bdo.modeling.dsm2.map.server.persistence.UserProfileDAO;
+import gov.ca.bdo.modeling.dsm2.map.server.persistence.UserProfileDAOImpl;
+import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 
 import java.util.ArrayList;
 import java.util.List;
