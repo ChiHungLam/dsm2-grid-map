@@ -38,4 +38,13 @@ public class UserProfileDAOTestCase extends BaseDatastoreTestCase {
 		checkNumberOfUsers(0);
 	}
 
+	public void testRetrieveByEmail() {
+		UserProfileDAO dao = new UserProfileDAOImpl(persistenceManager);
+		UserProfile user1 = addUser(dao, 1);
+		UserProfile user2 = dao.getUserForEmail(user1.getEmail());
+		assertEquals(user1.getEmail(), user2.getEmail());
+		UserProfile user3 = dao.getUserForEmail(user1.getEmail() + "xx");
+		assertNull(user3);
+	}
+
 }
