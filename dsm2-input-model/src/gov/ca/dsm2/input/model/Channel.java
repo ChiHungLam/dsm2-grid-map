@@ -4,22 +4,34 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * In DSM2 a channel is an entity representing a stream with a in stream length,
+ * roughness coefficient (mannings n), dispersion factor for water quality
+ * constituents
+ * 
+ * It is defined by an id and its two end nodes, up node and down node. It also
+ * has a number of xsections and contains the gis information to demarcate the
+ * internal points
+ * 
+ * @author nsandhu
+ * 
+ */
 @SuppressWarnings("serial")
-public class Channel implements Serializable{
+public class Channel implements Serializable {
 	private String id;
 	private double length;
 	private double mannings;
 	private double dispersion;
 	private String upNodeId;
 	private String downNodeId;
-	private ArrayList<XSection> xsections;
-	private ArrayList<double[]> latLngPoints;
-	
-	public Channel(){
+	private final ArrayList<XSection> xsections;
+	private final ArrayList<double[]> latLngPoints;
+
+	public Channel() {
 		this.xsections = new ArrayList<XSection>();
 		latLngPoints = new ArrayList<double[]>();
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -75,13 +87,13 @@ public class Channel implements Serializable{
 	public void addXSection(XSection xsection) {
 		this.xsections.add(xsection);
 	}
-	
-	public void setLatLngPoints(List<double[]> points){
+
+	public void setLatLngPoints(List<double[]> points) {
 		this.latLngPoints.clear();
 		this.latLngPoints.addAll(points);
 	}
-	
-	public List<double[]> getLatLngPoints(){
+
+	public List<double[]> getLatLngPoints() {
 		return latLngPoints;
 	}
 
