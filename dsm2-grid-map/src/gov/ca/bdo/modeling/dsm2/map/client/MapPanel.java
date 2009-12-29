@@ -1,5 +1,6 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
+import gov.ca.bdo.modeling.dsm2.map.client.images.IconImages;
 import gov.ca.bdo.modeling.dsm2.map.client.model.ChannelLineDataManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.NodeMarkerDataManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.OutputMarkerDataManager;
@@ -18,6 +19,8 @@ import gov.ca.dsm2.input.model.Reservoirs;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.maps.client.Copyright;
 import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapUIOptions;
@@ -38,10 +41,13 @@ import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ToggleButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.widgetideas.client.CollapsiblePanel;
 
 public class MapPanel extends Composite {
 
@@ -58,7 +64,7 @@ public class MapPanel extends Composite {
 	private OutputMarkerDataManager outputMarkerDataManager;
 	private boolean editMode = false;
 	protected String[] studyNames = new String[0];
-	private MapControlPanel controlPanel;
+	private final MapControlPanel controlPanel;
 	private TileLayerOverlay bathymetryOverlay;
 	private TextAnnotationsManager textAnnotationHandler;
 
@@ -66,27 +72,44 @@ public class MapPanel extends Composite {
 		dsm2InputService = (DSM2InputServiceAsync) GWT
 				.create(DSM2InputService.class);
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
-		int mapSize = 680;
-		getMap().setSize((int) Math.round(mapSize * 1.618) + "", mapSize + "");
+		Window.addResizeHandler(new ResizeHandler() {
+
+			public void onResize(ResizeEvent event) {
+				getMap().setSize((Window.getClientWidth() - 30) + "px",
+						(Window.getClientHeight() - 30) + "px");
+			}
+		});
+		getMap().setSize(Window.getClientWidth() + "px",
+				Window.getClientHeight() + "px");
 		setOptions();
 		infoPanel = new FlowPanel();
 		// layout top level things here
-		FlexTable table = new FlexTable();
-		table.setWidget(0, 0, getMap());
-		table.getFlexCellFormatter().setColSpan(0, 0, 2);
-		// table.getFlexCellFormatter().setColSpan(0, 0, 10);
-		table.setWidget(1, 0, controlPanel = new MapControlPanel(this));
-		table.setWidget(1, 1, infoPanel);
-		initWidget(table);
+		FlowPanel topContainer = new FlowPanel();
+		topContainer.setStyleName("topContainer");
+		VerticalPanel controlPanelContainer = new VerticalPanel();
+		controlPanel = new MapControlPanel(this);
+		ToggleButton controlButton = new ToggleButton(new Image(
+				IconImages.INSTANCE.showIcon()), new Image(IconImages.INSTANCE
+				.hideIcon()));
+		controlButton.setStyleName("controlToggleButton");
+		controlPanelContainer.add(controlButton);
+		controlPanelContainer.add(controlPanel);
+		controlPanelContainer.add(infoPanel);
+		CollapsiblePanel collapsiblePanel = new CollapsiblePanel(
+				controlPanelContainer);
+		collapsiblePanel.hookupControlToggle(controlButton);
+		topContainer.add(collapsiblePanel);
+		topContainer.add(getMap());
+		initWidget(topContainer);
 		map.addMapZoomEndHandler(new MapZoomEndHandler() {
 
 			public void onZoomEnd(MapZoomEndEvent event) {
-				if (event.getNewZoomLevel() <= 10
-						&& event.getOldZoomLevel() > 10) {
+				if ((event.getNewZoomLevel() <= 10)
+						&& (event.getOldZoomLevel() > 10)) {
 					hideChannelLines(true);
 				}
-				if (event.getOldZoomLevel() >= 10
-						&& event.getNewZoomLevel() > 10) {
+				if ((event.getOldZoomLevel() >= 10)
+						&& (event.getNewZoomLevel() > 10)) {
 					hideChannelLines(controlPanel.getHideChannels());
 				}
 			}
@@ -189,7 +212,7 @@ public class MapPanel extends Composite {
 				}
 				LatLng nodePoint = LatLng.newInstance(node.getLatitude(), node
 						.getLongitude());
-				if (gate.getLatitude() == 0 || gate.getLongitude() == 0) {
+				if ((gate.getLatitude() == 0) || (gate.getLongitude() == 0)) {
 					gate.setLatitude(nodePoint.getLatitude());
 					gate.setLongitude(nodePoint.getLongitude());
 				}
@@ -224,7 +247,8 @@ public class MapPanel extends Composite {
 	protected void populateReservoirMarkers() {
 		Reservoirs reservoirs = model.getReservoirs();
 		for (Reservoir reservoir : reservoirs.getReservoirs()) {
-			if (reservoir.getLatitude() == 0 || reservoir.getLongitude() == 0) {
+			if ((reservoir.getLatitude() == 0)
+					|| (reservoir.getLongitude() == 0)) {
 				List<ReservoirConnection> connections = reservoir
 						.getReservoirConnections();
 				double latitude = 0.0;

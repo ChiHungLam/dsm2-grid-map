@@ -72,3 +72,43 @@ h1 {
 .hm-marker-label {
 	font-size: 9px;
 }
+/*Collapsible panel*/
+.gwt-CollapsiblePanel div:focus {
+  border: 0px;
+  -moz-outline: none !important
+}
+
+.gwt-CollapsiblePanel {
+  margin: 0px;
+  margin-right: 20px;
+  float: left;
+  z-index: 2;
+}
+
+.gwt-CollapsiblePanel .hover-bar {
+  position: relative;
+  background-color: gray;
+  width: 2px;  height: 100%;
+  float: right;
+}
+
+.gwt-CollapsiblePanel .container {
+  border-right: 1px solid #59d;
+  border-bottom: 1px solid #59d;
+  height: 100%;
+  position: relative;
+  width:610px;
+} 
+
+.gwt-CollapsiblePanel .container table {
+	background-color: white;
+} 
+
+.controlToggleButton {
+	float: right;
+}
+
+.topContainer{
+	position: relative;
+	width: 100%;
+}
