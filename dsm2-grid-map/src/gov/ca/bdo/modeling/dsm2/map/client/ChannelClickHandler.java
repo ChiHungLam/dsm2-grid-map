@@ -11,6 +11,7 @@ import java.util.List;
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
+import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
@@ -72,7 +73,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
 		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if (latLngPoints != null && latLngPoints.size() > 0) {
+		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
 			int size = latLngPoints.size();
 			points = new LatLng[size + 2];
 			for (int i = 1; i < points.length - 1; i++) {
@@ -100,6 +101,14 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				}
 
 			});
+			line
+					.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
+
+						public void onUpdate(PolylineLineUpdatedEvent event) {
+							updateChannelLengthLatLng();
+							updateDisplay();
+						}
+					});
 		} else {
 			line.addPolylineClickHandler(new PolylineClickHandler() {
 
@@ -145,7 +154,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
 		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if (latLngPoints != null && latLngPoints.size() > 0) {
+		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
 			int size = latLngPoints.size();
 			points = new LatLng[size + 2];
 			for (int i = 1; i < points.length - 1; i++) {
@@ -161,6 +170,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void updateChannelLengthLatLng() {
+		channel.setLength(getLengthInFeet());
 		int vcount = line.getVertexCount();
 		ArrayList<double[]> points = new ArrayList<double[]>();
 		for (int i = 1; i < vcount - 1; i++) {

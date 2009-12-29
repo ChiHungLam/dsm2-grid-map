@@ -1,33 +1,4 @@
 /** Add css rules here for your application. */
-
-
-/** Example rules used by the template application (remove for your app) */
-h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
-  text-align: center;
-}
-
-.sendButton {
-  display: block;
-  font-size: 16pt;
-}
-
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
-  width: 400px;
-}
-
-.dialogVPanel {
-  margin: 5px;
-}
-
-.serverResponseLabelError {
-  color: red;
-}
-
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
   margin: 15px 6px 6px;
@@ -73,34 +44,36 @@ h1 {
 	font-size: 9px;
 }
 /*Collapsible panel*/
-.gwt-CollapsiblePanel div:focus {
+.collapsiblePanel div:focus {
   border: 0px;
   -moz-outline: none !important
 }
 
-.gwt-CollapsiblePanel {
+.collapsiblePanel {
   margin: 0px;
   margin-right: 20px;
   float: left;
   z-index: 2;
+  background-color: white;
 }
 
-.gwt-CollapsiblePanel .hover-bar {
+.collapsiblePanel .hover-bar {
   position: relative;
   background-color: gray;
   width: 2px;  height: 100%;
   float: right;
 }
 
-.gwt-CollapsiblePanel .container {
+.collapsiblePanel .container {
   border-right: 1px solid #59d;
   border-bottom: 1px solid #59d;
   height: 100%;
   position: relative;
-  width:610px;
+  width:646px;
+  background-color: white;
 } 
 
-.gwt-CollapsiblePanel .container table {
+.collapsiblePanel .container table {
 	background-color: white;
 } 
 
@@ -111,4 +84,8 @@ h1 {
 .topContainer{
 	position: relative;
 	width: 100%;
+}
+
+.infoPanel{
+	background-color:white;
 }
