@@ -38,6 +38,7 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -68,6 +69,7 @@ public class MapPanel extends Composite {
 	private TileLayerOverlay bathymetryOverlay;
 	private TextAnnotationsManager textAnnotationHandler;
 	private final CollapsiblePanel collapsiblePanel;
+	private Timer collapsibleTimer;
 
 	public MapPanel() {
 		dsm2InputService = (DSM2InputServiceAsync) GWT
@@ -466,7 +468,20 @@ public class MapPanel extends Composite {
 	}
 
 	public Panel getInfoPanel() {
-		collapsiblePanel.setCollapsedState(false);
+		if (collapsiblePanel.isCollapsed()) {
+			collapsiblePanel.setCollapsedState(false);
+			if (collapsibleTimer != null) {
+				collapsibleTimer.cancel();
+			}
+			collapsibleTimer = new Timer() {
+
+				@Override
+				public void run() {
+					collapsiblePanel.setCollapsedState(true);
+				}
+			};
+			collapsibleTimer.schedule(3000);
+		}
 		return infoPanel;
 	}
 
