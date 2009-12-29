@@ -12,4 +12,13 @@ public interface IconImages extends ClientBundle {
 
 	@Source("show.png")
 	public ImageResource showIcon();
+
+	@Source("expand.png")
+	public ImageResource expandIcon();
+
+	@Source("close.png")
+	public ImageResource closeIcon();
+
+	@Source("pin.png")
+	public ImageResource pinIcon();
 }

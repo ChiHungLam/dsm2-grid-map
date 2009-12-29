@@ -4,29 +4,25 @@ import gov.ca.dsm2.input.model.Gate;
 
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
-import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
-import com.google.gwt.user.client.ui.Panel;
 
 public class GateClickHandler implements MarkerClickHandler {
 
-	private Gate gate;
-	private Panel infoPanel;
-	private MapWidget map;
+	private final Gate gate;
+	private final MapPanel mapPanel;
 
-	public GateClickHandler(Gate gate, Panel panel, MapWidget map) {
+	public GateClickHandler(Gate gate, MapPanel mapPanel) {
 		this.gate = gate;
-		this.infoPanel = panel;
-		this.map = map;
+		this.mapPanel = mapPanel;
 	}
 
 	public void onClick(MarkerClickEvent event) {
-		GateInfoPanel panel = new GateInfoPanel(this.gate);
-		infoPanel.clear();
-		infoPanel.add(panel);
+		GateInfoPanel panel = new GateInfoPanel(gate);
+		mapPanel.getInfoPanel().clear();
+		mapPanel.getInfoPanel().add(panel);
 		InfoWindowContent content = new InfoWindowContent(panel
-				.getBasicInfoPanel(this.gate));
-		InfoWindow window = map.getInfoWindow();
+				.getBasicInfoPanel(gate));
+		InfoWindow window = mapPanel.getMap().getInfoWindow();
 		window.open(event.getSender().getLatLng(), content);
 	}
 

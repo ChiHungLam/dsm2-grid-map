@@ -67,40 +67,47 @@ public class MapPanel extends Composite {
 	private final MapControlPanel controlPanel;
 	private TileLayerOverlay bathymetryOverlay;
 	private TextAnnotationsManager textAnnotationHandler;
+	private final CollapsiblePanel collapsiblePanel;
 
 	public MapPanel() {
 		dsm2InputService = (DSM2InputServiceAsync) GWT
 				.create(DSM2InputService.class);
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		Window.addResizeHandler(new ResizeHandler() {
-
 			public void onResize(ResizeEvent event) {
-				getMap().setSize((Window.getClientWidth() - 30) + "px",
-						(Window.getClientHeight() - 30) + "px");
+				setMapSizeBasedOnWindow();
 			}
 		});
-		getMap().setSize(Window.getClientWidth() + "px",
-				Window.getClientHeight() + "px");
+		setMapSizeBasedOnWindow();
 		setOptions();
-		infoPanel = new FlowPanel();
 		// layout top level things here
-		FlowPanel topContainer = new FlowPanel();
-		topContainer.setStyleName("topContainer");
-		VerticalPanel controlPanelContainer = new VerticalPanel();
 		controlPanel = new MapControlPanel(this);
-		ToggleButton controlButton = new ToggleButton(new Image(
-				IconImages.INSTANCE.showIcon()), new Image(IconImages.INSTANCE
-				.hideIcon()));
+		infoPanel = new FlowPanel();
+		infoPanel.setStyleName("infoPanel");
+		infoPanel.setWidth("646px");
+		infoPanel.setHeight("400px");
+		final ToggleButton controlButton = new ToggleButton(new Image(
+				IconImages.INSTANCE.pinIcon()), new Image(IconImages.INSTANCE
+				.closeIcon()));
 		controlButton.setStyleName("controlToggleButton");
+		VerticalPanel controlPanelContainer = new VerticalPanel();
 		controlPanelContainer.add(controlButton);
 		controlPanelContainer.add(controlPanel);
 		controlPanelContainer.add(infoPanel);
-		CollapsiblePanel collapsiblePanel = new CollapsiblePanel(
-				controlPanelContainer);
+		collapsiblePanel = new CollapsiblePanel(controlPanelContainer);
+		collapsiblePanel.setStyleName("collapsiblePanel");
 		collapsiblePanel.hookupControlToggle(controlButton);
+		collapsiblePanel.setHoverBarContents(new Image(IconImages.INSTANCE
+				.expandIcon()));
+		collapsiblePanel.setTitle("Options");
+		collapsiblePanel.setCollapsedState(true);
+		// add them all here
+		FlowPanel topContainer = new FlowPanel();
+		topContainer.setStyleName("topContainer");
 		topContainer.add(collapsiblePanel);
 		topContainer.add(getMap());
 		initWidget(topContainer);
+		// add zoom handler to hide channels at a certain zoom level
 		map.addMapZoomEndHandler(new MapZoomEndHandler() {
 
 			public void onZoomEnd(MapZoomEndEvent event) {
@@ -236,7 +243,7 @@ public class MapPanel extends Composite {
 				options.setAutoPan(true);
 				Marker gateOverMarker = new Marker(gatePoint, options);
 				gateOverMarker.addMarkerClickHandler(new GateClickHandler(gate,
-						infoPanel, getMap()));
+						this));
 				gateOverMarker
 						.addMarkerDragEndHandler(new GateDragHandler(gate));
 				getMap().addOverlay(gateOverMarker);
@@ -285,7 +292,7 @@ public class MapPanel extends Composite {
 			Marker reservoirMarker = new Marker(LatLng.newInstance(reservoir
 					.getLatitude(), reservoir.getLongitude()), options);
 			reservoirMarker.addMarkerClickHandler(new ReservoirClickHandler(
-					reservoir, infoPanel, this));
+					reservoir, this));
 			reservoirMarker.addMarkerDragEndHandler(new ReservoirDragHandler(
 					reservoir));
 			getMap().addOverlay(reservoirMarker);
@@ -459,6 +466,7 @@ public class MapPanel extends Composite {
 	}
 
 	public Panel getInfoPanel() {
+		collapsiblePanel.setCollapsedState(false);
 		return infoPanel;
 	}
 
@@ -538,4 +546,12 @@ public class MapPanel extends Composite {
 		}
 	}
 
+	protected void setMapSizeBasedOnWindow() {
+		getMap().setSize((Window.getClientWidth() - 50) + "px",
+				(Window.getClientHeight() - 50) + "px");
+	}
+
+	public CollapsiblePanel getCollapsiblePanel() {
+		return collapsiblePanel;
+	}
 }

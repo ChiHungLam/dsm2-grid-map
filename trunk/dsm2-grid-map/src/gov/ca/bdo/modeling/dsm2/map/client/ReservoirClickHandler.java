@@ -9,30 +9,26 @@ import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.event.PolygonClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Polygon;
-import com.google.gwt.user.client.ui.Panel;
 
 public class ReservoirClickHandler implements MarkerClickHandler {
 
-	private Reservoir reservoir;
-	private Panel infoPanel;
-	private MapPanel mapPanel;
+	private final Reservoir reservoir;
+	private final MapPanel mapPanel;
 	private Polygon polygon;
 
-	public ReservoirClickHandler(Reservoir reservoir, Panel infoPanel,
-			MapPanel mapPanel) {
+	public ReservoirClickHandler(Reservoir reservoir, MapPanel mapPanel) {
 		this.reservoir = reservoir;
-		this.infoPanel = infoPanel;
 		this.mapPanel = mapPanel;
 	}
 
 	public void onClick(MarkerClickEvent event) {
-		ReservoirInfoPanel panel = new ReservoirInfoPanel(this.reservoir);
-		infoPanel.clear();
-		infoPanel.add(panel);
+		ReservoirInfoPanel panel = new ReservoirInfoPanel(reservoir);
+		mapPanel.getInfoPanel().clear();
+		mapPanel.getInfoPanel().add(panel);
 		List<double[]> latLngPoints = reservoir.getLatLngPoints();
 		if (polygon == null) {
 			LatLng[] points;
-			if (latLngPoints != null && latLngPoints.size() > 0) {
+			if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
 				points = new LatLng[latLngPoints.size()];
 				for (int i = 0; i < points.length; i++) {
 					double[] latLngPoint = latLngPoints.get(i);
@@ -99,8 +95,8 @@ public class ReservoirClickHandler implements MarkerClickHandler {
 
 	public void updateDisplay() {
 		ReservoirInfoPanel panel = new ReservoirInfoPanel(reservoir);
-		infoPanel.clear();
-		infoPanel.add(panel);
+		mapPanel.getInfoPanel().clear();
+		mapPanel.getInfoPanel().add(panel);
 	}
 
 	public double getAreaInSquareFeet() {
