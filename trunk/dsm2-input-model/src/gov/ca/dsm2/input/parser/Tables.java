@@ -217,7 +217,28 @@ public class Tables {
 		Nodes nodes = new Nodes();
 		InputTable nodeTable = getTableNamed("NODE_GIS");
 		if (nodeTable == null) {
-			return nodes;
+			// derive from channels.inp as this table doesn't exist.
+			nodeTable = new InputTable();
+			nodeTable.setName("NODE_GIS");
+			nodeTable.setHeaders(Arrays
+					.asList(new String[] { "ID", "LAT_LNG" }));
+			Channels channels = toChannels();
+			HashMap<String, String> nodeIdMap = new HashMap<String, String>();
+			ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
+			for (Channel channel : channels.getChannels()) {
+				String nodeId = channel.getUpNodeId();
+				if (!nodeIdMap.containsKey(nodeId)) {
+					nodeIdMap.put(nodeId, nodeId);
+					ArrayList<String> rowValue = new ArrayList<String>();
+					rowValue.add(nodeId);
+					int idValue = Integer.parseInt(nodeId);
+					double lat = 37.67 + 0.0001 * idValue;
+					double lng = -121.45 + 0.0001 * idValue;
+					rowValue.add("(" + lat + "," + lng + ")");
+					values.add(rowValue);
+				}
+			}
+			nodeTable.setValues(values);
 		}
 		int nnodes = nodeTable.getValues().size();
 		for (int i = 0; i < nnodes; i++) {
