@@ -1,15 +1,14 @@
 package gov.ca.bdo.modeling.dsm2.map.server;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.RegularTimeSeries;
 import gov.ca.bdo.modeling.dsm2.map.server.data.DataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DataFileDAO;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DataFileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.Utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -84,54 +83,24 @@ public class DataFileUploadServlet extends HttpServlet {
 
 	public void saveData(PersistenceManager persistenceManager,
 			String studyName, InputStream fileAsStream) throws Exception {
-
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				fileAsStream));
-		String line = null;
 		ArrayList<DataFile> files = new ArrayList<DataFile>();
-		ArrayList<StringBuilder> fileContents = new ArrayList<StringBuilder>();
-		int count = 0;
-		String startTime = "";
-		while ((line = reader.readLine()) != null) {
-			line = line.trim();
-			if (line.startsWith("start_time")) {
-				startTime = line.split("=")[1];
-			} else if (line.startsWith("interval")) {
-			} else if (line.contains("|")) {
-				String[] dataSets = line.split(",");
-				for (int i = 0; i < dataSets.length; i++) {
-					String[] fields = dataSets[i].split("\\|");
-					DataFile file = new DataFile();
-					file.setStudyName(studyName);
-					file.setOwnerName(Utils.getCurrentUserEmail());
-					file.setName(fields[0].toLowerCase());
-					file.setType(fields[1].toLowerCase());
-					files.add(file);
-					fileContents.add(new StringBuilder());
-				}
-			} else {
-				String[] data = line.split(",");
-				if (data.length == 0) {
-					continue;
-				}
-				if (data.length != fileContents.size()) {
-					System.err
-							.println("Data length is " + data.length
-									+ " and fileContents size is"
-									+ fileContents.size());
-					System.err.println("Line is " + line);
-				}
-				count++;
-				for (int i = 0; i < data.length; i++) {
-					fileContents.get(i).append(data[i]).append("\n");
-				}
+		DSSOutParser parser = new DSSOutParser(fileAsStream);
+		RegularTimeSeries rts = null;
+		while ((rts = parser.nextSeries()) != null) {
+			DataFile file = new DataFile();
+			file.setStudyName(studyName);
+			file.setOwnerName(Utils.getCurrentUserEmail());
+			file.setName(rts.getName().toLowerCase());
+			file.setType(rts.getType().toLowerCase());
+			StringBuilder contents = new StringBuilder();
+			double[] data = rts.getData();
+			contents.append("startTime=" + rts.getStartTime().getTime() + "\n");
+			contents.append("count=" + data.length + "\n");
+			for (double element : data) {
+				contents.append(element).append("\n");
 			}
-		}
-		for (int i = 0; i < files.size(); i++) {
-			fileContents.get(i).insert(0, "startTime=" + startTime + "\n");
-			fileContents.get(i).insert(0, "count=" + count + "\n");
-			Text contents = new Text(fileContents.get(i).toString());
-			files.get(i).setContents(contents);
+			file.setContents(new Text(contents.toString()));
+			files.add(file);
 		}
 		DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
 		List<DataFile> filesForStudy = dao.getFilesForStudy(studyName);
