@@ -10,7 +10,6 @@ import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,9 +52,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 					line = line.trim();
 					if (line.startsWith("startTime")) {
 						String startTimeStr = line.split("=")[1];
-						SimpleDateFormat format = new SimpleDateFormat(
-								"DDMMMyyyy HHmm");
-						Date date = format.parse(startTimeStr);
+						Date date = new Date(Long.parseLong(startTimeStr));
 						timeSeries.setStartTime(date);
 					} else if (line.startsWith("interval")) {
 						timeSeries.setInterval(line.split("=")[1]);
@@ -91,8 +88,8 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 				DataFile dataFile = filesForStudyAndName.get(0);
 				String value = dataFile.getContents().getValue();
 				String[] lines = value.split("\n");
-				for (int i = 0; i < lines.length; i++) {
-					String[] fields = lines[i].split(",");
+				for (String line : lines) {
+					String[] fields = line.split(",");
 					TextAnnotation annotation = new TextAnnotation();
 					annotation.setLatitude(Double.parseDouble(fields[0]));
 					annotation.setLongitude(Double.parseDouble(fields[1]));
