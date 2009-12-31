@@ -26,4 +26,15 @@ public interface BathymetryDataService extends RemoteService {
 	 */
 	public List<BathymetryDataPoint> getBathymetryDataPoints(double x1,
 			double y1, double x2, double y2) throws SerializationException;
+
+	/**
+	 * Returns the average depth for the given set of coordinates supplied as a
+	 * list of double arrays where each array is of two points representing
+	 * latitude and longitude.
+	 * 
+	 * @return
+	 * @throws SerializationException
+	 */
+	public double getAverageDepthInPolygon(List<double[]> points)
+			throws SerializationException;
 }
