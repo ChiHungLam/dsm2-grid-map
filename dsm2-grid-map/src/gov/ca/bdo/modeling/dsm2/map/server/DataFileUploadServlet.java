@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +26,7 @@ import com.google.appengine.api.datastore.Text;
 
 public class DataFileUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 8367618333138027430L;
-	private static final int MAX_SIZE_BYTES = 1024 * 1024;
+	private static final int MAX_SIZE_BYTES = 1024 * 1024 * 10;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
@@ -83,15 +81,20 @@ public class DataFileUploadServlet extends HttpServlet {
 
 	public void saveData(PersistenceManager persistenceManager,
 			String studyName, InputStream fileAsStream) throws Exception {
-		ArrayList<DataFile> files = new ArrayList<DataFile>();
+		DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
 		DSSOutParser parser = new DSSOutParser(fileAsStream);
 		RegularTimeSeries rts = null;
 		while ((rts = parser.nextSeries()) != null) {
-			DataFile file = new DataFile();
-			file.setStudyName(studyName);
-			file.setOwnerName(Utils.getCurrentUserEmail());
-			file.setName(rts.getName().toLowerCase());
-			file.setType(rts.getType().toLowerCase());
+			DataFile file = dao.getFileForStudyAndName(studyName,
+					rts.getName(), rts.getType());
+			if (file == null) {
+				file = new DataFile();
+				file.setStudyName(studyName);
+				file.setOwnerName(Utils.getCurrentUserEmail());
+				file.setName(rts.getName().toLowerCase());
+				file.setType(rts.getType().toLowerCase());
+				dao.createObject(file);
+			}
 			StringBuilder contents = new StringBuilder();
 			double[] data = rts.getData();
 			contents.append("startTime=" + rts.getStartTime().getTime() + "\n");
@@ -100,18 +103,7 @@ public class DataFileUploadServlet extends HttpServlet {
 				contents.append(element).append("\n");
 			}
 			file.setContents(new Text(contents.toString()));
-			files.add(file);
+			dao.updateObject(file);
 		}
-		DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
-		List<DataFile> filesForStudy = dao.getFilesForStudy(studyName);
-		if ((filesForStudy != null) && (filesForStudy.size() > 0)) {
-			for (DataFile dataFile : filesForStudy) {
-				dao.deleteObject(dataFile);
-			}
-		}
-		for (DataFile dataFile : files) {
-			dao.createObject(dataFile);
-		}
-
 	}
 }

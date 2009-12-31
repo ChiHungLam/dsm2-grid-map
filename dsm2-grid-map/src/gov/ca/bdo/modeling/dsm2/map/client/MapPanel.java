@@ -467,8 +467,10 @@ public class MapPanel extends Composite {
 		refreshGrid();
 	}
 
+	boolean SHOW_ON_CLICK = false;
+
 	public Panel getInfoPanel() {
-		if (collapsiblePanel.isCollapsed()) {
+		if (collapsiblePanel.isCollapsed() && SHOW_ON_CLICK) {
 			collapsiblePanel.setCollapsedState(false);
 			if (collapsibleTimer != null) {
 				collapsibleTimer.cancel();
