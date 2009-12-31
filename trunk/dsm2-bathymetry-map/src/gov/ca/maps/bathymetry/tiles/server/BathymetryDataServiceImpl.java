@@ -128,4 +128,11 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
+	@Override
+	public double getAverageDepthInPolygon(List<double[]> points)
+			throws SerializationException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

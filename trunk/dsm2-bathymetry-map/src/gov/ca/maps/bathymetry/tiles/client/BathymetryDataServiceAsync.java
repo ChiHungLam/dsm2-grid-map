@@ -13,4 +13,7 @@ public interface BathymetryDataServiceAsync {
 
 	void getBathymetryDataPoints(double x1, double y1, double x2, double y2,
 			AsyncCallback<List<BathymetryDataPoint>> callback);
+
+	void getAverageDepthInPolygon(List<double[]> points,
+			AsyncCallback<Double> callback);
 }
