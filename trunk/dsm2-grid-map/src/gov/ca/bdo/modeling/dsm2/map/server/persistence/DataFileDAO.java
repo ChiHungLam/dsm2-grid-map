@@ -26,4 +26,14 @@ public interface DataFileDAO extends GenericDAO<DataFile> {
 	public List<DataFile> getFilesForStudyAndName(String studyName, String name)
 			throws Exception;
 
+	/**
+	 * Get the file for study name, name and type of data set
+	 * 
+	 * @param studyName
+	 * @param name
+	 * @param type
+	 */
+	public DataFile getFileForStudyAndName(String studyName, String name,
+			String type);
+
 }
