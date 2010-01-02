@@ -47,8 +47,7 @@ public class MapPanel extends Composite {
 		} else {
 			localhost = false;
 		}
-		map = new MapWidget(LatLng.newInstance(38.15, -121.70), 10);
-		map.setSize("100%", "600px");
+		map = new MapWidget(LatLng.newInstance(38.15, -121.70), 11);
 		setOptions();
 		addBathymetryOverlay();
 		initWidget(map);
@@ -225,6 +224,10 @@ public class MapPanel extends Composite {
 				polygon = null;
 			}
 		}
+	}
+
+	public void onResize() {
+		map.checkResizeAndCenter();
 	}
 
 }

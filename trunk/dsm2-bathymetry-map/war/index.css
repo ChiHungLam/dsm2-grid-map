@@ -1,94 +1,15 @@
 /** Add css rules here for your application. */
-.error_message {
-	color: red;
-	font-size: 0.5em;
-}
-
-/** Example rules used by the template application (remove for your app) */
-h1 {
-	font-size: 2em;
-	font-weight: bold;
-	color: #777777;
-	margin: 40px 0px 70px;
+h3{
 	text-align: center;
 }
 
-.sendButton {
-	display: block;
-	font-size: 16pt;
+.legend td{
+	text-align: center;
 }
 
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
-	width: 400px;
-}
-
-.dialogVPanel {
-	margin: 5px;
-}
-
-.serverResponseLabelError {
+.error_message {
 	color: red;
-}
-
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-	margin: 15px 6px 6px;
-}
-
-table.heading {
-	color: #FFFFFF;
-	background: #000000;
-	width: 100%;
-	border-style: none;
-	border-collapse: collapse;
-}
-
-table.heading td {
-	border-style: none;
-	padding: 0;
-}
-
-table.heading h1 {
-	font-size: 15px;
-	font-weight: bold;
-	color: #FFFFFF;
-	padding-left: 10px;
-	font-family: Arial, Helvetica, sans-serif;
-}
-
-/* the text in the title panel containing the map title and casa text */
-.section_header_white {
-	font-size: 10px;
-	font-weight: bold;
-	color: #FFFFFF;
-	padding-left: 25px;
-	font-family: Arial, Helvetica, sans-serif;
-	padding-top: 5px;
-}
-
-/* the Google map itself */
-.map {
-	width: 85%;
-	height: 100%;
-	table .border: 0;
-}
-
-/* text style on the scale panel */
-.scale {
-	color: black;
-	background: lightgray;
-	width: 100%;
-	height: 100%;
-}
-
-/* formatting of the coloured boxes on the scale panel */
-.scale_colour {
-	border-color: #000000;
-	border-style: none;
-	border-width: 1px;
-	width: 16px;
-	height: 16px;
+	font-size: 0.5em;
 }
 
 .ae-table-caption,.ae-table caption {
