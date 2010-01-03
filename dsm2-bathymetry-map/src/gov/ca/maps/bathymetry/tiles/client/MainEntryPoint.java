@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
 
 public class MainEntryPoint implements EntryPoint {
 
@@ -41,10 +42,11 @@ public class MainEntryPoint implements EntryPoint {
 
 	protected void createUI() {
 		mainPanel = new DockLayoutPanel(Unit.EM);
+		mapPanel = new MapPanel();
 		mainPanel
 				.addNorth(
 						new HTML(
-								"<h3>Bathymetry Data for the Sacramento-San Jaoquin Delta</h3>"),
+								"<h3>Bathymetry Data for the Sacramento-San Joaquin Delta</h3>"),
 						5);
 		Grid legend = new Grid(8, 2);
 		legend.setStyleName("legend");
@@ -59,15 +61,18 @@ public class MainEntryPoint implements EntryPoint {
 					legendColors[i]);
 			legend.setHTML(i, 1, legendDepth[i]);
 		}
-		FlowPanel sidePanel = new FlowPanel();
-		sidePanel.add(new HTML(
+		FlowPanel legendContainerPanel = new FlowPanel();
+		legendContainerPanel.add(new HTML(
 				"<p> Transparency is mapped from 1925 to 2010</p>"));
-		sidePanel
+		legendContainerPanel
 				.add(new HTML(
 						"<p> The color scale below defines how depth is represented on the map. </p>"));
-		sidePanel.add(legend);
-		mainPanel.addEast(sidePanel, 10);
-		mainPanel.add(mapPanel = new MapPanel());
+		legendContainerPanel.add(legend);
+		StackLayoutPanel sidePanel = new StackLayoutPanel(Unit.EM);
+		sidePanel.add(legendContainerPanel, new HTML("Legend"), 2);
+		sidePanel.add(new ControlPanel(mapPanel), new HTML("Controls"), 2);
+		mainPanel.addEast(sidePanel, 35);
+		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);
 		RootLayoutPanel.get().animate(0, new AnimationCallback() {
 			public void onLayout(Layer layer, double progress) {

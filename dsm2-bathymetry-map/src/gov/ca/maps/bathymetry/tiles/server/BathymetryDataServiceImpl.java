@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -17,6 +18,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		BathymetryDataService {
+	public static final Logger logger = Logger.getLogger("bathymetry");
 
 	public List<BathymetryDataPoint> getBathymetryDataPoints(double latitude,
 			double longitude) throws SerializationException {
@@ -30,7 +32,6 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 					latitude, longitude);
 			addBathymetryPointsToList(list, bathymetryDataFile);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			persistenceManager.close();
@@ -106,25 +107,13 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	public void projectOntoLine(double x1, double y1, double x2, double y2,
 			List<BathymetryDataPoint> points) {
-		// y = mx+c
-		// a1 = m, b1=-1, c1=c
-		double m = (y2 - y1) / (x2 - x1);
-		double c = y2 - m * x2;
-		double a1 = m, b1 = -1, c1 = c;
-		double mInverse = -1.0 / m;
-		double a2 = mInverse, b2 = -1;
-		// y= (-1/m)*x+cInverse
-		// a2 = mInverse, b2 = -1, c2=cInverse
-		// intersection of these lines
+		double[] xy = new double[2];
 		for (BathymetryDataPoint point : points) {
-			double x = point.latitude;
-			double y = point.longitude;
-			double cInverse = y - mInverse * x;
-			double c2 = cInverse;
-			x = (b1 * c1 - b2 * c1) / (a1 * b2 - a2 * b1);
-			y = (c1 * a2 - c2 * a1) / (a1 * b2 - a2 * b1);
-			point.latitude = x;
-			point.longitude = y;
+			xy[0] = point.latitude;
+			xy[1] = point.longitude;
+			GeomUtils.projectOntoLine(x1, y1, x2, y2, xy);
+			point.latitude = xy[0];
+			point.longitude = xy[1];
 		}
 	}
 

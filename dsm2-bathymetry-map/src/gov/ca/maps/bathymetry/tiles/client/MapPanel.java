@@ -28,6 +28,7 @@ import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ToggleButton;
 
 public class MapPanel extends Composite {
 	private final MapWidget map;
@@ -38,6 +39,8 @@ public class MapPanel extends Composite {
 	private final int weight = 5;
 	private final double opacity = 0.75;
 	private Polyline line;
+	private ShowPolygonHandler showPolygonHandler;
+	private RemovePolygonHandler removePolygonHandler;
 
 	public MapPanel() {
 		service = (BathymetryDataServiceAsync) GWT
@@ -51,11 +54,9 @@ public class MapPanel extends Composite {
 		setOptions();
 		addBathymetryOverlay();
 		initWidget(map);
-		map.addInfoWindowCloseHandler(new RemovePolygonHandler());
-		map.addMapClickHandler(new ShowPolygonHandler());
 	}
 
-	public void drawXSection() {
+	public void drawXSection(final ControlPanel controlPanel) {
 		if ((line == null) || (line.getVertexCount() != 2)) {
 			return;
 		}
@@ -67,7 +68,8 @@ public class MapPanel extends Composite {
 				new AsyncCallback<List<BathymetryDataPoint>>() {
 
 					public void onSuccess(List<BathymetryDataPoint> result) {
-
+						controlPanel
+								.showInInfoPanel(new ElevationChart(result));
 					}
 
 					public void onFailure(Throwable caught) {
@@ -75,12 +77,17 @@ public class MapPanel extends Composite {
 				});
 	}
 
-	public void addLine() {
+	public void addLine(final ControlPanel controlPanel) {
+		final ToggleButton drawLineButton = controlPanel.getDrawLineButton();
 		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
 				opacity);
+		if (line != null) {
+			map.removeOverlay(line);
+		}
 		line = new Polyline(new LatLng[0]);
 		map.addOverlay(line);
 		line.setDrawingEnabled();
+		line.setEditingEnabled(true);
 		line.setStrokeStyle(style);
 		line.addPolylineClickHandler(new PolylineClickHandler() {
 
@@ -93,7 +100,8 @@ public class MapPanel extends Composite {
 			public void onUpdate(PolylineLineUpdatedEvent event) {
 				if (line.getVertexCount() == 2) {
 					line.setEditingEnabled(false);
-					drawXSection();
+					drawLineButton.setDown(false);
+					drawXSection(controlPanel);
 				}
 				Window.setStatus("Length : " + getLengthInFeet() + " ft");
 			}
@@ -172,6 +180,36 @@ public class MapPanel extends Composite {
 		map.addControl(control);
 	}
 
+	public void onResize() {
+		map.checkResizeAndCenter();
+	}
+
+	/**
+	 * activates the handler that retrieves the data points around point
+	 * clicked.
+	 * 
+	 * @param activate
+	 */
+	public void activateShowDataHandler(boolean activate) {
+		if (activate) {
+			if (removePolygonHandler == null) {
+				removePolygonHandler = new RemovePolygonHandler();
+			}
+			if (showPolygonHandler == null) {
+				showPolygonHandler = new ShowPolygonHandler();
+			}
+			map.addInfoWindowCloseHandler(removePolygonHandler);
+			map.addMapClickHandler(showPolygonHandler);
+		} else {
+			if (removePolygonHandler != null) {
+				map.removeInfoWindowCloseHandler(removePolygonHandler);
+			}
+			if (showPolygonHandler != null) {
+				map.removeMapClickHandler(showPolygonHandler);
+			}
+		}
+	}
+
 	private final class ShowPolygonHandler implements MapClickHandler {
 		public void onClick(MapClickEvent event) {
 			final LatLng latLng = event.getLatLng();
@@ -224,10 +262,6 @@ public class MapPanel extends Composite {
 				polygon = null;
 			}
 		}
-	}
-
-	public void onResize() {
-		map.checkResizeAndCenter();
 	}
 
 }
