@@ -5,8 +5,11 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.utility.client.DefaultPackage;
+import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 public class MainEntryPoint implements EntryPoint {
@@ -32,8 +35,15 @@ public class MainEntryPoint implements EntryPoint {
 				createUI();
 			}
 		};
-		mapLoadCallback.run();
-
+		if (!GoogleMapsUtility.isLoaded(DefaultPackage.MARKER_CLUSTERER,
+				DefaultPackage.LABELED_MARKER, DefaultPackage.MAP_ICON_MAKER)) {
+			GoogleMapsUtility.loadUtilityApi(mapLoadCallback,
+					DefaultPackage.MARKER_CLUSTERER,
+					DefaultPackage.LABELED_MARKER,
+					DefaultPackage.MAP_ICON_MAKER);
+		} else {
+			mapLoadCallback.run();
+		}
 	}
 
 	protected void createUI() {
@@ -41,6 +51,7 @@ public class MainEntryPoint implements EntryPoint {
 		mapPanel = new MapPanel();
 		mainPanel.addNorth(new HeaderPanel(), 5);
 		mainPanel.addEast(mapPanel.getControlPanelContainer(), 37);
+		mainPanel.addSouth(new HTML(""), 1);
 		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);
 		RootLayoutPanel.get().animate(0, new AnimationCallback() {
@@ -48,7 +59,7 @@ public class MainEntryPoint implements EntryPoint {
 			}
 
 			public void onAnimationComplete() {
-				mapPanel.getMap().checkResizeAndCenter();
+				mapPanel.onResize();
 			}
 		});
 	}

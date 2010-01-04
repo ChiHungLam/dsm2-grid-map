@@ -18,8 +18,6 @@ import gov.ca.dsm2.input.model.Reservoirs;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.maps.client.Copyright;
 import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapUIOptions;
@@ -68,12 +66,6 @@ public class MapPanel extends Composite {
 		dsm2InputService = (DSM2InputServiceAsync) GWT
 				.create(DSM2InputService.class);
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
-		Window.addResizeHandler(new ResizeHandler() {
-			public void onResize(ResizeEvent event) {
-				setMapSizeBasedOnWindow();
-			}
-		});
-		setMapSizeBasedOnWindow();
 		setOptions();
 		new ClearBackgroundLayer(getMap());
 		// layout top level things here
@@ -86,10 +78,7 @@ public class MapPanel extends Composite {
 		controlPanelContainer.add(controlPanel);
 		controlPanelContainer.add(infoPanel);
 		// add them all here
-		FlowPanel topContainer = new FlowPanel();
-		topContainer.setStyleName("topContainer");
-		topContainer.add(getMap());
-		initWidget(topContainer);
+		initWidget(getMap());
 		// add zoom handler to hide channels at a certain zoom level
 		map.addMapZoomEndHandler(new MapZoomEndHandler() {
 
@@ -535,9 +524,7 @@ public class MapPanel extends Composite {
 		}
 	}
 
-	protected void setMapSizeBasedOnWindow() {
-		getMap().setSize((Window.getClientWidth() - 50) + "px",
-				(Window.getClientHeight() - 50) + "px");
+	public void onResize() {
+		map.checkResizeAndCenter();
 	}
-
 }
