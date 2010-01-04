@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -199,6 +200,11 @@ public class MapControlPanel extends Composite {
 				mapPanel.displayGisInput(gisInputArea);
 			}
 		});
+
+		Anchor uploadStudyLink = new Anchor("Upload study here",
+				"/upload_study.html");
+		Anchor uploadStudyDataLink = new Anchor("Upload study data here",
+				"/upload_data.html");
 		containerPanel.setWidget(0, 0, studyLabel);
 		containerPanel.setWidget(0, 1, studyBox);
 		containerPanel.setWidget(0, 2, saveEditModelButton);
@@ -222,6 +228,9 @@ public class MapControlPanel extends Composite {
 		containerPanel.setWidget(7, 0, showHydroInputButton);
 		containerPanel.setWidget(8, 0, hydroInputArea);
 		containerPanel.setWidget(9, 0, gisInputArea);
+
+		containerPanel.setWidget(10, 0, uploadStudyLink);
+		containerPanel.setWidget(11, 0, uploadStudyDataLink);
 		containerPanel.getFlexCellFormatter().setColSpan(8, 0, 3);
 		containerPanel.getFlexCellFormatter().setColSpan(9, 0, 3);
 		initWidget(containerPanel);

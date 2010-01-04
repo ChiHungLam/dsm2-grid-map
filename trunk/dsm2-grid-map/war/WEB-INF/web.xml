@@ -70,6 +70,16 @@
 		<servlet-name>userProfileServlet</servlet-name>
 		<url-pattern>/dsm2_grid_map/admin/userProfile</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>loginServlet</servlet-name>
+		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.LoginServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>loginServlet</servlet-name>
+		<url-pattern>/dsm2_grid_map/login</url-pattern>
+	</servlet-mapping>
+
 	<filter>
 		<filter-name>authFilter</filter-name>
 		<filter-class>gov.ca.bdo.modeling.dsm2.map.server.RoleFilter</filter-class>

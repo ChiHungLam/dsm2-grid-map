@@ -1,6 +1,5 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
-import gov.ca.bdo.modeling.dsm2.map.client.images.IconImages;
 import gov.ca.bdo.modeling.dsm2.map.client.model.ChannelLineDataManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.NodeMarkerDataManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.OutputMarkerDataManager;
@@ -38,17 +37,13 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.widgetideas.client.CollapsiblePanel;
 
 public class MapPanel extends Composite {
 
@@ -68,8 +63,6 @@ public class MapPanel extends Composite {
 	private final MapControlPanel controlPanel;
 	private TileLayerOverlay bathymetryOverlay;
 	private TextAnnotationsManager textAnnotationHandler;
-	private final CollapsiblePanel collapsiblePanel;
-	private Timer collapsibleTimer;
 
 	public MapPanel() {
 		dsm2InputService = (DSM2InputServiceAsync) GWT
@@ -89,25 +82,12 @@ public class MapPanel extends Composite {
 		infoPanel.setStyleName("infoPanel");
 		infoPanel.setWidth("646px");
 		infoPanel.setHeight("400px");
-		final ToggleButton controlButton = new ToggleButton(new Image(
-				IconImages.INSTANCE.pinIcon()), new Image(IconImages.INSTANCE
-				.closeIcon()));
-		controlButton.setStyleName("controlToggleButton");
-		VerticalPanel controlPanelContainer = new VerticalPanel();
-		controlPanelContainer.add(controlButton);
+		controlPanelContainer = new VerticalPanel();
 		controlPanelContainer.add(controlPanel);
 		controlPanelContainer.add(infoPanel);
-		collapsiblePanel = new CollapsiblePanel(controlPanelContainer);
-		collapsiblePanel.setStyleName("collapsiblePanel");
-		collapsiblePanel.hookupControlToggle(controlButton);
-		collapsiblePanel.setHoverBarContents(new Image(IconImages.INSTANCE
-				.expandIcon()));
-		collapsiblePanel.setTitle("Options");
-		collapsiblePanel.setCollapsedState(true);
 		// add them all here
 		FlowPanel topContainer = new FlowPanel();
 		topContainer.setStyleName("topContainer");
-		topContainer.add(collapsiblePanel);
 		topContainer.add(getMap());
 		initWidget(topContainer);
 		// add zoom handler to hide channels at a certain zoom level
@@ -125,6 +105,10 @@ public class MapPanel extends Composite {
 			}
 		});
 		loadStudies();
+	}
+
+	public Panel getControlPanelContainer() {
+		return controlPanelContainer;
 	}
 
 	private void setOptions() {
@@ -469,22 +453,9 @@ public class MapPanel extends Composite {
 	}
 
 	boolean SHOW_ON_CLICK = false;
+	private final VerticalPanel controlPanelContainer;
 
 	public Panel getInfoPanel() {
-		if (collapsiblePanel.isCollapsed() && SHOW_ON_CLICK) {
-			collapsiblePanel.setCollapsedState(false);
-			if (collapsibleTimer != null) {
-				collapsibleTimer.cancel();
-			}
-			collapsibleTimer = new Timer() {
-
-				@Override
-				public void run() {
-					collapsiblePanel.setCollapsedState(true);
-				}
-			};
-			collapsibleTimer.schedule(3000);
-		}
 		return infoPanel;
 	}
 
@@ -569,7 +540,4 @@ public class MapPanel extends Composite {
 				(Window.getClientHeight() - 50) + "px");
 	}
 
-	public CollapsiblePanel getCollapsiblePanel() {
-		return collapsiblePanel;
-	}
 }
