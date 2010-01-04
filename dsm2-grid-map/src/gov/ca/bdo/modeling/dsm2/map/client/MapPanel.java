@@ -82,6 +82,7 @@ public class MapPanel extends Composite {
 		});
 		setMapSizeBasedOnWindow();
 		setOptions();
+		new ClearBackgroundLayer(getMap());
 		// layout top level things here
 		controlPanel = new MapControlPanel(this);
 		infoPanel = new FlowPanel();
