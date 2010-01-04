@@ -12,7 +12,7 @@
 	<inherits name='com.google.gwt.user.theme.standard.Standard' />
 	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
 	<inherits name='gov.ca.dsm2.input.dsm2input' />
-	<entry-point class='gov.ca.bdo.modeling.dsm2.map.client.GridMap' />
+	<entry-point class='gov.ca.bdo.modeling.dsm2.map.client.MainEntryPoint' />
 	<!--
 		<define-property name="user.agent"
 		values="ie6,ie8,gecko,gecko1_8,safari,opera">
