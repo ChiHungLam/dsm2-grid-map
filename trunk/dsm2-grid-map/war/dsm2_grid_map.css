@@ -43,48 +43,7 @@
 .hm-marker-label {
 	font-size: 9px;
 }
-/*Collapsible panel*/
-.collapsiblePanel div:focus {
-  border: 0px;
-  -moz-outline: none !important
-}
-
-.collapsiblePanel {
-  margin: 0px;
-  margin-right: 20px;
-  float: left;
-  z-index: 2;
-  background-color: white;
-}
-
-.collapsiblePanel .hover-bar {
-  position: relative;
-  background-color: gray;
-  width: 2px;  height: 100%;
-  float: right;
-}
-
-.collapsiblePanel .container {
-  border-right: 1px solid #59d;
-  border-bottom: 1px solid #59d;
-  height: 100%;
-  position: relative;
-  width:646px;
-  background-color: white;
-} 
-
-.collapsiblePanel .container table {
-	background-color: white;
-} 
-
-.controlToggleButton {
-	float: right;
-}
-
-.topContainer{
-	position: relative;
-	width: 100%;
-}
+/* */
 
 .infoPanel{
 	background-color:white;
