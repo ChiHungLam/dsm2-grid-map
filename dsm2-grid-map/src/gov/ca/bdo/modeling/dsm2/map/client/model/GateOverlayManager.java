@@ -8,7 +8,7 @@ import com.google.gwt.maps.client.overlay.Marker;
 
 public class GateOverlayManager {
 	private Gates gates;
-	private HashMap<String, Marker> gateMarkerMap;
+	private final HashMap<String, Marker> gateMarkerMap;
 
 	public GateOverlayManager() {
 		gateMarkerMap = new HashMap<String, Marker>();
@@ -30,5 +30,11 @@ public class GateOverlayManager {
 
 	public void removeGateMarker(String gateId) {
 		gateMarkerMap.remove(gateId);
+	}
+
+	public void hideMarkers(boolean hide) {
+		for (Marker marker : gateMarkerMap.values()) {
+			marker.setVisible(!hide);
+		}
 	}
 }

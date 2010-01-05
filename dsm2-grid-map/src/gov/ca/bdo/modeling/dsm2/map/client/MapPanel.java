@@ -1,8 +1,10 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
 import gov.ca.bdo.modeling.dsm2.map.client.model.ChannelLineDataManager;
+import gov.ca.bdo.modeling.dsm2.map.client.model.GateOverlayManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.NodeMarkerDataManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.OutputMarkerDataManager;
+import gov.ca.bdo.modeling.dsm2.map.client.model.ReservoirOverlayManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.TextAnnotationsManager;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
@@ -23,7 +25,6 @@ import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
-import com.google.gwt.maps.client.control.OverviewMapControl;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
@@ -68,6 +69,7 @@ public class MapPanel extends Composite {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
 		new ClearBackgroundLayer(getMap());
+		getMap().addControl(new GridVisibilityControl(this));
 		// layout top level things here
 		controlPanel = new MapControlPanel(this);
 		infoPanel = new FlowPanel();
@@ -103,17 +105,12 @@ public class MapPanel extends Composite {
 	private void setOptions() {
 		MapUIOptions options = MapUIOptions.newInstance(getMap().getSize());
 		options.setKeyboard(true);
-		options.setMapTypeControl(true);
-		options.setMenuMapTypeControl(false);
-		options.setNormalMapType(true);
-		options.setPhysicalMapType(true);
-		options.setSatelliteMapType(true);
+		options.setMapTypeControl(false);
+		options.setMenuMapTypeControl(true);
 		options.setScaleControl(true);
 		options.setScrollwheel(true);
 		options.setSmallZoomControl3d(true);
 		getMap().setUI(options);
-		OverviewMapControl control = new OverviewMapControl();
-		getMap().addControl(control);
 	}
 
 	private void requestData() {
@@ -179,6 +176,7 @@ public class MapPanel extends Composite {
 
 	protected void populateGateImages() {
 		Gates gates = model.getGates();
+		gateOverlayManager = new GateOverlayManager();
 		for (Gate gate : gates.getGates()) {
 			// String id = gate.getFromIdentifier();
 			String objectType = gate.getFromObject();
@@ -222,6 +220,8 @@ public class MapPanel extends Composite {
 						this));
 				gateOverMarker
 						.addMarkerDragEndHandler(new GateDragHandler(gate));
+				gateOverlayManager
+						.addGateMarker(gate.getName(), gateOverMarker);
 				getMap().addOverlay(gateOverMarker);
 			}
 		}
@@ -229,6 +229,7 @@ public class MapPanel extends Composite {
 
 	protected void populateReservoirMarkers() {
 		Reservoirs reservoirs = model.getReservoirs();
+		reservoirOverlayManager = new ReservoirOverlayManager();
 		for (Reservoir reservoir : reservoirs.getReservoirs()) {
 			if ((reservoir.getLatitude() == 0)
 					|| (reservoir.getLongitude() == 0)) {
@@ -271,6 +272,8 @@ public class MapPanel extends Composite {
 					reservoir, this));
 			reservoirMarker.addMarkerDragEndHandler(new ReservoirDragHandler(
 					reservoir));
+			reservoirOverlayManager.addReservoirMarker(reservoir.getName(),
+					reservoirMarker);
 			getMap().addOverlay(reservoirMarker);
 		}
 	}
@@ -287,6 +290,14 @@ public class MapPanel extends Composite {
 		for (Polyline line : getChannelManager().getPolylines()) {
 			line.setVisible(!hide);
 		}
+	}
+
+	public void hideGateMarkers(boolean hide) {
+		gateOverlayManager.hideMarkers(hide);
+	}
+
+	public void hideReservoirMarkers(boolean hide) {
+		reservoirOverlayManager.hideMarkers(hide);
 	}
 
 	public void hideOutputMarkers(boolean hide) {
@@ -443,6 +454,8 @@ public class MapPanel extends Composite {
 
 	boolean SHOW_ON_CLICK = false;
 	private final VerticalPanel controlPanelContainer;
+	private GateOverlayManager gateOverlayManager;
+	private ReservoirOverlayManager reservoirOverlayManager;
 
 	public Panel getInfoPanel() {
 		return infoPanel;
