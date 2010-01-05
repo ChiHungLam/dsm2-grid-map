@@ -7,6 +7,7 @@ import com.google.gwt.maps.client.control.ControlAnchor;
 import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.Control.CustomControl;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -15,13 +16,12 @@ public class GridVisibilityControl extends CustomControl {
 	private final MapPanel mapPanel;
 
 	public GridVisibilityControl(MapPanel mapPanel) {
-		super(new ControlPosition(ControlAnchor.TOP_LEFT, 7, 7));
+		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 7, 30));
 		this.mapPanel = mapPanel;
 	}
 
 	@Override
 	protected Widget initialize(MapWidget map) {
-		VerticalPanel vpanel = new VerticalPanel();
 		final CheckBox nodeHideBox = new CheckBox("Hide Nodes", false);
 		nodeHideBox.addClickHandler(new ClickHandler() {
 
@@ -61,7 +61,16 @@ public class GridVisibilityControl extends CustomControl {
 				mapPanel.hideOutputMarkers(outputMarkerHideBox.getValue());
 			}
 		});
-		return vpanel;
+		VerticalPanel vpanel = new VerticalPanel();
+		vpanel.add(nodeHideBox);
+		vpanel.add(channelHideBox);
+		vpanel.add(gatesHideBox);
+		vpanel.add(reservoirsHideBox);
+		vpanel.add(outputMarkerHideBox);
+		DisclosurePanel panel = new DisclosurePanel("Visibility");
+		panel.setStyleName("visibilityPanel");
+		panel.setContent(vpanel);
+		return panel;
 	}
 
 	@Override

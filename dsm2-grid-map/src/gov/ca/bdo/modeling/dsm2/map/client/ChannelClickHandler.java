@@ -4,6 +4,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.model.NodeMarkerDataManager;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
+import gov.ca.dsm2.input.model.XSectionLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,17 +132,51 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	private void drawXSectionLines() {
 		LatLng[] channelOutlinePoints = getChannelOutlinePoints();
 		ArrayList<XSection> xsections = channel.getXsections();
-		getTopWidthAtElevation(xsections, 0);
 		for (XSection xSection : xsections) {
 			double distance = xSection.getDistance();
+			distance = channel.getLength() * distance;
+			LatLng latLng = findLatLngOfXSectionIntersectionAlongOutline(
+					distance, channelOutlinePoints);
+			double width = getTopWidthAtElevation(xSection, 0);
+			drawLineCenteredAtLatLngOfWidth(latLng, width);
 		}
 	}
 
-	private void getTopWidthAtElevation(ArrayList<XSection> xsections,
-			double elevation) {
-		for (XSection xSection : xsections) {
+	private void drawLineCenteredAtLatLngOfWidth(LatLng latLng, double width) {
+		// TODO Auto-generated method stub
 
+	}
+
+	private LatLng findLatLngOfXSectionIntersectionAlongOutline(
+			double distance, LatLng[] channelOutlinePoints) {
+
+		if (distance < 0) {
+			return channelOutlinePoints[0];
 		}
+		LatLng intersection = channelOutlinePoints[0];
+		return intersection;
+	}
+
+	private double getTopWidthAtElevation(XSection xsection, double elevation) {
+		ArrayList<XSectionLayer> layers = xsection.getLayers();
+		double previousElevation = 0;
+		double previousTopWidth = 0;
+		for (XSectionLayer xSectionLayer : layers) {
+			if (elevation < xSectionLayer.getElevation()) {
+				return interpolateLinearly(xSectionLayer.getTopWidth(),
+						xSectionLayer.getElevation(), previousElevation,
+						previousTopWidth);
+			}
+			previousElevation = xSectionLayer.getElevation();
+			previousTopWidth = xSectionLayer.getTopWidth();
+		}
+		return 0;
+	}
+
+	private double interpolateLinearly(double topWidth, double elevation,
+			double previousElevation, double previousTopWidth) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	public LatLng[] getChannelOutlinePoints() {
