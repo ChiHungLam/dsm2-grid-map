@@ -20,6 +20,7 @@ import gov.ca.dsm2.input.model.Reservoirs;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.Copyright;
 import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapUIOptions;
@@ -40,6 +41,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -376,12 +378,14 @@ public class MapPanel extends Composite {
 		return getMap();
 	}
 
-	public void setChannelColorScheme(String colorScheme) {
+	public void setChannelColorScheme(String colorScheme,
+			String colorArrayScheme) {
 		for (Channel channelData : getChannelManager().getChannels()
 				.getChannels()) {
 			Polyline line = getChannelManager()
 					.getPolyline(channelData.getId());
-			String lineColor = getColorForScheme(colorScheme, channelData);
+			String lineColor = getColorForScheme(colorScheme, channelData,
+					colorArrayScheme);
 			PolyStyleOptions style = PolyStyleOptions.newInstance(lineColor);
 			style.setOpacity(0.75);
 			style.setWeight(3);
@@ -389,26 +393,69 @@ public class MapPanel extends Composite {
 		}
 	}
 
-	private String getColorForScheme(String colorScheme, Channel data) {
+	private String getColorForScheme(String colorScheme, Channel data,
+			String colorArrayScheme) {
 		if (colorScheme.equals(CHANNEL_COLOR_PLAIN)) {
 			return "#110077";
 		} else if (colorScheme.equals(CHANNEL_COLOR_MANNINGS)) {
-			return getColorForRange(data.getMannings(), 0.01, 0.05);
+			return getColorForRange(data.getMannings(), 0.01, 0.05,
+					colorArrayScheme);
 		} else if (colorScheme.equals(CHANNEL_COLOR_DISPERSION)) {
-			return getColorForRange(data.getDispersion(), 0.01, 1.5);
+			return getColorForRange(data.getDispersion(), 0.01, 1.5,
+					colorArrayScheme);
 		} else {
 			return "#110077";
 		}
 	}
 
-	private String getColorForRange(double mannings, double min, double max) {
-		int color = (int) Math.round((mannings - min) / (max - min) * 255);
+	private static String[] divergingColorsArray = new String[] { "#ca0020",
+			"#f4a582", "#f7f7f7", "#92c5de", "#571b0" };
+	private static String[] qualitativeColorsArray = new String[] { "#e31a1c",
+			"#377db8", "#4daf4a", "#984ea3", "#ff7f00" };
+	private static String[] sequentialColorsArray = new String[] { "#ffffcc",
+			"#a1dab4", "#41b6c3", "#2c7fb8", "#253494" };
+
+	private String getColorForRange(double mannings, double min, double max,
+			String colorArrayScheme) {
+		String[] colorsArray = getColorArray(colorArrayScheme);
+		int ncolors = colorsArray.length;
+		int color = (int) Math.round((mannings - min) / (max - min) * ncolors);
 		if (color < 0) {
 			color = 0;
-		} else if (color > 255) {
-			color = 255;
+		} else if (color > 4) {
+			color = ncolors;
 		}
-		return "#" + Integer.toHexString(color) + "0077";
+		controlPanel.setColorPanel(getColorArraySchemePanel(colorArrayScheme,
+				min, max));
+		return colorsArray[color];
+	}
+
+	String[] getColorArray(String colorArrayScheme) {
+		String[] colorsArray = sequentialColorsArray;
+		if (colorArrayScheme == null) {
+			colorsArray = sequentialColorsArray;
+		} else if (colorArrayScheme.startsWith("dive")) {
+			colorsArray = divergingColorsArray;
+		} else if (colorArrayScheme.startsWith("qual")) {
+			colorsArray = qualitativeColorsArray;
+		}
+		return colorsArray;
+	}
+
+	private static NumberFormat formatter = NumberFormat.getFormat("0.00");
+
+	public Panel getColorArraySchemePanel(String scheme, double min, double max) {
+		String[] colorsArray = getColorArray(scheme);
+		int ncolors = colorsArray.length;
+		Grid panel = new Grid(1, ncolors);
+		double step = (max - min) / ncolors;
+		for (int i = 0; i < ncolors; i++) {
+			double value = i * step + min;
+			String html = "<p style=\"background-color: " + colorsArray[i]
+					+ ";\">" + formatter.format(value) + "</p>";
+			panel.setHTML(0, i, html);
+		}
+		return panel;
 	}
 
 	public void setNodeManager(NodeMarkerDataManager nodeManager) {
