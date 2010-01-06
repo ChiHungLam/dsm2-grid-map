@@ -8,11 +8,14 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 /**
- * Converts the text representation of tables into objects containing the
- * same information.
+ * Converts the text representation of tables into objects containing the same
+ * information.
+ * 
+ * @see Tables
  * @author nsandhu
- *
+ * 
  */
 public class Parser {
 
@@ -22,21 +25,24 @@ public class Parser {
 	public Tables parseModel(String file) throws IOException {
 		return parseModel(new FileInputStream(file));
 	}
-	
-	public Tables parseModel(InputStream inputStream) throws IOException{
+
+	public Tables parseModel(InputStream inputStream) throws IOException {
 		Tables tables = new Tables();
 		parseAndAddToModel(tables, inputStream);
 		return tables;
 	}
-	
-	public void parseAndAddToModel(Tables tables, InputStream inputStream) throws IOException{
-		LineNumberReader reader = new LineNumberReader(new InputStreamReader(inputStream));
+
+	public void parseAndAddToModel(Tables tables, InputStream inputStream)
+			throws IOException {
+		LineNumberReader reader = new LineNumberReader(new InputStreamReader(
+				inputStream));
 		InputTable table = null;
 		try {
 			do {
 				table = parseTable(reader);
-				if (table == null)
+				if (table == null) {
 					break;
+				}
 				tables.addTable(table);
 			} while (true);
 		} catch (IOException e) {
