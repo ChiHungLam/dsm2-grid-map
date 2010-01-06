@@ -13,10 +13,12 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 
@@ -26,10 +28,12 @@ public class MapControlPanel extends Composite {
 	private final ListBox studyBox;
 	private Anchor downloadHydroEchoLink;
 	private Anchor downloadGisEchoLink;
+	private final FlexTable containerPanel;
+	private FlowPanel colorSchemePanel;
 
 	public MapControlPanel(MapPanel panel) {
 		mapPanel = panel;
-		FlexTable containerPanel = new FlexTable();
+		containerPanel = new FlexTable();
 		//
 		Label studyLabel = new Label("Study");
 		studyBox = new ListBox();
@@ -118,18 +122,29 @@ public class MapControlPanel extends Composite {
 			}
 		});
 		//
+		Label colorArraySchemeLabel = new Label("Color variation scheme: ");
+		final ListBox colorArraySchemeOptions = new ListBox();
+		colorArraySchemeOptions.addItem("sequential");
+		colorArraySchemeOptions.addItem("qualitative");
+		colorArraySchemeOptions.addItem("diverging");
+		colorArraySchemeOptions.setSelectedIndex(0);
 		Label channelColorLabel = new Label("Color Channels By: ");
 		final ListBox channelColorOptions = new ListBox();
 		channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_PLAIN);
 		channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_MANNINGS);
 		channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_DISPERSION);
-		channelColorOptions.addChangeHandler(new ChangeHandler() {
+		ChangeHandler colorSchemeHandler = new ChangeHandler() {
 
 			public void onChange(ChangeEvent event) {
 				mapPanel.setChannelColorScheme(channelColorOptions
-						.getItemText(channelColorOptions.getSelectedIndex()));
+						.getItemText(channelColorOptions.getSelectedIndex()),
+						colorArraySchemeOptions
+								.getItemText(colorArraySchemeOptions
+										.getSelectedIndex()));
 			}
-		});
+		};
+		channelColorOptions.addChangeHandler(colorSchemeHandler);
+		colorArraySchemeOptions.addChangeHandler(colorSchemeHandler);
 		//
 		final ToggleButton saveEditModelButton = new ToggleButton("Edit Model",
 				"Save Model");
@@ -193,14 +208,17 @@ public class MapControlPanel extends Composite {
 
 		containerPanel.setWidget(4, 0, channelColorLabel);
 		containerPanel.setWidget(4, 1, channelColorOptions);
-		containerPanel.setWidget(5, 0, downloadHydroEchoLink);
-		containerPanel.getFlexCellFormatter().setColSpan(5, 0, 2);
-		containerPanel.setWidget(5, 2, downloadGisEchoLink);
-		containerPanel.getFlexCellFormatter().setColSpan(5, 2, 2);
-		containerPanel.setWidget(6, 0, uploadStudyLink);
+		containerPanel.setWidget(4, 2, colorArraySchemeOptions);
+		containerPanel.setWidget(5, 0, colorSchemePanel = new FlowPanel());
+		containerPanel.getFlexCellFormatter().setColSpan(5, 0, 3);
+		containerPanel.setWidget(6, 0, downloadHydroEchoLink);
 		containerPanel.getFlexCellFormatter().setColSpan(6, 0, 2);
-		containerPanel.setWidget(6, 2, uploadStudyDataLink);
+		containerPanel.setWidget(6, 2, downloadGisEchoLink);
 		containerPanel.getFlexCellFormatter().setColSpan(6, 2, 2);
+		containerPanel.setWidget(7, 0, uploadStudyLink);
+		containerPanel.getFlexCellFormatter().setColSpan(7, 0, 2);
+		containerPanel.setWidget(7, 2, uploadStudyDataLink);
+		containerPanel.getFlexCellFormatter().setColSpan(7, 2, 2);
 		initWidget(containerPanel);
 	}
 
@@ -232,6 +250,11 @@ public class MapControlPanel extends Composite {
 		downloadHydroEchoLink.setHref(buildDownloadLink("hydro_echo_inp"));
 		downloadGisEchoLink.setHref(buildDownloadLink("gis_inp"));
 
+	}
+
+	public void setColorPanel(Panel colorArraySchemePanel) {
+		colorSchemePanel.clear();
+		colorSchemePanel.add(colorArraySchemePanel);
 	}
 
 }
