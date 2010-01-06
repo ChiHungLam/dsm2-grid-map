@@ -62,6 +62,16 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>dsm2DownloadServlet</servlet-name>
+		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.DSM2DownloadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>dsm2DownloadServlet</servlet-name>
+		<url-pattern>/dsm2_grid_map/dsm2_download</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>userProfileServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.UserProfileServiceImpl</servlet-class>
 	</servlet>
@@ -74,7 +84,6 @@
 		<servlet-name>loginServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.LoginServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>loginServlet</servlet-name>
 		<url-pattern>/dsm2_grid_map/login</url-pattern>
