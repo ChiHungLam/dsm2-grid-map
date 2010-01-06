@@ -1,18 +1,27 @@
 package gov.ca.dsm2.input.model;
 
 import java.io.Serializable;
+
+/**
+ * Represents the model as channels, nodes, reservoirs, gates, outputs and
+ * inputs
+ * 
+ * @author psandhu
+ * 
+ */
 @SuppressWarnings("serial")
-public class DSM2Model implements Serializable{
+public class DSM2Model implements Serializable {
 	private Channels channels;
 	private Nodes nodes;
 	private Reservoirs reservoirs;
 	private Gates gates;
 	private Outputs outputs;
 	private BoundaryInputs inputs;
+
 	/**
 	 * 
 	 */
-	public DSM2Model(){
+	public DSM2Model() {
 		channels = new Channels();
 		nodes = new Nodes();
 		reservoirs = new Reservoirs();
@@ -43,11 +52,11 @@ public class DSM2Model implements Serializable{
 		this.nodes = nodes;
 	}
 
-	public Channels getChannels(){
+	public Channels getChannels() {
 		return channels;
 	}
-	
-	public Nodes getNodes(){
+
+	public Nodes getNodes() {
 		return nodes;
 	}
 

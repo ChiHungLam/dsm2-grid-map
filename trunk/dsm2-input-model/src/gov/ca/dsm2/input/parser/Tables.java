@@ -25,8 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * The converter from tables to the model and vice-versa
+ * The converter from tables to the model and vice-versa Each table in the input
+ * is represented here and can be retrieved using the name of the table.
  * 
+ * @see InputTable
  * @author nsandhu
  * 
  */
