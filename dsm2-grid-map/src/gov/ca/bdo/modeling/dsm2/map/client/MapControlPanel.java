@@ -1,19 +1,22 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
+import gov.ca.bdo.modeling.dsm2.map.client.images.IconImages;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 
@@ -21,7 +24,8 @@ public class MapControlPanel extends Composite {
 
 	private final MapPanel mapPanel;
 	private final ListBox studyBox;
-	private final CheckBox channelHideBox;
+	private Anchor downloadHydroEchoLink;
+	private Anchor downloadGisEchoLink;
 
 	public MapControlPanel(MapPanel panel) {
 		mapPanel = panel;
@@ -37,37 +41,6 @@ public class MapControlPanel extends Composite {
 
 				mapPanel.setStudy(studyBox
 						.getValue(studyBox.getSelectedIndex()));
-			}
-		});
-		//
-		final CheckBox nodeHideBox = new CheckBox("Hide Nodes", false);
-		nodeHideBox.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				mapPanel.hideMarkers(nodeHideBox.getValue());
-			}
-		});
-		channelHideBox = new CheckBox("Hide Channels");
-		channelHideBox.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				mapPanel.hideChannelLines(channelHideBox.getValue());
-			}
-		});
-		//
-		final CheckBox outputMarkerHideBox = new CheckBox("Hide Output Markers");
-		outputMarkerHideBox.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				mapPanel.hideOutputMarkers(outputMarkerHideBox.getValue());
-			}
-		});
-		//
-		final CheckBox bathymetryHideBox = new CheckBox("Show Bathymetry");
-		bathymetryHideBox.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				mapPanel.showBathymetry(bathymetryHideBox.getValue());
 			}
 		});
 		//
@@ -91,9 +64,9 @@ public class MapControlPanel extends Composite {
 			}
 		});
 		//
-		final ToggleButton addPolylineButton = new ToggleButton(
-				"Start measuring length", "Stop measuring length");
-		final Label measuringPolylineLengthLabel = new Label("");
+		final ToggleButton addPolylineButton = new ToggleButton(new Image(
+				IconImages.INSTANCE.measureOffIcon()));
+		final Label measurementLabel = new Label("");
 		addPolylineButton.addClickHandler(new ClickHandler() {
 			private MeasuringDistanceAlongLine measurer;
 
@@ -101,7 +74,7 @@ public class MapControlPanel extends Composite {
 				if (addPolylineButton.isDown()) {
 					if (measurer == null) {
 						measurer = new MeasuringDistanceAlongLine(mapPanel
-								.getMapWidget(), measuringPolylineLengthLabel);
+								.getMapWidget(), measurementLabel);
 						measurer.addPolyline();
 					} else {
 						measurer.addPolyline();
@@ -109,7 +82,7 @@ public class MapControlPanel extends Composite {
 				} else {
 					if (measurer != null) {
 						measurer.clearOverlay();
-						measuringPolylineLengthLabel.setText("");
+						measurementLabel.setText("");
 					}
 
 				}
@@ -117,9 +90,9 @@ public class MapControlPanel extends Composite {
 			}
 		});
 		//
-		final ToggleButton addPolygonButton = new ToggleButton(
-				"Start measuring area", "Stop measuring area");
-		final Label measuringPolygonAreaLabel = new Label("");
+		final ToggleButton addPolygonButton = new ToggleButton(new Image(
+				IconImages.INSTANCE.measurePolygonIcon()), new Image(
+				IconImages.INSTANCE.measurePolygonIcon()));
 		addPolygonButton.addClickHandler(new ClickHandler() {
 			private MeasuringAreaInPolygon measurer;
 
@@ -127,15 +100,17 @@ public class MapControlPanel extends Composite {
 				if (addPolygonButton.isDown()) {
 					if (measurer == null) {
 						measurer = new MeasuringAreaInPolygon(mapPanel
-								.getMapWidget(), measuringPolygonAreaLabel);
+								.getMapWidget(), measurementLabel);
 						measurer.addPolyline();
 					} else {
+						measurer.clearOverlay();
+						measurementLabel.setText("");
 						measurer.addPolyline();
 					}
 				} else {
 					if (measurer != null) {
 						measurer.clearOverlay();
-						measuringPolygonAreaLabel.setText("");
+						measurementLabel.setText("");
 					}
 
 				}
@@ -176,7 +151,7 @@ public class MapControlPanel extends Composite {
 		});
 		//
 		final ToggleButton addTextAnnotationButton = new ToggleButton(
-				"Start adding text", "Stop adding text");
+				new Image(IconImages.INSTANCE.addingTextIcon()));
 		addTextAnnotationButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -187,20 +162,14 @@ public class MapControlPanel extends Composite {
 				}
 			}
 		});
-		//
-		Button showHydroInputButton = new Button("Show Input");
-		final TextArea hydroInputArea = new TextArea();
-		hydroInputArea.setCharacterWidth(72);
-		final TextArea gisInputArea = new TextArea();
-		gisInputArea.setCharacterWidth(72);
-		showHydroInputButton.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				mapPanel.displayHydroInput(hydroInputArea);
-				mapPanel.displayGisInput(gisInputArea);
-			}
-		});
-
+		if (downloadHydroEchoLink == null) {
+			downloadHydroEchoLink = new Anchor("Download Hydro Input");
+			downloadHydroEchoLink.setTarget("_download_input");
+		}
+		if (downloadGisEchoLink == null) {
+			downloadGisEchoLink = new Anchor("Download GIS Input");
+			downloadGisEchoLink.setTarget("_download_input");
+		}
 		Anchor uploadStudyLink = new Anchor("Upload study here",
 				"/upload_study.html");
 		Anchor uploadStudyDataLink = new Anchor("Upload study data here",
@@ -210,30 +179,41 @@ public class MapControlPanel extends Composite {
 		containerPanel.setWidget(0, 2, saveEditModelButton);
 		containerPanel.setWidget(1, 0, findNodeLabel);
 		containerPanel.setWidget(1, 1, findNodeBox);
-		containerPanel.setWidget(1, 2, nodeHideBox);
-		containerPanel.setWidget(2, 0, findChannelLabel);
-		containerPanel.setWidget(2, 1, findChannelBox);
-		containerPanel.setWidget(2, 2, channelHideBox);
-		containerPanel.setWidget(3, 2, outputMarkerHideBox);
-		containerPanel.setWidget(4, 2, bathymetryHideBox);
+		containerPanel.setWidget(1, 2, findChannelLabel);
+		containerPanel.setWidget(1, 3, findChannelBox);
 
-		containerPanel.setWidget(3, 0, addPolylineButton);
-		containerPanel.setWidget(3, 1, measuringPolylineLengthLabel);
-		containerPanel.setWidget(4, 0, addPolygonButton);
-		containerPanel.setWidget(4, 1, measuringPolygonAreaLabel);
+		HorizontalPanel toolbarPanel = new HorizontalPanel();
+		toolbarPanel.add(addTextAnnotationButton);
+		toolbarPanel.add(addPolylineButton);
+		toolbarPanel.add(addPolygonButton);
+		containerPanel.setWidget(2, 0, toolbarPanel);
+		containerPanel.getFlexCellFormatter().setColSpan(2, 0, 3);
+		containerPanel.setWidget(3, 0, measurementLabel);
+		containerPanel.getFlexCellFormatter().setColSpan(3, 2, 3);
 
-		containerPanel.setWidget(5, 0, channelColorLabel);
-		containerPanel.setWidget(5, 1, channelColorOptions);
-		containerPanel.setWidget(6, 0, addTextAnnotationButton);
-		containerPanel.setWidget(7, 0, showHydroInputButton);
-		containerPanel.setWidget(8, 0, hydroInputArea);
-		containerPanel.setWidget(9, 0, gisInputArea);
-
-		containerPanel.setWidget(10, 0, uploadStudyLink);
-		containerPanel.setWidget(11, 0, uploadStudyDataLink);
-		containerPanel.getFlexCellFormatter().setColSpan(8, 0, 3);
-		containerPanel.getFlexCellFormatter().setColSpan(9, 0, 3);
+		containerPanel.setWidget(4, 0, channelColorLabel);
+		containerPanel.setWidget(4, 1, channelColorOptions);
+		containerPanel.setWidget(5, 0, downloadHydroEchoLink);
+		containerPanel.getFlexCellFormatter().setColSpan(5, 0, 2);
+		containerPanel.setWidget(5, 2, downloadGisEchoLink);
+		containerPanel.getFlexCellFormatter().setColSpan(5, 2, 2);
+		containerPanel.setWidget(6, 0, uploadStudyLink);
+		containerPanel.getFlexCellFormatter().setColSpan(6, 0, 2);
+		containerPanel.setWidget(6, 2, uploadStudyDataLink);
+		containerPanel.getFlexCellFormatter().setColSpan(6, 2, 2);
 		initWidget(containerPanel);
+	}
+
+	private String buildDownloadLink(String inputName) {
+		if (studyBox.getItemCount() == 0) {
+			return "";
+		} else {
+			return GWT.getModuleBaseURL()
+					+ "dsm2_download?studyName="
+					+ URL.encode(studyBox.getItemText(studyBox
+							.getSelectedIndex())) + "&inputName="
+					+ URL.encode(inputName);
+		}
 	}
 
 	public void setStudies(String[] studyNames) {
@@ -241,9 +221,17 @@ public class MapControlPanel extends Composite {
 			studyBox.addItem(studyName, studyName);
 		}
 		studyBox.setSelectedIndex(0);
+		if (downloadHydroEchoLink == null) {
+			downloadHydroEchoLink = new Anchor("Download Hydro Input");
+			downloadHydroEchoLink.setTarget("_download_input");
+		}
+		if (downloadGisEchoLink == null) {
+			downloadGisEchoLink = new Anchor("Download GIS Input");
+			downloadGisEchoLink.setTarget("_download_input");
+		}
+		downloadHydroEchoLink.setHref(buildDownloadLink("hydro_echo_inp"));
+		downloadGisEchoLink.setHref(buildDownloadLink("gis_inp"));
+
 	}
 
-	public boolean getHideChannels() {
-		return channelHideBox.getValue();
-	}
 }

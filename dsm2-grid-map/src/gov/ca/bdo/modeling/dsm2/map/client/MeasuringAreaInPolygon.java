@@ -18,12 +18,12 @@ import com.google.gwt.user.client.ui.Label;
  * 
  */
 public class MeasuringAreaInPolygon {
-	private MapWidget map;
+	private final MapWidget map;
 	private Polygon polygon;
-	private String color = "#FF0000";
-	private int weight = 5;
-	private double opacity = 0.75;
-	private Label messageLabel;
+	private final String color = "#FF0000";
+	private final int weight = 5;
+	private final double opacity = 0.75;
+	private final Label messageLabel;
 
 	public MeasuringAreaInPolygon(MapWidget map, Label messageLabel) {
 		this.map = map;
@@ -47,24 +47,21 @@ public class MeasuringAreaInPolygon {
 		polygon.addPolygonLineUpdatedHandler(new PolygonLineUpdatedHandler() {
 
 			public void onUpdate(PolygonLineUpdatedEvent event) {
-				messageLabel.setText("Length : " + getAreaInSquareFeet()
-						+ " ft");
+				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
 			}
 		});
 
 		polygon.addPolygonCancelLineHandler(new PolygonCancelLineHandler() {
 
 			public void onCancel(PolygonCancelLineEvent event) {
-				messageLabel.setText("Length : " + getAreaInSquareFeet()
-						+ " ft");
+				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
 			}
 		});
 
 		polygon.addPolygonEndLineHandler(new PolygonEndLineHandler() {
 
 			public void onEnd(PolygonEndLineEvent event) {
-				messageLabel.setText("Length : " + getAreaInSquareFeet()
-						+ " ft");
+				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
 			}
 		});
 	}

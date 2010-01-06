@@ -8,12 +8,14 @@ import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.Control.CustomControl;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GridVisibilityControl extends CustomControl {
 
 	private final MapPanel mapPanel;
+	private CheckBox channelHideBox;
 
 	public GridVisibilityControl(MapPanel mapPanel) {
 		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 7, 30));
@@ -29,8 +31,7 @@ public class GridVisibilityControl extends CustomControl {
 				mapPanel.hideMarkers(nodeHideBox.getValue());
 			}
 		});
-		//
-		final CheckBox channelHideBox = new CheckBox("Hide Channels");
+		channelHideBox = new CheckBox("Hide Channels");
 		channelHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -61,12 +62,23 @@ public class GridVisibilityControl extends CustomControl {
 				mapPanel.hideOutputMarkers(outputMarkerHideBox.getValue());
 			}
 		});
+		//
+		final CheckBox bathymetryHideBox = new CheckBox("Show Bathymetry");
+		bathymetryHideBox.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				mapPanel.showBathymetry(bathymetryHideBox.getValue());
+			}
+		});
+
 		VerticalPanel vpanel = new VerticalPanel();
 		vpanel.add(nodeHideBox);
 		vpanel.add(channelHideBox);
 		vpanel.add(gatesHideBox);
 		vpanel.add(reservoirsHideBox);
 		vpanel.add(outputMarkerHideBox);
+		vpanel.add(new HTML("<hr/>"));
+		vpanel.add(bathymetryHideBox);
 		DisclosurePanel panel = new DisclosurePanel("Visibility");
 		panel.setStyleName("visibilityPanel");
 		panel.setContent(vpanel);
@@ -76,5 +88,9 @@ public class GridVisibilityControl extends CustomControl {
 	@Override
 	public boolean isSelectable() {
 		return false;
+	}
+
+	public boolean getHideChannels() {
+		return channelHideBox.getValue();
 	}
 }

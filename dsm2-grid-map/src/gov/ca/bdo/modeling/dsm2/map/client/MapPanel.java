@@ -40,7 +40,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -69,7 +68,8 @@ public class MapPanel extends Composite {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
 		new ClearBackgroundLayer(getMap());
-		getMap().addControl(new GridVisibilityControl(this));
+		visibilityControl = new GridVisibilityControl(this);
+		getMap().addControl(visibilityControl);
 		// layout top level things here
 		controlPanel = new MapControlPanel(this);
 		infoPanel = new FlowPanel();
@@ -91,7 +91,7 @@ public class MapPanel extends Composite {
 				}
 				if ((event.getOldZoomLevel() >= 10)
 						&& (event.getNewZoomLevel() > 10)) {
-					hideChannelLines(controlPanel.getHideChannels());
+					hideChannelLines(visibilityControl.getHideChannels());
 				}
 			}
 		});
@@ -352,7 +352,10 @@ public class MapPanel extends Composite {
 			return;
 		}
 		LatLng point = marker.getLatLng();
-		getMap().setCenter(point, 13);
+		getMap().panTo(point);
+		if (getMap().getZoomLevel() < 13) {
+			getMap().setZoomLevel(13);
+		}
 	}
 
 	public void centerAndZoomOnChannel(String channelId) {
@@ -360,15 +363,13 @@ public class MapPanel extends Composite {
 		if (line == null) {
 			return;
 		}
-		/*
-		 * PolyStyleOptions style = PolyStyleOptions.newInstance("#770000");
-		 * style.setWeight(3); line.setStrokeStyle(style);
-		 */
 		LatLngBounds bounds = line.getBounds();
-		getMap().setCenter(bounds.getCenter(), 13);
+		getMap().panTo(bounds.getCenter());
 		while (!getMap().getBounds().containsBounds(bounds)) {
 			getMap().setZoomLevel(getMap().getZoomLevel() - 1);
 		}
+		new ChannelClickHandler(getChannelManager().getChannels().getChannel(
+				channelId), this).onClick(null);
 	}
 
 	public MapWidget getMapWidget() {
@@ -456,6 +457,7 @@ public class MapPanel extends Composite {
 	private final VerticalPanel controlPanelContainer;
 	private GateOverlayManager gateOverlayManager;
 	private ReservoirOverlayManager reservoirOverlayManager;
+	private final GridVisibilityControl visibilityControl;
 
 	public Panel getInfoPanel() {
 		return infoPanel;
@@ -497,34 +499,6 @@ public class MapPanel extends Composite {
 					}
 				});
 
-	}
-
-	public void displayHydroInput(final HasText hasText) {
-		dsm2InputService.showHydroInput(currentStudy,
-				new AsyncCallback<String>() {
-
-					public void onSuccess(String result) {
-						hasText.setText(result);
-					}
-
-					public void onFailure(Throwable caught) {
-						hasText.setText("");
-					}
-				});
-	}
-
-	public void displayGisInput(final HasText hasText) {
-		dsm2InputService.showGISInput(currentStudy,
-				new AsyncCallback<String>() {
-
-					public void onSuccess(String result) {
-						hasText.setText(result);
-					}
-
-					public void onFailure(Throwable caught) {
-						hasText.setText("");
-					}
-				});
 	}
 
 	public void turnOnTextAnnotation() {

@@ -21,4 +21,16 @@ public interface IconImages extends ClientBundle {
 
 	@Source("pin.png")
 	public ImageResource pinIcon();
+
+	@Source("measure_ON.gif")
+	public ImageResource measureOnIcon();
+
+	@Source("measure_OFF.gif")
+	public ImageResource measureOffIcon();
+
+	@Source("measure-poly.png")
+	public ImageResource measurePolygonIcon();
+
+	@Source("adding_text_1.gif")
+	public ImageResource addingTextIcon();
 }
