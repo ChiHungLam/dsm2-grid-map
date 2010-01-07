@@ -69,7 +69,8 @@ public class MapPanel extends Composite {
 				.create(DSM2InputService.class);
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
-		new ClearBackgroundLayer(getMap());
+		new ClearBackgroundLayer(getMap(), false);
+		new ClearBackgroundLayer(getMap(), true);
 		visibilityControl = new GridVisibilityControl(this);
 		getMap().addControl(visibilityControl);
 		// layout top level things here
@@ -412,8 +413,8 @@ public class MapPanel extends Composite {
 			"#f4a582", "#f7f7f7", "#92c5de", "#571b00" };
 	private static String[] qualitativeColorsArray = new String[] { "#e31a1c",
 			"#377db8", "#4daf4a", "#984ea3", "#ff7f00" };
-	private static String[] sequentialColorsArray = new String[] { "#ffffcc",
-			"#a1dab4", "#41b6c3", "#2c7fb8", "#253494" };
+	private static String[] sequentialColorsArray = new String[] { "#ffffb2",
+			"#fecc5c", "#fd8d3c", "#f03b20", "#bd0026" };
 
 	private String getColorForRange(double mannings, double min, double max,
 			String colorArrayScheme) {
@@ -442,7 +443,7 @@ public class MapPanel extends Composite {
 		return colorsArray;
 	}
 
-	private static NumberFormat formatter = NumberFormat.getFormat("0.00");
+	private static NumberFormat formatter = NumberFormat.getFormat("0.000");
 
 	public Panel getColorArraySchemePanel(String scheme, double min, double max) {
 		String[] colorsArray = getColorArray(scheme);
