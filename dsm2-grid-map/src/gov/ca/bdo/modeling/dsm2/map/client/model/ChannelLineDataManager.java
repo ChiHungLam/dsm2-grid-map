@@ -23,7 +23,7 @@ public class ChannelLineDataManager {
 	private final HashMap<String, Polyline> lineMap = new HashMap<String, Polyline>();
 	private final NodeMarkerDataManager nodeManager;
 	private final PolylineEncoder encoder;
-	private static final boolean ENCODE_POLYLINES = true;
+	private static final boolean ENCODE_POLYLINES = false;
 	private final int weight = 3;
 	private final double opacity = 0.35;
 
