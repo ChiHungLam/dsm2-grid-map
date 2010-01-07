@@ -12,8 +12,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -29,7 +29,7 @@ public class MapControlPanel extends Composite {
 	private Anchor downloadHydroEchoLink;
 	private Anchor downloadGisEchoLink;
 	private final FlexTable containerPanel;
-	private FlowPanel colorSchemePanel;
+	private DisclosurePanel colorSchemePanel;
 
 	public MapControlPanel(MapPanel panel) {
 		mapPanel = panel;
@@ -209,7 +209,8 @@ public class MapControlPanel extends Composite {
 		containerPanel.setWidget(4, 0, channelColorLabel);
 		containerPanel.setWidget(4, 1, channelColorOptions);
 		containerPanel.setWidget(4, 2, colorArraySchemeOptions);
-		containerPanel.setWidget(5, 0, colorSchemePanel = new FlowPanel());
+		containerPanel.setWidget(4, 3, colorSchemePanel = new DisclosurePanel(
+				"colorLegend"));
 		containerPanel.getFlexCellFormatter().setColSpan(5, 0, 3);
 		containerPanel.setWidget(6, 0, downloadHydroEchoLink);
 		containerPanel.getFlexCellFormatter().setColSpan(6, 0, 2);

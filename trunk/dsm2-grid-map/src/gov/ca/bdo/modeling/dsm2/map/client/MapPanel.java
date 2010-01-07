@@ -399,7 +399,7 @@ public class MapPanel extends Composite {
 		if (colorScheme.equals(CHANNEL_COLOR_PLAIN)) {
 			return "#110077";
 		} else if (colorScheme.equals(CHANNEL_COLOR_MANNINGS)) {
-			return getColorForRange(data.getMannings(), 0.01, 0.05,
+			return getColorForRange(data.getMannings(), 0.01, 0.04,
 					colorArrayScheme);
 		} else if (colorScheme.equals(CHANNEL_COLOR_DISPERSION)) {
 			return getColorForRange(data.getDispersion(), 0.01, 1.5,
@@ -409,18 +409,19 @@ public class MapPanel extends Composite {
 		}
 	}
 
-	private static String[] divergingColorsArray = new String[] { "#ca0020",
-			"#f4a582", "#f7f7f7", "#92c5de", "#571b00" };
-	private static String[] qualitativeColorsArray = new String[] { "#e31a1c",
-			"#377db8", "#4daf4a", "#984ea3", "#ff7f00" };
-	private static String[] sequentialColorsArray = new String[] { "#ffffb2",
-			"#fecc5c", "#fd8d3c", "#f03b20", "#bd0026" };
+	private static String[] divergingColorsArray = new String[] { "#5e3c99",
+			"#b2abd2", "#ff99ff", "#fdb863", "#e66101" };
+	private static String[] qualitativeColorsArray = new String[] { "#6600cc",
+			"#0000ff", "#006633", "#ff6600", "#ff3399" };
+	private static String[] sequentialColorsArray = new String[] { "#fee5d9",
+			"#fcae91", "#fb6a4a", "#de2d26", "#a50f15" };
 
 	private String getColorForRange(double mannings, double min, double max,
 			String colorArrayScheme) {
 		String[] colorsArray = getColorArray(colorArrayScheme);
 		int ncolors = colorsArray.length;
-		int color = (int) Math.round((mannings - min) / (max - min) * ncolors);
+		int color = (int) Math.round(1 + ((mannings - min) / (max - min))
+				* (ncolors - 2));
 		if (color < 0) {
 			color = 0;
 		} else if (color > 4) {
@@ -448,14 +449,25 @@ public class MapPanel extends Composite {
 	public Panel getColorArraySchemePanel(String scheme, double min, double max) {
 		String[] colorsArray = getColorArray(scheme);
 		int ncolors = colorsArray.length;
-		Grid panel = new Grid(1, ncolors);
-		double step = (max - min) / ncolors;
-		for (int i = 0; i < ncolors; i++) {
+		Grid panel = new Grid(ncolors, 2);
+		double step = (max - min) / (ncolors - 2);
+		String html = "<p style=\"background-color: "
+				+ colorsArray[0]
+				+ ";\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>";
+		panel.setHTML(0, 0, " < " + min);
+		panel.setHTML(0, 1, html);
+		for (int i = 1; i < ncolors - 1; i++) {
 			double value = i * step + min;
-			String html = "<p style=\"background-color: " + colorsArray[i]
-					+ ";\">" + formatter.format(value) + "</p>";
-			panel.setHTML(0, i, html);
+			panel.setHTML(i, 0, formatter.format(value - step) + " - "
+					+ formatter.format(value));
+			html = "<p style=\"background-color: " + colorsArray[i]
+					+ ";\">&nbsp;&nbsp;</p>";
+			panel.setHTML(i, 1, html);
 		}
+		html = "<p style=\"background-color: " + colorsArray[ncolors - 1]
+				+ ";\">&nbsp;&nbsp;</p>";
+		panel.setHTML(ncolors - 1, 0, " > " + max);
+		panel.setHTML(ncolors - 1, 1, html);
 		return panel;
 	}
 

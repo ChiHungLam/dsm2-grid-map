@@ -33,7 +33,7 @@ public class ClearBackgroundLayer {
 
 				@Override
 				public double getOpacity() {
-					return 0.33;
+					return 0.66;
 				}
 
 				@Override
