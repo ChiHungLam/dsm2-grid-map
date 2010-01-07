@@ -409,7 +409,7 @@ public class MapPanel extends Composite {
 	}
 
 	private static String[] divergingColorsArray = new String[] { "#ca0020",
-			"#f4a582", "#f7f7f7", "#92c5de", "#571b0" };
+			"#f4a582", "#f7f7f7", "#92c5de", "#571b00" };
 	private static String[] qualitativeColorsArray = new String[] { "#e31a1c",
 			"#377db8", "#4daf4a", "#984ea3", "#ff7f00" };
 	private static String[] sequentialColorsArray = new String[] { "#ffffcc",
