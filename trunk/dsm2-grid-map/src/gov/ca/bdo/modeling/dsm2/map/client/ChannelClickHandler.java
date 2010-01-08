@@ -9,8 +9,6 @@ import gov.ca.dsm2.input.model.XSectionLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.maps.client.InfoWindow;
-import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -119,14 +117,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				}
 			});
 		}
-		//
-		if (!mapPanel.isInEditMode()) {
-			InfoWindowContent content = new InfoWindowContent(panel
-					.getBasicInfoPanel(channel));
-			InfoWindow window = mapPanel.getMap().getInfoWindow();
-			window.open(event.getLatLng(), content);
-		}
-		// TODO: drawXSectionLines();
 	}
 
 	private void drawXSectionLines() {

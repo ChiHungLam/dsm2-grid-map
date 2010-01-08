@@ -54,7 +54,7 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			Tables model = inputParser.parseModel(inputStream);
 			inputParser.parseAndAddToModel(model,
 					new StringInputStream(gis_inp));
-			return model.getDSM2Model();
+			return model.toDSM2Model();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return new DSM2Model();
