@@ -1,0 +1,51 @@
+#summary This page describes how to use a sub project dsm2-input-grid to parse the text input files associated with DSM2 Hydro, Qual and PTM
+= Introduction =
+DSM2 model input is in text files that are loosely structured. The data is represented by tables that have the following format
+{{{
+<TABLE_NAME><END_OF_LINE>
+<HEADER1><WHITESPACE><HEADER2><WHITESPACE>....<HEADER_?><END_OF_LINE>
+<VALUE1><WHITESPACE><VALUE2><WHITESPACE>...<VALUE?><END_OF_LINE>
+<<MORE VALUE ROWS>><END_OF_LINE>
+...
+END<END_OF_LINE>
+}}}
+= Details =
+
+The javadocs are a good place to start are [http://dsm2-grid-map.googlecode.com/svn/trunk/dsm2-input-model/doc/index.html here]
+
+If you are familiar with jython then adding the jar to the classpath, this snippet below can help you get started
+{{{
+from gov.ca.dsm2.input.parser import *
+from gov.ca.dms2.input.model import *
+def dsm2parse(input_file):
+    """
+    Parses the input file and returns a Tables object which contains
+    all the tables in the file
+    """
+    Parser parser = Parser(input_file)
+    return parser.parseModel(input_file)
+#
+}}}
+
+Here's a session in jython with output interspersed
+{{{
+[Input Table: ENVVAR, Input Table: SCALAR, Input Table: IO_FILE, Input Table: CHANNEL, Input Table: XSECT, Input Table: XSECT_LAYER, Input Table: RESERVOIR, Input Table: RESERVOIR_CONNECTION, Input Table: GATE, Input Table: GATE_WEIR_DEVICE, Input Table: GATE_PIPE_DEVICE, Input Table: TRANSFER, Input Table: CHANNEL_IC, Input Table: RESERVOIR_IC, Input Table: BOUNDARY_STAGE, Input Table: BOUNDARY_FLOW, Input Table: SOURCE_FLOW, Input Table: SOURCE_FLOW_RESERVOIR, Input Table: INPUT_GATE, Input Table: INPUT_TRANSFER_FLOW, Input Table: OPERATING_RULE, Input Table: OPRULE_EXPRESSION, Input Table: OPRULE_TIME_SERIES, Input Table: OUTPUT_CHANNEL, Input Table: OUTPUT_RESERVOIR, Input Table: OUTPUT_GATE]
+>>> channel = tables.getTableNamed('CHANNEL')
+>>> channels = tables.toChannels()
+>>> channels.getChannel('432')
+gov.ca.dsm2.input.model.Channel@6ce931d9
+>>> ch432 = channels.getChannel('432')
+>>> ch432.length
+15812.0
+>>> ch432.mannings
+0.018
+>>> ch432.id
+u'432'
+>>> ch432.xsections
+[gov.ca.dsm2.input.model.XSection@1786ed7a, gov.ca.dsm2.input.model.XSection@1b50f0a7, gov.ca.dsm2.input.model.XSection@5ee771f3]
+>>> ch432.xsections[0].channelId
+u'432'
+>>> ch432.xsections[0].distance 
+0.243
+>>> 
+}}}
