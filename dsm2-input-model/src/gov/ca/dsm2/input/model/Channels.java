@@ -1,13 +1,17 @@
 package gov.ca.dsm2.input.model;
 
+import gov.ca.dsm2.input.parser.TableUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * A container for all channels in DSM2 model. Allows for quick retrieval of
- * channel given the channel id. Also maintains a list of upnodes and down nodes
+ * A container for all channels {@link #getChannels()} in DSM2 model. Allows for
+ * quick retrieval of channel given the channel id {@link #getChannel(String)}.
+ * Also maintains a list of up nodes {@link #getUpChannels(String)} and down
+ * nodes {@link #getDownChannels(String)}
  * 
  * The container maintains the list in the order added.
  * 
@@ -115,8 +119,8 @@ public class Channels implements Serializable {
 		buf.append("ID\tINTERIOR_LAT_LNG\n");
 		for (Channel channel : channels) {
 			buf.append(channel.getId()).append("\t").append(
-					TableUtil.buildInteriorLatLngPoints(channel
-							.getLatLngPoints())).append("\n");
+					TableUtil.fromLatLngPoints(channel.getLatLngPoints()))
+					.append("\n");
 		}
 		buf.append("END\n");
 		return buf.toString();

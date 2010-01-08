@@ -101,7 +101,7 @@ public class ParserTest extends TestCase {
 		String strTable = channelsTable.toStringRepresentation();
 		System.out.println(strTable);
 		//
-		DSM2Model dsm2Model = model.getDSM2Model();
+		DSM2Model dsm2Model = model.toDSM2Model();
 		model.fromDSM2Model(dsm2Model);
 		channelsTable = model.getTableNamed("CHANNEL");
 		strTable = channelsTable.toStringRepresentation();
@@ -111,7 +111,7 @@ public class ParserTest extends TestCase {
 				.getBytes());
 		bais.close();
 		Tables tables2 = parser2.parseModel(bais);
-		DSM2Model model2 = tables2.getDSM2Model();
+		DSM2Model model2 = tables2.toDSM2Model();
 		Channels channels2 = model2.getChannels();
 
 	}

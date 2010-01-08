@@ -3,8 +3,13 @@ package gov.ca.dsm2.input.model;
 import java.io.Serializable;
 
 /**
- * Represents the model as channels, nodes, reservoirs, gates, outputs and
- * inputs
+ * Represents the model as channels {@link Channels}, nodes {@link Nodes},
+ * reservoirs {@link Reservoirs}, gates {@link Gates}, outputs {@link Outputs}
+ * and inputs {@link BoundaryInputs} as top level elements.
+ * <p>
+ * These top level elements that contain the associated sub information. For
+ * example channels contain channel elements that in turn contain xsections and
+ * so on
  * 
  * @author psandhu
  * 

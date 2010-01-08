@@ -15,7 +15,6 @@ import gov.ca.dsm2.input.model.Reservoir;
 import gov.ca.dsm2.input.model.ReservoirConnection;
 import gov.ca.dsm2.input.model.ReservoirOutput;
 import gov.ca.dsm2.input.model.Reservoirs;
-import gov.ca.dsm2.input.model.TableUtil;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 
@@ -25,10 +24,17 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * The converter from tables to the model and vice-versa Each table in the input
- * is represented here and can be retrieved using the name of the table.
+ * The in memory representation of all the tables.
+ * 
+ * It is also converter from tables to the model {@link #toDSM2Model()} and
+ * vice-versa {@link #fromDSM2Model(DSM2Model)}.
+ * <p>
+ * Each table {@link InputTable} in the input is represented here
+ * {@link #getTables()} and can be retrieved using the name of the table
+ * {@link #getTableNamed(String)}.
  * 
  * @see InputTable
+ * @see DSM2Model
  * @author nsandhu
  * 
  */
@@ -36,16 +42,33 @@ public class Tables {
 	private final ArrayList<InputTable> tables;
 	private final HashMap<String, InputTable> tableMap;
 
+	/**
+	 * Creates an initial empty tables list
+	 */
 	public Tables() {
 		tables = new ArrayList<InputTable>();
 		tableMap = new HashMap<String, InputTable>();
 	}
 
+	/**
+	 * adds a table to this list.
+	 * <p>
+	 * Note: Does not support adding the same name table twice to this list. If
+	 * you need to do that use {@link #replaceTable(InputTable)} instead
+	 * 
+	 * @param table
+	 */
 	public void addTable(InputTable table) {
 		tables.add(table);
 		tableMap.put(table.getName(), table);
 	}
 
+	/**
+	 * Replaces the similar named table. If it does not exist, it simply
+	 * defaults to an add {@link #addTable(InputTable)} operation
+	 * 
+	 * @param table
+	 */
 	public void replaceTable(InputTable table) {
 		InputTable existingTable = tableMap.get(table.getName());
 		if (existingTable != null) {
@@ -59,14 +82,90 @@ public class Tables {
 		}
 	}
 
+	/**
+	 * Retrieves the reference to the list of all tables.
+	 * 
+	 * @return
+	 */
 	public ArrayList<InputTable> getTables() {
 		return tables;
 	}
 
+	/**
+	 * Retrieves the table named
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public InputTable getTableNamed(String name) {
 		return tableMap.get(name);
 	}
 
+	/**
+	 * The method to use if you want to convert from the raw table
+	 * representation to a more object oriented structure.
+	 * 
+	 * If you want to be more fine grained in controlling how to convert to the
+	 * model other methods are available {@link #toChannels()},
+	 * {@link #toNodes()},{@link #toReservoirs()}, {@link #toGates()},
+	 * {@link #toBoundaryInputs()}, {@link #toOutputs()}
+	 * 
+	 * @see DSM2Model
+	 * @return
+	 */
+	public DSM2Model toDSM2Model() {
+		DSM2Model model = new DSM2Model();
+		model.setChannels(toChannels());
+		model.setNodes(toNodes());
+		model.setReservoirs(toReservoirs());
+		model.setGates(toGates());
+		model.setInputs(toBoundaryInputs());
+		model.setOutputs(toOutputs());
+		return model;
+	}
+
+	/**
+	 * The key method to use to convert from model back to table representation
+	 * of the input. This method uses the {@link #replaceTable(InputTable)}
+	 * extensively to replace the appropriate named tables with information from
+	 * the model. This means that tables that are not represented in the model
+	 * are not affected
+	 * <p>
+	 * Note: currently even though inputs and outputs are parsed from these
+	 * tables, they are not replaced from the model. This will be fixed soon
+	 * 
+	 * @param model
+	 */
+	public void fromDSM2Model(DSM2Model model) {
+		List<InputTable> tables = fromChannels(model.getChannels());
+		for (InputTable table : tables) {
+			replaceTable(table);
+		}
+		List<InputTable> nodeTables = fromNodes(model.getNodes());
+		for (InputTable table : nodeTables) {
+			replaceTable(table);
+		}
+		List<InputTable> reservoirTables = fromReservoirs(model.getReservoirs());
+		for (InputTable table : reservoirTables) {
+			replaceTable(table);
+		}
+		List<InputTable> gateTables = fromGates(model.getGates());
+		for (InputTable table : gateTables) {
+			replaceTable(table);
+		}
+
+		// FIXME: fromInputs(model.getInputs());
+		// FIXME: fromOutputs(model.getOutputs());
+	}
+
+	/**
+	 * Finer grained conversion from model element. Use
+	 * {@link #fromDSM2Model(DSM2Model)} instead unless you really need this
+	 * level of access
+	 * 
+	 * @param channels
+	 * @return
+	 */
 	public List<InputTable> fromChannels(Channels channels) {
 		ArrayList<InputTable> list = new ArrayList<InputTable>();
 		InputTable channelTable = new InputTable();
@@ -95,8 +194,8 @@ public class Tables {
 		for (Channel channel : channels.getChannels()) {
 			ArrayList<String> rowValues = new ArrayList<String>();
 			rowValues.add(channel.getId());
-			rowValues.add(TableUtil.buildInteriorLatLngPoints(channel
-					.getLatLngPoints()));
+			rowValues
+					.add(TableUtil.fromLatLngPoints(channel.getLatLngPoints()));
 			values.add(rowValues);
 		}
 		gisTable.setValues(values);
@@ -104,6 +203,12 @@ public class Tables {
 		return list;
 	}
 
+	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
+	 * 
+	 * @return
+	 */
 	public Channels toChannels() {
 		Channels channels = new Channels();
 		InputTable channelTable = getTableNamed("CHANNEL");
@@ -180,8 +285,9 @@ public class Tables {
 					String id = gisTable.getValue(i, "ID");
 					Channel channel = channels.getChannel(id);
 					if (channel != null) {
-						channel.setLatLngPoints(parseLatLngPoints(gisTable
-								.getValue(i, "INTERIOR_LAT_LNG")));
+						channel.setLatLngPoints(TableUtil
+								.toLatLngPoints(gisTable.getValue(i,
+										"INTERIOR_LAT_LNG")));
 					}
 				}
 			} catch (Exception e) {
@@ -192,6 +298,14 @@ public class Tables {
 		return channels;
 	}
 
+	/**
+	 * Finer grained conversion from model element. Use
+	 * {@link #fromDSM2Model(DSM2Model)} instead unless you really need this
+	 * level of access
+	 * 
+	 * @param nodes
+	 * @return
+	 */
 	public List<InputTable> fromNodes(Nodes nodes) {
 		ArrayList<InputTable> tables = new ArrayList<InputTable>();
 		InputTable nodeTable = new InputTable();
@@ -202,7 +316,7 @@ public class Tables {
 			try {
 				ArrayList<String> rowValues = new ArrayList<String>();
 				rowValues.add(node.getId());
-				rowValues.add(TableUtil.buildLatLng(node.getLatitude(), node
+				rowValues.add(TableUtil.fromLatLng(node.getLatitude(), node
 						.getLongitude()));
 				values.add(rowValues);
 			} catch (Exception e) {
@@ -215,6 +329,12 @@ public class Tables {
 		return tables;
 	}
 
+	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
+	 * 
+	 * @return
+	 */
 	public Nodes toNodes() {
 		Nodes nodes = new Nodes();
 		InputTable nodeTable = getTableNamed("NODE_GIS");
@@ -247,8 +367,8 @@ public class Tables {
 			Node node = new Node();
 			node.setId(nodeTable.getValue(i, "ID"));
 			String latLng = nodeTable.getValue(i, "LAT_LNG");
-			node.setLatitude(parseLatitude(latLng));
-			node.setLongitude(parseLongitude(latLng));
+			node.setLatitude(TableUtil.toLatitude(latLng));
+			node.setLongitude(TableUtil.toLongitude(latLng));
 			nodes.addNode(node);
 		}
 		InputTable channelTable = getTableNamed("CHANNEL");
@@ -275,18 +395,14 @@ public class Tables {
 		}
 	}
 
-	private double parseLongitude(String latLng) {
-		String longitude = latLng.substring(latLng.indexOf(",") + 1, latLng
-				.indexOf(")"));
-		return Double.parseDouble(longitude);
-	}
-
-	private double parseLatitude(String latLng) {
-		String latitude = latLng.substring(latLng.indexOf("(") + 1, latLng
-				.indexOf(","));
-		return Double.parseDouble(latitude);
-	}
-
+	/**
+	 * Finer grained conversion from model element. Use
+	 * {@link #fromDSM2Model(DSM2Model)} instead unless you really need this
+	 * level of access
+	 * 
+	 * @param gates
+	 * @return
+	 */
 	public List<InputTable> fromGates(Gates gates) {
 		ArrayList<InputTable> list = new ArrayList<InputTable>();
 		InputTable gateTable = new InputTable();
@@ -318,7 +434,7 @@ public class Tables {
 			try {
 				ArrayList<String> rowValues = new ArrayList<String>();
 				rowValues.add(gate.getName());
-				rowValues.add(TableUtil.buildLatLng(gate.getLatitude(), gate
+				rowValues.add(TableUtil.fromLatLng(gate.getLatitude(), gate
 						.getLongitude()));
 				values.add(rowValues);
 			} catch (Exception e) {
@@ -331,6 +447,12 @@ public class Tables {
 		return list;
 	}
 
+	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
+	 * 
+	 * @return
+	 */
 	public Gates toGates() {
 		Gates gates = new Gates();
 		InputTable gateTable = getTableNamed("GATE");
@@ -366,8 +488,8 @@ public class Tables {
 					Gate gate = gates.getGate(id);
 					if (gate != null) {
 						String latLng = gisTable.getValue(i, "LAT_LNG");
-						gate.setLatitude(parseLatitude(latLng));
-						gate.setLongitude(parseLongitude(latLng));
+						gate.setLatitude(TableUtil.toLatitude(latLng));
+						gate.setLongitude(TableUtil.toLongitude(latLng));
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -379,6 +501,9 @@ public class Tables {
 	}
 
 	/**
+	 * Finer grained conversion from model element. Use
+	 * {@link #fromDSM2Model(DSM2Model)} instead unless you really need this
+	 * level of access
 	 * 
 	 * @param reservoirs
 	 * @return
@@ -438,9 +563,9 @@ public class Tables {
 			try {
 				ArrayList<String> rowValues = new ArrayList<String>();
 				rowValues.add(reservoir.getName());
-				rowValues.add(TableUtil.buildLatLng(reservoir.getLatitude(),
+				rowValues.add(TableUtil.fromLatLng(reservoir.getLatitude(),
 						reservoir.getLongitude()));
-				rowValues.add(TableUtil.buildInteriorLatLngPoints(reservoir
+				rowValues.add(TableUtil.fromLatLngPoints(reservoir
 						.getLatLngPoints()));
 				values.add(rowValues);
 			} catch (Exception e) {
@@ -454,6 +579,8 @@ public class Tables {
 	}
 
 	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
 	 * 
 	 * @return
 	 */
@@ -519,10 +646,11 @@ public class Tables {
 					Reservoir reservoir = reservoirs.getReservoir(id);
 					if (reservoir != null) {
 						String latLng = gisTable.getValue(i, "LAT_LNG");
-						reservoir.setLatitude(parseLatitude(latLng));
-						reservoir.setLongitude(parseLongitude(latLng));
-						reservoir.setLatLngPoints(parseLatLngPoints(gisTable
-								.getValue(i, "INTERIOR_LAT_LNG")));
+						reservoir.setLatitude(TableUtil.toLatitude(latLng));
+						reservoir.setLongitude(TableUtil.toLongitude(latLng));
+						reservoir.setLatLngPoints(TableUtil
+								.toLatLngPoints(gisTable.getValue(i,
+										"INTERIOR_LAT_LNG")));
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -533,20 +661,12 @@ public class Tables {
 		return reservoirs;
 	}
 
-	private List<double[]> parseLatLngPoints(String value) {
-		ArrayList<double[]> interiorPoints = new ArrayList<double[]>();
-		if (value != null) {
-			String[] fieldLatLngs = value.split("\\|");
-			for (String fieldLatLng : fieldLatLngs) {
-				double[] latLngPoint = new double[2];
-				latLngPoint[0] = parseLatitude(fieldLatLng);
-				latLngPoint[1] = parseLongitude(fieldLatLng);
-				interiorPoints.add(latLngPoint);
-			}
-		}
-		return interiorPoints;
-	}
-
+	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
+	 * 
+	 * @return
+	 */
 	public BoundaryInputs toBoundaryInputs() {
 		BoundaryInputs binputs = new BoundaryInputs();
 		InputTable stageTable = getTableNamed("BOUNDARY_STAGE");
@@ -610,6 +730,12 @@ public class Tables {
 		return binputs;
 	}
 
+	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
+	 * 
+	 * @return
+	 */
 	public Outputs toOutputs() {
 		Outputs outputs = new Outputs();
 		InputTable outputTable = getTableNamed("OUTPUT_CHANNEL");
@@ -655,39 +781,6 @@ public class Tables {
 			}
 		}
 		return outputs;
-	}
-
-	public DSM2Model getDSM2Model() {
-		DSM2Model model = new DSM2Model();
-		model.setChannels(toChannels());
-		model.setNodes(toNodes());
-		model.setReservoirs(toReservoirs());
-		model.setGates(toGates());
-		model.setInputs(toBoundaryInputs());
-		model.setOutputs(toOutputs());
-		return model;
-	}
-
-	public void fromDSM2Model(DSM2Model model) {
-		List<InputTable> tables = fromChannels(model.getChannels());
-		for (InputTable table : tables) {
-			replaceTable(table);
-		}
-		List<InputTable> nodeTables = fromNodes(model.getNodes());
-		for (InputTable table : nodeTables) {
-			replaceTable(table);
-		}
-		List<InputTable> reservoirTables = fromReservoirs(model.getReservoirs());
-		for (InputTable table : reservoirTables) {
-			replaceTable(table);
-		}
-		List<InputTable> gateTables = fromGates(model.getGates());
-		for (InputTable table : gateTables) {
-			replaceTable(table);
-		}
-
-		// FIXME: fromInputs(model.getInputs());
-		// FIXME: fromOutputs(model.getOutputs());
 	}
 
 }

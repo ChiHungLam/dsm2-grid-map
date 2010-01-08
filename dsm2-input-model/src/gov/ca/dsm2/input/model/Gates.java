@@ -5,10 +5,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * A container for all the {@link Gate} objects with ability to retrieve them
+ * all {@link #getGates()}. Retrieval by name/id {@link #getGate(String)} is
+ * also available.
+ * 
+ * @author nsandhu
+ * 
+ */
 @SuppressWarnings("serial")
 public class Gates implements Serializable {
-	private ArrayList<Gate> gates;
-	private HashMap<String, Gate> gatesMap;
+	private final ArrayList<Gate> gates;
+	private final HashMap<String, Gate> gatesMap;
 
 	public Gates() {
 		gates = new ArrayList<Gate>();
@@ -34,10 +42,8 @@ public class Gates implements Serializable {
 		buf.append("ID\tLAT_LNG\n");
 		for (Gate gate : gates) {
 			buf.append(gate.getName()).append("\t");
-			buf.append("(").append(
-					gate.getLatitude());
-			buf.append(",").append(gate.getLongitude())
-					.append(")");
+			buf.append("(").append(gate.getLatitude());
+			buf.append(",").append(gate.getLongitude()).append(")");
 			buf.append("\n");
 		}
 		buf.append("END\n");

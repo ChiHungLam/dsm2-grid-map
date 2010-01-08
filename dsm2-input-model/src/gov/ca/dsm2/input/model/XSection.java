@@ -2,11 +2,20 @@ package gov.ca.dsm2.input.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
+/**
+ * Contains the xsection of a {@link Channel} in {@link XSectionLayer} layers.
+ * Contains the distance {@link #getDistance()} at which this xsection is
+ * present and the channel id {@link #getChannelId()} to which it belongs
+ * 
+ * @author nsandhu
+ * 
+ */
 @SuppressWarnings("serial")
-public class XSection implements Serializable{
+public class XSection implements Serializable {
 	private String channelId;
 	private double distance;
-	private ArrayList<XSectionLayer> layers;
+	private final ArrayList<XSectionLayer> layers;
 
 	public XSection() {
 		layers = new ArrayList<XSectionLayer>();

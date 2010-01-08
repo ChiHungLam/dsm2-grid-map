@@ -18,6 +18,9 @@ public class InputTable {
 	private final HashMap<String, Integer> headerIndexMap;
 	private ArrayList<ArrayList<String>> values;
 
+	/**
+	 * Initializes a no name table with no headers, no values
+	 */
 	public InputTable() {
 		name = "";
 		headers = new ArrayList<String>();
@@ -25,7 +28,16 @@ public class InputTable {
 		values = new ArrayList<ArrayList<String>>();
 	}
 
-	// --- add on get/sets
+	/**
+	 * Retrieves the value at row (indexed from 0.. length-1) and under named
+	 * header
+	 * 
+	 * @param index
+	 *            of row [0 indexed]
+	 * @param headerName
+	 *            name of header
+	 * @return the string value in that cell
+	 */
 	public String getValue(int index, String headerName) {
 		Integer headerIndex = headerIndexMap.get(headerName);
 		if (headerIndex == null) {
@@ -38,19 +50,40 @@ public class InputTable {
 		return values.get(index).get(headerIndex.intValue());
 	}
 
-	// --- raw get/sets
+	/**
+	 * Name of this table
+	 * 
+	 * @return name of table
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * sets the name of this table
+	 * 
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the array of headers in order
+	 * 
+	 * @return
+	 */
 	public ArrayList<String> getHeaders() {
 		return headers;
 	}
 
+	/**
+	 * Sets header by copying from this list and also getting ready to receive
+	 * values that will be indexed by header name
+	 * 
+	 * @see #getValue(int, String)
+	 * @param list
+	 */
 	public void setHeaders(List<String> list) {
 		headers = new ArrayList<String>();
 		headers.addAll(list);
@@ -62,14 +95,34 @@ public class InputTable {
 		}
 	}
 
+	/**
+	 * Returns the actual list used to store values. Be careful as manipulating
+	 * this list changes this tables values for other current users
+	 * 
+	 * @return reference to the value array
+	 */
 	public ArrayList<ArrayList<String>> getValues() {
 		return values;
 	}
 
+	/**
+	 * Changes the reference held internally to the array passed in. Be careful
+	 * as this affects other current users
+	 * 
+	 * @param values
+	 */
 	public void setValues(ArrayList<ArrayList<String>> values) {
 		this.values = values;
 	}
 
+	/**
+	 * Builds a string representation of this table (very similar to the
+	 * original parsed in except for perhaps whitespace differences). This can
+	 * be used in conjunction with a print that honors "\n" for end of line and
+	 * prints the table to the desired output
+	 * 
+	 * @return
+	 */
 	public String toStringRepresentation() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getName()).append("\n");
@@ -88,5 +141,15 @@ public class InputTable {
 			builder.append(value).append("\t");
 		}
 		builder.deleteCharAt(builder.length() - 1);
+	}
+
+	/**
+	 * shows just the name of the table. For a complete string representation of
+	 * the input @see {@link #toStringRepresentation()}
+	 */
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Input Table: ").append(getName());
+		return builder.toString();
 	}
 }
