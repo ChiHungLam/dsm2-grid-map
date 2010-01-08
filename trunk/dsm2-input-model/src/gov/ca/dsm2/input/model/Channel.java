@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * In DSM2 a channel is an entity representing a stream with a in stream length,
- * roughness coefficient (mannings n), dispersion factor for water quality
- * constituents
+ * In DSM2 a channel is an entity representing a stream with a in stream length
+ * {@link #getLength()}, roughness coefficient (mannings n)
+ * {@link #getMannings()}, dispersion factor {@link #getDispersion()} for water
+ * quality constituents
  * 
- * It is defined by an id and its two end nodes, up node and down node. It also
- * has a number of xsections and contains the gis information to demarcate the
- * internal points
+ * It is defined by an id {@link #getId()} and its two end nodes, up node
+ * {@link #getUpNodeId()} and down node {@link #getDownNodeId()}. It also has a
+ * number of xsections {@link #getXsections()} and contains the gis
+ * {@link #getLatLngPoints()} information to demarcate the internal points
  * 
  * @author nsandhu
  * 

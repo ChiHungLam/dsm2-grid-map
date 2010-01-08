@@ -3,21 +3,35 @@ package gov.ca.dsm2.input.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Represents a reservoir in the model {@link DSM2Model} and contained by
+ * {@link Reservoirs}. Its identified by a name {@link #getName()} and defined
+ * by an area {@link #getArea()}, a bottom elevation
+ * {@link #getBottomElevation()} and its connections
+ * {@link #getReservoirConnections()}
+ * <p>
+ * GIS information is represented by the general location {@link #getLatitude()}
+ * and {@link #getLongitude()} and its outline by {@link #getLatLngPoints()}
+ * 
+ * @author nsandhu
+ * 
+ */
 @SuppressWarnings("serial")
-public class Reservoir implements Serializable{
+public class Reservoir implements Serializable {
 	private String name;
 	private double area;
 	private double bottomElevation;
-	private ArrayList<ReservoirConnection> reservoirConnections;
-	private ArrayList<double[]> latLngPoints;
+	private final ArrayList<ReservoirConnection> reservoirConnections;
+	private final ArrayList<double[]> latLngPoints;
 	private double latitude;
 	private double longitude;
-	
-	public Reservoir(){
+
+	public Reservoir() {
 		reservoirConnections = new ArrayList<ReservoirConnection>();
 		latLngPoints = new ArrayList<double[]>();
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -41,21 +55,21 @@ public class Reservoir implements Serializable{
 	public void setBottomElevation(double bottomElevation) {
 		this.bottomElevation = bottomElevation;
 	}
-	
-	public void addReservoirConnection(ReservoirConnection connection){
+
+	public void addReservoirConnection(ReservoirConnection connection) {
 		reservoirConnections.add(connection);
 	}
-	
-	public List<ReservoirConnection> getReservoirConnections(){
+
+	public List<ReservoirConnection> getReservoirConnections() {
 		return reservoirConnections;
 	}
 
-	public void setLatLngPoints(List<double[]> points){
+	public void setLatLngPoints(List<double[]> points) {
 		this.latLngPoints.clear();
 		this.latLngPoints.addAll(points);
 	}
-	
-	public List<double[]> getLatLngPoints(){
+
+	public List<double[]> getLatLngPoints() {
 		return this.latLngPoints;
 	}
 
