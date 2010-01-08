@@ -17,22 +17,12 @@ The latest version is available [http://dsm2-grid-map.googlecode.com/files/dsm2-
 
 The javadocs are a good place to start are [http://dsm2-grid-map.googlecode.com/svn/trunk/dsm2-input-model/doc/index.html here]
 
-If you are familiar with jython then adding the jar to the classpath, this snippet below can help you get started
+If you are familiar with jython then adding the jar to the classpath, the session in jython below can help you get started
 {{{
-from gov.ca.dsm2.input.parser import *
-from gov.ca.dms2.input.model import *
-def dsm2parse(input_file):
-    """
-    Parses the input file and returns a Tables object which contains
-    all the tables in the file
-    """
-    Parser parser = Parser(input_file)
-    return parser.parseModel(input_file)
-#
-}}}
-
-Here's a session in jython with output interspersed
-{{{
+>>> from gov.ca.dsm2.input.parser import *
+>>> from gov.ca.dms2.input.model import *
+>>> p=Parser()                                 
+>>> tables = p.parseModel('hydro.inp')
 [Input Table: ENVVAR, Input Table: SCALAR, Input Table: IO_FILE, Input Table: CHANNEL, Input Table: XSECT, Input Table: XSECT_LAYER, Input Table: RESERVOIR, Input Table: RESERVOIR_CONNECTION, Input Table: GATE, Input Table: GATE_WEIR_DEVICE, Input Table: GATE_PIPE_DEVICE, Input Table: TRANSFER, Input Table: CHANNEL_IC, Input Table: RESERVOIR_IC, Input Table: BOUNDARY_STAGE, Input Table: BOUNDARY_FLOW, Input Table: SOURCE_FLOW, Input Table: SOURCE_FLOW_RESERVOIR, Input Table: INPUT_GATE, Input Table: INPUT_TRANSFER_FLOW, Input Table: OPERATING_RULE, Input Table: OPRULE_EXPRESSION, Input Table: OPRULE_TIME_SERIES, Input Table: OUTPUT_CHANNEL, Input Table: OUTPUT_RESERVOIR, Input Table: OUTPUT_GATE]
 >>> channel = tables.getTableNamed('CHANNEL')
 >>> channels = tables.toChannels()
