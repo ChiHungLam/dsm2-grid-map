@@ -1,4 +1,5 @@
 #summary This page describes how to use a sub project dsm2-input-grid to parse the text input files associated with DSM2 Hydro, Qual and PTM
+#labels Featured
 = Introduction =
 DSM2 model input is in text files that are loosely structured. The data is represented by tables that have the following format
 {{{
