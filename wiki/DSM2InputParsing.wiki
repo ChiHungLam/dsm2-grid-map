@@ -10,6 +10,9 @@ DSM2 model input is in text files that are loosely structured. The data is repre
 ...
 END<END_OF_LINE>
 }}}
+
+= Download =
+The latest version is available [http://dsm2-grid-map.googlecode.com/files/dsm2-input-model.jar here]
 = Details =
 
 The javadocs are a good place to start are [http://dsm2-grid-map.googlecode.com/svn/trunk/dsm2-input-model/doc/index.html here]
