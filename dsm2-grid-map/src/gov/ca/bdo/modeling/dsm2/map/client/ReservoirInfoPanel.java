@@ -18,7 +18,7 @@ public class ReservoirInfoPanel extends Composite {
 		initWidget(basicInfo);
 	}
 
-	public Panel getBasicInfoPanel(Reservoir reservoir) {
+	private Panel getBasicInfoPanel(Reservoir reservoir) {
 		FlowPanel panel = new FlowPanel();
 		panel.add(new HTMLPanel("<h3>Reservoir " + reservoir.getName()
 				+ "</h3>"));

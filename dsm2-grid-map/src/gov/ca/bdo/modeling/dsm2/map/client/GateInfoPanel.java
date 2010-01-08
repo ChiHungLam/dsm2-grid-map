@@ -13,7 +13,7 @@ public class GateInfoPanel extends Composite {
 		initWidget(basicInfo);
 	}
 
-	public Panel getBasicInfoPanel(Gate gate) {
+	private Panel getBasicInfoPanel(Gate gate) {
 		return new HTMLPanel("<h3>Gate " + gate.getName() + "</h3>"
 				+ "<p>From " + gate.getFromObject() + " "
 				+ gate.getFromIdentifier() + " to node " + gate.getToNode()

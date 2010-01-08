@@ -5,9 +5,11 @@ import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.LegendPosition;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
@@ -21,13 +23,14 @@ public class ChannelInfoPanel extends Composite {
 	public ChannelInfoPanel(Channel channel) {
 		// Panel basicInfo = getBasicInfoPanel(channel);
 		FlowPanel xsectionPanel = new FlowPanel();
-		String title = "Channel: "+channel.getId()+ " Length: "+channel.getLength()+" X-Section View";
+		String title = "Channel: " + channel.getId() + " Length: "
+				+ channel.getLength() + " X-Section View";
 		Options options = Options.create();
 		options.setHeight(400);
 		options.setTitle(title);
 		options.setTitleX("Centered Width");
 		options.setTitleY("Elevation (ft)");
-		options.setWidth(646);
+		options.setWidth(600);
 		options.setLineSize(1);
 		options.setLegend(LegendPosition.BOTTOM);
 		options.setShowCategories(false);
@@ -61,17 +64,19 @@ public class ChannelInfoPanel extends Composite {
 		options.setColors(colors);
 		ScatterChart chart = new ScatterChart(table, options);
 		xsectionPanel.add(chart);
-		/*
-		 * TabPanel panel = new TabPanel(); panel.add(basicInfo, "Basic");
-		 * panel.add(xsectionPanel, "XSections"); panel.selectTab(0);
-		 */
-		Panel panel = xsectionPanel;
-		// panel.setHeight("400px");
-		// panel.setWidth("646px");
-		initWidget(panel);
+		VerticalPanel vpanel = new VerticalPanel();
+		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");
+		basicDisclosure.setOpen(true);
+		basicDisclosure.add(getBasicInfoPanel(channel));
+		vpanel.add(basicDisclosure);
+		DisclosurePanel xsectionDisclosure = new DisclosurePanel("XSection");
+		xsectionDisclosure.setOpen(true);
+		xsectionDisclosure.add(xsectionPanel);
+		vpanel.add(xsectionDisclosure);
+		initWidget(vpanel);
 	}
 
-	public Panel getBasicInfoPanel(Channel channel) {
+	private Panel getBasicInfoPanel(Channel channel) {
 		return new HTMLPanel("<h3>Channel " + channel.getId() + "</h3>"
 				+ "<table>" + "<tr><td>Length</td><td>" + channel.getLength()
 				+ "</td></tr>" + "<tr><td>Mannings</td><td>"
