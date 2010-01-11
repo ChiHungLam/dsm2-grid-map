@@ -1,7 +1,5 @@
 package gov.ca.dsm2.input.model;
 
-import gov.ca.dsm2.input.parser.TableUtil;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +18,10 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Channels implements Serializable {
-	private final ArrayList<Channel> channels;
-	private final HashMap<String, Channel> channelIdMap;
-	private final HashMap<String, String> upNodeMap = new HashMap<String, String>();
-	private final HashMap<String, String> downNodeMap = new HashMap<String, String>();
+	private ArrayList<Channel> channels;
+	private HashMap<String, Channel> channelIdMap;
+	private HashMap<String, String> upNodeMap = new HashMap<String, String>();
+	private HashMap<String, String> downNodeMap = new HashMap<String, String>();
 
 	public Channels() {
 		channels = new ArrayList<Channel>();
@@ -105,25 +103,6 @@ public class Channels implements Serializable {
 	 */
 	public String getDownChannels(String nodeId) {
 		return downNodeMap.get(nodeId);
-	}
-
-	/**
-	 * builds a table containing the GIS information for the shape of the
-	 * channel line.
-	 * 
-	 * @return a string representation of the table.
-	 */
-	public String buildGISTable() {
-		StringBuilder buf = new StringBuilder();
-		buf.append("CHANNEL_GIS\n");
-		buf.append("ID\tINTERIOR_LAT_LNG\n");
-		for (Channel channel : channels) {
-			buf.append(channel.getId()).append("\t").append(
-					TableUtil.fromLatLngPoints(channel.getLatLngPoints()))
-					.append("\n");
-		}
-		buf.append("END\n");
-		return buf.toString();
 	}
 
 }

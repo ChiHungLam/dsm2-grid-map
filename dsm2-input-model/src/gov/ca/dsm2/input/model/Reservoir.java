@@ -22,8 +22,8 @@ public class Reservoir implements Serializable {
 	private String name;
 	private double area;
 	private double bottomElevation;
-	private final ArrayList<ReservoirConnection> reservoirConnections;
-	private final ArrayList<double[]> latLngPoints;
+	private ArrayList<ReservoirConnection> reservoirConnections;
+	private ArrayList<double[]> latLngPoints;
 	private double latitude;
 	private double longitude;
 

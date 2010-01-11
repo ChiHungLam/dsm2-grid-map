@@ -26,8 +26,8 @@ public class Channel implements Serializable {
 	private double dispersion;
 	private String upNodeId;
 	private String downNodeId;
-	private final ArrayList<XSection> xsections;
-	private final ArrayList<double[]> latLngPoints;
+	private ArrayList<XSection> xsections;
+	private ArrayList<double[]> latLngPoints;
 
 	public Channel() {
 		this.xsections = new ArrayList<XSection>();

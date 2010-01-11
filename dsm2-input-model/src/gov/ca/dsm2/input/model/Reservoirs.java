@@ -1,7 +1,5 @@
 package gov.ca.dsm2.input.model;
 
-import gov.ca.dsm2.input.parser.TableUtil;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +14,8 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Reservoirs implements Serializable {
-	private final ArrayList<Reservoir> reservoirs;
-	private final HashMap<String, Reservoir> reservoirIdMap;
+	private ArrayList<Reservoir> reservoirs;
+	private HashMap<String, Reservoir> reservoirIdMap;
 
 	public Reservoirs() {
 		reservoirs = new ArrayList<Reservoir>();
@@ -42,19 +40,4 @@ public class Reservoirs implements Serializable {
 		return reservoirs;
 	}
 
-	public String buildGISTable() {
-		StringBuilder buf = new StringBuilder();
-		buf.append("RESERVOIR_GIS\n");
-		buf.append("ID\tLAT_LNG\tINTERIOR_LAT_LNG\n");
-		for (Reservoir reservoir : reservoirs) {
-			buf.append(reservoir.getName()).append("\t");
-			buf.append(TableUtil.fromLatLng(reservoir.getLatitude(), reservoir
-					.getLongitude()));
-			buf.append("\t").append(
-					TableUtil.fromLatLngPoints(reservoir.getLatLngPoints()))
-					.append("\n");
-		}
-		buf.append("END\n");
-		return buf.toString();
-	}
 }
