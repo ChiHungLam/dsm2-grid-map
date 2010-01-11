@@ -15,8 +15,8 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Gates implements Serializable {
-	private final ArrayList<Gate> gates;
-	private final HashMap<String, Gate> gatesMap;
+	private ArrayList<Gate> gates;
+	private HashMap<String, Gate> gatesMap;
 
 	public Gates() {
 		gates = new ArrayList<Gate>();
