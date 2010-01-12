@@ -426,7 +426,7 @@ public class MapPanel extends Composite {
 		} else if (value > max) {
 			colorIndex = ncolors - 1;
 		} else {
-			double colorSlope = (ncolors - 2) / (max - min);
+			double colorSlope = (ncolors - 2) / (max - min + 1e-6);
 			colorIndex = (int) Math.floor((value - min) * colorSlope) + 1;
 		}
 		controlPanel.setColorPanel(getColorArraySchemePanel(colorArrayScheme,
