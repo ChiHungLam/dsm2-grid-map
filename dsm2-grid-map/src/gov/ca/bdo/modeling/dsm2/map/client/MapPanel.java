@@ -416,20 +416,22 @@ public class MapPanel extends Composite {
 	private static String[] sequentialColorsArray = new String[] { "#fee5d9",
 			"#fcae91", "#fb6a4a", "#de2d26", "#a50f15" };
 
-	private String getColorForRange(double mannings, double min, double max,
+	private String getColorForRange(double value, double min, double max,
 			String colorArrayScheme) {
 		String[] colorsArray = getColorArray(colorArrayScheme);
 		int ncolors = colorsArray.length;
-		int color = (int) Math.round(1 + ((mannings - min) / (max - min))
-				* (ncolors - 2));
-		if (color < 0) {
-			color = 0;
-		} else if (color > 4) {
-			color = ncolors;
+		int colorIndex = 0;
+		if (value < min) {
+			colorIndex = 0;
+		} else if (value > max) {
+			colorIndex = ncolors - 1;
+		} else {
+			double colorSlope = (ncolors - 2) / (max - min);
+			colorIndex = (int) Math.floor((value - min) * colorSlope) + 1;
 		}
 		controlPanel.setColorPanel(getColorArraySchemePanel(colorArrayScheme,
 				min, max));
-		return colorsArray[color];
+		return colorsArray[colorIndex];
 	}
 
 	String[] getColorArray(String colorArrayScheme) {
