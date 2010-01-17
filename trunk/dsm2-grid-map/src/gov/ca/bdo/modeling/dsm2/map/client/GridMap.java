@@ -78,7 +78,7 @@ public class GridMap implements EntryPoint {
 		Runnable mapLoadCallback = new Runnable() {
 			public void run() {
 				if (mapPanel == null) {
-					mapPanel = new MapPanel();
+					mapPanel = new MapPanel(null);
 				}
 				if (currentStudy != null) {
 					mapPanel.setStudy(currentStudy);
