@@ -1,19 +1,20 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
 public class MainEntryPoint implements EntryPoint {
 
-	private SplitLayoutPanel mainPanel;
+	private DockLayoutPanel mainPanel;
 	private MapPanel mapPanel;
 
 	public void onModuleLoad() {
@@ -46,11 +47,12 @@ public class MainEntryPoint implements EntryPoint {
 	}
 
 	protected void createUI() {
-		mainPanel = new SplitLayoutPanel();
-		mapPanel = new MapPanel();
-		mainPanel.addNorth(new HeaderPanel(), 72);
-		mainPanel.addEast(mapPanel.getControlPanelContainer(), 646);
-		mainPanel.addSouth(new HTML(""), 36);
+		mainPanel = new DockLayoutPanel(Unit.EM);
+		HeaderPanel headerPanel = new HeaderPanel();
+		mapPanel = new MapPanel(headerPanel);
+		mainPanel.addNorth(headerPanel, 2);
+		mainPanel.addEast(mapPanel.getControlPanelContainer(), 40);
+		mainPanel.addSouth(new HTML(""), 1);
 		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);
 		RootLayoutPanel.get().animate(0, new AnimationCallback() {

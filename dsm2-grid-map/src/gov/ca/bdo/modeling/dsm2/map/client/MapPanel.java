@@ -63,8 +63,10 @@ public class MapPanel extends Composite {
 	private final MapControlPanel controlPanel;
 	private TileLayerOverlay bathymetryOverlay;
 	private TextAnnotationsManager textAnnotationHandler;
+	private HeaderPanel headerPanel;
 
-	public MapPanel() {
+	public MapPanel(HeaderPanel headerPanel) {
+		this.headerPanel = headerPanel;
 		dsm2InputService = (DSM2InputServiceAsync) GWT
 				.create(DSM2InputService.class);
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
@@ -122,10 +124,14 @@ public class MapPanel extends Composite {
 
 					public void onSuccess(DSM2Model result) {
 						model = result;
+						headerPanel.showMessage(true, "Drawing...");
 						populateGrid();
+						headerPanel.showMessage(false, null);
 					}
 
 					public void onFailure(Throwable caught) {
+						headerPanel.showError(true,
+								"Oops, an error occurred. Try again.");
 						System.err.println(caught);
 					}
 				});
@@ -203,11 +209,11 @@ public class MapPanel extends Composite {
 				LatLng gatePoint = LatLng.newInstance(gate.getLatitude(), gate
 						.getLongitude());
 				// Create our "tiny" marker icon
-				Icon icon = Icon.newInstance("images/postoffice-jp.png");
-				icon.setShadowURL("images/postoffice-jp.shadow.png");
-				icon.setIconSize(Size.newInstance(12, 20));
+				Icon icon = Icon.newInstance("images/dam.png");
+				// icon.setShadowURL("images/water.shadow.png");
+				icon.setIconSize(Size.newInstance(32, 32));
 				icon.setShadowSize(Size.newInstance(22, 20));
-				icon.setIconAnchor(Point.newInstance(6, 20));
+				icon.setIconAnchor(Point.newInstance(16, 20));
 				icon.setInfoWindowAnchor(Point.newInstance(5, 1));
 				MarkerOptions options = MarkerOptions.newInstance();
 				options.setTitle(gate.getName());
@@ -255,7 +261,7 @@ public class MapPanel extends Composite {
 				reservoir.setLongitude(longitude);
 			}
 			// Create our "tiny" marker icon
-			Icon icon = Icon.newInstance("images/water.png");
+			Icon icon = Icon.newInstance("images/lake.png");
 			icon.setShadowURL("images/water.shadow.png");
 			icon.setIconSize(Size.newInstance(32, 32));
 			icon.setShadowSize(Size.newInstance(22, 20));
@@ -278,6 +284,19 @@ public class MapPanel extends Composite {
 			reservoirOverlayManager.addReservoirMarker(reservoir.getName(),
 					reservoirMarker);
 			getMap().addOverlay(reservoirMarker);
+			// add connection lines
+			LatLng reservoirPoint = LatLng.newInstance(reservoir.getLatitude(),
+					reservoir.getLongitude());
+			for (ReservoirConnection reservoirConnection : reservoir
+					.getReservoirConnections()) {
+				String nodeId = reservoirConnection.nodeId;
+				Node node = getNodeManager().getNodeData(nodeId);
+				LatLng nodePoint = LatLng.newInstance(node.getLatitude(), node
+						.getLongitude());
+				Polyline connectionLine = new Polyline(new LatLng[] {
+						nodePoint, reservoirPoint }, "green", 4);
+				getMap().addOverlay(connectionLine);
+			}
 		}
 	}
 
@@ -533,14 +552,17 @@ public class MapPanel extends Composite {
 		dsm2InputService.getStudyNames(new AsyncCallback<String[]>() {
 
 			public void onSuccess(String[] result) {
+				headerPanel.showMessage(false, null);
 				studyNames = result;
 				controlPanel.setStudies(studyNames);
 				if (studyNames.length > 0) {
 					setStudy(studyNames[0]);
 				}
+
 			}
 
 			public void onFailure(Throwable caught) {
+				headerPanel.showError(true, "Oops an error occurred");
 				studyNames = new String[0];
 			}
 		});

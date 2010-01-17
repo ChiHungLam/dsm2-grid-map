@@ -52,3 +52,8 @@
 .visibilityPanel{
 	background-color:white;
 }
+
+.mainMapContainer{
+	position: static;
+}
+/* dsm2 widgets css */
