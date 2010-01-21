@@ -13,11 +13,7 @@ import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
-import gov.ca.dsm2.input.model.Reservoir;
-import gov.ca.dsm2.input.model.ReservoirConnection;
 import gov.ca.dsm2.input.model.Reservoirs;
-
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -63,7 +59,7 @@ public class MapPanel extends Composite {
 	private final MapControlPanel controlPanel;
 	private TileLayerOverlay bathymetryOverlay;
 	private TextAnnotationsManager textAnnotationHandler;
-	private HeaderPanel headerPanel;
+	private final HeaderPanel headerPanel;
 
 	public MapPanel(HeaderPanel headerPanel) {
 		this.headerPanel = headerPanel;
@@ -238,66 +234,9 @@ public class MapPanel extends Composite {
 
 	protected void populateReservoirMarkers() {
 		Reservoirs reservoirs = model.getReservoirs();
-		reservoirOverlayManager = new ReservoirOverlayManager();
-		for (Reservoir reservoir : reservoirs.getReservoirs()) {
-			if ((reservoir.getLatitude() == 0)
-					|| (reservoir.getLongitude() == 0)) {
-				List<ReservoirConnection> connections = reservoir
-						.getReservoirConnections();
-				double latitude = 0.0;
-				double longitude = 0.0;
-				for (ReservoirConnection reservoirConnection : connections) {
-					String nodeId = reservoirConnection.nodeId;
-					Node node = getNodeManager().getNodeData(nodeId);
-					latitude += node.getLatitude();
-					longitude += node.getLongitude();
-				}
-				int nconnections = connections.size();
-				if (nconnections > 0) {
-					latitude = latitude / nconnections;
-					longitude = longitude / nconnections;
-				}
-				reservoir.setLatitude(latitude);
-				reservoir.setLongitude(longitude);
-			}
-			// Create our "tiny" marker icon
-			Icon icon = Icon.newInstance("images/lake.png");
-			icon.setShadowURL("images/water.shadow.png");
-			icon.setIconSize(Size.newInstance(32, 32));
-			icon.setShadowSize(Size.newInstance(22, 20));
-			icon.setIconAnchor(Point.newInstance(16, 20));
-			icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-			MarkerOptions options = MarkerOptions.newInstance();
-			options.setTitle(reservoir.getName());
-			options.setIcon(icon);
-			// -- edit mode options and only for the marker being manipulated --
-			options.setDragCrossMove(true);
-			options.setDraggable(true);
-			options.setClickable(true);
-			options.setAutoPan(true);
-			Marker reservoirMarker = new Marker(LatLng.newInstance(reservoir
-					.getLatitude(), reservoir.getLongitude()), options);
-			reservoirMarker.addMarkerClickHandler(new ReservoirClickHandler(
-					reservoir, this));
-			reservoirMarker.addMarkerDragEndHandler(new ReservoirDragHandler(
-					reservoir));
-			reservoirOverlayManager.addReservoirMarker(reservoir.getName(),
-					reservoirMarker);
-			getMap().addOverlay(reservoirMarker);
-			// add connection lines
-			LatLng reservoirPoint = LatLng.newInstance(reservoir.getLatitude(),
-					reservoir.getLongitude());
-			for (ReservoirConnection reservoirConnection : reservoir
-					.getReservoirConnections()) {
-				String nodeId = reservoirConnection.nodeId;
-				Node node = getNodeManager().getNodeData(nodeId);
-				LatLng nodePoint = LatLng.newInstance(node.getLatitude(), node
-						.getLongitude());
-				Polyline connectionLine = new Polyline(new LatLng[] {
-						nodePoint, reservoirPoint }, "green", 4);
-				getMap().addOverlay(connectionLine);
-			}
-		}
+		reservoirOverlayManager = new ReservoirOverlayManager(this);
+		reservoirOverlayManager.setReservoirs(reservoirs);
+		reservoirOverlayManager.displayReservoirMarkers();
 	}
 
 	public void hideMarkers(boolean hide) {
