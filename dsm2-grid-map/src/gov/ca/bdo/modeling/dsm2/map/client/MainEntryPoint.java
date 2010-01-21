@@ -7,6 +7,8 @@ import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -16,8 +18,19 @@ public class MainEntryPoint implements EntryPoint {
 
 	private DockLayoutPanel mainPanel;
 	private MapPanel mapPanel;
+	private HeaderPanel headerPanel;
 
 	public void onModuleLoad() {
+		createUI();
+		DeferredCommand.addCommand(new Command() {
+
+			public void execute() {
+				loadMaps();
+			}
+		});
+	}
+
+	public void loadMaps() {
 		if (!Maps.isLoaded()) {
 			Window
 					.alert("The Maps API is not installed."
@@ -32,7 +45,17 @@ public class MainEntryPoint implements EntryPoint {
 		Runnable mapLoadCallback = new Runnable() {
 
 			public void run() {
-				createUI();
+				mapPanel = new MapPanel(headerPanel);
+				mainPanel.addEast(mapPanel.getControlPanelContainer(), 40);
+				mainPanel.add(mapPanel);
+				RootLayoutPanel.get().animate(0, new AnimationCallback() {
+					public void onLayout(Layer layer, double progress) {
+					}
+
+					public void onAnimationComplete() {
+						mapPanel.onResize();
+					}
+				});
 			}
 		};
 		if (!GoogleMapsUtility.isLoaded(DefaultPackage.MARKER_CLUSTERER,
@@ -48,20 +71,10 @@ public class MainEntryPoint implements EntryPoint {
 
 	protected void createUI() {
 		mainPanel = new DockLayoutPanel(Unit.EM);
-		HeaderPanel headerPanel = new HeaderPanel();
-		mapPanel = new MapPanel(headerPanel);
+		headerPanel = new HeaderPanel();
+		headerPanel.showMessage(true, "Loading...");
 		mainPanel.addNorth(headerPanel, 2);
-		mainPanel.addEast(mapPanel.getControlPanelContainer(), 40);
 		mainPanel.addSouth(new HTML(""), 1);
-		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);
-		RootLayoutPanel.get().animate(0, new AnimationCallback() {
-			public void onLayout(Layer layer, double progress) {
-			}
-
-			public void onAnimationComplete() {
-				mapPanel.onResize();
-			}
-		});
 	}
 }
