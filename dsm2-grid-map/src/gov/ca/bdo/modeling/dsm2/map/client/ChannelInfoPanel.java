@@ -26,11 +26,11 @@ public class ChannelInfoPanel extends Composite {
 		String title = "Channel: " + channel.getId() + " Length: "
 				+ channel.getLength() + " X-Section View";
 		Options options = Options.create();
-		options.setHeight(400);
+		options.setHeight(350);
 		options.setTitle(title);
 		options.setTitleX("Centered Width");
 		options.setTitleY("Elevation (ft)");
-		options.setWidth(600);
+		options.setWidth(500);
 		options.setLineSize(1);
 		options.setLegend(LegendPosition.BOTTOM);
 		options.setShowCategories(false);

@@ -114,7 +114,7 @@ public class ReservoirOverlayManager {
 				.getLatitude(), reservoir.getLongitude()), options);
 		reservoirMarker.addMarkerClickHandler(new ReservoirClickHandler(
 				reservoir, mapPanel));
-		reservoirMarker.addMarkerDragEndHandler(new ReservoirDragHandler(
+		reservoirMarker.addMarkerDragEndHandler(new ReservoirDragHandler(this,
 				reservoir));
 		return reservoirMarker;
 	}
