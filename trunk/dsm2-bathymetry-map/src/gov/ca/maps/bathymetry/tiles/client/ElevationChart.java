@@ -4,6 +4,7 @@ import gov.ca.maps.bathymetry.tiles.client.model.BathymetryDataPoint;
 
 import java.util.List;
 
+import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -47,11 +48,11 @@ public class ElevationChart extends Composite {
 	protected ScatterChart createChart(List<BathymetryDataPoint> points) {
 		String title = "Elevation Chart";
 		Options options = Options.create();
-		options.setHeight(400);
 		options.setTitle(title);
 		options.setTitleX("Distance Along Line");
 		options.setTitleY("Elevation (ft)");
-		options.setWidth(600);
+		options.setHeight(300);
+		options.setWidth(500);
 		options.setLegend(LegendPosition.BOTTOM);
 		options.setShowCategories(false);
 		DataTable table = DataTable.create();
@@ -62,6 +63,7 @@ public class ElevationChart extends Composite {
 		for (BathymetryDataPoint point : points) {
 			table.setValue(i, 1, point.elevation);
 			table.setValue(i, 0, point.latitude);
+			LatLng latlng = LatLng.newInstance(point.latitude, point.longitude);
 			i++;
 		}
 		ScatterChart chart = new ScatterChart(table, options);

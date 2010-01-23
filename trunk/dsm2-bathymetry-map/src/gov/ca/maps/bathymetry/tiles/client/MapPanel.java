@@ -50,7 +50,11 @@ public class MapPanel extends Composite {
 		} else {
 			localhost = false;
 		}
-		map = new MapWidget(LatLng.newInstance(38.15, -121.70), 11);
+		map = new MapWidget(LatLng.newInstance(38.15, -121.70), 10);
+
+		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
+		map.addControl(fullScreenControl);
+
 		setOptions();
 		addBathymetryOverlay();
 		initWidget(map);

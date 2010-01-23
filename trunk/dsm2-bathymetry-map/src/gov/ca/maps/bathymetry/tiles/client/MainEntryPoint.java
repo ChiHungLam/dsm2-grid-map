@@ -71,7 +71,7 @@ public class MainEntryPoint implements EntryPoint {
 		StackLayoutPanel sidePanel = new StackLayoutPanel(Unit.EM);
 		sidePanel.add(legendContainerPanel, new HTML("Legend"), 2);
 		sidePanel.add(new ControlPanel(mapPanel), new HTML("Controls"), 2);
-		mainPanel.addEast(sidePanel, 38);
+		mainPanel.addEast(sidePanel, 25);
 		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);
 		RootLayoutPanel.get().animate(0, new AnimationCallback() {
