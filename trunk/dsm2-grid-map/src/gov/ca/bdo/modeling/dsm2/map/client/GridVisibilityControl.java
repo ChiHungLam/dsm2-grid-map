@@ -9,6 +9,7 @@ import com.google.gwt.maps.client.control.Control.CustomControl;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -18,20 +19,21 @@ public class GridVisibilityControl extends CustomControl {
 	private CheckBox channelHideBox;
 
 	public GridVisibilityControl(MapPanel mapPanel) {
-		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 7, 30));
+		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 55, 30));
 		this.mapPanel = mapPanel;
 	}
 
 	@Override
 	protected Widget initialize(MapWidget map) {
-		final CheckBox nodeHideBox = new CheckBox("Hide Nodes", false);
+		final Label hideLabel = new Label("Hide...");
+		final CheckBox nodeHideBox = new CheckBox("Nodes", false);
 		nodeHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
 				mapPanel.hideMarkers(nodeHideBox.getValue());
 			}
 		});
-		channelHideBox = new CheckBox("Hide Channels");
+		channelHideBox = new CheckBox("Channels");
 		channelHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -39,7 +41,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox gatesHideBox = new CheckBox("Hide Gates");
+		final CheckBox gatesHideBox = new CheckBox("Gates");
 		gatesHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -47,7 +49,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox reservoirsHideBox = new CheckBox("Hide Reservoirs");
+		final CheckBox reservoirsHideBox = new CheckBox("Reservoirs");
 		reservoirsHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -55,7 +57,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox outputMarkerHideBox = new CheckBox("Hide Output Markers");
+		final CheckBox outputMarkerHideBox = new CheckBox("Output Markers");
 		outputMarkerHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -63,7 +65,8 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox bathymetryHideBox = new CheckBox("Show Bathymetry");
+		final CheckBox bathymetryHideBox = new CheckBox("Bathymetry");
+		bathymetryHideBox.setEnabled(true);
 		bathymetryHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -72,6 +75,8 @@ public class GridVisibilityControl extends CustomControl {
 		});
 
 		VerticalPanel vpanel = new VerticalPanel();
+		vpanel.add(hideLabel);
+		vpanel.add(new HTML("<hr/>"));
 		vpanel.add(nodeHideBox);
 		vpanel.add(channelHideBox);
 		vpanel.add(gatesHideBox);

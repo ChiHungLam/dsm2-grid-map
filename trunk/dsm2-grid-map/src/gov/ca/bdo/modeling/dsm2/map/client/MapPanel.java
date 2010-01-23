@@ -14,6 +14,7 @@ import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoirs;
+import gov.ca.modeling.dsm2.widgets.client.ExpandContractMapControl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -71,6 +72,8 @@ public class MapPanel extends Composite {
 		new ClearBackgroundLayer(getMap(), true);
 		visibilityControl = new GridVisibilityControl(this);
 		getMap().addControl(visibilityControl);
+		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
+		map.addControl(fullScreenControl);
 		// layout top level things here
 		controlPanel = new MapControlPanel(this);
 		infoPanel = new FlowPanel();
