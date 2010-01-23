@@ -112,4 +112,7 @@ tfoot .ae-paginate {
 .ae-table-caption .ae-paginate,.ae-table-caption .ae-orderby {
 	padding: 2px 5px;
 }
+
+.expand-contract-button{
+	background: transparent;
 }

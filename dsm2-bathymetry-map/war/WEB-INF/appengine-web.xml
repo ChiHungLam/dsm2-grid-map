@@ -13,5 +13,5 @@
 		<include path="**.css"/>
 		<include path="/bathymap/**"/>
     </static-files>
-	
+	<precompilation-enabled>true</precompilation-enabled>
 </appengine-web-app>
