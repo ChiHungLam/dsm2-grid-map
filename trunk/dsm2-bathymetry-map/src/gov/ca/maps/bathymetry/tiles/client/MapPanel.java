@@ -1,7 +1,9 @@
 package gov.ca.maps.bathymetry.tiles.client;
 
 import gov.ca.maps.bathymetry.tiles.client.model.BathymetryDataPoint;
+import gov.ca.modeling.dsm2.widgets.client.ExpandContractMapControl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -41,6 +43,7 @@ public class MapPanel extends Composite {
 	private Polyline line;
 	private ShowPolygonHandler showPolygonHandler;
 	private RemovePolygonHandler removePolygonHandler;
+	private TileLayerOverlay noaaLayer;
 
 	public MapPanel() {
 		service = (BathymetryDataServiceAsync) GWT
@@ -129,6 +132,95 @@ public class MapPanel extends Composite {
 
 	public double getLengthInFeet() {
 		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
+	}
+
+	/**
+	 * Generate a sequence of QRST that match the tile requested by the
+	 * parameters. The parameters are in the google maps tile numbering style,
+	 * that differs from the geogarage tile numbering.
+	 * 
+	 * @param {Number} x tile coordinate (unit is the tile)
+	 * @param {Number} y tile coordinate (unit is the tile)
+	 * @param {Number} zoom zoom level
+	 * @returns The qrst that identifies that tile
+	 * @type String
+	 */
+
+	public String genQrst(int x, int y, int zoom) {
+		int inc = 1 << zoom - 1;
+		String qrstString = "t";
+		for (int i = zoom; i > 0; i--) {
+			boolean xbitIs1 = (x & inc) == inc;
+			boolean ybitIs1 = (y & inc) == inc;
+			if (xbitIs1 && ybitIs1) {
+				qrstString += "s";
+			} else if (xbitIs1 && !ybitIs1) {
+				qrstString += "r";
+			} else if (!xbitIs1 && !ybitIs1) {
+				qrstString += "q";
+			} else if (!xbitIs1 && ybitIs1) {
+				qrstString += "t";
+			}
+			inc = inc >> 1;
+		}
+		return qrstString;
+	}
+
+	/**
+	 * Generate a path where a file corresponding to the string should located,
+	 * in GeoGarage quadtree storage structure.
+	 * 
+	 * @param {String} qrstString the qrst string corresponding to a file.
+	 * @returns The corresponding directory path
+	 * @type String
+	 */
+	public String genPathFromQrst(String qrstString) {
+		ArrayList<String> directoryElem = new ArrayList<String>();
+		int strLength = qrstString.length();
+		for (int i = 0; (i + 1) * 6 <= strLength; i++) {
+			directoryElem.add(qrstString.substring(i * 6, i * 6 + 6));
+		}
+		String result = "";
+		for (int i = 0; i < directoryElem.size(); i++) {
+			result += directoryElem.get(i) + "/";
+		}
+		return result + qrstString + ".png";
+	}
+
+	public void addNOAAOverlay() {
+		if (noaaLayer == null) {
+			CopyrightCollection myCopyright = new CopyrightCollection(
+					"@ California DWR 2009");
+			LatLng southWest = LatLng.newInstance(36.5, -123.0);
+			LatLng northEast = LatLng.newInstance(39.5, -120.5);
+			myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
+					southWest, northEast), 10, "@ Copyright California DWR"));
+			TileLayer tileLayer = new TileLayer(myCopyright, 10, 17) {
+
+				public double getOpacity() {
+					return 0.6;
+				}
+
+				public String getTileURL(Point tile, int zoomLevel) {
+					String genQrst = genQrst(tile.getX(), tile.getY(),
+							zoomLevel);
+					String path = genPathFromQrst(genQrst);
+					return "http://tiles5.geogarage.com/noaa/" + path;
+				}
+
+				public boolean isPng() {
+					return true;
+				}
+			};
+			noaaLayer = new TileLayerOverlay(tileLayer);
+		}
+		map.addOverlay(noaaLayer);
+	}
+
+	public void removeNOAAOverlay() {
+		if (noaaLayer != null) {
+			map.removeOverlay(noaaLayer);
+		}
 	}
 
 	private void addBathymetryOverlay() {
