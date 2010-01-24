@@ -2,6 +2,7 @@ package gov.ca.maps.bathymetry.tiles.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
@@ -39,12 +40,26 @@ public class ControlPanel extends Composite {
 				}
 			}
 		});
+		final CheckBox noaaOverlay = new CheckBox(
+				"NOAA Overlay: Courtesy http://demo.geogarage.com/noaa");
+		noaaOverlay.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				if (noaaOverlay.getValue()) {
+					mapPanel.addNOAAOverlay();
+				} else {
+					mapPanel.removeNOAAOverlay();
+				}
+			}
+		});
 		//
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.add(showData);
 		buttonPanel.add(drawLineButton);
+		buttonPanel.add(noaaOverlay);
 		infoPanel = new FlowPanel();
 		infoPanel.setStyleName("infoPanel");
+
 		FlowPanel mainPanel = new FlowPanel();
 		mainPanel.add(buttonPanel);
 		mainPanel.add(infoPanel);
