@@ -53,28 +53,33 @@ u'432'
 
 One can create a model in memory using the classes and methods defined and output them to their table representation. One such example is below
 {{{
->>> from gov.ca.dsm2.input.parser import Parser
->>> from gov.ca.dsm2.input.model import *
->>> c1 = Channel()
->>> c1.setId("1"); c1.setUpNodeId("2"); c1.setDownNodeId("3"); c1.setLength(12500); c1.setMannings(0.02); c1.setDispersion(1.0)
->>> xsect1 = XSection();
->>> x1layer1 = XSectionLayer(); x1layer1.setArea(0); x1layer1.setElevation(-10.0); x1layer1.setTopWidth(10); x1layer1.setWettedPerimeter(10);
->>> x1layer2 = XSectionLayer(); x1layer2.setArea(50); x1layer2.setElevation(-5.0); x1layer2.setTopWidth(10); x1layer2.setWettedPerimeter(20);
->>> xsect1.setChannelId(c1.getId()); xsect1.setDistance(0.25); xsect1.addLayer(x1layer1); xsect1.addLayer(x1layer2)
->>> c1.addXSection(xsect1)
->>> channels = Channels()
->>> channels.addChannel(c1)
->>> from gov.ca.dsm2.input.parser import Tables
->>> tables = Tables()
->>> tables.fromChannels(channels)
-[gov.ca.dsm2.input.parser.InputTable@e14ebc, gov.ca.dsm2.input.parser.InputTable@1f82253]
->>> channel_input_tables = tables.fromChannels(channels)
->>> for table in channel_input_tables:
-...     print table.toStringRepresentation()
-...     
+from gov.ca.dsm2.input.parser import Parser
+from gov.ca.dsm2.input.model import *
+c1 = Channel()
+c1.setId("1"); c1.setUpNodeId("2"); c1.setDownNodeId("3"); c1.setLength(12500); c1.setMannings(0.02); c1.setDispersion(1.0)
+xsect1 = XSection();
+x1layer1 = XSectionLayer(); x1layer1.setArea(0); x1layer1.setElevation(-10.0); x1layer1.setTopWidth(10); x1layer1.setWettedPerimeter(10);
+x1layer2 = XSectionLayer(); x1layer2.setArea(50); x1layer2.setElevation(-5.0); x1layer2.setTopWidth(10); x1layer2.setWettedPerimeter(20);
+xsect1.setChannelId(c1.getId()); xsect1.setDistance(0.25); xsect1.addLayer(x1layer1); xsect1.addLayer(x1layer2)
+c1.addXSection(xsect1)
+channels = Channels()
+channels.addChannel(c1)
+from gov.ca.dsm2.input.parser import Tables
+tables = Tables()
+channel_input_tables = tables.fromChannels(channels)
+for table in channel_input_tables:
+ print table.toStringRepresentation()
+
+>>>>>>>> output >>>>>>>>>>
 CHANNEL
 CHAN_NO	LENGTH	MANNING	DISPERSION	UPNODE	DOWNNODE
 1	12500.0	0.02	1.0	2	3
+END
+
+XSECT_LAYER
+CHAN_NO	DIST	ELEV	AREA	WIDTH	WET_PERIM
+1	0.25	-10.0	0.0	10.0	10.0
+1	0.25	-5.0	50.0	10.0	20.0
 END
 
 CHANNEL_GIS
