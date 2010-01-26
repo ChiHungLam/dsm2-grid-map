@@ -220,7 +220,7 @@ public class Tables {
 			try {
 				Channel channel = new Channel();
 				channel.setId(channelTable.getValue(i, "CHAN_NO"));
-				channel.setLength(Double.parseDouble(channelTable.getValue(i,
+				channel.setLength(Integer.parseInt(channelTable.getValue(i,
 						"LENGTH")));
 				channel.setMannings(Double.parseDouble(channelTable.getValue(i,
 						"MANNING")));
