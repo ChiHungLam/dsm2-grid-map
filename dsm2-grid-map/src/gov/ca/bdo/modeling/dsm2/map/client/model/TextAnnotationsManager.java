@@ -1,3 +1,22 @@
+/**
+ *   Copyright (C) 2009, 2010 
+ *    Nicky Sandhu
+ *    State of California,
+ *    Department of Water Resources.
+ *    This file is part of DSM2 Grid Map
+ *    The DSM2 Grid Map is free software: 
+ *    you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *    DSM2 Grid Map is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+
+ *    You should have received a copy of the GNU General Public License
+ *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
+ */
 package gov.ca.bdo.modeling.dsm2.map.client.model;
 
 import gov.ca.bdo.modeling.dsm2.map.client.MapPanel;
@@ -40,13 +59,13 @@ public class TextAnnotationsManager implements MapClickHandler {
 
 	public TextAnnotationsManager(MapPanel mapPanel) {
 		dataServiceAsync = (DataServiceAsync) GWT.create(DataService.class);
-		this.map = mapPanel.getMap();
+		map = mapPanel.getMap();
 		overlayTextMap = new HashMap<Marker, TextAnnotation>();
 		textClickHandler = new TextClickHandler();
 		addingText = false;
-		this.textAnnotations = new ArrayList<TextAnnotation>();
-		this.studyName = mapPanel.getCurrentStudy();
-		dataServiceAsync.getNotes(this.studyName,
+		textAnnotations = new ArrayList<TextAnnotation>();
+		studyName = mapPanel.getCurrentStudy();
+		dataServiceAsync.getNotes(studyName,
 				new AsyncCallback<List<TextAnnotation>>() {
 
 					public void onSuccess(List<TextAnnotation> result) {
@@ -78,22 +97,22 @@ public class TextAnnotationsManager implements MapClickHandler {
 	}
 
 	public Marker addMarker(TextAnnotation annotation) {
-		this.textAnnotations.add(annotation);
+		textAnnotations.add(annotation);
 		Marker textMarker = createTextMarkerOverlay(LatLng.newInstance(
 				annotation.getLatitude(), annotation.getLongitude()));
-		this.map.addOverlay(textMarker);
-		this.overlayTextMap.put(textMarker, annotation);
+		map.addOverlay(textMarker);
+		overlayTextMap.put(textMarker, annotation);
 		return textMarker;
 	}
 
 	public void startAddingText() {
 		addingText = true;
-		this.map.addMapClickHandler(this);
+		map.addMapClickHandler(this);
 	}
 
 	public void stopAddingText() {
 		addingText = false;
-		this.map.removeMapClickHandler(this);
+		map.removeMapClickHandler(this);
 	}
 
 	public void onClick(MapClickEvent event) {
@@ -137,7 +156,7 @@ public class TextAnnotationsManager implements MapClickHandler {
 		private final TextAnnotation textAnnotation;
 
 		TextPanel(TextAnnotation annotation) {
-			this.textAnnotation = annotation;
+			textAnnotation = annotation;
 			if (addingText) {
 				TextBox textBox = new TextBox();
 				textBox.setText(annotation.getText());
@@ -150,7 +169,7 @@ public class TextAnnotationsManager implements MapClickHandler {
 
 		public void onInfoWindowClose(MapInfoWindowCloseEvent event) {
 			if ((getWidget() instanceof TextBox) && addingText) {
-				this.textAnnotation.setText(((TextBox) getWidget()).getText());
+				textAnnotation.setText(((TextBox) getWidget()).getText());
 				// TODO: this happens too often
 				saveTextAnnotations();
 			}
