@@ -38,7 +38,7 @@ public class Channel implements Serializable {
 		return id;
 	}
 
-	public double getLength() {
+	public int getLength() {
 		return length;
 	}
 
