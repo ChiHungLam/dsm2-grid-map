@@ -21,7 +21,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Channel implements Serializable {
 	private String id;
-	private double length;
+	private int length;
 	private double mannings;
 	private double dispersion;
 	private String upNodeId;
@@ -42,7 +42,7 @@ public class Channel implements Serializable {
 		return length;
 	}
 
-	public void setLength(double length) {
+	public void setLength(int length) {
 		this.length = length;
 	}
 
