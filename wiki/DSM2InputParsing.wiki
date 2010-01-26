@@ -51,6 +51,7 @@ u'432'
 >>> 
 }}}
 
+== Creating Model in memory and rendering to Tables ==
 One can create a model in memory using the classes and methods defined and output them to their table representation. One such example is below
 {{{
 from gov.ca.dsm2.input.parser import Parser
