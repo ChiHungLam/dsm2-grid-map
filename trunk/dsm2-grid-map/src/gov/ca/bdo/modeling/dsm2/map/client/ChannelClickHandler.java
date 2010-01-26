@@ -221,7 +221,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void updateChannelLengthLatLng() {
-		channel.setLength(getLengthInFeet());
+		channel.setLength((int) getLengthInFeet());
 		int vcount = line.getVertexCount();
 		ArrayList<double[]> points = new ArrayList<double[]>();
 		for (int i = 1; i < vcount - 1; i++) {
