@@ -173,6 +173,7 @@ public class Tables {
 		channelTable.setHeaders(Arrays.asList(new String[] { "CHAN_NO",
 				"LENGTH", "MANNING", "DISPERSION", "UPNODE", "DOWNNODE" }));
 		ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> xvalues = new ArrayList<ArrayList<String>>();
 		for (Channel channel : channels.getChannels()) {
 			ArrayList<String> rowValues = new ArrayList<String>();
 			rowValues.add(channel.getId());
@@ -182,9 +183,26 @@ public class Tables {
 			rowValues.add(channel.getUpNodeId());
 			rowValues.add(channel.getDownNodeId());
 			values.add(rowValues);
+			for(XSection xsection: channel.getXsections()){
+				for(XSectionLayer xsectLayer: xsection.getLayers()){
+					ArrayList<String> xrowValues = new ArrayList<String>();
+					xrowValues.add(channel.getId());
+					xrowValues.add(xsection.getDistance()+"");
+					xrowValues.add(xsectLayer.getElevation()+"");
+					xrowValues.add(xsectLayer.getArea()+"");
+					xrowValues.add(xsectLayer.getTopWidth()+"");
+					xrowValues.add(xsectLayer.getWettedPerimeter()+"");
+					xvalues.add(xrowValues);
+				}
+			}
 		}
 		channelTable.setValues(values);
 		list.add(channelTable);
+		InputTable xsectionTable = new InputTable();
+		xsectionTable.setName("XSECT_LAYER");
+		xsectionTable.setHeaders(Arrays.asList(new String[]{"CHAN_NO", "DIST", "ELEV", "AREA", "WIDTH", "WET_PERIM"}));
+		list.add(xsectionTable);
+		xsectionTable.setValues(xvalues);
 		//
 		InputTable gisTable = new InputTable();
 		gisTable.setName("CHANNEL_GIS");
@@ -200,6 +218,8 @@ public class Tables {
 		}
 		gisTable.setValues(values);
 		list.add(gisTable);
+		//
+		//
 		return list;
 	}
 
