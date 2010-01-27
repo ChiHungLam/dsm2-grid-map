@@ -1,3 +1,21 @@
+/**
+ *    Copyright (C) 2009, 2010 
+ *    State of California,
+ *    Department of Water Resources.
+ *    This file is part of DSM2 Grid Map
+ *    The DSM2 Grid Map is free software: 
+ *    you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *    DSM2 Grid Map is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
+ */
 package gov.ca.dsm2.input.parser;
 
 import gov.ca.dsm2.input.model.BoundaryInput;
@@ -183,15 +201,15 @@ public class Tables {
 			rowValues.add(channel.getUpNodeId());
 			rowValues.add(channel.getDownNodeId());
 			values.add(rowValues);
-			for(XSection xsection: channel.getXsections()){
-				for(XSectionLayer xsectLayer: xsection.getLayers()){
+			for (XSection xsection : channel.getXsections()) {
+				for (XSectionLayer xsectLayer : xsection.getLayers()) {
 					ArrayList<String> xrowValues = new ArrayList<String>();
 					xrowValues.add(channel.getId());
-					xrowValues.add(xsection.getDistance()+"");
-					xrowValues.add(xsectLayer.getElevation()+"");
-					xrowValues.add(xsectLayer.getArea()+"");
-					xrowValues.add(xsectLayer.getTopWidth()+"");
-					xrowValues.add(xsectLayer.getWettedPerimeter()+"");
+					xrowValues.add(xsection.getDistance() + "");
+					xrowValues.add(xsectLayer.getElevation() + "");
+					xrowValues.add(xsectLayer.getArea() + "");
+					xrowValues.add(xsectLayer.getTopWidth() + "");
+					xrowValues.add(xsectLayer.getWettedPerimeter() + "");
 					xvalues.add(xrowValues);
 				}
 			}
@@ -200,7 +218,8 @@ public class Tables {
 		list.add(channelTable);
 		InputTable xsectionTable = new InputTable();
 		xsectionTable.setName("XSECT_LAYER");
-		xsectionTable.setHeaders(Arrays.asList(new String[]{"CHAN_NO", "DIST", "ELEV", "AREA", "WIDTH", "WET_PERIM"}));
+		xsectionTable.setHeaders(Arrays.asList(new String[] { "CHAN_NO",
+				"DIST", "ELEV", "AREA", "WIDTH", "WET_PERIM" }));
 		list.add(xsectionTable);
 		xsectionTable.setValues(xvalues);
 		//
