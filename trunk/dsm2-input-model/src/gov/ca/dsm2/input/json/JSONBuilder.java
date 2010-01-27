@@ -1,3 +1,21 @@
+/**
+ *    Copyright (C) 2009, 2010 
+ *    State of California,
+ *    Department of Water Resources.
+ *    This file is part of DSM2 Grid Map
+ *    The DSM2 Grid Map is free software: 
+ *    you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *    DSM2 Grid Map is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
+ */
 package gov.ca.dsm2.input.json;
 
 import gov.ca.dsm2.input.model.Channel;
@@ -33,7 +51,6 @@ public class JSONBuilder {
 		return model.toString();
 	}
 
-	
 	private JSONArray toJSON(Reservoirs reservoirs) {
 		JSONArray jreservoirs = new JSONArray();
 		List<Reservoir> list = reservoirs.getReservoirs();
@@ -48,7 +65,8 @@ public class JSONBuilder {
 		jreservoir.put("name", reservoir.getName());
 		jreservoir.put("area", reservoir.getArea());
 		jreservoir.put("bottomElevation", reservoir.getBottomElevation());
-		jreservoir.put("connections", toJSON(reservoir.getReservoirConnections()));
+		jreservoir.put("connections", toJSON(reservoir
+				.getReservoirConnections()));
 		return jreservoir;
 	}
 
@@ -92,7 +110,7 @@ public class JSONBuilder {
 
 	private JSONArray toJSON(Channels channels) {
 		JSONArray jchannels = new JSONArray();
-		
+
 		List<Channel> channelList = channels.getChannels();
 		for (Channel channel : channelList) {
 			JSONObject jchannel = toJSON(channel);
