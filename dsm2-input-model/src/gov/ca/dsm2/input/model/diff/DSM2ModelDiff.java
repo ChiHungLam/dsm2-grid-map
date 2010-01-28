@@ -52,9 +52,9 @@ import java.util.List;
  * 
  */
 public class DSM2ModelDiff {
-	private final DSM2Model addToBase;
-	private final DSM2Model deleteFromBase;
-	private final DSM2Model changeToBase;
+	private  DSM2Model addToBase;
+	private  DSM2Model deleteFromBase;
+	private  DSM2Model changeToBase;
 
 	public DSM2ModelDiff(DSM2Model modelBase, DSM2Model modelChanged) {
 		addToBase = new DSM2Model();

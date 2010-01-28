@@ -24,8 +24,8 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class Outputs implements Serializable {
-	private final ArrayList<ChannelOutput> channelOutput;
-	private final ArrayList<ReservoirOutput> reservoirOutput;
+	private  ArrayList<ChannelOutput> channelOutput;
+	private  ArrayList<ReservoirOutput> reservoirOutput;
 
 	public Outputs() {
 		channelOutput = new ArrayList<ChannelOutput>();

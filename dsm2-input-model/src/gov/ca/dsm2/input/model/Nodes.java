@@ -25,8 +25,8 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class Nodes implements Serializable {
-	private final ArrayList<Node> nodes;
-	private final HashMap<String, Node> nodeMap;
+	private  ArrayList<Node> nodes;
+	private  HashMap<String, Node> nodeMap;
 
 	public Nodes() {
 		nodes = new ArrayList<Node>();

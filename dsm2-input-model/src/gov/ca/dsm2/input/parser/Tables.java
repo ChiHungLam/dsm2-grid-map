@@ -57,8 +57,8 @@ import java.util.List;
  * 
  */
 public class Tables {
-	private final ArrayList<InputTable> tables;
-	private final HashMap<String, InputTable> tableMap;
+	private  ArrayList<InputTable> tables;
+	private  HashMap<String, InputTable> tableMap;
 
 	/**
 	 * Creates an initial empty tables list
@@ -259,8 +259,8 @@ public class Tables {
 			try {
 				Channel channel = new Channel();
 				channel.setId(channelTable.getValue(i, "CHAN_NO"));
-				channel.setLength(Integer.parseInt(channelTable.getValue(i,
-						"LENGTH")));
+				channel.setLength((int) Double.parseDouble(channelTable
+						.getValue(i, "LENGTH")));
 				channel.setMannings(Double.parseDouble(channelTable.getValue(i,
 						"MANNING")));
 				channel.setDispersion(Double.parseDouble(channelTable.getValue(

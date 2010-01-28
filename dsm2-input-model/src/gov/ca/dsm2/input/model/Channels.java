@@ -36,10 +36,10 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Channels implements Serializable {
-	private final ArrayList<Channel> channels;
-	private final HashMap<String, Channel> channelIdMap;
-	private final HashMap<String, String> upNodeMap = new HashMap<String, String>();
-	private final HashMap<String, String> downNodeMap = new HashMap<String, String>();
+	private  ArrayList<Channel> channels;
+	private  HashMap<String, Channel> channelIdMap;
+	private  HashMap<String, String> upNodeMap = new HashMap<String, String>();
+	private  HashMap<String, String> downNodeMap = new HashMap<String, String>();
 
 	public Channels() {
 		channels = new ArrayList<Channel>();

@@ -32,8 +32,8 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Reservoirs implements Serializable {
-	private final ArrayList<Reservoir> reservoirs;
-	private final HashMap<String, Reservoir> reservoirIdMap;
+	private  ArrayList<Reservoir> reservoirs;
+	private  HashMap<String, Reservoir> reservoirIdMap;
 
 	public Reservoirs() {
 		reservoirs = new ArrayList<Reservoir>();
