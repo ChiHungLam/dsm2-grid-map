@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class XSection implements Serializable {
 	private String channelId;
 	private double distance;
-	private final ArrayList<XSectionLayer> layers;
+	private  ArrayList<XSectionLayer> layers;
 
 	public XSection() {
 		layers = new ArrayList<XSectionLayer>();

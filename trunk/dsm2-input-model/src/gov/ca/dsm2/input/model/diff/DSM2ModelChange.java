@@ -32,8 +32,8 @@ import gov.ca.dsm2.input.model.DSM2Model;
  * 
  */
 public class DSM2ModelChange {
-	private final DSM2Model modelBase;
-	private final DSM2Model modelChanged;
+	private  DSM2Model modelBase;
+	private  DSM2Model modelChanged;
 
 	public DSM2ModelChange() {
 		modelBase = new DSM2Model();

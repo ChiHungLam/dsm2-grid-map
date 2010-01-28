@@ -33,7 +33,7 @@ import java.util.List;
 public class InputTable {
 	private String name;
 	private ArrayList<String> headers;
-	private final HashMap<String, Integer> headerIndexMap;
+	private  HashMap<String, Integer> headerIndexMap;
 	private ArrayList<ArrayList<String>> values;
 
 	/**
