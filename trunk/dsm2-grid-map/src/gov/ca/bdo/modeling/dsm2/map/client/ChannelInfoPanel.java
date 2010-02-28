@@ -59,11 +59,9 @@ public class ChannelInfoPanel extends Composite {
 		String[] colors = new String[channel.getXsections().size()];
 		for (XSection xsection : channel.getXsections()) {
 			double distance = xsection.getDistance();
-			colors[i] = "#"
-					+ Integer.toHexString((int) Math.round(255 * distance))
-					+ "00"
-					+ Integer.toHexString((int) Math
-							.round(255 - 255 * distance));
+			colors[i] = "#" + getHexString((int) Math.round(255 * distance))
+					+ "33"
+					+ getHexString((int) Math.round(255 - 255 * distance));
 			i++;
 			table.addColumn(ColumnType.NUMBER, " @ " + distance);
 			for (XSectionLayer layer : xsection.getLayers()) {
@@ -93,6 +91,14 @@ public class ChannelInfoPanel extends Composite {
 		xsectionDisclosure.add(xsectionPanel);
 		vpanel.add(xsectionDisclosure);
 		initWidget(vpanel);
+	}
+
+	private String getHexString(int value) {
+		String hexString = Integer.toHexString(value);
+		if (hexString.length() == 1) {
+			hexString = "0" + hexString;
+		}
+		return hexString;
 	}
 
 	private Panel getBasicInfoPanel(Channel channel) {
