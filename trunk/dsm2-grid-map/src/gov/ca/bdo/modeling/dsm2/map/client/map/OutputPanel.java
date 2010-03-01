@@ -17,9 +17,8 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.bdo.modeling.dsm2.map.client.model.OutputMarkerDataManager;
 import gov.ca.bdo.modeling.dsm2.map.client.model.RegularTimeSeries;
 
 import java.util.Date;

@@ -17,25 +17,26 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.dsm2.input.model.Gate;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.maps.client.event.MarkerClickHandler;
 
-public class GateInfoPanel extends Composite {
+public class GateClickHandler implements MarkerClickHandler {
 
-	public GateInfoPanel(Gate gate) {
-		Panel basicInfo = getBasicInfoPanel(gate);
-		initWidget(basicInfo);
+	private final Gate gate;
+	private final MapPanel mapPanel;
+
+	public GateClickHandler(Gate gate, MapPanel mapPanel) {
+		this.gate = gate;
+		this.mapPanel = mapPanel;
 	}
 
-	private Panel getBasicInfoPanel(Gate gate) {
-		return new HTMLPanel("<h3>Gate " + gate.getName() + "</h3>"
-				+ "<p>From " + gate.getFromObject() + " "
-				+ gate.getFromIdentifier() + " to node " + gate.getToNode()
-				+ "</p>");
+	public void onClick(MarkerClickEvent event) {
+		GateInfoPanel panel = new GateInfoPanel(gate);
+		mapPanel.getInfoPanel().clear();
+		mapPanel.getInfoPanel().add(panel);
 	}
+
 }

@@ -19,8 +19,8 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.service;
 
+import gov.ca.bdo.modeling.dsm2.map.client.map.TextAnnotation;
 import gov.ca.bdo.modeling.dsm2.map.client.model.RegularTimeSeries;
-import gov.ca.bdo.modeling.dsm2.map.client.model.TextAnnotation;
 
 import java.util.List;
 

@@ -19,81 +19,45 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client;
 
+import gov.ca.bdo.modeling.dsm2.map.client.map.MapUI;
+
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.layout.client.Layout.AnimationCallback;
-import com.google.gwt.layout.client.Layout.Layer;
-import com.google.gwt.maps.client.Maps;
-import com.google.gwt.maps.utility.client.DefaultPackage;
-import com.google.gwt.maps.utility.client.GoogleMapsUtility;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.History;
 
-public class MainEntryPoint implements EntryPoint {
+public class MainEntryPoint implements EntryPoint, ValueChangeHandler<String> {
 
-	private DockLayoutPanel mainPanel;
-	private MapPanel mapPanel;
-	private HeaderPanel headerPanel;
+	private MapUI mapUI;
+	private StudyUI studyUI;
 
 	public void onModuleLoad() {
-		createUI();
-		DeferredCommand.addCommand(new Command() {
-
-			public void execute() {
-				loadMaps();
-			}
-		});
+		History.addValueChangeHandler(this);
+		History.fireCurrentHistoryState();
 	}
 
-	public void loadMaps() {
-		if (!Maps.isLoaded()) {
-			Window
-					.alert("The Maps API is not installed."
-							+ "  The <script> tag that loads the Maps API may be missing or your Maps key may be wrong.");
-			return;
-		}
-
-		if (!Maps.isBrowserCompatible()) {
-			Window.alert("The Maps API is not compatible with this browser.");
-			return;
-		}
-		Runnable mapLoadCallback = new Runnable() {
-
-			public void run() {
-				mapPanel = new MapPanel(headerPanel);
-				mainPanel.addEast(mapPanel.getControlPanelContainer(), 40);
-				mainPanel.add(mapPanel);
-				RootLayoutPanel.get().animate(0, new AnimationCallback() {
-					public void onLayout(Layer layer, double progress) {
-					}
-
-					public void onAnimationComplete() {
-						mapPanel.onResize();
-					}
-				});
-			}
-		};
-		if (!GoogleMapsUtility.isLoaded(DefaultPackage.MARKER_CLUSTERER,
-				DefaultPackage.LABELED_MARKER, DefaultPackage.MAP_ICON_MAKER)) {
-			GoogleMapsUtility.loadUtilityApi(mapLoadCallback,
-					DefaultPackage.MARKER_CLUSTERER,
-					DefaultPackage.LABELED_MARKER,
-					DefaultPackage.MAP_ICON_MAKER);
+	public void onValueChange(ValueChangeEvent<String> event) {
+		String value = event.getValue();
+		if ((value == null) || "".equals(value)) {
+			gotoMap();
+		} else if (value.equals("manage")) {
+			gotoStudies();
 		} else {
-			mapLoadCallback.run();
+			gotoMap();
 		}
 	}
 
-	protected void createUI() {
-		mainPanel = new DockLayoutPanel(Unit.EM);
-		headerPanel = new HeaderPanel();
-		headerPanel.showMessage(true, "Loading...");
-		mainPanel.addNorth(headerPanel, 2);
-		mainPanel.addSouth(new HTML(""), 1);
-		RootLayoutPanel.get().add(mainPanel);
+	private void gotoStudies() {
+		if (studyUI == null) {
+			studyUI = new StudyUI();
+		}
+		studyUI.bind();
+	}
+
+	private void gotoMap() {
+		if (mapUI == null) {
+			mapUI = new MapUI();
+		}
+		mapUI.bind();
 	}
 }

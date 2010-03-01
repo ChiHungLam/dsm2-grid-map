@@ -17,25 +17,13 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.dsm2.input.model.Gate;
 
-import com.google.gwt.maps.client.event.MarkerDragEndHandler;
-import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.user.client.ui.Composite;
 
-public class GateDragHandler implements MarkerDragEndHandler {
+public class TextPanel extends Composite {
+	public TextPanel(TextAnnotation annotation) {
 
-	private final Gate gate;
-
-	public GateDragHandler(Gate gate) {
-		this.gate = gate;
 	}
-
-	public void onDragEnd(MarkerDragEndEvent event) {
-		LatLng latLng = event.getSender().getLatLng();
-		gate.setLatitude(latLng.getLatitude());
-		gate.setLongitude(latLng.getLongitude());
-	}
-
 }

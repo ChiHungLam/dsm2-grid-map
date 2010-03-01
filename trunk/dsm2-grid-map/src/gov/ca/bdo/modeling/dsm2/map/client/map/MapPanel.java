@@ -17,14 +17,9 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.bdo.modeling.dsm2.map.client.model.ChannelLineDataManager;
-import gov.ca.bdo.modeling.dsm2.map.client.model.GateOverlayManager;
-import gov.ca.bdo.modeling.dsm2.map.client.model.NodeMarkerDataManager;
-import gov.ca.bdo.modeling.dsm2.map.client.model.OutputMarkerDataManager;
-import gov.ca.bdo.modeling.dsm2.map.client.model.ReservoirOverlayManager;
-import gov.ca.bdo.modeling.dsm2.map.client.model.TextAnnotationsManager;
+import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import gov.ca.dsm2.input.model.Channel;

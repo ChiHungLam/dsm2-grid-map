@@ -17,9 +17,8 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.bdo.modeling.dsm2.map.client.model.OutputMarkerDataManager;
 
 import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.visualization.client.VisualizationUtils;

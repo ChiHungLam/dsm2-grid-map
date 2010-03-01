@@ -17,9 +17,8 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client.model;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.bdo.modeling.dsm2.map.client.MapPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DataService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DataServiceAsync;
 
