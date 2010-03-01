@@ -17,42 +17,43 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client.model;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import java.io.Serializable;
+import gov.ca.dsm2.input.model.Gates;
 
-@SuppressWarnings("serial")
-public class TextAnnotation implements Serializable {
-	private String text;
-	private double lat;
-	private double lng;
+import java.util.HashMap;
 
-	public TextAnnotation() {
+import com.google.gwt.maps.client.overlay.Marker;
+
+public class GateOverlayManager {
+	private Gates gates;
+	private final HashMap<String, Marker> gateMarkerMap;
+
+	public GateOverlayManager() {
+		gateMarkerMap = new HashMap<String, Marker>();
 
 	}
 
-	public void setLatitude(double lat) {
-		this.lat = lat;
+	public void setGates(Gates gates) {
+		this.gates = gates;
+		gateMarkerMap.clear();
 	}
 
-	public void setLongitude(double lng) {
-		this.lng = lng;
+	public void addGateMarker(String gateId, Marker overlay) {
+		gateMarkerMap.put(gateId, overlay);
 	}
 
-	public double getLatitude() {
-		return lat;
+	public Marker getGateMarker(String gateId) {
+		return gateMarkerMap.get(gateId);
 	}
 
-	public double getLongitude() {
-		return lng;
+	public void removeGateMarker(String gateId) {
+		gateMarkerMap.remove(gateId);
 	}
 
-	public String getText() {
-		return text;
+	public void hideMarkers(boolean hide) {
+		for (Marker marker : gateMarkerMap.values()) {
+			marker.setVisible(!hide);
+		}
 	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
 }

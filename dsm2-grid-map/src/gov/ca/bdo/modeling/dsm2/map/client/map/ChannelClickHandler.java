@@ -17,10 +17,9 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.bdo.modeling.dsm2.map.client.model.GeomUtils;
-import gov.ca.bdo.modeling.dsm2.map.client.model.NodeMarkerDataManager;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
@@ -70,6 +69,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		ChannelInfoPanel panel = new ChannelInfoPanel(channel);
 		mapPanel.getInfoPanel().clear();
 		mapPanel.getInfoPanel().add(panel);
+		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
+		Node upNode = nodeManager.getNodeData(channel.getUpNodeId());
+		Node downNode = nodeManager.getNodeData(channel.getDownNodeId());
 		if (line != null) {
 			if (line.isVisible()) {
 				line.setVisible(false);
@@ -82,16 +84,16 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			for (Polyline xline : xsectionLineMap.values()) {
 				mapPanel.getMap().addOverlay(xline);
 			}
+			// indicate up and down node by letters U and D at the nodes
+			//
 			if (mapPanel.isInEditMode()) {
 				line.setEditingEnabled(true);
 			}
 			return;
 		}
+
 		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
 				opacity);
-		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
-		Node upNode = nodeManager.getNodeData(channel.getUpNodeId());
-		Node downNode = nodeManager.getNodeData(channel.getDownNodeId());
 		LatLng[] points = null;
 		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
 				.getLongitude());

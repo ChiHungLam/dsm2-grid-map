@@ -19,8 +19,8 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server;
 
+import gov.ca.bdo.modeling.dsm2.map.client.map.TextAnnotation;
 import gov.ca.bdo.modeling.dsm2.map.client.model.RegularTimeSeries;
-import gov.ca.bdo.modeling.dsm2.map.client.model.TextAnnotation;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DataService;
 import gov.ca.bdo.modeling.dsm2.map.server.data.DataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DataFileDAO;

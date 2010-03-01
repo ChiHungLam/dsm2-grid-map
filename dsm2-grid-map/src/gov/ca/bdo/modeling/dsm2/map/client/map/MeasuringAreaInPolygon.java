@@ -17,17 +17,17 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.event.PolylineCancelLineHandler;
-import com.google.gwt.maps.client.event.PolylineClickHandler;
-import com.google.gwt.maps.client.event.PolylineEndLineHandler;
-import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
+import com.google.gwt.maps.client.event.PolygonCancelLineHandler;
+import com.google.gwt.maps.client.event.PolygonClickHandler;
+import com.google.gwt.maps.client.event.PolygonEndLineHandler;
+import com.google.gwt.maps.client.event.PolygonLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
-import com.google.gwt.maps.client.overlay.Polyline;
+import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -36,15 +36,15 @@ import com.google.gwt.user.client.ui.Label;
  * @author psandhu
  * 
  */
-public class MeasuringDistanceAlongLine {
+public class MeasuringAreaInPolygon {
 	private final MapWidget map;
-	private Polyline line;
+	private Polygon polygon;
 	private final String color = "#FF0000";
 	private final int weight = 5;
 	private final double opacity = 0.75;
 	private final Label messageLabel;
 
-	public MeasuringDistanceAlongLine(MapWidget map, Label messageLabel) {
+	public MeasuringAreaInPolygon(MapWidget map, Label messageLabel) {
 		this.map = map;
 		this.messageLabel = messageLabel;
 	}
@@ -52,54 +52,54 @@ public class MeasuringDistanceAlongLine {
 	public void addPolyline() {
 		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
 				opacity);
-		line = new Polyline(new LatLng[0]);
-		map.addOverlay(line);
-		line.setDrawingEnabled();
-		line.setStrokeStyle(style);
+		polygon = new Polygon(new LatLng[0]);
+		map.addOverlay(polygon);
+		polygon.setDrawingEnabled();
+		polygon.setStrokeStyle(style);
 		messageLabel.setText("");
-		line.addPolylineClickHandler(new PolylineClickHandler() {
+		polygon.addPolygonClickHandler(new PolygonClickHandler() {
 
-			public void onClick(PolylineClickEvent event) {
-				editPolyline();
+			public void onClick(PolygonClickEvent event) {
+				editPolygon();
 			}
 		});
-		line.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
+		polygon.addPolygonLineUpdatedHandler(new PolygonLineUpdatedHandler() {
 
-			public void onUpdate(PolylineLineUpdatedEvent event) {
-				messageLabel.setText("Length : " + getLengthInFeet() + " ft");
-			}
-		});
-
-		line.addPolylineCancelLineHandler(new PolylineCancelLineHandler() {
-
-			public void onCancel(PolylineCancelLineEvent event) {
-				messageLabel.setText("Length : " + getLengthInFeet() + " ft");
+			public void onUpdate(PolygonLineUpdatedEvent event) {
+				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
 			}
 		});
 
-		line.addPolylineEndLineHandler(new PolylineEndLineHandler() {
+		polygon.addPolygonCancelLineHandler(new PolygonCancelLineHandler() {
 
-			public void onEnd(PolylineEndLineEvent event) {
-				messageLabel.setText("Length : " + getLengthInFeet() + " ft");
+			public void onCancel(PolygonCancelLineEvent event) {
+				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
+			}
+		});
+
+		polygon.addPolygonEndLineHandler(new PolygonEndLineHandler() {
+
+			public void onEnd(PolygonEndLineEvent event) {
+				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
 			}
 		});
 	}
 
-	public double getLengthInFeet() {
-		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
+	public double getAreaInSquareFeet() {
+		return Math.round(polygon.getArea() * 3.2808399 * 3.2808399 * 100) / 100;
 	}
 
-	public void editPolyline() {
-		if (line == null) {
+	public void editPolygon() {
+		if (polygon == null) {
 			return;
 		}
 		// allow up to 10 vertices to exist in the line.
-		line.setEditingEnabled(PolyEditingOptions.newInstance(10));
+		polygon.setEditingEnabled(PolyEditingOptions.newInstance(10));
 	}
 
 	public void clearOverlay() {
-		if (line != null) {
-			map.removeOverlay(line);
+		if (polygon != null) {
+			map.removeOverlay(polygon);
 		}
 	}
 }

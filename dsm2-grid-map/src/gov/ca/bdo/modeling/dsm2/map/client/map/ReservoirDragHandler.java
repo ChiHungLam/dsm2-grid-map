@@ -17,43 +17,30 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client.model;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.dsm2.input.model.Gates;
+import gov.ca.dsm2.input.model.Reservoir;
 
-import java.util.HashMap;
+import com.google.gwt.maps.client.event.MarkerDragEndHandler;
+import com.google.gwt.maps.client.geom.LatLng;
 
-import com.google.gwt.maps.client.overlay.Marker;
+public class ReservoirDragHandler implements MarkerDragEndHandler {
 
-public class GateOverlayManager {
-	private Gates gates;
-	private final HashMap<String, Marker> gateMarkerMap;
+	private final Reservoir reservoir;
+	private final ReservoirOverlayManager manager;
 
-	public GateOverlayManager() {
-		gateMarkerMap = new HashMap<String, Marker>();
-
+	public ReservoirDragHandler(ReservoirOverlayManager manager,
+			Reservoir reservoir) {
+		this.reservoir = reservoir;
+		this.manager = manager;
 	}
 
-	public void setGates(Gates gates) {
-		this.gates = gates;
-		gateMarkerMap.clear();
+	public void onDragEnd(MarkerDragEndEvent event) {
+		LatLng latLng = event.getSender().getLatLng();
+		reservoir.setLatitude(latLng.getLatitude());
+		reservoir.setLongitude(latLng.getLongitude());
+		manager.removeReserviorConnectionLines(reservoir.getName());
+		manager.addReservoirConnectionLines(reservoir);
 	}
 
-	public void addGateMarker(String gateId, Marker overlay) {
-		gateMarkerMap.put(gateId, overlay);
-	}
-
-	public Marker getGateMarker(String gateId) {
-		return gateMarkerMap.get(gateId);
-	}
-
-	public void removeGateMarker(String gateId) {
-		gateMarkerMap.remove(gateId);
-	}
-
-	public void hideMarkers(boolean hide) {
-		for (Marker marker : gateMarkerMap.values()) {
-			marker.setVisible(!hide);
-		}
-	}
 }
