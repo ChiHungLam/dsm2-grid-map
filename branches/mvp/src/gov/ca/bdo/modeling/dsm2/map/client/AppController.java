@@ -1,9 +1,11 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
 import gov.ca.bdo.modeling.dsm2.map.client.manager.StudyManagerDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.manager.UploadStudyDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter;
+import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -53,11 +55,14 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		if (token != null) {
 			Presenter presenter = null;
 
-			if (token.equals("map")) {
+			if (token.startsWith("map")) {
 				presenter = createDSM2GridMapPresenter();
 			} else if (token.equals("studies")) {
 				presenter = new DSM2StudyManagerPresenter(dsm2InputService,
 						eventBus, new StudyManagerDisplay());
+			} else if (token.equals("upload_study")) {
+				presenter = new DSM2StudyUploadPresenter(eventBus,
+						new UploadStudyDisplay());
 			} else if (token.equals("profile")) {
 			} else {
 				presenter = createDSM2GridMapPresenter();

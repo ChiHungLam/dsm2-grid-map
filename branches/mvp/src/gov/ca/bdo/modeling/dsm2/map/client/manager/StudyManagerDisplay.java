@@ -31,6 +31,8 @@ public class StudyManagerDisplay extends Composite implements Display {
 		mainPanel.addNorth(headerPanel, 2);
 		mainPanel.addSouth(new HTML(""), 1);
 		mainPanel.add(studyPanel = new FlowPanel());
+		clearTable();
+		studyPanel.add(deleteButton = new Button("Delete Selected"));
 		initWidget(mainPanel);
 	}
 
@@ -44,8 +46,8 @@ public class StudyManagerDisplay extends Composite implements Display {
 		}
 		int rowIndex = table.getRowCount();
 		Label studyBox = new Label(study);
-		table.setWidget(rowIndex, 0, studyBox);
-		table.setWidget(rowIndex, 1, new CheckBox());
+		table.setWidget(rowIndex, 0, new CheckBox());
+		table.setWidget(rowIndex, 1, studyBox);
 	}
 
 	public void clearTable() {
@@ -54,11 +56,10 @@ public class StudyManagerDisplay extends Composite implements Display {
 		} else {
 			table = new FlexTable();
 			studyPanel.add(table);
-			studyPanel.add(deleteButton = new Button("Delete Selected"));
 			headerPanel.showMessage(false, "");
 		}
-		table.setHTML(0, 0, "<b>Study Name</b>");
-		table.setHTML(0, 1, "<b>Selected</b>");
+		table.setHTML(0, 0, "<b>Selected</b>");
+		table.setHTML(0, 1, "<b>Study Name</b>");
 	}
 
 	public void showErrorMessage(String message) {
@@ -73,10 +74,10 @@ public class StudyManagerDisplay extends Composite implements Display {
 		int rows = table.getRowCount();
 		ArrayList<String> selectedRows = new ArrayList<String>();
 		for (int i = 0; i < rows; i++) {
-			Widget checkBox = table.getWidget(i, 1);
+			Widget checkBox = table.getWidget(i, 0);
 			if (checkBox instanceof CheckBox) {
 				if (((CheckBox) checkBox).getValue().booleanValue()) {
-					Label label = (Label) table.getWidget(i, 0);
+					Label label = (Label) table.getWidget(i, 1);
 					selectedRows.add(label.getText());
 				}
 			}
@@ -87,7 +88,7 @@ public class StudyManagerDisplay extends Composite implements Display {
 	public void removeStudy(String study) {
 		int rows = table.getRowCount();
 		for (int i = 0; i < rows; i++) {
-			Widget label = table.getWidget(i, 0);
+			Widget label = table.getWidget(i, 1);
 			if (label instanceof Label) {
 				if (((Label) label).getText().equals(study)) {
 					table.removeRow(i);
@@ -95,5 +96,13 @@ public class StudyManagerDisplay extends Composite implements Display {
 				}
 			}
 		}
+	}
+
+	public void showMessage(String message) {
+		headerPanel.showMessage(true, message);
+	}
+
+	public void clearMessages() {
+		headerPanel.clearMessages();
 	}
 }

@@ -36,7 +36,9 @@ public class HeaderPanel extends Composite {
 	public HeaderPanel() {
 		loginService = GWT.create(LoginService.class);
 		headerPanel = new gov.ca.modeling.dsm2.widgets.client.HeaderPanel();
-		headerPanel.addToLinkPanel(new HTML("<b>DSM2 Grid Map</b>"));
+		headerPanel.addToLinkPanel(new Anchor("Map", "#map"));
+		headerPanel.addToLinkPanel(new Anchor("Studies", "#studies"));
+		headerPanel.addToLinkPanel(new Anchor("Upload", "#upload_study"));
 		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 
@@ -68,5 +70,9 @@ public class HeaderPanel extends Composite {
 
 	public void showError(boolean show, String message) {
 		headerPanel.showError(show, message);
+	}
+
+	public void clearMessages() {
+		headerPanel.showWarning(false, "");
 	}
 }

@@ -21,6 +21,7 @@ public class MapDisplay implements Display {
 	private HeaderPanel headerPanel;
 	private MapPanel mapPanel;
 	private DockLayoutPanel mainPanel;
+	private String studyName = null;
 
 	public MapDisplay() {
 		mainPanel = new DockLayoutPanel(Unit.EM);
@@ -57,6 +58,9 @@ public class MapDisplay implements Display {
 				mapPanel = new MapPanel(headerPanel);
 				mainPanel.addEast(mapPanel.getControlPanelContainer(), 40);
 				mainPanel.add(mapPanel);
+				if (studyName != null) {
+					mapPanel.setStudy(studyName);
+				}
 				RootLayoutPanel.get().animate(0, new AnimationCallback() {
 					public void onLayout(Layer layer, double progress) {
 					}
@@ -75,6 +79,15 @@ public class MapDisplay implements Display {
 					DefaultPackage.MAP_ICON_MAKER);
 		} else {
 			mapLoadCallback.run();
+		}
+	}
+
+	public void setStudy(String studyName) {
+		if (mapPanel != null) {
+			mapPanel.setStudy(studyName);
+			studyName = null;
+		} else {
+			this.studyName = studyName;
 		}
 	}
 }

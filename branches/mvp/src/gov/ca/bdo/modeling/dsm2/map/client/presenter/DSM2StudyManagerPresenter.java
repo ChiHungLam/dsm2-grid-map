@@ -20,15 +20,20 @@ public class DSM2StudyManagerPresenter implements Presenter {
 
 		public void clearTable();
 
-		public void addRowForStudy(String string);
+		public void addRowForStudy(String studyName);
 
-		public void showErrorMessage(String string);
+		public void showErrorMessage(String message);
+
+		public void showMessage(String message);
 
 		public HasClickHandlers getDeleteButton();
 
 		public ArrayList<String> getSelectedStudies();
 
 		public void removeStudy(String study);
+
+		public void clearMessages();
+
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
@@ -43,10 +48,12 @@ public class DSM2StudyManagerPresenter implements Presenter {
 	}
 
 	public void bind() {
+		display.showMessage("Loading...");
 		dsm2InputService.getStudyNames(new AsyncCallback<String[]>() {
 
 			public void onSuccess(final String[] result) {
 				display.clearTable();
+				display.clearMessages();
 				for (String element : result) {
 					display.addRowForStudy(element);
 				}
