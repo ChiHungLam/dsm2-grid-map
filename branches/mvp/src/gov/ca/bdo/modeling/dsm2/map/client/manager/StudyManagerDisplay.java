@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -18,11 +19,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class StudyManagerDisplay extends Composite implements Display {
-	private FlexTable table;
+	public FlexTable table;
 	private FlowPanel studyPanel;
 	private DockLayoutPanel mainPanel;
 	private HeaderPanel headerPanel;
 	private Button deleteButton;
+	public Button shareButton;
 
 	public StudyManagerDisplay() {
 		mainPanel = new DockLayoutPanel(Unit.EM);
@@ -33,6 +35,7 @@ public class StudyManagerDisplay extends Composite implements Display {
 		mainPanel.add(studyPanel = new FlowPanel());
 		clearTable();
 		studyPanel.add(deleteButton = new Button("Delete Selected"));
+		studyPanel.add(shareButton = new Button("Share Selected"));
 		initWidget(mainPanel);
 	}
 
@@ -70,6 +73,10 @@ public class StudyManagerDisplay extends Composite implements Display {
 		return deleteButton;
 	}
 
+	public HasClickHandlers getShareButton() {
+		return shareButton;
+	}
+
 	public ArrayList<String> getSelectedStudies() {
 		int rows = table.getRowCount();
 		ArrayList<String> selectedRows = new ArrayList<String>();
@@ -93,6 +100,18 @@ public class StudyManagerDisplay extends Composite implements Display {
 				if (((Label) label).getText().equals(study)) {
 					table.removeRow(i);
 					break;
+				}
+			}
+		}
+	}
+
+	public void addShareUrl(String study, String url) {
+		int rows = table.getRowCount();
+		for (int i = 0; i < rows; i++) {
+			Widget label = table.getWidget(i, 1);
+			if (label instanceof Label) {
+				if (((Label) label).getText().equals(study)) {
+					table.setWidget(i, 2, new Anchor(url, url));
 				}
 			}
 		}

@@ -37,4 +37,21 @@ public interface DSM2InputService extends RemoteService {
 	public String showGISInput(String studyName);
 
 	public void removeStudy(String studyName);
+
+	/**
+	 * Generates a unique key for sharing this study.
+	 * 
+	 * @param studyName
+	 *            to be shared
+	 * @return a key that is used in building an unlisted url
+	 */
+	public String generateSharingKey(String studyName);
+
+	/**
+	 * Returns the name of the study related to the sharing key
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String getStudyNameForSharingKey(String key);
 }

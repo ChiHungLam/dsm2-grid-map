@@ -5,6 +5,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 
 import java.util.ArrayList;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -33,6 +34,10 @@ public class DSM2StudyManagerPresenter implements Presenter {
 		public void removeStudy(String study);
 
 		public void clearMessages();
+
+		public HasClickHandlers getShareButton();
+
+		public void addShareUrl(String study, String url);
 
 	}
 
@@ -81,6 +86,31 @@ public class DSM2StudyManagerPresenter implements Presenter {
 
 								public void onSuccess(Void result) {
 									display.removeStudy(study);
+								}
+							});
+				}
+			}
+		});
+
+		display.getShareButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				for (final String study : display.getSelectedStudies()) {
+					dsm2InputService.generateSharingKey(study,
+							new AsyncCallback<String>() {
+
+								public void onFailure(Throwable caught) {
+									display
+											.showErrorMessage("Error "
+													+ caught.getMessage()
+													+ " generating sharing key for study "
+													+ study);
+								}
+
+								public void onSuccess(String result) {
+									String url = GWT.getHostPageBaseURL()
+											+ "#map_view/" + result;
+									display.addShareUrl(study, url);
 								}
 							});
 				}

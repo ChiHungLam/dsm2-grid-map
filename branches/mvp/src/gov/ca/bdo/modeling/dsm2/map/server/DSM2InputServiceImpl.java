@@ -21,7 +21,10 @@ package gov.ca.bdo.modeling.dsm2.map.server;
 
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputService;
 import gov.ca.bdo.modeling.dsm2.map.server.data.DSM2ModelFile;
+import gov.ca.bdo.modeling.dsm2.map.server.data.DSM2Study;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DSM2ModelFileDAOImpl;
+import gov.ca.bdo.modeling.dsm2.map.server.persistence.DSM2StudyDAO;
+import gov.ca.bdo.modeling.dsm2.map.server.persistence.DSM2StudyDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.parser.InputTable;
@@ -29,7 +32,9 @@ import gov.ca.dsm2.input.parser.Parser;
 import gov.ca.dsm2.input.parser.Tables;
 
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
@@ -37,6 +42,8 @@ import javax.jdo.PersistenceManager;
 import org.apache.tools.ant.filters.StringInputStream;
 
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
@@ -203,5 +210,67 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 
 	public String showHydroInput(String studyName) {
 		return showInput(studyName, "hydro_echo_inp");
+	}
+
+	public String generateSharingKey(String studyName) {
+		UserService userService = UserServiceFactory.getUserService();
+		String key = studyName + userService.getCurrentUser().getUserId();
+		try {
+			byte messageDigest[] = MessageDigest.getInstance("MD5").digest();
+
+			StringBuffer hexString = new StringBuffer();
+			for (int i = 0; i < messageDigest.length; i++) {
+				hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+			}
+			key = hexString.toString();
+			storeSharingKey(studyName, key);
+		} catch (Exception ex) {
+			return null;
+		}
+		return key;
+	}
+
+	private void storeSharingKey(String studyName, String key) {
+		PersistenceManager persistenceManager = PMF.get()
+				.getPersistenceManager();
+		try {
+			DSM2StudyDAO dao = new DSM2StudyDAOImpl(persistenceManager);
+			DSM2Study study = dao.getStudyForName(studyName);
+			if (study == null) {
+				study = new DSM2Study();
+				study.setDateFirstShared(new Date());
+				study.setOwnerName(UserServiceFactory.getUserService()
+						.getCurrentUser().getEmail());
+				study.setSharingKey(key);
+				study.setStudyName(studyName);
+				dao.createObject(study);
+			} else {
+				study.setSharingKey(key);
+				dao.updateObject(study);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			persistenceManager.close();
+		}
+	}
+
+	public String getStudyNameForSharingKey(String key) {
+		PersistenceManager persistenceManager = PMF.get()
+				.getPersistenceManager();
+		try {
+			DSM2StudyDAO dao = new DSM2StudyDAOImpl(persistenceManager);
+			DSM2Study study = dao.getStudyForSharingKey(key);
+			if (study == null) {
+				return "";
+			}
+			return study.getStudyName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		} finally {
+			persistenceManager.close();
+		}
 	}
 }

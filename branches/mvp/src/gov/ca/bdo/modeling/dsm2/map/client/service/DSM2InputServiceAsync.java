@@ -37,4 +37,8 @@ public interface DSM2InputServiceAsync {
 	void showGISInput(String studyName, AsyncCallback<String> callback);
 
 	void removeStudy(String studyName, AsyncCallback<Void> callback);
+
+	void generateSharingKey(String studyName, AsyncCallback<String> callback);
+
+	void getStudyNameForSharingKey(String key, AsyncCallback<String> callback);
 }

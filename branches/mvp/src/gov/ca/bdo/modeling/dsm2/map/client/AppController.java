@@ -54,8 +54,10 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 		if (token != null) {
 			Presenter presenter = null;
-
-			if (token.startsWith("map")) {
+			if (token.startsWith("map_view")) {
+				// presenter = new DSM2GridMapViewPresenter(dsm2InputService,
+				// eventBus, new MapViewDisplay());
+			} else if (token.startsWith("map")) {
 				presenter = createDSM2GridMapPresenter();
 			} else if (token.equals("studies")) {
 				presenter = new DSM2StudyManagerPresenter(dsm2InputService,
