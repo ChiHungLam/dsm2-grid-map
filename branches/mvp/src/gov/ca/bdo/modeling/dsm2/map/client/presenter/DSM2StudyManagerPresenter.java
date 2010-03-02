@@ -3,6 +3,11 @@ package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 
+import java.util.ArrayList;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -18,6 +23,12 @@ public class DSM2StudyManagerPresenter implements Presenter {
 		public void addRowForStudy(String string);
 
 		public void showErrorMessage(String string);
+
+		public HasClickHandlers getDeleteButton();
+
+		public ArrayList<String> getSelectedStudies();
+
+		public void removeStudy(String study);
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
@@ -44,6 +55,28 @@ public class DSM2StudyManagerPresenter implements Presenter {
 			public void onFailure(Throwable caught) {
 				display
 						.showErrorMessage("Oops! An error occurred. Please try again");
+			}
+		});
+
+		display.getDeleteButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				for (final String study : display.getSelectedStudies()) {
+					dsm2InputService.removeStudy(study,
+							new AsyncCallback<Void>() {
+
+								public void onFailure(Throwable caught) {
+									display.showErrorMessage("Error "
+											+ caught.getMessage()
+											+ " occurred deleting study "
+											+ study);
+								}
+
+								public void onSuccess(Void result) {
+									display.removeStudy(study);
+								}
+							});
+				}
 			}
 		});
 
