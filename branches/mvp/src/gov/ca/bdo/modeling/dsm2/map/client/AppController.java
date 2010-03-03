@@ -1,9 +1,11 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
-import gov.ca.bdo.modeling.dsm2.map.client.manager.StudyManagerDisplay;
-import gov.ca.bdo.modeling.dsm2.map.client.manager.UploadStudyDisplay;
-import gov.ca.bdo.modeling.dsm2.map.client.map.MapDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.MapDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.MapViewDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.StudyManagerDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter;
+import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapViewPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
@@ -55,8 +57,8 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		if (token != null) {
 			Presenter presenter = null;
 			if (token.startsWith("map_view")) {
-				// presenter = new DSM2GridMapViewPresenter(dsm2InputService,
-				// eventBus, new MapViewDisplay());
+				presenter = new DSM2GridMapViewPresenter(dsm2InputService,
+						eventBus, new MapViewDisplay());
 			} else if (token.startsWith("map")) {
 				presenter = createDSM2GridMapPresenter();
 			} else if (token.equals("studies")) {

@@ -1,4 +1,4 @@
-package gov.ca.bdo.modeling.dsm2.map.client.manager;
+package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter.Display;

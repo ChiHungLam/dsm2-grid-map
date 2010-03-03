@@ -1,7 +1,9 @@
-package gov.ca.bdo.modeling.dsm2.map.client.map;
+package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
-import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
+import gov.ca.bdo.modeling.dsm2.map.client.map.MapControlPanel;
+import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
+import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapViewPresenter.Display;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
@@ -12,23 +14,39 @@ import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MapDisplay implements Display {
+public class MapViewDisplay extends Composite implements Display {
+
 	private HeaderPanel headerPanel;
 	private MapPanel mapPanel;
 	private DockLayoutPanel mainPanel;
 	private String studyName = null;
+	private MapControlPanel controlPanel;
+	private FlowPanel infoPanel;
+	private VerticalPanel controlPanelContainer;
 
-	public MapDisplay() {
+	public MapViewDisplay() {
 		mainPanel = new DockLayoutPanel(Unit.EM);
 		headerPanel = new HeaderPanel();
 		headerPanel.showMessage(true, "Loading...");
 		mainPanel.addNorth(headerPanel, 2);
 		mainPanel.addSouth(new HTML(""), 1);
+		// layout top level things here
+		controlPanel = new MapControlPanel();
+		infoPanel = new FlowPanel();
+		infoPanel.setStyleName("infoPanel");
+		infoPanel.setWidth("646px");
+		infoPanel.setHeight("400px");
+		controlPanelContainer = new VerticalPanel();
+		controlPanelContainer.add(controlPanel);
+		controlPanelContainer.add(infoPanel);
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
 				loadMaps();
@@ -55,8 +73,8 @@ public class MapDisplay implements Display {
 		Runnable mapLoadCallback = new Runnable() {
 
 			public void run() {
-				mapPanel = new MapPanel(headerPanel);
-				mainPanel.addEast(mapPanel.getControlPanelContainer(), 40);
+				mapPanel = new MapPanel();
+				mainPanel.addEast(controlPanelContainer, 40);
 				mainPanel.add(mapPanel);
 				if (studyName != null) {
 					mapPanel.setStudy(studyName);
@@ -90,4 +108,9 @@ public class MapDisplay implements Display {
 			this.studyName = studyName;
 		}
 	}
+
+	public void showErrorMessage(String message) {
+		headerPanel.showError(true, message);
+	}
+
 }
