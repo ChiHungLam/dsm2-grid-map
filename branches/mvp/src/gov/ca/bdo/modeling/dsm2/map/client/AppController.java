@@ -3,9 +3,11 @@ package gov.ca.bdo.modeling.dsm2.map.client;
 import gov.ca.bdo.modeling.dsm2.map.client.display.MapDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.MapViewDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.StudyManagerDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDataDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapViewPresenter;
+import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyDataUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
@@ -30,16 +32,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 	private void bind() {
 		History.addValueChangeHandler(this);
-		/*
-		 * eventBus.addHandler(AddContactEvent.TYPE, new
-		 * AddContactEventHandler() { public void onAddContact(AddContactEvent
-		 * event) { doAddNewContact(); } });
-		 */
 	}
-
-	/*
-	 * private void doAddNewContact() { History.newItem("add"); }
-	 */
 
 	public void go(HasWidgets container) {
 		this.container = container;
@@ -67,6 +60,9 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			} else if (token.equals("upload_study")) {
 				presenter = new DSM2StudyUploadPresenter(eventBus,
 						new UploadStudyDisplay());
+			} else if (token.equals("upload_data")) {
+				presenter = new DSM2StudyDataUploadPresenter(eventBus,
+						new UploadStudyDataDisplay());
 			} else if (token.equals("profile")) {
 			} else {
 				presenter = createDSM2GridMapPresenter();

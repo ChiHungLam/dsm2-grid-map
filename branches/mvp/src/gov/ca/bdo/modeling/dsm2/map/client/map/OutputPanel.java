@@ -55,6 +55,10 @@ public class OutputPanel extends Composite {
 
 	@SuppressWarnings("deprecation")
 	public void displayData(List<RegularTimeSeries> list) {
+		if ((list == null) || (list.size() == 0)) {
+			displayEmptyDataNotice();
+			return;
+		}
 		Options options = Options.create();
 		options.setDisplayAnnotations(false);
 		options.setScaleColumns(0, 1);
@@ -81,8 +85,10 @@ public class OutputPanel extends Composite {
 				table.setValue(j, i + 1, data[j]);
 			}
 		}
-		AnnotatedTimeLine chart = new AnnotatedTimeLine(table, options,
-				"600px", "400px");
+		int width = Math.max(500, container.getOffsetWidth());
+		int height = (int) Math.round(width / 1.618); // golden ratio
+		AnnotatedTimeLine chart = new AnnotatedTimeLine(table, options, width
+				+ "px", height + "px");
 		options.setLegendPosition(AnnotatedLegendPosition.SAME_ROW);
 		VerticalPanel vpanel = new VerticalPanel();
 		vpanel.add(new HTML("<h3>Location: " + name + "</h3>"));
@@ -97,6 +103,12 @@ public class OutputPanel extends Composite {
 		container.add(htmlPanel);
 		String possibleCause = "Please check your connection.";
 		container.add(new HTML(possibleCause));
+	}
+
+	public void displayEmptyDataNotice() {
+		container.clear();
+		container.add(new HTMLPanel(
+				"<h3 style='color:red'>No data available</h3>"));
 	}
 
 }

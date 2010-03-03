@@ -38,7 +38,8 @@ public class HeaderPanel extends Composite {
 		headerPanel = new gov.ca.modeling.dsm2.widgets.client.HeaderPanel();
 		headerPanel.addToLinkPanel(new Anchor("Map", "#map"));
 		headerPanel.addToLinkPanel(new Anchor("Studies", "#studies"));
-		headerPanel.addToLinkPanel(new Anchor("Upload", "#upload_study"));
+		headerPanel.addToLinkPanel(new Anchor("Upload Study", "#upload_study"));
+		headerPanel.addToLinkPanel(new Anchor("Upload Data", "#upload_data"));
 		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 

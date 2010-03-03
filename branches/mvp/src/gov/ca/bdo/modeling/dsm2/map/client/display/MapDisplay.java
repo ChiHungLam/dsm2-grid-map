@@ -48,11 +48,12 @@ public class MapDisplay extends Composite implements Display,
 		controlPanel = new MapControlPanel();
 		infoPanel = new FlowPanel();
 		infoPanel.setStyleName("infoPanel");
-		infoPanel.setWidth("646px");
-		infoPanel.setHeight("400px");
+
 		controlPanelContainer = new VerticalPanel();
 		controlPanelContainer.add(controlPanel);
 		controlPanelContainer.add(infoPanel);
+		mainPanel.addWest(new FlowPanel(), 5);
+		mainPanel.addEast(new FlowPanel(), 5);
 		mainPanel.addNorth(headerPanel, 2);
 		mainPanel.addSouth(new HTML(""), 1);
 		DeferredCommand.addCommand(new Command() {
@@ -89,6 +90,7 @@ public class MapDisplay extends Composite implements Display,
 				if (studyName != null) {
 					mapPanel.setStudy(studyName);
 				}
+
 				InitializeEvent.fire(MapDisplay.this);
 				RootLayoutPanel.get().animate(0, new AnimationCallback() {
 					public void onLayout(Layer layer, double progress) {

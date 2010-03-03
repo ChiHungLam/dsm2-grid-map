@@ -30,6 +30,8 @@ public class StudyManagerDisplay extends Composite implements Display {
 		mainPanel = new DockLayoutPanel(Unit.EM);
 		headerPanel = new HeaderPanel();
 		headerPanel.showMessage(true, "Loading...");
+		mainPanel.addWest(new FlowPanel(), 5);
+		mainPanel.addEast(new FlowPanel(), 5);
 		mainPanel.addNorth(headerPanel, 2);
 		mainPanel.addSouth(new HTML(""), 1);
 		mainPanel.add(studyPanel = new FlowPanel());
@@ -58,11 +60,18 @@ public class StudyManagerDisplay extends Composite implements Display {
 			table.clear();
 		} else {
 			table = new FlexTable();
+			table.setStyleName("blue-bordered");
 			studyPanel.add(table);
 			headerPanel.showMessage(false, "");
 		}
-		table.setHTML(0, 0, "<b>Selected</b>");
-		table.setHTML(0, 1, "<b>Study Name</b>");
+		HTML header = new HTML("<b>Selected</b>");
+		table.setWidget(0, 0, header);
+		header = new HTML("<b>Study Name</b>");
+		table.setWidget(0, 1, header);
+		table.getRowFormatter().addStyleName(0, "table-header");
+		table.getColumnFormatter().setWidth(0, "3em");
+		table.getColumnFormatter().setWidth(1, "40%");
+		table.getColumnFormatter().setWidth(2, "50%");
 	}
 
 	public void showErrorMessage(String message) {
