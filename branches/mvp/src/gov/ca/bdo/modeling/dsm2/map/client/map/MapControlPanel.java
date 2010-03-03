@@ -53,6 +53,7 @@ public class MapControlPanel extends Composite {
 	private ToggleButton addTextAnnotationButton;
 	private ToggleButton addPolylineButton;
 	private ToggleButton addPolygonButton;
+	private String[] studies;
 
 	public MapControlPanel() {
 		containerPanel = new FlexTable();
@@ -85,8 +86,8 @@ public class MapControlPanel extends Composite {
 		 * channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_MANNINGS);
 		 * channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_DISPERSION);
 		 */
-		channelColorOptions.addChangeHandler(colorSchemeHandler);
-		colorArraySchemeOptions.addChangeHandler(colorSchemeHandler);
+		// channelColorOptions.addChangeHandler(colorSchemeHandler);
+		// colorArraySchemeOptions.addChangeHandler(colorSchemeHandler);
 		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
 		addTextAnnotationButton = new ToggleButton(new Image(
 				IconImages.INSTANCE.addingTextIcon()));
@@ -149,6 +150,7 @@ public class MapControlPanel extends Composite {
 	}
 
 	public void setStudies(String[] studyNames) {
+		this.studies = studyNames;
 		for (String studyName : studyNames) {
 			studyBox.addItem(studyName, studyName);
 		}
@@ -211,6 +213,10 @@ public class MapControlPanel extends Composite {
 				break;
 			}
 		}
+	}
+
+	public String[] getStudies() {
+		return studies;
 	}
 
 }

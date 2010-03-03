@@ -43,6 +43,7 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Panel;
 
 public class MapPanel extends Composite {
 
@@ -60,6 +61,7 @@ public class MapPanel extends Composite {
 	private GateOverlayManager gateOverlayManager;
 	private ReservoirOverlayManager reservoirOverlayManager;
 	private final GridVisibilityControl visibilityControl;
+	private Panel infoPanel;
 
 	public MapPanel() {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
@@ -368,5 +370,13 @@ public class MapPanel extends Composite {
 
 	public void setModel(DSM2Model model) {
 		this.model = model;
+	}
+
+	public void setInfoPanel(Panel panel) {
+		this.infoPanel = panel;
+	}
+
+	public Panel getInfoPanel() {
+		return this.infoPanel;
 	}
 }

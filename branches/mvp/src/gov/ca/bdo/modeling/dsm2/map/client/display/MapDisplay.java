@@ -8,8 +8,12 @@ import gov.ca.dsm2.input.model.DSM2Model;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.logical.shared.HasInitializeHandlers;
+import com.google.gwt.event.logical.shared.InitializeEvent;
+import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.Maps;
@@ -18,6 +22,7 @@ import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -25,7 +30,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MapDisplay implements Display {
+public class MapDisplay extends Composite implements Display,
+		HasInitializeHandlers {
 	private HeaderPanel headerPanel;
 	private MapPanel mapPanel;
 	private DockLayoutPanel mainPanel;
@@ -54,10 +60,11 @@ public class MapDisplay implements Display {
 				loadMaps();
 			}
 		});
+		initWidget(mainPanel);
 	}
 
 	public Widget asWidget() {
-		return mainPanel;
+		return this;
 	}
 
 	public void loadMaps() {
@@ -76,11 +83,13 @@ public class MapDisplay implements Display {
 
 			public void run() {
 				mapPanel = new MapPanel();
+				mapPanel.setInfoPanel(infoPanel);
 				mainPanel.addEast(controlPanelContainer, 40);
 				mainPanel.add(mapPanel);
 				if (studyName != null) {
 					mapPanel.setStudy(studyName);
 				}
+				InitializeEvent.fire(MapDisplay.this);
 				RootLayoutPanel.get().animate(0, new AnimationCallback() {
 					public void onLayout(Layer layer, double progress) {
 					}
@@ -217,6 +226,15 @@ public class MapDisplay implements Display {
 
 	public String getStudyChoice() {
 		return controlPanel.getStudyChoice();
+	}
+
+	public String[] getStudies() {
+		return controlPanel.getStudies();
+	}
+
+	public HandlerRegistration addInitializeHandler(
+			InitializeHandler initializeHandler) {
+		return this.addHandler(initializeHandler, InitializeEvent.getType());
 	}
 
 }
