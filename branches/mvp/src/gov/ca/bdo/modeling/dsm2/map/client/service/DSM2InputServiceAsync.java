@@ -41,4 +41,6 @@ public interface DSM2InputServiceAsync {
 	void generateSharingKey(String studyName, AsyncCallback<String> callback);
 
 	void getStudyNameForSharingKey(String key, AsyncCallback<String> callback);
+
+	void getInputModelForKey(String key, AsyncCallback<DSM2Model> callback);
 }

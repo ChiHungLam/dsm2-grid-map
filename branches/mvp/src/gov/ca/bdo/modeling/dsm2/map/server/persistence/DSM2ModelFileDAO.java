@@ -32,7 +32,8 @@ public interface DSM2ModelFileDAO extends GenericDAO<DSM2ModelFile> {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<DSM2ModelFile> getFilesForCurrentUser() throws Exception;
+	public List<DSM2ModelFile> getFilesForCurrentUser(String email)
+			throws Exception;
 
 	/**
 	 * Get all study names for the current user
@@ -40,7 +41,8 @@ public interface DSM2ModelFileDAO extends GenericDAO<DSM2ModelFile> {
 	 * @return
 	 * @throws Exception
 	 */
-	public Collection<String> getStudyNamesForCurrentUser() throws Exception;
+	public Collection<String> getStudyNamesForCurrentUser(String email)
+			throws Exception;
 
 	/**
 	 * Get all files for the study named
@@ -49,7 +51,7 @@ public interface DSM2ModelFileDAO extends GenericDAO<DSM2ModelFile> {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<DSM2ModelFile> getFilesForStudy(String studyName)
+	public List<DSM2ModelFile> getFilesForStudy(String studyName, String email)
 			throws Exception;
 
 }

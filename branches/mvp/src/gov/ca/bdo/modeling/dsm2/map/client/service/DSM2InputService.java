@@ -28,6 +28,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface DSM2InputService extends RemoteService {
 	public DSM2Model getInputModel(String studyPath);
 
+	public DSM2Model getInputModelForKey(String key);
+
 	public String[] getStudyNames();
 
 	public void saveModel(String studyName, DSM2Model model);
@@ -54,4 +56,5 @@ public interface DSM2InputService extends RemoteService {
 	 * @return
 	 */
 	public String getStudyNameForSharingKey(String key);
+
 }

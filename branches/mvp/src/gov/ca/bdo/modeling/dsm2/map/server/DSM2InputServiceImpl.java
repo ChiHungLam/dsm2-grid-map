@@ -26,6 +26,7 @@ import gov.ca.bdo.modeling.dsm2.map.server.persistence.DSM2ModelFileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DSM2StudyDAO;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DSM2StudyDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
+import gov.ca.bdo.modeling.dsm2.map.server.utils.Utils;
 import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.parser.InputTable;
 import gov.ca.dsm2.input.parser.Parser;
@@ -51,6 +52,17 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		DSM2InputService {
 
 	public DSM2Model getInputModel(String studyName) {
+		String email = Utils.getCurrentUserEmail();
+		return getInputModel(studyName, email);
+	}
+
+	public DSM2Model getInputModelForKey(String key) {
+		DSM2Study studyForSharingKey = getStudyForSharingKey(key);
+		return getInputModel(studyForSharingKey.getStudyName(),
+				studyForSharingKey.getOwnerName());
+	}
+
+	public DSM2Model getInputModel(String studyName, String email) {
 		Parser inputParser = new Parser();
 		String hydro_echo_inp = "";
 		String gis_inp = "";
@@ -60,8 +72,8 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			try {
 				DSM2ModelFileDAOImpl dao = new DSM2ModelFileDAOImpl(
 						persistenceManager);
-				List<DSM2ModelFile> filesForStudy = dao
-						.getFilesForStudy(studyName);
+				List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(
+						studyName, email);
 				if (filesForStudy.size() == 0) {
 					return null;
 				}
@@ -96,7 +108,9 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		try {
 			DSM2ModelFileDAOImpl dao = new DSM2ModelFileDAOImpl(
 					persistenceManager);
-			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName);
+			String email = Utils.getCurrentUserEmail();
+			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName,
+					email);
 			if (filesForStudy.size() == 0) {
 				return;
 			}
@@ -147,7 +161,9 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		try {
 			DSM2ModelFileDAOImpl dao = new DSM2ModelFileDAOImpl(
 					persistenceManager);
-			Collection<String> studyNames = dao.getStudyNamesForCurrentUser();
+			String email = Utils.getCurrentUserEmail();
+			Collection<String> studyNames = dao
+					.getStudyNamesForCurrentUser(email);
 			String[] studyNamesArray = new String[studyNames.size()];
 			return studyNames.toArray(studyNamesArray);
 		} catch (Exception e) {
@@ -164,7 +180,9 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		try {
 			DSM2ModelFileDAOImpl dao = new DSM2ModelFileDAOImpl(
 					persistenceManager);
-			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName);
+			String email = Utils.getCurrentUserEmail();
+			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName,
+					email);
 			if (filesForStudy.size() == 0) {
 				return;
 			}
@@ -185,7 +203,9 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		try {
 			DSM2ModelFileDAOImpl dao = new DSM2ModelFileDAOImpl(
 					persistenceManager);
-			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName);
+			String email = Utils.getCurrentUserEmail();
+			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName,
+					email);
 			if (filesForStudy.size() == 0) {
 				return "";
 			}
@@ -256,21 +276,29 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public String getStudyNameForSharingKey(String key) {
+		DSM2Study study = getStudyForSharingKey(key);
+		if (study == null) {
+			return "";
+		} else {
+			return study.getStudyName();
+		}
+	}
+
+	public DSM2Study getStudyForSharingKey(String key) {
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
 		try {
 			DSM2StudyDAO dao = new DSM2StudyDAOImpl(persistenceManager);
 			DSM2Study study = dao.getStudyForSharingKey(key);
-			if (study == null) {
-				return "";
-			}
-			return study.getStudyName();
+			return study;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "";
+			return null;
 		} finally {
 			persistenceManager.close();
 		}
+
 	}
+
 }
