@@ -8,6 +8,7 @@ import gov.ca.dsm2.input.model.DSM2Model;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasInitializeHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
@@ -40,12 +41,12 @@ public class MapDisplay extends Composite implements Display,
 	private final FlowPanel infoPanel;
 	private final VerticalPanel controlPanelContainer;
 
-	public MapDisplay() {
+	public MapDisplay(boolean viewOnly) {
 		mainPanel = new DockLayoutPanel(Unit.EM);
 		headerPanel = new HeaderPanel();
 		headerPanel.showMessage(true, "Loading...");
 		// layout top level things here
-		controlPanel = new MapControlPanel();
+		controlPanel = new MapControlPanel(viewOnly);
 		infoPanel = new FlowPanel();
 		infoPanel.setStyleName("infoPanel");
 
@@ -118,54 +119,6 @@ public class MapDisplay extends Composite implements Display,
 								mapPanel.centerAndZoomOnChannel(channelId);
 							}
 						});
-				/*
-				 * controlPanel.getAddPolylineButton().addClickHandler( new
-				 * ClickHandler() { private MeasuringDistanceAlongLine measurer;
-				 * 
-				 * public void onClick(ClickEvent event) { if
-				 * (addPolylineButton.isDown()) { if (measurer == null) {
-				 * measurer = new MeasuringDistanceAlongLine(
-				 * mapPanel.getMapWidget(), measurementLabel);
-				 * measurer.addPolyline(); } else { measurer.addPolyline(); } }
-				 * else { if (measurer != null) { measurer.clearOverlay();
-				 * measurementLabel.setText(""); }
-				 * 
-				 * }
-				 * 
-				 * } }); addPolygonButton.addClickHandler(new ClickHandler() {
-				 * private MeasuringAreaInPolygon measurer;
-				 * 
-				 * public void onClick(ClickEvent event) { if
-				 * (addPolygonButton.isDown()) { if (measurer == null) {
-				 * measurer = new MeasuringAreaInPolygon(mapPanel
-				 * .getMapWidget(), measurementLabel); measurer.addPolyline(); }
-				 * else { measurer.clearOverlay(); measurementLabel.setText("");
-				 * measurer.addPolyline(); } } else { if (measurer != null) {
-				 * measurer.clearOverlay(); measurementLabel.setText(""); }
-				 * 
-				 * }
-				 * 
-				 * } }); addTextAnnotationButton.addClickHandler(new
-				 * ClickHandler() {
-				 * 
-				 * public void onClick(ClickEvent event) { if
-				 * (addTextAnnotationButton.isDown()) {
-				 * mapPanel.turnOnTextAnnotation(); } else {
-				 * mapPanel.turnOffTextAnnotation(); } } }); colorSchemeHandler
-				 * = new ChangeHandler() {
-				 * 
-				 * public void onChange(ChangeEvent event) {
-				 * mapPanel.setChannelColorScheme(channelColorOptions
-				 * .getItemText(channelColorOptions .getSelectedIndex()),
-				 * colorArraySchemeOptions .getItemText(colorArraySchemeOptions
-				 * .getSelectedIndex())); } };
-				 * saveEditModelButton.addClickHandler(new ClickHandler() {
-				 * 
-				 * public void onClick(ClickEvent event) { if
-				 * (saveEditModelButton.isDown()) { mapPanel.setEditMode(true);
-				 * } else { mapPanel.saveCurrentStudy();
-				 * mapPanel.setEditMode(false); } } });
-				 */
 			}
 		};
 
@@ -237,6 +190,18 @@ public class MapDisplay extends Composite implements Display,
 	public HandlerRegistration addInitializeHandler(
 			InitializeHandler initializeHandler) {
 		return this.addHandler(initializeHandler, InitializeEvent.getType());
+	}
+
+	public boolean isInEditMode() {
+		return mapPanel.isInEditMode();
+	}
+
+	public void setEditMode(boolean editMode) {
+		mapPanel.setEditMode(editMode);
+	}
+
+	public HasClickHandlers getSaveEditButton() {
+		return controlPanel.getSaveEditModelButton();
 	}
 
 }

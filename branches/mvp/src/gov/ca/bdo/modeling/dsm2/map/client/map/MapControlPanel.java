@@ -50,7 +50,7 @@ public class MapControlPanel extends Composite {
 	private ToggleButton addPolygonButton;
 	private String[] studies;
 
-	public MapControlPanel() {
+	public MapControlPanel(boolean viewOnly) {
 		containerPanel = new FlexTable();
 		//
 		Label studyLabel = new Label("Study");
@@ -81,7 +81,9 @@ public class MapControlPanel extends Composite {
 		}
 		containerPanel.setWidget(0, 0, studyLabel);
 		containerPanel.setWidget(0, 1, studyBox);
-		containerPanel.setWidget(0, 2, saveEditModelButton);
+		if (!viewOnly) {
+			containerPanel.setWidget(0, 2, saveEditModelButton);
+		}
 		containerPanel.setWidget(1, 0, findNodeLabel);
 		containerPanel.setWidget(1, 1, findNodeBox);
 		containerPanel.setWidget(1, 2, findChannelLabel);

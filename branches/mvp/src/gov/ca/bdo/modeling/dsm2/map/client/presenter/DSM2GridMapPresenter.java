@@ -6,14 +6,19 @@ import gov.ca.dsm2.input.model.DSM2Model;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DSM2GridMapPresenter implements Presenter {
@@ -45,18 +50,26 @@ public class DSM2GridMapPresenter implements Presenter {
 		public HandlerRegistration addInitializeHandler(
 				InitializeHandler initializeHandler);
 
+		public boolean isInEditMode();
+
+		public void setEditMode(boolean editMode);
+
+		public HasClickHandlers getSaveEditButton();
+
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
 	private HandlerManager eventBus;
 	private Display display;
 	private String currentStudy;
+	private boolean viewOnly;
 
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
-			HandlerManager eventBus, Display display) {
+			HandlerManager eventBus, Display display, boolean viewOnly) {
 		this.dsm2InputService = dsm2InputService;
 		this.eventBus = eventBus;
 		this.display = display;
+		this.viewOnly = viewOnly;
 	}
 
 	public void go(HasWidgets container) {
@@ -81,25 +94,45 @@ public class DSM2GridMapPresenter implements Presenter {
 				loadStudy();
 			}
 		});
+		display.getSaveEditButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				Object source = event.getSource();
+				if (source instanceof ToggleButton) {
+					ToggleButton button = (ToggleButton) source;
+					display.setEditMode(button.isDown());
+					if (!button.isDown()) {
+						saveCurrentStudy();
+					}
+				}
+			}
+		});
 	}
 
 	public void setStudyFromHistory() {
-		String token = History.getToken();
-		if (token.startsWith("map")) {
-			if (token.indexOf("/") >= 0) {
-				String studyName = token.substring(token.indexOf("/") + 1);
-				currentStudy = studyName;
-			} else {
-				String[] studies = display.getStudies();
-				if ((studies != null) && (studies.length > 0)) {
-					currentStudy = studies[0];
+		if (viewOnly) {
+			loadViewOnlyStudy();
+		} else {
+			String token = History.getToken();
+			if (token.startsWith("map")) {
+				if ((token.indexOf("/") >= 0)) {
+					String studyName = token.substring(token.indexOf("/") + 1);
+					currentStudy = studyName;
+				} else {
+					String[] studies = display.getStudies();
+					if ((studies != null) && (studies.length > 0)) {
+						currentStudy = studies[0];
+					}
 				}
+				display.setStudy(currentStudy);
 			}
-			display.setStudy(currentStudy);
 		}
 	}
 
 	public void loadStudy() {
+		if (currentStudy == null) {
+			return;
+		}
 		dsm2InputService.getInputModel(currentStudy,
 				new AsyncCallback<DSM2Model>() {
 
@@ -121,20 +154,24 @@ public class DSM2GridMapPresenter implements Presenter {
 	}
 
 	public void loadStudies() {
-		dsm2InputService.getStudyNames(new AsyncCallback<String[]>() {
+		if (viewOnly) {
+			loadViewOnlyStudy();
+		} else {
+			dsm2InputService.getStudyNames(new AsyncCallback<String[]>() {
 
-			public void onSuccess(String[] result) {
-				display.setStudies(result);
-				setStudyFromHistory();
-				loadStudy();
-			}
+				public void onSuccess(String[] result) {
+					display.setStudies(result);
+					setStudyFromHistory();
+					loadStudy();
+				}
 
-			public void onFailure(Throwable caught) {
-				display.showError("Oops and error occurred: "
-						+ caught.getMessage());
-				display.setStudies(new String[0]);
-			}
-		});
+				public void onFailure(Throwable caught) {
+					display.showError("Oops and error occurred: "
+							+ caught.getMessage());
+					display.setStudies(new String[0]);
+				}
+			});
+		}
 	}
 
 	public void saveCurrentStudy() {
@@ -143,6 +180,14 @@ public class DSM2GridMapPresenter implements Presenter {
 
 					public void onSuccess(Void result) {
 						display.showMessage("Saved study " + currentStudy);
+						Timer timer = new Timer() {
+
+							@Override
+							public void run() {
+								display.clearMessages();
+							}
+						};
+						timer.schedule(5000);
 					}
 
 					public void onFailure(Throwable caught) {
@@ -150,6 +195,32 @@ public class DSM2GridMapPresenter implements Presenter {
 								+ currentStudy);
 					}
 				});
+
+	}
+
+	public void loadViewOnlyStudy() {
+		String token = History.getToken();
+		if (token.startsWith("map_view")) {
+			if (token.indexOf("/") >= 0) {
+				final String studyKey = token.substring(token.indexOf("/") + 1);
+				dsm2InputService.getStudyNameForSharingKey(studyKey,
+						new AsyncCallback<String>() {
+
+							public void onSuccess(String studyName) {
+								currentStudy = studyName;
+								display.setStudies(new String[] { studyName });
+								display.setStudy(studyName);
+								loadStudy();
+							}
+
+							public void onFailure(Throwable caught) {
+								display.showError("Error "
+										+ caught.getMessage() + " for key "
+										+ studyKey);
+							}
+						});
+			}
+		}
 
 	}
 
