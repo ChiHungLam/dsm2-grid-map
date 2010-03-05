@@ -58,6 +58,9 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 
 	public DSM2Model getInputModelForKey(String key) {
 		DSM2Study studyForSharingKey = getStudyForSharingKey(key);
+		if (studyForSharingKey == null) {
+			return null;
+		}
 		return getInputModel(studyForSharingKey.getStudyName(),
 				studyForSharingKey.getOwnerName());
 	}
@@ -236,11 +239,12 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		UserService userService = UserServiceFactory.getUserService();
 		String key = studyName + userService.getCurrentUser().getUserId();
 		try {
-			byte messageDigest[] = MessageDigest.getInstance("MD5").digest();
+			byte messageDigest[] = MessageDigest.getInstance("MD5").digest(
+					key.getBytes());
 
 			StringBuffer hexString = new StringBuffer();
-			for (int i = 0; i < messageDigest.length; i++) {
-				hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+			for (byte element : messageDigest) {
+				hexString.append(Integer.toHexString(0xFF & element));
 			}
 			key = hexString.toString();
 			storeSharingKey(studyName, key);
