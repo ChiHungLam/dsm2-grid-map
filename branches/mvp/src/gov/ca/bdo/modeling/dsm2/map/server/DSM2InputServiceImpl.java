@@ -200,13 +200,12 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
-	public String showInput(String studyName, String inputName) {
+	public String showInputFor(String studyName, String inputName, String email) {
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
 		try {
 			DSM2ModelFileDAOImpl dao = new DSM2ModelFileDAOImpl(
 					persistenceManager);
-			String email = Utils.getCurrentUserEmail();
 			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName,
 					email);
 			if (filesForStudy.size() == 0) {
@@ -225,6 +224,19 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		} finally {
 			persistenceManager.close();
 		}
+
+	}
+
+	public String showInputForKey(String studyKey, String inputName) {
+		DSM2Study studyForSharingKey = getStudyForSharingKey(studyKey);
+		String studyName = studyForSharingKey.getStudyName();
+		String ownerName = studyForSharingKey.getOwnerName();
+		return showInputFor(studyName, inputName, ownerName);
+	}
+
+	public String showInput(String studyName, String inputName) {
+		String email = Utils.getCurrentUserEmail();
+		return showInputFor(studyName, inputName, email);
 	}
 
 	public String showGISInput(String studyName) {

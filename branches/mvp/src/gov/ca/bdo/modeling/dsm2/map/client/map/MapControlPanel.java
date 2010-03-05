@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -49,8 +50,10 @@ public class MapControlPanel extends Composite {
 	private ToggleButton addPolylineButton;
 	private ToggleButton addPolygonButton;
 	private String[] studies;
+	private boolean viewOnly;
 
 	public MapControlPanel(boolean viewOnly) {
+		this.viewOnly = viewOnly;
 		containerPanel = new FlexTable();
 		//
 		Label studyLabel = new Label("Study");
@@ -107,14 +110,23 @@ public class MapControlPanel extends Composite {
 	}
 
 	private String buildDownloadLink(String inputName) {
-		if (studyBox.getItemCount() == 0) {
-			return "";
-		} else {
-			return GWT.getModuleBaseURL()
-					+ "dsm2_download?studyName="
-					+ URL.encode(studyBox.getItemText(studyBox
-							.getSelectedIndex())) + "&inputName="
+		if (viewOnly) {
+			// FIXME: not a good way. fix later
+			String token = History.getToken();
+			String studyKey = token.substring(token.indexOf("/") + 1);
+			return GWT.getModuleBaseURL() + "dsm2_download?studyKey="
+					+ URL.encode(studyKey) + "&inputName="
 					+ URL.encode(inputName);
+		} else {
+			if (studyBox.getItemCount() == 0) {
+				return "";
+			} else {
+				return GWT.getModuleBaseURL()
+						+ "dsm2_download?studyName="
+						+ URL.encode(studyBox.getItemText(studyBox
+								.getSelectedIndex())) + "&inputName="
+						+ URL.encode(inputName);
+			}
 		}
 	}
 
@@ -123,18 +135,7 @@ public class MapControlPanel extends Composite {
 		for (String studyName : studyNames) {
 			studyBox.addItem(studyName, studyName);
 		}
-		studyBox.setSelectedIndex(0);
-		if (downloadHydroEchoLink == null) {
-			downloadHydroEchoLink = new Anchor("Download Hydro Input");
-			downloadHydroEchoLink.setTarget("_download_input");
-		}
-		if (downloadGisEchoLink == null) {
-			downloadGisEchoLink = new Anchor("Download GIS Input");
-			downloadGisEchoLink.setTarget("_download_input");
-		}
-		downloadHydroEchoLink.setHref(buildDownloadLink("hydro_echo_inp"));
-		downloadGisEchoLink.setHref(buildDownloadLink("gis_inp"));
-
+		setStudy(studyBox.getItemText(0));
 	}
 
 	public HasChangeHandlers getStudyBox() {
@@ -174,9 +175,23 @@ public class MapControlPanel extends Composite {
 		for (int i = 0; i < count; i++) {
 			if (studyName.equals(studyBox.getItemText(i))) {
 				studyBox.setSelectedIndex(i);
+				updateLinks();
 				break;
 			}
 		}
+	}
+
+	public void updateLinks() {
+		if (downloadHydroEchoLink == null) {
+			downloadHydroEchoLink = new Anchor("Download Hydro Input");
+			downloadHydroEchoLink.setTarget("_download_input");
+		}
+		if (downloadGisEchoLink == null) {
+			downloadGisEchoLink = new Anchor("Download GIS Input");
+			downloadGisEchoLink.setTarget("_download_input");
+		}
+		downloadHydroEchoLink.setHref(buildDownloadLink("hydro_echo_inp"));
+		downloadGisEchoLink.setHref(buildDownloadLink("gis_inp"));
 	}
 
 	public String[] getStudies() {

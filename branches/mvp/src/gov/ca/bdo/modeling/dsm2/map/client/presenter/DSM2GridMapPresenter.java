@@ -56,6 +56,8 @@ public class DSM2GridMapPresenter implements Presenter {
 
 		public HasClickHandlers getSaveEditButton();
 
+		public void updateLinks();
+
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
@@ -92,6 +94,7 @@ public class DSM2GridMapPresenter implements Presenter {
 			public void onInitialize(InitializeEvent event) {
 				if (viewOnly) {
 					loadViewOnlyStudy();
+					display.updateLinks();
 				} else {
 					setStudyFromHistory();
 					loadStudy();

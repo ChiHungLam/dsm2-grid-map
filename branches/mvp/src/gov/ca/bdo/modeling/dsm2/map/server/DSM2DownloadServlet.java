@@ -35,9 +35,16 @@ public class DSM2DownloadServlet extends HttpServlet {
 			throws IOException {
 		String studyName = req.getParameter("studyName");
 		String inputName = req.getParameter("inputName");
+		String studyKey = req.getParameter("studyKey");
 		resp.setContentType("text/plain");
-		resp.getWriter().write(
-				new DSM2InputServiceImpl().showInput(studyName, inputName));
+		if ((studyKey == null) || studyKey.equals("")) {
+			resp.getWriter().write(
+					new DSM2InputServiceImpl().showInput(studyName, inputName));
+		} else {
+			resp.getWriter().write(
+					new DSM2InputServiceImpl().showInputForKey(studyKey,
+							inputName));
+		}
 	}
 
 }

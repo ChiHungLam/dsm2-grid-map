@@ -204,4 +204,8 @@ public class MapDisplay extends Composite implements Display,
 		return controlPanel.getSaveEditModelButton();
 	}
 
+	public void updateLinks() {
+		controlPanel.updateLinks();
+	}
+
 }
