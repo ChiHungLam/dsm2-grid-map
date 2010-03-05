@@ -29,13 +29,15 @@ public class DSM2StudyDAOImpl extends GenericDAOImpl<DSM2Study> implements
 		}
 	}
 
-	public DSM2Study getStudyForName(String studyName) throws Exception {
+	public DSM2Study getStudyForName(String studyName, String email)
+			throws Exception {
 		// look for item first else insert a new one
 		Query query = getPersistenceManager().newQuery(
 				"select from " + DSM2Study.class.getName());
-		query.setFilter("studyName==studyNameParam");
-		query.declareParameters("String studyNameParam");
-		List<DSM2Study> files = (List<DSM2Study>) query.execute(studyName);
+		query.setFilter("studyName==studyNameParam && ownerName==emailParam");
+		query.declareParameters("String studyNameParam, String emailParam");
+		List<DSM2Study> files = (List<DSM2Study>) query.execute(studyName,
+				email);
 		if ((files == null) || (files.size() != 1)) {
 			return null;
 		} else {

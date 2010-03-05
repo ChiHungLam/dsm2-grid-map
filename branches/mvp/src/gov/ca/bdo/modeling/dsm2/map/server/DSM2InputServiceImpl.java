@@ -271,19 +271,19 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 				.getPersistenceManager();
 		try {
 			DSM2StudyDAO dao = new DSM2StudyDAOImpl(persistenceManager);
-			DSM2Study study = dao.getStudyForName(studyName);
+			String email = Utils.getCurrentUserEmail();
+			DSM2Study study = dao.getStudyForName(studyName, email);
 			if (study == null) {
 				study = new DSM2Study();
 				study.setDateFirstShared(new Date());
-				study.setOwnerName(UserServiceFactory.getUserService()
-						.getCurrentUser().getEmail());
+				study.setOwnerName(email);
 				study.setSharingKey(key);
 				study.setStudyName(studyName);
 				dao.createObject(study);
 			} else {
 				study.setSharingKey(key);
-				dao.updateObject(study);
 			}
+			dao.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
