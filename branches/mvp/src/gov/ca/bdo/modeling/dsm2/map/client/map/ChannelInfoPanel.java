@@ -102,11 +102,12 @@ public class ChannelInfoPanel extends Composite {
 	}
 
 	private Panel getBasicInfoPanel(Channel channel) {
-		return new HTMLPanel("<h3>Channel " + channel.getId() + "</h3>"
-				+ "<table>" + "<tr><td>Length</td><td>" + channel.getLength()
-				+ "</td></tr>" + "<tr><td>Mannings</td><td>"
-				+ channel.getMannings() + "</td></tr>"
-				+ "<tr><td>Dispersion</td><td>" + channel.getDispersion()
-				+ "</td></tr>" + "</table>");
+		return new HTMLPanel("<h3>Channel " + channel.getId() + "[ "
+				+ channel.getUpNodeId() + "->" + channel.getDownNodeId() + " ]"
+				+ "</h3>" + "<table>" + "<tr><td>Length</td><td>"
+				+ channel.getLength() + "</td></tr>"
+				+ "<tr><td>Mannings</td><td>" + channel.getMannings()
+				+ "</td></tr>" + "<tr><td>Dispersion</td><td>"
+				+ channel.getDispersion() + "</td></tr>" + "</table>");
 	}
 }

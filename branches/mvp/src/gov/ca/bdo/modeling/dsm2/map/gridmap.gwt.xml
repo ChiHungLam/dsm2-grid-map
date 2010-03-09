@@ -16,7 +16,6 @@
 	<inherits name='com.google.gwt.gen2.table.FixedWidthGrid' />
 	<inherits name='com.google.gwt.gen2.table.FixedWidthFlexTable' />
 	<inherits name='com.google.gwt.gen2.table.ScrollTable' />
-	<stylesheet src='ScrollTableDemo.css' />
 	<inherits name='gov.ca.dsm2.input.dsm2input' />
 	<inherits name='gov.ca.modeling.dsm2.widgets.HeaderPanel' />
 	<entry-point class='gov.ca.bdo.modeling.dsm2.map.client.MainEntryPoint' />
