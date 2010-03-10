@@ -14,6 +14,7 @@ import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -87,6 +88,8 @@ public class DSM2GridMapPresenter implements Presenter {
 
 			public void onChange(ChangeEvent event) {
 				display.setStudy(display.getStudyChoice());
+				currentStudy = display.getStudyChoice();
+				loadStudy();
 			}
 		});
 		display.addInitializeHandler(new InitializeHandler() {
@@ -140,10 +143,13 @@ public class DSM2GridMapPresenter implements Presenter {
 		if (currentStudy == null) {
 			return;
 		}
+		display.showMessage("Loading study " + currentStudy + "...");
 		dsm2InputService.getInputModel(currentStudy,
 				new AsyncCallback<DSM2Model>() {
 
 					public void onSuccess(DSM2Model result) {
+						History.newItem(URL.encode("map/" + currentStudy),
+								false);
 						display.setModel(result);
 						if (result != null) {
 							display.showMessage("Drawing...");
