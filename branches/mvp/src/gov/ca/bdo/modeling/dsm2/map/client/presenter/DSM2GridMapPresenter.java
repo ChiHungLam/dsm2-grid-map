@@ -175,7 +175,8 @@ public class DSM2GridMapPresenter implements Presenter {
 				public void onFailure(Throwable caught) {
 					display.showError("Oops and error occurred: "
 							+ caught.getMessage());
-					display.setStudies(new String[0]);
+					display.setStudies(new String[] { "" });
+					History.newItem("request_access");
 				}
 			});
 		}

@@ -2,12 +2,14 @@ package gov.ca.bdo.modeling.dsm2.map.client;
 
 import gov.ca.bdo.modeling.dsm2.map.client.display.MapDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.StudyManagerDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.UnauthorizedUserDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDataDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyDataUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyUploadPresenter;
+import gov.ca.bdo.modeling.dsm2.map.client.presenter.UnauthorizedUserPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -62,6 +64,9 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 				presenter = new DSM2StudyDataUploadPresenter(eventBus,
 						new UploadStudyDataDisplay());
 			} else if (token.equals("profile")) {
+			} else if (token.equals("request_access")) {
+				presenter = new UnauthorizedUserPresenter(
+						new UnauthorizedUserDisplay());
 			} else {
 				presenter = createDSM2GridMapPresenter();
 			}

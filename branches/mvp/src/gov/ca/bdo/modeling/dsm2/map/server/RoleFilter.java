@@ -25,7 +25,6 @@ import gov.ca.bdo.modeling.dsm2.map.server.persistence.UserProfileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.Filter;
@@ -61,10 +60,8 @@ public class RoleFilter implements Filter {
 			if (isAllowed(currentUser, requestURI)) {
 				chain.doFilter(request, response);
 			} else {
-				PrintWriter writer = response.getWriter();
-				writer.println("<h3>Access denied</h3>");
-				writer
-						.println("<p>Please see admin for access to this app</p>");
+				response.getWriter().println("Access denied!");
+				httpServletResponse.sendRedirect("#request_access");
 			}
 		} else {
 			if (requestURI.contains("/login")) {
