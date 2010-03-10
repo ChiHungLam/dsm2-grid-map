@@ -60,6 +60,7 @@ public class MapPanel extends Composite {
 	boolean SHOW_ON_CLICK = false;
 	private GateOverlayManager gateOverlayManager;
 	private ReservoirOverlayManager reservoirOverlayManager;
+	private BoundaryMarkerDataManager boundaryOverlayManager;
 	private final GridVisibilityControl visibilityControl;
 	private Panel infoPanel;
 
@@ -117,6 +118,7 @@ public class MapPanel extends Composite {
 		populateReservoirMarkers();
 		populateOutputMarkers();
 		populateTextAnnotationMarkers();
+		populateBoundaryMarkers();
 	}
 
 	private void populateTextAnnotationMarkers() {
@@ -127,7 +129,14 @@ public class MapPanel extends Composite {
 		outputMarkerDataManager = new OutputMarkerDataManager();
 		outputMarkerDataManager.setModel(model, this);
 		outputMarkerDataManager.addMarkers(map);
+	}
 
+	private void populateBoundaryMarkers() {
+		if (boundaryOverlayManager != null) {
+			boundaryOverlayManager = new BoundaryMarkerDataManager();
+			boundaryOverlayManager.setModel(model, this);
+			boundaryOverlayManager.addMarkers(map);
+		}
 	}
 
 	protected void clearAllMarkers() {
@@ -231,6 +240,15 @@ public class MapPanel extends Composite {
 
 	public void hideOutputMarkers(boolean hide) {
 		outputMarkerDataManager.hideMarkers(hide);
+	}
+
+	public void hideBoundaryMarkers(boolean hide) {
+		if ((hide == false) && (boundaryOverlayManager == null)) {
+			boundaryOverlayManager = new BoundaryMarkerDataManager();
+			boundaryOverlayManager.setModel(model, this);
+			boundaryOverlayManager.addMarkers(map);
+		}
+		boundaryOverlayManager.hideMarkers(hide);
 	}
 
 	public void showBathymetry(boolean show) {
@@ -373,10 +391,10 @@ public class MapPanel extends Composite {
 	}
 
 	public void setInfoPanel(Panel panel) {
-		this.infoPanel = panel;
+		infoPanel = panel;
 	}
 
 	public Panel getInfoPanel() {
-		return this.infoPanel;
+		return infoPanel;
 	}
 }
