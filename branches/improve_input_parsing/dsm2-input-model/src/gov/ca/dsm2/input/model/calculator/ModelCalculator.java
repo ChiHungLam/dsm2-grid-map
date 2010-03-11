@@ -1,4 +1,8 @@
-package gov.ca.dsm2.input.model;
+package gov.ca.dsm2.input.model.calculator;
+
+import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.XSection;
+import gov.ca.dsm2.input.model.XSectionLayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

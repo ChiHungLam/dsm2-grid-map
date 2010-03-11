@@ -53,7 +53,7 @@ public class ParserTest extends TestCase {
 		// 
 		Nodes nodes = model.toNodes();
 		assertNotNull(nodes);
-		assertNull(nodes.getNode("17"));
+		assertNotNull(nodes.getNode("17"));
 		// parser.parseAndAddToModel(model, new
 		// FileInputStream("test/node.inp"));
 		parser.parseAndAddToModel(model, new FileInputStream("test/gis.inp"));

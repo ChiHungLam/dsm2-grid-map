@@ -25,9 +25,12 @@ import gov.ca.dsm2.input.model.ChannelOutput;
 import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.model.Gate;
+import gov.ca.dsm2.input.model.GatePipeDevice;
+import gov.ca.dsm2.input.model.GateWeirDevice;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Nodes;
+import gov.ca.dsm2.input.model.OperatingRule;
 import gov.ca.dsm2.input.model.Outputs;
 import gov.ca.dsm2.input.model.Reservoir;
 import gov.ca.dsm2.input.model.ReservoirConnection;
@@ -57,8 +60,8 @@ import java.util.List;
  * 
  */
 public class Tables {
-	private  ArrayList<InputTable> tables;
-	private  HashMap<String, InputTable> tableMap;
+	private ArrayList<InputTable> tables;
+	private HashMap<String, InputTable> tableMap;
 
 	/**
 	 * Creates an initial empty tables list
@@ -516,7 +519,70 @@ public class Tables {
 		}
 		InputTable gateWeirTable = getTableNamed("GATE_WEIR_DEVICE");
 		if (gateWeirTable != null) {
+			int ndevices = gateWeirTable.getValues().size();
+			for (int i = 0; i < ndevices; i++) {
+				GateWeirDevice device = new GateWeirDevice();
+				device.gateName = gateWeirTable.getValue(i, "GATE_NAME");
+				device.device = gateWeirTable.getValue(i, "DEVICE");
+				device.numberOfDuplicates = Integer.parseInt(gateWeirTable
+						.getValue(i, "NDUPLICATE"));
+				device.width = Double.parseDouble(gateWeirTable.getValue(i,
+						"WIDTH"));
+				device.elevation = Double.parseDouble(gateWeirTable.getValue(i,
+						"ELEV"));
+				device.height = Double.parseDouble(gateWeirTable.getValue(i,
+						"HEIGHT"));
+				device.coefficientFromNode = Double.parseDouble(gateWeirTable
+						.getValue(i, "CF_FROM_NODE"));
+				device.coefficientToNode = Double.parseDouble(gateWeirTable
+						.getValue(i, "CF_TO_NODE"));
+				device.defaultOperation = gateWeirTable.getValue(i,
+						"DEFAULT_OP");
+				Gate gate = gates.getGate(device.gateName);
+				if (gate != null) {
+					gate.addGateDevice(device);
+				}
+			}
+		}
+		InputTable gatePipeTable = getTableNamed("GATE_PIPE_DEVICE");
+		if (gatePipeTable != null) {
+			int ndevices = gatePipeTable.getValues().size();
+			for (int i = 0; i < ndevices; i++) {
+				GatePipeDevice device = new GatePipeDevice();
+				device.gateName = gatePipeTable.getValue(i, "GATE_NAME");
+				device.device = gatePipeTable.getValue(i, "DEVICE");
+				device.numberOfDuplicates = Integer.parseInt(gatePipeTable
+						.getValue(i, "NDUPLICATE"));
+				device.radius = Double.parseDouble(gatePipeTable.getValue(i,
+						"RADIUS"));
+				device.elevation = Double.parseDouble(gatePipeTable.getValue(i,
+						"ELEV"));
+				device.coefficientFromNode = Double.parseDouble(gatePipeTable
+						.getValue(i, "CF_FROM_NODE"));
+				device.coefficientToNode = Double.parseDouble(gatePipeTable
+						.getValue(i, "CF_TO_NODE"));
+				device.defaultOperation = gatePipeTable.getValue(i,
+						"DEFAULT_OP");
+				Gate gate = gates.getGate(device.gateName);
+				if (gate != null) {
+					gate.addGateDevice(device);
+				}
+			}
 
+		}
+		InputTable operatingRuleTable = getTableNamed("OPERATING_RULE");
+		if (operatingRuleTable != null) {
+			int nrules = operatingRuleTable.getValues().size();
+			for (int i = 0; i < nrules; i++) {
+				OperatingRule opRule = new OperatingRule();
+				opRule.name = operatingRuleTable.getValue(i, "NAME");
+				opRule.action = operatingRuleTable.getValue(i, "ACTION");
+				opRule.trigger = operatingRuleTable.getValue(i, "TRIGGER");
+				Gate gate = gates.getGate(opRule.getGateName());
+				if (gate != null) {
+					gate.addGateOperation(opRule);
+				}
+			}
 		}
 		InputTable gisTable = getTableNamed("GATE_GIS");
 		if (gisTable != null) {
@@ -719,6 +785,7 @@ public class Tables {
 					input.fillIn = stageTable.getValue(i, "FILLIN");
 					input.file = stageTable.getValue(i, "FILE");
 					input.path = stageTable.getValue(i, "PATH");
+					input.type = "stage";
 					binputs.addStage(input);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -739,6 +806,7 @@ public class Tables {
 					input.fillIn = flowTable.getValue(i, "FILLIN");
 					input.file = flowTable.getValue(i, "FILE");
 					input.path = flowTable.getValue(i, "PATH");
+					input.type = "flow";
 					binputs.addFlow(input);
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
@@ -759,6 +827,7 @@ public class Tables {
 					input.fillIn = sourceFlowTable.getValue(i, "FILLIN");
 					input.file = sourceFlowTable.getValue(i, "FILE");
 					input.path = sourceFlowTable.getValue(i, "PATH");
+					input.type = "sourcesink";
 					binputs.addSourceFlow(input);
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
