@@ -51,6 +51,7 @@ public class MapControlPanel extends Composite {
 	private ToggleButton addPolygonButton;
 	private String[] studies;
 	private boolean viewOnly;
+	private Label measurementLabel;
 
 	public MapControlPanel(boolean viewOnly) {
 		this.viewOnly = viewOnly;
@@ -64,12 +65,14 @@ public class MapControlPanel extends Composite {
 		//
 		Label findChannelLabel = new Label("Find Channel Id:");
 		findChannelBox = new TextBox();
+
+		measurementLabel = new Label("");
 		addPolylineButton = new ToggleButton(new Image(IconImages.INSTANCE
 				.measureOffIcon()));
-		final Label measurementLabel = new Label("");
 		addPolygonButton = new ToggleButton(new Image(IconImages.INSTANCE
 				.measurePolygonIcon()), new Image(IconImages.INSTANCE
 				.measurePolygonIcon()));
+
 		//
 		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
 		addTextAnnotationButton = new ToggleButton(new Image(
@@ -196,6 +199,10 @@ public class MapControlPanel extends Composite {
 
 	public String[] getStudies() {
 		return studies;
+	}
+
+	public Label getMeasurementLabel() {
+		return measurementLabel;
 	}
 
 }

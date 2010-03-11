@@ -3,6 +3,8 @@ package gov.ca.bdo.modeling.dsm2.map.client.display;
 import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapControlPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
+import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
+import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
 import gov.ca.dsm2.input.model.DSM2Model;
 
@@ -40,6 +42,8 @@ public class MapDisplay extends Composite implements Display,
 	private final MapControlPanel controlPanel;
 	private final FlowPanel infoPanel;
 	private final VerticalPanel controlPanelContainer;
+	private MeasuringDistanceAlongLine lengthMeasurer;
+	private MeasuringAreaInPolygon areaMeasurer;
 
 	public MapDisplay(boolean viewOnly) {
 		mainPanel = new DockLayoutPanel(Unit.EM);
@@ -206,6 +210,58 @@ public class MapDisplay extends Composite implements Display,
 
 	public void updateLinks() {
 		controlPanel.updateLinks();
+	}
+
+	public HasClickHandlers getAddPolylineButton() {
+		return controlPanel.getAddPolylineButton();
+	}
+
+	public HasClickHandlers getAddPolygonButton() {
+		return controlPanel.getAddPolygonButton();
+	}
+
+	public HasClickHandlers getTextAnnotationButton() {
+		return controlPanel.getAddTextAnnonationButton();
+	}
+
+	public void startMeasuringDistanceAlongLine() {
+		if (lengthMeasurer == null) {
+			lengthMeasurer = new MeasuringDistanceAlongLine(mapPanel
+					.getMapWidget(), controlPanel.getMeasurementLabel());
+			lengthMeasurer.addPolyline();
+		}
+	}
+
+	public void stopMeasuringDistanceAlongLine() {
+		if (lengthMeasurer != null) {
+			lengthMeasurer.clearOverlay();
+			controlPanel.getMeasurementLabel().setText("");
+			lengthMeasurer = null;
+		}
+	}
+
+	public void startMeasuringAreaInPolygon() {
+		if (areaMeasurer == null) {
+			areaMeasurer = new MeasuringAreaInPolygon(mapPanel.getMap(),
+					controlPanel.getMeasurementLabel());
+			areaMeasurer.addPolyline();
+		}
+	}
+
+	public void stopMeasuringAreaInPolygon() {
+		if (areaMeasurer != null) {
+			areaMeasurer.clearOverlay();
+			controlPanel.getMeasurementLabel().setText("");
+			areaMeasurer = null;
+		}
+	}
+
+	public void turnOnTextAnnotation() {
+		mapPanel.turnOnTextAnnotation();
+	}
+
+	public void turnOffTextAnnotation() {
+		mapPanel.turnOffTextAnnotation();
 	}
 
 }

@@ -59,6 +59,24 @@ public class DSM2GridMapPresenter implements Presenter {
 
 		public void updateLinks();
 
+		public HasClickHandlers getTextAnnotationButton();
+
+		public void turnOnTextAnnotation();
+
+		public HasClickHandlers getAddPolylineButton();
+
+		public void stopMeasuringDistanceAlongLine();
+
+		public void startMeasuringDistanceAlongLine();
+
+		public void stopMeasuringAreaInPolygon();
+
+		public void startMeasuringAreaInPolygon();
+
+		public HasClickHandlers getAddPolygonButton();
+
+		public void turnOffTextAnnotation();
+
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
@@ -113,6 +131,48 @@ public class DSM2GridMapPresenter implements Presenter {
 					display.setEditMode(button.isDown());
 					if (!button.isDown()) {
 						saveCurrentStudy();
+					}
+				}
+			}
+		});
+
+		display.getTextAnnotationButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				Object source = event.getSource();
+				if (source instanceof ToggleButton) {
+					ToggleButton button = (ToggleButton) source;
+					if (button.isDown()) {
+						display.turnOnTextAnnotation();
+					} else {
+						display.turnOffTextAnnotation();
+					}
+				}
+			}
+		});
+
+		display.getAddPolylineButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				Object source = event.getSource();
+				if (source instanceof ToggleButton) {
+					ToggleButton button = (ToggleButton) source;
+					if (button.isDown()) {
+						display.startMeasuringDistanceAlongLine();
+					} else {
+						display.stopMeasuringDistanceAlongLine();
+					}
+				}
+			}
+		});
+		display.getAddPolygonButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				Object source = event.getSource();
+				if (source instanceof ToggleButton) {
+					ToggleButton button = (ToggleButton) source;
+					if (button.isDown()) {
+						display.startMeasuringAreaInPolygon();
+					} else {
+						display.stopMeasuringAreaInPolygon();
 					}
 				}
 			}
