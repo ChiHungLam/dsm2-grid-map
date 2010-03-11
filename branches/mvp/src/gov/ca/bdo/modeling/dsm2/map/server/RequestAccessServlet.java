@@ -54,14 +54,13 @@ public class RequestAccessServlet extends HttpServlet {
 			try {
 				Message msg = new MimeMessage(session);
 				msg.setFrom(new InternetAddress(Utils.getCurrentUserEmail(),
-						"DSM2 Grid Map Admin"));
+						Utils.getCurrentUserEmail()));
 				// FIXME: obtain all admin level users and send to them as well
 				msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
 						"psandhu@water.ca.gov", "Admins"));
 				msg.setSubject("Account authorization request");
 				msg.setText(msgBody);
 				Transport.send(msg);
-
 			} catch (AddressException e) {
 				e.printStackTrace();
 			} catch (MessagingException e) {

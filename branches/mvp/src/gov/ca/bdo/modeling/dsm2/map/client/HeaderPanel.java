@@ -32,19 +32,31 @@ import com.google.gwt.user.client.ui.HTML;
 public class HeaderPanel extends Composite {
 	private final LoginServiceAsync loginService;
 	private final gov.ca.modeling.dsm2.widgets.client.HeaderPanel headerPanel;
+	private String nickname;
+	protected String email;
 
 	public HeaderPanel() {
+		this(false);
+	}
+
+	public HeaderPanel(boolean noLinks) {
 		loginService = GWT.create(LoginService.class);
 		headerPanel = new gov.ca.modeling.dsm2.widgets.client.HeaderPanel();
-		headerPanel.addToLinkPanel(new Anchor("Map", "#map"));
-		headerPanel.addToLinkPanel(new Anchor("Studies", "#studies"));
-		headerPanel.addToLinkPanel(new Anchor("Upload Study", "#upload_study"));
-		headerPanel.addToLinkPanel(new Anchor("Upload Data", "#upload_data"));
+		if (!noLinks) {
+			headerPanel.addToLinkPanel(new Anchor("Map", "#map"));
+			headerPanel.addToLinkPanel(new Anchor("Studies", "#studies"));
+			headerPanel.addToLinkPanel(new Anchor("Upload Study",
+					"#upload_study"));
+			headerPanel
+					.addToLinkPanel(new Anchor("Upload Data", "#upload_data"));
+		}
 		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 
 					public void onSuccess(LoginInfo result) {
 						if (result.isLoggedIn()) {
+							nickname = result.getNickname();
+							email = result.getEmailAddress();
 							HTML nameDisplay = new HTML("<b>"
 									+ result.getEmailAddress() + "</b>");
 							nameDisplay.setStyleName("name");
@@ -65,6 +77,14 @@ public class HeaderPanel extends Composite {
 		initWidget(headerPanel);
 	}
 
+	public String getNickname() {
+		return nickname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
 	public void showMessage(boolean show, String message) {
 		headerPanel.showWarning(show, message);
 	}
@@ -76,4 +96,5 @@ public class HeaderPanel extends Composite {
 	public void clearMessages() {
 		headerPanel.showWarning(false, "");
 	}
+
 }

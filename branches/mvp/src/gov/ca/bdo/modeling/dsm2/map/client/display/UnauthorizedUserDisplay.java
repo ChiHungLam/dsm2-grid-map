@@ -26,6 +26,9 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 	private FormPanel formPanel;
 
 	public UnauthorizedUserDisplay() {
+		headerPanel = new HeaderPanel(true);
+		headerPanel.clearMessages();
+
 		emailField = new TextBox();
 		emailField.setName("email");
 		emailField.setMaxLength(30);
@@ -40,13 +43,18 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 		formPanel.setMethod("post");
 		FlowPanel elementsPanel = new FlowPanel();
 		formPanel.add(elementsPanel);
+		String email = headerPanel.getEmail() == null ? "" : headerPanel
+				.getEmail();
+		elementsPanel.add(new HTML("<p>Your user id " + email
+				+ " is not authorized to access this application!</p>"));
 		elementsPanel
 				.add(new HTML(
-						"<p>Enter your email address that has Google authentication:<br>"));
+						"<p>Enter an email address that has Google authentication or use the one below:<br>"));
 		elementsPanel.add(emailField);
+		emailField.setText(email);
 		elementsPanel
 				.add(new HTML(
-						"<p>If you enable your account for Google authentication go <a href='https://www.google.com/accounts/NewAccount'>here</a></p>"));
+						"<p>If you want to know how to enable your account for Google authentication go <a href='https://www.google.com/accounts/NewAccount'>here</a></p>"));
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.add(submitButton);
 		elementsPanel.add(buttonPanel);
@@ -56,8 +64,6 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 		containerPanel.add(formPanel);
 
 		mainPanel = new DockLayoutPanel(Unit.EM);
-		headerPanel = new HeaderPanel();
-		headerPanel.clearMessages();
 		mainPanel.addWest(new FlowPanel(), 5);
 		mainPanel.addEast(new FlowPanel(), 5);
 		mainPanel.addNorth(headerPanel, 2);

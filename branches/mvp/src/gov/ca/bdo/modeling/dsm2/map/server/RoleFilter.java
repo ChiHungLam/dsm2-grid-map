@@ -65,7 +65,9 @@ public class RoleFilter implements Filter {
 				if (isAllowed(currentUser, requestURI)) {
 					chain.doFilter(request, response);
 				} else {
-					response.getWriter().println("Access denied!");
+					httpServletResponse.sendRedirect(userService
+							.createLoginURL(requestURI));
+					// response.getWriter().println("Access denied!");
 				}
 			}
 		} else {
