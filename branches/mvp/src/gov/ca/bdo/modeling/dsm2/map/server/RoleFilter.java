@@ -56,15 +56,20 @@ public class RoleFilter implements Filter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String requestURI = httpServletRequest.getRequestURI();
 		if (userService.isUserLoggedIn()) {
-			User currentUser = userService.getCurrentUser();
-			if (isAllowed(currentUser, requestURI)) {
+			if (requestURI.contains("/login")
+					|| requestURI.contains("/request_access")
+					|| requestURI.contains("/logout")) {
 				chain.doFilter(request, response);
 			} else {
-				response.getWriter().println("Access denied!");
-				httpServletResponse.sendRedirect("#request_access");
+				User currentUser = userService.getCurrentUser();
+				if (isAllowed(currentUser, requestURI)) {
+					chain.doFilter(request, response);
+				} else {
+					response.getWriter().println("Access denied!");
+				}
 			}
 		} else {
-			if (requestURI.contains("/login")) {
+			if (requestURI.contains("/login") || requestURI.contains("/logout")) {
 				chain.doFilter(request, response);
 			} else {
 				httpServletResponse.sendRedirect(userService

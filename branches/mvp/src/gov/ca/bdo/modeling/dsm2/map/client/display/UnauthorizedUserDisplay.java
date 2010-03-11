@@ -37,7 +37,6 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 		formPanel = new FormPanel();
 		formPanel.setStyleName("bordered-content");
 		formPanel.setAction("/dsm2_grid_map/request_access");
-		formPanel.setEncoding("multipart/form-data");
 		formPanel.setMethod("post");
 		FlowPanel elementsPanel = new FlowPanel();
 		formPanel.add(elementsPanel);
