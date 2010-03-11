@@ -2,6 +2,7 @@ package gov.ca.dsm2.input.model;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class OperatingRule implements Serializable {
 	public String name;
 	public String action;

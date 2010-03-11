@@ -36,6 +36,8 @@ import gov.ca.dsm2.input.model.Reservoir;
 import gov.ca.dsm2.input.model.ReservoirConnection;
 import gov.ca.dsm2.input.model.ReservoirOutput;
 import gov.ca.dsm2.input.model.Reservoirs;
+import gov.ca.dsm2.input.model.Transfer;
+import gov.ca.dsm2.input.model.Transfers;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 
@@ -142,6 +144,7 @@ public class Tables {
 		model.setGates(toGates());
 		model.setInputs(toBoundaryInputs());
 		model.setOutputs(toOutputs());
+		model.setTransfers(toTransfers());
 		return model;
 	}
 
@@ -277,46 +280,50 @@ public class Tables {
 		}
 
 		InputTable xsectionTable = getTableNamed("XSECT_LAYER");
-		int nxsects = xsectionTable.getValues().size();
-		// FIXME: assumes all layers for a xsections are grouped together
-		boolean newLayer = true;
-		String currentChannelDist = "";
-		XSection currentXSection = null;
-		for (int i = 0; i < nxsects; i++) {
-			try {
-				if (!newLayer) {
-					String channelDist = xsectionTable.getValue(i, "CHAN_NO")
-							+ "_" + xsectionTable.getValue(i, "DIST");
-					if (!channelDist.equals(currentChannelDist)) {
-						newLayer = true;
+		if (xsectionTable != null) {
+			int nxsects = xsectionTable.getValues().size();
+			// FIXME: assumes all layers for a xsections are grouped together
+			boolean newLayer = true;
+			String currentChannelDist = "";
+			XSection currentXSection = null;
+			for (int i = 0; i < nxsects; i++) {
+				try {
+					if (!newLayer) {
+						String channelDist = xsectionTable.getValue(i,
+								"CHAN_NO")
+								+ "_" + xsectionTable.getValue(i, "DIST");
+						if (!channelDist.equals(currentChannelDist)) {
+							newLayer = true;
+						}
 					}
+					if (newLayer) {
+						Channel channel = channels.getChannel(xsectionTable
+								.getValue(i, "CHAN_NO"));
+						XSection xsection = new XSection();
+						xsection.setChannelId(channel.getId());
+						xsection.setDistance(Double.parseDouble(xsectionTable
+								.getValue(i, "DIST")));
+						currentChannelDist = xsectionTable.getValue(i,
+								"CHAN_NO")
+								+ "_" + xsectionTable.getValue(i, "DIST");
+						currentXSection = xsection;
+						channel.addXSection(xsection);
+						newLayer = false;
+					}
+					XSectionLayer layer = new XSectionLayer();
+					layer.setElevation(Double.parseDouble(xsectionTable
+							.getValue(i, "ELEV")));
+					layer.setArea(Double.parseDouble(xsectionTable.getValue(i,
+							"AREA")));
+					layer.setTopWidth(Double.parseDouble(xsectionTable
+							.getValue(i, "WIDTH")));
+					layer.setWettedPerimeter(Double.parseDouble(xsectionTable
+							.getValue(i, "WET_PERIM")));
+					currentXSection.addLayer(layer);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				if (newLayer) {
-					Channel channel = channels.getChannel(xsectionTable
-							.getValue(i, "CHAN_NO"));
-					XSection xsection = new XSection();
-					xsection.setChannelId(channel.getId());
-					xsection.setDistance(Double.parseDouble(xsectionTable
-							.getValue(i, "DIST")));
-					currentChannelDist = xsectionTable.getValue(i, "CHAN_NO")
-							+ "_" + xsectionTable.getValue(i, "DIST");
-					currentXSection = xsection;
-					channel.addXSection(xsection);
-					newLayer = false;
-				}
-				XSectionLayer layer = new XSectionLayer();
-				layer.setElevation(Double.parseDouble(xsectionTable.getValue(i,
-						"ELEV")));
-				layer.setArea(Double.parseDouble(xsectionTable.getValue(i,
-						"AREA")));
-				layer.setTopWidth(Double.parseDouble(xsectionTable.getValue(i,
-						"WIDTH")));
-				layer.setWettedPerimeter(Double.parseDouble(xsectionTable
-						.getValue(i, "WET_PERIM")));
-				currentXSection.addLayer(layer);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		InputTable gisTable = getTableNamed("CHANNEL_GIS");
@@ -889,6 +896,32 @@ public class Tables {
 			}
 		}
 		return outputs;
+	}
+
+	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
+	 * 
+	 * @return
+	 */
+	public Transfers toTransfers() {
+		Transfers transfers = new Transfers();
+		InputTable transferTable = getTableNamed("TRANSFER");
+		if (transferTable != null) {
+			int ntransfers = transferTable.getValues().size();
+			for (int i = 0; i < ntransfers; i++) {
+				Transfer transfer = new Transfer();
+				transfer.name = transferTable.getValue(i, "NAME");
+				transfer.fromObject = transferTable.getValue(i, "FROM_OBJ");
+				transfer.fromIdentifier = transferTable.getValue(i,
+						"FROM_IDENTIFIER");
+				transfer.toObject = transferTable.getValue(i, "TO_OBJ");
+				transfer.toIdentifier = transferTable.getValue(i,
+						"TO_IDENTIFIER");
+				transfers.addTransfer(transfer);
+			}
+		}
+		return transfers;
 	}
 
 }

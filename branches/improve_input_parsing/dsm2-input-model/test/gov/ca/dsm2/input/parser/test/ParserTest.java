@@ -12,6 +12,8 @@ import gov.ca.dsm2.input.model.Outputs;
 import gov.ca.dsm2.input.model.Reservoir;
 import gov.ca.dsm2.input.model.ReservoirOutput;
 import gov.ca.dsm2.input.model.Reservoirs;
+import gov.ca.dsm2.input.model.Transfer;
+import gov.ca.dsm2.input.model.Transfers;
 import gov.ca.dsm2.input.parser.InputTable;
 import gov.ca.dsm2.input.parser.Parser;
 import gov.ca.dsm2.input.parser.Tables;
@@ -96,6 +98,9 @@ public class ParserTest extends TestCase {
 		assertEquals(124, channelOutputs.size());
 		List<ReservoirOutput> reservoirOutputs = outputs.getReservoirOutputs();
 		assertEquals(2, reservoirOutputs.size());
+		//
+		Transfers transfers = model.toTransfers();
+		List<Transfer> transfersList = transfers.getTransfers();
 		//
 		InputTable channelsTable = model.getTableNamed("CHANNEL");
 		String strTable = channelsTable.toStringRepresentation();

@@ -1,5 +1,7 @@
 package gov.ca.dsm2.input.model.test;
 
-public class ChannelsTest {
+import junit.framework.TestCase;
+
+public class ChannelsTest extends TestCase {
 
 }
