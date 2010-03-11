@@ -1,6 +1,9 @@
 package gov.ca.dsm2.input.model;
 
-public class Transfer {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Transfer implements Serializable {
 	public String name;
 	public String fromObject;
 	public String fromIdentifier;
