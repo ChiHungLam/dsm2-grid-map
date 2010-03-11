@@ -19,6 +19,8 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server;
 
+import gov.ca.bdo.modeling.dsm2.map.server.utils.Utils;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -51,7 +53,7 @@ public class RequestAccessServlet extends HttpServlet {
 
 			try {
 				Message msg = new MimeMessage(session);
-				msg.setFrom(new InternetAddress("admin@dsm2grid.appspot.com",
+				msg.setFrom(new InternetAddress(Utils.getCurrentUserEmail(),
 						"DSM2 Grid Map Admin"));
 				// FIXME: obtain all admin level users and send to them as well
 				msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
