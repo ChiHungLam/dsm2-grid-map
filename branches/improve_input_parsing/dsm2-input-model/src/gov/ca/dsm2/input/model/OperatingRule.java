@@ -13,9 +13,17 @@ public class OperatingRule implements Serializable {
 		if (gateIndex < 0) {
 			return "";
 		}
-		int gateNameEndIndex = action.indexOf(",", gateIndex + 5);
-		if (gateNameEndIndex < 0) {
-			gateNameEndIndex = action.indexOf(")", gateIndex + 5);
+		int gateNameEndIndex = gateIndex + 5;
+		int commaIndex = action.indexOf(",", gateIndex + 5);
+		int parenIndex = action.indexOf(")", gateIndex + 5);
+		if (commaIndex < 0) {
+			gateNameEndIndex = parenIndex;
+		} else {
+			if ((parenIndex > 0) && (parenIndex < commaIndex)) {
+				gateNameEndIndex = parenIndex;
+			} else {
+				gateNameEndIndex = commaIndex;
+			}
 		}
 		return action.substring(gateIndex + 5, gateNameEndIndex);
 	}
