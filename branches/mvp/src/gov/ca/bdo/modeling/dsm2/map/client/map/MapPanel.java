@@ -249,6 +249,7 @@ public class MapPanel extends Composite {
 			boundaryOverlayManager.addMarkers(map);
 		}
 		boundaryOverlayManager.hideMarkers(hide);
+		boundaryOverlayManager = null;
 	}
 
 	public void showBathymetry(boolean show) {
