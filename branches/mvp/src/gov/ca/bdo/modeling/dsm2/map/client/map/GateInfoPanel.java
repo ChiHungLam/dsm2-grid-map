@@ -76,7 +76,7 @@ public class GateInfoPanel extends Composite {
 		deviceTable.getFlexCellFormatter().setRowSpan(0, col, 2);
 		deviceTable.setHTML(0, col++, "<b>ELEV</b>");
 		deviceTable.setHTML(0, col, "<b>RADIUS</b>");
-		deviceTable.getColumnFormatter().setWidth(col, "15%");
+		deviceTable.getColumnFormatter().setWidth(col, "10%");
 		deviceTable.getFlexCellFormatter().setColSpan(0, col, 2);
 		deviceTable.setHTML(1, 0, "<b>HEIGHT</b>");
 		deviceTable.setHTML(1, 1, "<b>WIDTH</b>");
@@ -127,6 +127,7 @@ public class GateInfoPanel extends Composite {
 			ruleTable.setText(row, col++, rule.name);
 			ruleTable.setText(row, col++, rule.trigger);
 			ruleTable.setText(row, col++, rule.action);
+			row++;
 		}
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.add(basicPanel);
