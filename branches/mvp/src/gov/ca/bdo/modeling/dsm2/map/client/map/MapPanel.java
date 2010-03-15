@@ -63,6 +63,7 @@ public class MapPanel extends Composite {
 	private BoundaryMarkerDataManager boundaryOverlayManager;
 	private final GridVisibilityControl visibilityControl;
 	private Panel infoPanel;
+	private TransfersManager transfersManager;
 
 	public MapPanel() {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
@@ -119,6 +120,7 @@ public class MapPanel extends Composite {
 		populateOutputMarkers();
 		populateTextAnnotationMarkers();
 		populateBoundaryMarkers();
+		populateTransfers();
 	}
 
 	private void populateTextAnnotationMarkers() {
@@ -137,6 +139,11 @@ public class MapPanel extends Composite {
 			boundaryOverlayManager.setModel(model, this);
 			boundaryOverlayManager.addMarkers(map);
 		}
+	}
+
+	private void populateTransfers() {
+		transfersManager = new TransfersManager(map, model);
+		transfersManager.addLines();
 	}
 
 	protected void clearAllMarkers() {
@@ -240,6 +247,10 @@ public class MapPanel extends Composite {
 
 	public void hideOutputMarkers(boolean hide) {
 		outputMarkerDataManager.hideMarkers(hide);
+	}
+
+	public void hideTransfers(boolean hide) {
+		transfersManager.hideTransfers(hide);
 	}
 
 	public void hideBoundaryMarkers(boolean hide) {
