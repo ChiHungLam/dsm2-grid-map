@@ -124,7 +124,7 @@ public class DSM2Model implements Serializable {
 			found = getNodes().getNode(id);
 		} else if ("channel".equals(type)) {
 			found = getChannels().getChannel(id);
-		} else if ("resevoir".equals(type)) {
+		} else if ("reservoir".equals(type)) {
 			found = getReservoirs().getReservoir(id);
 		} else if ("gate".equals(type)) {
 			found = getGates().getGate(id);
