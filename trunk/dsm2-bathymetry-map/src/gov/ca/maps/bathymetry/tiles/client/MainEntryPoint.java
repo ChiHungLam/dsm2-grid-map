@@ -25,8 +25,6 @@ import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
@@ -66,28 +64,8 @@ public class MainEntryPoint implements EntryPoint {
 						new HTML(
 								"<h3>Bathymetry Data for the Sacramento-San Joaquin Delta</h3>"),
 						5);
-		Grid legend = new Grid(8, 2);
-		legend.setStyleName("legend");
-		String[] legendColors = new String[] { "black", "blue", "cyan",
-				"green", "yellow", "orange", "red" };
-		String[] legendDepth = new String[] { "< -100", "-40", "-30", "-15",
-				"-10", "-5", "> 0" };
-		for (int i = 0; i < legendColors.length; i++) {
-			legend.setHTML(i, 0, "&nbsp;");
-			legend.getCellFormatter().setWidth(i, 0, "1em");
-			legend.getCellFormatter().getElement(i, 0).setAttribute("bgcolor",
-					legendColors[i]);
-			legend.setHTML(i, 1, legendDepth[i]);
-		}
-		FlowPanel legendContainerPanel = new FlowPanel();
-		legendContainerPanel.add(new HTML(
-				"<p> Transparency is mapped from 1925 to 2010</p>"));
-		legendContainerPanel
-				.add(new HTML(
-						"<p> The color scale below defines how depth is represented on the map. </p>"));
-		legendContainerPanel.add(legend);
 		StackLayoutPanel sidePanel = new StackLayoutPanel(Unit.EM);
-		sidePanel.add(legendContainerPanel, new HTML("Legend"), 2);
+		sidePanel.add(ExportOverlays.getLegendPanel(), new HTML("Legend"), 2);
 		sidePanel.add(new ControlPanel(mapPanel), new HTML("Controls"), 2);
 		mainPanel.addEast(sidePanel, 25);
 		mainPanel.add(mapPanel);
@@ -101,4 +79,5 @@ public class MainEntryPoint implements EntryPoint {
 			}
 		});
 	}
+
 }
