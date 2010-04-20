@@ -42,8 +42,8 @@ public class ExportOverlays implements EntryPoint {
 	}
 
 	public static native void exportMethods()/*-{
-		$wnd.getBathymetryTileLayer = function(){
-		return @gov.ca.maps.bathymetry.tiles.client.ExportOverlays::getBathymetryTileLayer();
+		$wnd.getBathymetryTileLayer = function(prefix){
+		return @gov.ca.maps.bathymetry.tiles.client.ExportOverlays::getBathymetryTileLayer(Ljava/lang/String;);
 		}
 		$wnd.getNOAATileLayer = function(){
 		return @gov.ca.maps.bathymetry.tiles.client.ExportOverlays::getNOAATileLayer();
@@ -53,7 +53,7 @@ public class ExportOverlays implements EntryPoint {
 		}
 	}-*/;
 
-	public static TileLayer getBathymetryTileLayer() {
+	public static TileLayer getBathymetryTileLayer(final String prefix) {
 		CopyrightCollection myCopyright = new CopyrightCollection(
 				"@ California DWR 2010");
 		LatLng southWest = LatLng.newInstance(36.5, -123.0);
@@ -77,8 +77,8 @@ public class ExportOverlays implements EntryPoint {
 					int version = (tile.getX() + tile.getY()) % 4 + 1;
 					return "http://" + version
 							+ ".latest.dsm2bathymetry.appspot.com/tiles/"
-							+ hashCode + "_tile" + tile.getX() + "_"
-							+ tile.getY() + "_" + zoomLevel + ".png";
+							+ hashCode + "_" + prefix + "tile" + tile.getX()
+							+ "_" + tile.getY() + "_" + zoomLevel + ".png";
 				}
 			}
 

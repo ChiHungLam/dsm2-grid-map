@@ -57,6 +57,8 @@ public class MapPanel extends Composite {
 	private ShowPolygonHandler showPolygonHandler;
 	private RemovePolygonHandler removePolygonHandler;
 	private TileLayerOverlay noaaLayer;
+	private TileLayerOverlay bathymetryOverlay;
+	private TileLayerOverlay interpolatedBathymetryOverlay;
 
 	public MapPanel() {
 		service = (BathymetryDataServiceAsync) GWT
@@ -162,8 +164,27 @@ public class MapPanel extends Composite {
 	}
 
 	public void addBathymetryOverlay() {
-		TileLayer tileLayer = ExportOverlays.getBathymetryTileLayer();
-		map.addOverlay(new TileLayerOverlay(tileLayer));
+		if (bathymetryOverlay == null) {
+			TileLayer tileLayer = ExportOverlays.getBathymetryTileLayer("");
+			bathymetryOverlay = new TileLayerOverlay(tileLayer);
+		}
+		map.addOverlay(bathymetryOverlay);
+	}
+
+	public void removeBathymetryOverlay() {
+		map.removeOverlay(bathymetryOverlay);
+	}
+
+	public void addInterpolatedBathymetryOverlay() {
+		if (interpolatedBathymetryOverlay == null) {
+			TileLayer tileLayer = ExportOverlays.getBathymetryTileLayer("i");
+			interpolatedBathymetryOverlay = new TileLayerOverlay(tileLayer);
+		}
+		map.addOverlay(interpolatedBathymetryOverlay);
+	}
+
+	public void removeInterpolatedBathymetryOverlay() {
+		map.removeOverlay(interpolatedBathymetryOverlay);
 	}
 
 	private void setOptions() {

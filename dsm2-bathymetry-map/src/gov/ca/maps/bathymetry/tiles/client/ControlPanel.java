@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -70,11 +71,28 @@ public class ControlPanel extends Composite {
 				}
 			}
 		});
+
+		final CheckBox interpolatedOverlay = new CheckBox(
+				"Interpolated Overlay");
+		interpolatedOverlay.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (interpolatedOverlay.getValue()) {
+					mapPanel.removeBathymetryOverlay();
+					mapPanel.addInterpolatedBathymetryOverlay();
+				} else {
+					mapPanel.removeInterpolatedBathymetryOverlay();
+					mapPanel.addBathymetryOverlay();
+				}
+			}
+		});
 		//
-		FlowPanel buttonPanel = new FlowPanel();
+		VerticalPanel buttonPanel = new VerticalPanel();
 		buttonPanel.add(showData);
 		buttonPanel.add(drawLineButton);
 		buttonPanel.add(noaaOverlay);
+		buttonPanel.add(interpolatedOverlay);
 		infoPanel = new FlowPanel();
 		infoPanel.setStyleName("infoPanel");
 
