@@ -36,6 +36,7 @@ import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineEndLineHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.maps.client.overlay.Polyline;
@@ -59,6 +60,7 @@ public class MapPanel extends Composite {
 	private TileLayerOverlay noaaLayer;
 	private TileLayerOverlay bathymetryOverlay;
 	private TileLayerOverlay interpolatedBathymetryOverlay;
+	private Overlay currentOverlay;
 
 	public MapPanel() {
 		service = (BathymetryDataServiceAsync) GWT
@@ -74,7 +76,7 @@ public class MapPanel extends Composite {
 		map.addControl(fullScreenControl);
 
 		setOptions();
-		addBathymetryOverlay();
+		addOverlay("");
 		initWidget(map);
 	}
 
@@ -163,28 +165,16 @@ public class MapPanel extends Composite {
 		}
 	}
 
-	public void addBathymetryOverlay() {
-		if (bathymetryOverlay == null) {
-			TileLayer tileLayer = ExportOverlays.getBathymetryTileLayer("");
-			bathymetryOverlay = new TileLayerOverlay(tileLayer);
+	public void removeOverlays() {
+		if (currentOverlay != null) {
+			map.removeOverlay(currentOverlay);
 		}
-		map.addOverlay(bathymetryOverlay);
 	}
 
-	public void removeBathymetryOverlay() {
-		map.removeOverlay(bathymetryOverlay);
-	}
-
-	public void addInterpolatedBathymetryOverlay() {
-		if (interpolatedBathymetryOverlay == null) {
-			TileLayer tileLayer = ExportOverlays.getBathymetryTileLayer("i");
-			interpolatedBathymetryOverlay = new TileLayerOverlay(tileLayer);
-		}
-		map.addOverlay(interpolatedBathymetryOverlay);
-	}
-
-	public void removeInterpolatedBathymetryOverlay() {
-		map.removeOverlay(interpolatedBathymetryOverlay);
+	public void addOverlay(String prefix) {
+		TileLayer tileLayer = ExportOverlays.getBathymetryTileLayer(prefix);
+		currentOverlay = new TileLayerOverlay(tileLayer);
+		map.addOverlay(currentOverlay);
 	}
 
 	private void setOptions() {

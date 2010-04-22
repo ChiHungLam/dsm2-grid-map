@@ -18,11 +18,14 @@
  */
 package gov.ca.maps.bathymetry.tiles.client;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -72,19 +75,18 @@ public class ControlPanel extends Composite {
 			}
 		});
 
-		final CheckBox interpolatedOverlay = new CheckBox(
-				"Interpolated Overlay");
-		interpolatedOverlay.addClickHandler(new ClickHandler() {
+		final ListBox overlayBox = new ListBox();
+		overlayBox.addItem("Raw Data", "");
+		overlayBox.addItem("Interpolated Data", "i");
+		overlayBox.addItem("Interpolated Data + Lidar", "il");
+		overlayBox.addChangeHandler(new ChangeHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
-				if (interpolatedOverlay.getValue()) {
-					mapPanel.removeBathymetryOverlay();
-					mapPanel.addInterpolatedBathymetryOverlay();
-				} else {
-					mapPanel.removeInterpolatedBathymetryOverlay();
-					mapPanel.addBathymetryOverlay();
-				}
+			public void onChange(ChangeEvent event) {
+				int index = overlayBox.getSelectedIndex();
+				String prefix = overlayBox.getValue(index);
+				mapPanel.removeOverlays();
+				mapPanel.addOverlay(prefix);
 			}
 		});
 		//
@@ -92,7 +94,7 @@ public class ControlPanel extends Composite {
 		buttonPanel.add(showData);
 		buttonPanel.add(drawLineButton);
 		buttonPanel.add(noaaOverlay);
-		buttonPanel.add(interpolatedOverlay);
+		buttonPanel.add(overlayBox);
 		infoPanel = new FlowPanel();
 		infoPanel.setStyleName("infoPanel");
 
