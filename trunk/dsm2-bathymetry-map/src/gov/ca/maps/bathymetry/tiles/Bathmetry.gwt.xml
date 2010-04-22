@@ -20,14 +20,11 @@
 	<!-- Specify the paths for translatable code                    -->
 	<source path='client' />
 	<!-- Host based key dsm2bathymetry.appspot.com -->
-	<!-- 
 	<script
 		src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA6i9cBPasVT8NdiGAvjA1cxSzkjkRSpHaf2PSSRwplNA9Zw-7HBRJ6xC86Pz-l9XLONjPreqHmnuBhg" />
-		 -->
 	<!--
-		Local host based key 
-		-->
+		Local host based key
 	<script
 		src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAglaP4sjC2PIcowNPLkkkHhSyFs1CXjUHtBZmkd3Zups9CFJIQRRmE076ya1TC23WQEYSofD-wVSCvQ"
-		/>
+		/> -->
 </module>
