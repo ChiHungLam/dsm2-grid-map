@@ -22,13 +22,16 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.widgetideas.client.SliderBar;
 
 /**
  * Control for retrieving point, profile along a line
@@ -39,7 +42,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class ControlPanel extends Composite {
 
 	private final FlowPanel infoPanel;
-	private final ToggleButton drawLineButton;
 
 	public ControlPanel(final MapPanel mapPanel) {
 		final ToggleButton showData = new ToggleButton("Click to show data");
@@ -53,15 +55,8 @@ public class ControlPanel extends Composite {
 				}
 			}
 		});
-		drawLineButton = new ToggleButton("Draw line");
-		drawLineButton.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				if (drawLineButton.isDown()) {
-					mapPanel.addLine(ControlPanel.this);
-				}
-			}
-		});
+		showData
+				.setTitle("Toggle button to display raw data around point clicked on map");
 		final CheckBox noaaOverlay = new CheckBox(
 				"NOAA Overlay: Courtesy http://demo.geogarage.com/noaa");
 		noaaOverlay.addClickHandler(new ClickHandler() {
@@ -74,7 +69,7 @@ public class ControlPanel extends Composite {
 				}
 			}
 		});
-
+		noaaOverlay.setTitle("Adds NOAA Chart maps");
 		final ListBox overlayBox = new ListBox();
 		overlayBox.addItem("Raw Data", "");
 		overlayBox.addItem("Interpolated Data", "i");
@@ -89,12 +84,33 @@ public class ControlPanel extends Composite {
 				mapPanel.addOverlay(prefix);
 			}
 		});
+		overlayBox.setTitle("Overlay with raw, interpolated and/or lidar");
+		// Opacity slider
+		final SliderBar opacitySlider = new SliderBar(0, 1.0);
+		opacitySlider.setStepSize(0.1);
+		opacitySlider.setCurrentValue(0.6);
+		opacitySlider.setNumTicks(10);
+		opacitySlider.setNumLabels(5);
+		opacitySlider.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void onChange(Widget sender) {
+				double opacity = opacitySlider.getCurrentValue();
+				mapPanel.setLayerOpacity(opacity);
+			}
+		});
+		opacitySlider.setTitle("Sets opacity of bathymetry layer");
 		//
 		VerticalPanel buttonPanel = new VerticalPanel();
+		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(showData);
-		buttonPanel.add(drawLineButton);
+		// buttonPanel.add(drawLineButton);
+		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(noaaOverlay);
+		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(overlayBox);
+		buttonPanel.add(new HTML("<hr/>"));
+		buttonPanel.add(opacitySlider);
 		infoPanel = new FlowPanel();
 		infoPanel.setStyleName("infoPanel");
 
@@ -102,10 +118,6 @@ public class ControlPanel extends Composite {
 		mainPanel.add(buttonPanel);
 		mainPanel.add(infoPanel);
 		initWidget(mainPanel);
-	}
-
-	public ToggleButton getDrawLineButton() {
-		return drawLineButton;
 	}
 
 	public void showInInfoPanel(Widget widget) {
