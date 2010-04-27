@@ -552,7 +552,7 @@ public class Tables {
 		InputTable reservoirTable = new InputTable();
 		reservoirTable.setName("RESERVOIR");
 		reservoirTable.setHeaders(Arrays.asList(new String[] { "NAME", "AREA",
-				"BOT_ELEV", "TO_NODE" }));
+				"BOT_ELEV"}));
 		ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
 		for (Reservoir reservoir : reservoirs.getReservoirs()) {
 			try {
