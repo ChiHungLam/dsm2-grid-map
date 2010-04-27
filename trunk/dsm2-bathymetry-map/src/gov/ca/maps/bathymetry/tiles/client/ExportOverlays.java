@@ -20,6 +20,45 @@ import com.google.gwt.user.client.ui.Panel;
 
 public class ExportOverlays implements EntryPoint {
 
+	public static final class BathymetryTileLayer extends TileLayer {
+		private final String prefix;
+		private double opacity = 0.6;
+
+		public BathymetryTileLayer(CopyrightCollection copyrights,
+				int minResolution, int maxResolution, String prefix) {
+			super(copyrights, minResolution, maxResolution);
+			this.prefix = prefix;
+		}
+
+		public double getOpacity() {
+			return opacity;
+		}
+
+		public void setOpacity(double opacity) {
+			this.opacity = opacity;
+		}
+
+		public String getTileURL(Point tile, int zoomLevel) {
+			String uniqueValue = tile.getX() + "" + tile.getY() + ""
+					+ zoomLevel;
+			int hashCode = uniqueValue.hashCode();
+			if (GWT.getHostPageBaseURL().startsWith("localhost")) {
+				return "/tiles/" + hashCode + "_tile" + tile.getX() + "_"
+						+ tile.getY() + "_" + zoomLevel + ".png";
+			} else {
+				int version = (tile.getX() + tile.getY()) % 4 + 1;
+				return "http://" + version
+						+ ".latest.dsm2bathymetry.appspot.com/tiles/"
+						+ hashCode + "_" + prefix + "tile" + tile.getX() + "_"
+						+ tile.getY() + "_" + zoomLevel + ".png";
+			}
+		}
+
+		public boolean isPng() {
+			return true;
+		}
+	}
+
 	public void onModuleLoad() {
 		if (!Maps.isLoaded()) {
 			Window
@@ -53,39 +92,15 @@ public class ExportOverlays implements EntryPoint {
 		}
 	}-*/;
 
-	public static TileLayer getBathymetryTileLayer(final String prefix) {
+	public static BathymetryTileLayer getBathymetryTileLayer(final String prefix) {
 		CopyrightCollection myCopyright = new CopyrightCollection(
 				"@ California DWR 2010");
 		LatLng southWest = LatLng.newInstance(36.5, -123.0);
 		LatLng northEast = LatLng.newInstance(39.5, -120.5);
 		myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
 				southWest, northEast), 10, "@ Copyright California DWR"));
-		TileLayer tileLayer = new TileLayer(myCopyright, 10, 17) {
-
-			public double getOpacity() {
-				return 0.6;
-			}
-
-			public String getTileURL(Point tile, int zoomLevel) {
-				String uniqueValue = tile.getX() + "" + tile.getY() + ""
-						+ zoomLevel;
-				int hashCode = uniqueValue.hashCode();
-				if (GWT.getHostPageBaseURL().startsWith("localhost")) {
-					return "/tiles/" + hashCode + "_tile" + tile.getX() + "_"
-							+ tile.getY() + "_" + zoomLevel + ".png";
-				} else {
-					int version = (tile.getX() + tile.getY()) % 4 + 1;
-					return "http://" + version
-							+ ".latest.dsm2bathymetry.appspot.com/tiles/"
-							+ hashCode + "_" + prefix + "tile" + tile.getX()
-							+ "_" + tile.getY() + "_" + zoomLevel + ".png";
-				}
-			}
-
-			public boolean isPng() {
-				return true;
-			}
-		};
+		BathymetryTileLayer tileLayer = new BathymetryTileLayer(myCopyright,
+				10, 17, prefix);
 		return tileLayer;
 	}
 
@@ -169,18 +184,20 @@ public class ExportOverlays implements EntryPoint {
 	}
 
 	public static Panel getLegendPanel() {
-		Grid legend = new Grid(8, 2);
+		Grid legend = new Grid(13, 2);
 		legend.setStyleName("legend");
 		String[] legendColors = new String[] { "black", "blue", "cyan",
-				"green", "yellow", "orange", "red" };
+				"green", "yellow", "orange", "red", "pink", "magenta",
+				"darkviolet", "gray", "lightGray", "white" };
 		String[] legendDepth = new String[] { "< -100", "-40", "-30", "-15",
-				"-10", "-5", "> 0" };
+				"-10", "-5", " 0", " 5", "10", "15", "30", "40", " > 100" };
 		for (int i = 0; i < legendColors.length; i++) {
-			legend.setHTML(i, 0, "&nbsp;");
-			legend.getCellFormatter().setWidth(i, 0, "1em");
-			legend.getCellFormatter().getElement(i, 0).setAttribute("bgcolor",
-					legendColors[i]);
-			legend.setHTML(i, 1, legendDepth[i]);
+			int gridIndex = legendColors.length - i - 1;
+			legend.setHTML(gridIndex, 0, "&nbsp;");
+			legend.getCellFormatter().setWidth(gridIndex, 0, "1em");
+			legend.getCellFormatter().getElement(gridIndex, 0).setAttribute(
+					"bgcolor", legendColors[i]);
+			legend.setHTML(gridIndex, 1, legendDepth[i]);
 		}
 		FlowPanel legendContainerPanel = new FlowPanel();
 		legendContainerPanel.add(new HTML(
@@ -195,4 +212,5 @@ public class ExportOverlays implements EntryPoint {
 	public static Element getLegendPanelElement() {
 		return getLegendPanel().getElement();
 	}
+
 }

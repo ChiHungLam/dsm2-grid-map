@@ -18,6 +18,7 @@
  */
 package gov.ca.maps.bathymetry.tiles.client;
 
+import gov.ca.maps.bathymetry.tiles.client.ExportOverlays.BathymetryTileLayer;
 import gov.ca.maps.bathymetry.tiles.client.model.BathymetryDataPoint;
 import gov.ca.modeling.dsm2.widgets.client.ExpandContractMapControl;
 
@@ -31,45 +32,30 @@ import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.control.OverviewMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapInfoWindowCloseHandler;
-import com.google.gwt.maps.client.event.PolylineCancelLineHandler;
-import com.google.gwt.maps.client.event.PolylineClickHandler;
-import com.google.gwt.maps.client.event.PolylineEndLineHandler;
-import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ToggleButton;
 
 public class MapPanel extends Composite {
 	private final MapWidget map;
-	private boolean localhost;
 	private final BathymetryDataServiceAsync service;
 	private Polygon polygon;
-	private final String color = "#FF0000";
-	private final int weight = 5;
-	private final double opacity = 0.75;
 	private Polyline line;
 	private ShowPolygonHandler showPolygonHandler;
 	private RemovePolygonHandler removePolygonHandler;
 	private TileLayerOverlay noaaLayer;
-	private TileLayerOverlay bathymetryOverlay;
-	private TileLayerOverlay interpolatedBathymetryOverlay;
 	private Overlay currentOverlay;
+	private double opacity = 0.6;
+	private BathymetryTileLayer currentTileLayer;
 
 	public MapPanel() {
 		service = (BathymetryDataServiceAsync) GWT
 				.create(BathymetryDataService.class);
-		if (GWT.getHostPageBaseURL().contains("localhost")) {
-			localhost = true;
-		} else {
-			localhost = false;
-		}
 		map = new MapWidget(LatLng.newInstance(38.15, -121.70), 10);
 
 		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
@@ -101,56 +87,6 @@ public class MapPanel extends Composite {
 				});
 	}
 
-	public void addLine(final ControlPanel controlPanel) {
-		final ToggleButton drawLineButton = controlPanel.getDrawLineButton();
-		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
-				opacity);
-		if (line != null) {
-			map.removeOverlay(line);
-		}
-		line = new Polyline(new LatLng[0]);
-		map.addOverlay(line);
-		line.setDrawingEnabled();
-		line.setEditingEnabled(true);
-		line.setStrokeStyle(style);
-		line.addPolylineClickHandler(new PolylineClickHandler() {
-
-			public void onClick(PolylineClickEvent event) {
-				// editPolyline();
-			}
-		});
-		line.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
-
-			public void onUpdate(PolylineLineUpdatedEvent event) {
-				if (line.getVertexCount() == 2) {
-					line.setEditingEnabled(false);
-					drawLineButton.setDown(false);
-					drawXSection(controlPanel);
-				}
-				Window.setStatus("Length : " + getLengthInFeet() + " ft");
-			}
-		});
-
-		line.addPolylineCancelLineHandler(new PolylineCancelLineHandler() {
-
-			public void onCancel(PolylineCancelLineEvent event) {
-				Window.setStatus("Length : " + getLengthInFeet() + " ft");
-			}
-		});
-
-		line.addPolylineEndLineHandler(new PolylineEndLineHandler() {
-
-			public void onEnd(PolylineEndLineEvent event) {
-				Window.setStatus("Length : " + getLengthInFeet() + " ft");
-			}
-		});
-
-	}
-
-	public double getLengthInFeet() {
-		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
-	}
-
 	public void addNOAAOverlay() {
 		if (noaaLayer == null) {
 			TileLayer tileLayer = ExportOverlays.getNOAATileLayer();
@@ -172,7 +108,10 @@ public class MapPanel extends Composite {
 	}
 
 	public void addOverlay(String prefix) {
-		TileLayer tileLayer = ExportOverlays.getBathymetryTileLayer(prefix);
+		BathymetryTileLayer tileLayer = ExportOverlays
+				.getBathymetryTileLayer(prefix);
+		currentTileLayer = tileLayer;
+		currentTileLayer.setOpacity(getLayerOpacity());
 		currentOverlay = new TileLayerOverlay(tileLayer);
 		map.addOverlay(currentOverlay);
 	}
@@ -276,6 +215,21 @@ public class MapPanel extends Composite {
 				polygon = null;
 			}
 		}
+	}
+
+	public void setLayerOpacity(double opacity) {
+		this.opacity = opacity;
+		if (currentTileLayer != null) {
+			currentTileLayer.setOpacity(opacity);
+			if (currentOverlay != null) {
+				map.removeOverlay(currentOverlay);
+				map.addOverlay(currentOverlay);
+			}
+		}
+	}
+
+	public double getLayerOpacity() {
+		return opacity;
 	}
 
 }

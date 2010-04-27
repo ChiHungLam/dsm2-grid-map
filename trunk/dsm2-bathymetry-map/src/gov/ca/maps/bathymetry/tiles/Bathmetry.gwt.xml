@@ -12,7 +12,7 @@
 	<!-- Other module inherits                                      -->
 	<inherits name="com.google.gwt.maps.GoogleMaps" />
 	<inherits name='gov.ca.modeling.dsm2.widgets.ExpandContractMapControl' />
-
+	<inherits name='com.google.gwt.widgetideas.WidgetIdeas'/>
 	<!-- Specify the app entry point class.                         -->
 	<entry-point
 		class='gov.ca.maps.bathymetry.tiles.client.MainEntryPoint' />
