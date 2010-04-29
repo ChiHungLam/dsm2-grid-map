@@ -27,7 +27,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
+import com.google.gwt.user.client.ui.StackPanel;
 
 public class MainEntryPoint implements EntryPoint {
 
@@ -64,9 +64,9 @@ public class MainEntryPoint implements EntryPoint {
 						new HTML(
 								"<h3>Bathymetry Data for the Sacramento-San Joaquin Delta</h3>"),
 						5);
-		StackLayoutPanel sidePanel = new StackLayoutPanel(Unit.EM);
-		sidePanel.add(new ControlPanel(mapPanel), new HTML("Controls"), 2);
-		sidePanel.add(ExportOverlays.getLegendPanel(), new HTML("Legend"), 2);
+		StackPanel sidePanel = new StackPanel();
+		sidePanel.add(new ControlPanel(mapPanel), "Controls");
+		sidePanel.add(ExportOverlays.getLegendPanel(), "Legend");
 		mainPanel.addEast(sidePanel, 25);
 		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);
