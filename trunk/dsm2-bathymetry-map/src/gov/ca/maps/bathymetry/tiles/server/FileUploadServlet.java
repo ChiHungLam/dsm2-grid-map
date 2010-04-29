@@ -83,12 +83,20 @@ public class FileUploadServlet extends HttpServlet {
 			TileImageFile file = dao.getFileNamed(name);
 			if (file != null) {
 				data = file.getContents().getBytes();
+				sendImageDataOrRedirect(resp, data);
 				cache.put(name, data);
 			} else {
 				data = "/transparent.png";
+				sendImageDataOrRedirect(resp, data);
 				cache.put(name, data);
 			}
+		} else {
+			sendImageDataOrRedirect(resp, data);
 		}
+	}
+
+	private void sendImageDataOrRedirect(HttpServletResponse resp, Object data)
+			throws IOException {
 		if (data instanceof byte[]) {
 			byte[] dataAsBytes = (byte[]) data;
 			resp.setContentType("image/png");
