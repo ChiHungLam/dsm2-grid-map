@@ -9,8 +9,7 @@ To visualize this data on Google maps, tiles were generated using the raw data a
 
 This data is hosted at http://dsm2bathymetry.appspot.com. The raw data can be obtained by zooming into the area of interest and clicking in an area around it.
 
-The bathymetry data above was converted to a 10mx10m grid using techniques described [http://sfbay.wr.usgs.gov/sediment/delta/index.html here]. The visualization using the same coloring is available as alternate tiles for comparison at http://dsm2bathymetry.appspot.com 
- by selecting the "Interpolated Data" option using the drop down list box
+The bathymetry data above was converted to a 10mx10m grid using techniques described [http://sfbay.wr.usgs.gov/sediment/delta/index.html here]. The visualization using the same coloring is available as alternate tiles for comparison at http://dsm2bathymetry.appspot.com by selecting the "Interpolated Data" option using the drop down list box
 
 Also added to this work was lidar data collected in 2007 and then converted to a grid. This can be viewed by selecting "Interpolated Data + Lidar" using the drop down list box on the site mentioned above.
 
