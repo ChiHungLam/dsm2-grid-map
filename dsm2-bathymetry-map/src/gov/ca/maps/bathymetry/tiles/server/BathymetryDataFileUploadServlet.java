@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 
 import javax.jdo.PersistenceManager;
@@ -60,26 +61,41 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 			BathymetryDataFile bathymetryDataFile = dao.getFileForLocation(
 					latitude, longitude);
 			if (bathymetryDataFile != null) {
-				resp.getWriter().println(
-						"Bathymetry Data File: "
-								+ bathymetryDataFile.getLatitude100() + ","
-								+ bathymetryDataFile.getLongitude100());
-				DataInputStream dis = new DataInputStream(
-						new ByteArrayInputStream(bathymetryDataFile
-								.getContents().getBytes()));
-				while (dis.available() > 0) {
-					BathymetryDataPoint dataPoint = readBathymetryDataPoint(dis);
-					resp.getWriter().println(dataPoint.toString());
-				}
+				resp.setContentType("text/csv");
+				resp
+						.setHeader("Content-Disposition",
+								"attachment; filename=bathydata_"
+										+ bathymetryDataFile.getLatitude100()
+										+ "_"
+										+ bathymetryDataFile.getLongitude100()
+										+ ".csv");
+				String contents = convertToString(bathymetryDataFile);
+				resp.setContentLength(contents.length() * 2); // number of bytes
+																// sent
+				resp.getWriter().write(contents);
 			} else {
-				resp.getWriter().println("No data found!");
+				resp.sendError(HttpServletResponse.SC_NOT_FOUND,
+						"No Bathymetry Data Available for latitude=" + latitude
+								+ "&longitude=" + longitude);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			persistenceManager.close();
 		}
+	}
+
+	private String convertToString(BathymetryDataFile bathymetryDataFile)
+			throws IOException {
+		StringWriter strWriter = new StringWriter();
+		PrintWriter writer = new PrintWriter(strWriter);
+		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(
+				bathymetryDataFile.getContents().getBytes()));
+		while (dis.available() > 0) {
+			BathymetryDataPoint dataPoint = readBathymetryDataPoint(dis);
+			writer.println(dataPoint.toString());
+		}
+		return strWriter.toString();
 	}
 
 	private BathymetryDataPoint readBathymetryDataPoint(DataInputStream dis) {
