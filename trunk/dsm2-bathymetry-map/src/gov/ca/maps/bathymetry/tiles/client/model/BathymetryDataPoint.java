@@ -31,7 +31,7 @@ public class BathymetryDataPoint implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(latitude).append(",").append(longitude).append(",")
-				.append(elevation);
+				.append(elevation).append(",");
 		builder.append(year).append(",").append(agency);
 		return builder.toString();
 	}
