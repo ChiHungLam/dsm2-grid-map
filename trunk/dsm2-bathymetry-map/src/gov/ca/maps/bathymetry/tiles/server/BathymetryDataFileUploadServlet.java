@@ -71,7 +71,7 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 										+ ".csv");
 				String contents = convertToString(bathymetryDataFile);
 				resp.setContentLength(contents.length() * 2); // number of bytes
-																// sent
+				// sent
 				resp.getWriter().write(contents);
 			} else {
 				resp.sendError(HttpServletResponse.SC_NOT_FOUND,
@@ -211,7 +211,6 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 						newdata.length);
 			}
 			bathymetryDataFile.setContents(new Blob(data));
-			dao.updateObject(bathymetryDataFile);
 		}
 	}
 }
