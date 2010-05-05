@@ -22,6 +22,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window.Location;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -57,6 +59,18 @@ public class ControlPanel extends Composite {
 		});
 		showData
 				.setTitle("Toggle button to display raw data around point clicked on map");
+		//
+		final Anchor bookmarkLink = new Anchor("Goto Bookmarkable URL");
+		bookmarkLink.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				String url = mapPanel.generateLinkURL();
+				Location.assign(url);
+			}
+		});
+
+		//
 		final CheckBox noaaOverlay = new CheckBox(
 				"NOAA Overlay: Courtesy http://demo.geogarage.com/noaa");
 		noaaOverlay.addClickHandler(new ClickHandler() {
@@ -111,6 +125,8 @@ public class ControlPanel extends Composite {
 		buttonPanel.add(overlayBox);
 		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(opacitySlider);
+		buttonPanel.add(new HTML("<hr/>"));
+		buttonPanel.add(bookmarkLink);
 		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel
 				.add(new HTML(
