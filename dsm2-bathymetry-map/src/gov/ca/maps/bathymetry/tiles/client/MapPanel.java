@@ -53,10 +53,10 @@ public class MapPanel extends Composite {
 	private double opacity = 0.6;
 	private BathymetryTileLayer currentTileLayer;
 
-	public MapPanel() {
+	public MapPanel(double latCenter, double lngCenter, int zoom) {
 		service = (BathymetryDataServiceAsync) GWT
 				.create(BathymetryDataService.class);
-		map = new MapWidget(LatLng.newInstance(38.15, -121.70), 10);
+		map = new MapWidget(LatLng.newInstance(latCenter, lngCenter), zoom);
 
 		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
 		map.addControl(fullScreenControl);
@@ -230,6 +230,12 @@ public class MapPanel extends Composite {
 
 	public double getLayerOpacity() {
 		return opacity;
+	}
+
+	public String generateLinkURL() {
+		return GWT.getHostPageBaseURL() + "?" + "lat="
+				+ map.getCenter().getLatitude() + "&lng="
+				+ map.getCenter().getLongitude() + "&z=" + map.getZoomLevel();
 	}
 
 }

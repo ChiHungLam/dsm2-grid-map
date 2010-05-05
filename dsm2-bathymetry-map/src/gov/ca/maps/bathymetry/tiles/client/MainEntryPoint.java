@@ -18,12 +18,16 @@
  */
 package gov.ca.maps.bathymetry.tiles.client;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -58,7 +62,13 @@ public class MainEntryPoint implements EntryPoint {
 
 	protected void createUI() {
 		mainPanel = new DockLayoutPanel(Unit.EM);
-		mapPanel = new MapPanel();
+		double latCenter = 38.15, lngCenter = -121.70;
+		int zoom = 10;
+		Map<String, List<String>> parameterMap = Location.getParameterMap();
+		latCenter = extractValue(parameterMap, "lat", latCenter);
+		lngCenter = extractValue(parameterMap, "lng", lngCenter);
+		zoom = (int) extractValue(parameterMap, "z", zoom);
+		mapPanel = new MapPanel(latCenter, lngCenter, zoom);
 		mainPanel
 				.addNorth(
 						new HTML(
@@ -78,6 +88,18 @@ public class MainEntryPoint implements EntryPoint {
 				mapPanel.onResize();
 			}
 		});
+	}
+
+	private double extractValue(Map<String, List<String>> parameterMap,
+			String key, double defaultValue) {
+		double value = defaultValue;
+		if (parameterMap.containsKey(key)) {
+			List<String> latValues = parameterMap.get(key);
+			if ((latValues != null) && (latValues.size() == 1)) {
+				value = Double.parseDouble(latValues.get(0));
+			}
+		}
+		return value;
 	}
 
 }
