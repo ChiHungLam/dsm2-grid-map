@@ -37,6 +37,10 @@ public class DSM2DownloadServlet extends HttpServlet {
 		String inputName = req.getParameter("inputName");
 		String studyKey = req.getParameter("studyKey");
 		resp.setContentType("text/plain");
+		// inputName = hydro_echo_inp | gis_inp
+		String filename = inputName.replace("_inp", ".inp");
+		resp.setHeader("Content-Disposition", "attachment; filename="
+				+ filename);
 		if ((studyKey == null) || studyKey.equals("")) {
 			resp.getWriter().write(
 					new DSM2InputServiceImpl().showInput(studyName, inputName));

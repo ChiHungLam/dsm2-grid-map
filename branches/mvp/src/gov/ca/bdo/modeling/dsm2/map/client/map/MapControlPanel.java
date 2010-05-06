@@ -187,11 +187,9 @@ public class MapControlPanel extends Composite {
 	public void updateLinks() {
 		if (downloadHydroEchoLink == null) {
 			downloadHydroEchoLink = new Anchor("Download Hydro Input");
-			downloadHydroEchoLink.setTarget("_download_input");
 		}
 		if (downloadGisEchoLink == null) {
 			downloadGisEchoLink = new Anchor("Download GIS Input");
-			downloadGisEchoLink.setTarget("_download_input");
 		}
 		downloadHydroEchoLink.setHref(buildDownloadLink("hydro_echo_inp"));
 		downloadGisEchoLink.setHref(buildDownloadLink("gis_inp"));
