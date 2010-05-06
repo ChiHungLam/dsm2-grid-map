@@ -21,7 +21,9 @@ public class ExpandContractMapControl extends CustomControl {
 	@Override
 	protected Widget initialize(final MapWidget map) {
 		Image upImage = new Image(IconImages.INSTANCE.expandIcon());
+		upImage.setTitle("full size");
 		Image downImage = new Image(IconImages.INSTANCE.contractIcon());
+		downImage.setTitle("normal size");
 		final ToggleButton button = new ToggleButton(upImage, downImage);
 		button.setStylePrimaryName("expand-contract-button");
 		button.addClickHandler(new ClickHandler() {
