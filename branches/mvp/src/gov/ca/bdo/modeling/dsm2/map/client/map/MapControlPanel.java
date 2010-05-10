@@ -138,7 +138,9 @@ public class MapControlPanel extends Composite {
 		for (String studyName : studyNames) {
 			studyBox.addItem(studyName, studyName);
 		}
-		setStudy(studyBox.getItemText(0));
+		if (studyBox.getItemCount() > 0) {
+			setStudy(studyBox.getItemText(0));
+		}
 	}
 
 	public HasChangeHandlers getStudyBox() {

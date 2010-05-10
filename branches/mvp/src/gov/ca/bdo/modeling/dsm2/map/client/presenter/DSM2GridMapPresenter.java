@@ -107,7 +107,9 @@ public class DSM2GridMapPresenter implements Presenter {
 			public void onChange(ChangeEvent event) {
 				display.setStudy(display.getStudyChoice());
 				currentStudy = display.getStudyChoice();
-				loadStudy();
+				if (!viewOnly) {
+					loadStudy();
+				}
 			}
 		});
 		display.addInitializeHandler(new InitializeHandler() {
@@ -228,7 +230,6 @@ public class DSM2GridMapPresenter implements Presenter {
 
 	public void loadStudies() {
 		if (viewOnly) {
-			//
 		} else {
 			dsm2InputService.getStudyNames(new AsyncCallback<String[]>() {
 
@@ -242,7 +243,7 @@ public class DSM2GridMapPresenter implements Presenter {
 					display.showError("Oops and error occurred: "
 							+ caught.getMessage());
 					display.setStudies(new String[] { "" });
-					History.newItem("request_access");
+					// History.newItem("request_access");
 				}
 			});
 		}
@@ -277,6 +278,16 @@ public class DSM2GridMapPresenter implements Presenter {
 		if (token.startsWith("map_view")) {
 			if (token.indexOf("/") >= 0) {
 				final String studyKey = token.substring(token.indexOf("/") + 1);
+				dsm2InputService.getStudyNameForSharingKey(studyKey,
+						new AsyncCallback<String>() {
+
+							public void onFailure(Throwable caught) {
+							}
+
+							public void onSuccess(String result) {
+								display.setStudies(new String[] { result });
+							}
+						});
 				dsm2InputService.getInputModelForKey(studyKey,
 						new AsyncCallback<DSM2Model>() {
 
@@ -287,7 +298,6 @@ public class DSM2GridMapPresenter implements Presenter {
 							}
 
 							public void onSuccess(DSM2Model result) {
-
 								display.setModel(result);
 								if (result != null) {
 									display.showMessage("Drawing...");
