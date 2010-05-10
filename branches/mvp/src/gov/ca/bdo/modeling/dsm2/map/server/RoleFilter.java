@@ -25,6 +25,7 @@ import gov.ca.bdo.modeling.dsm2.map.server.persistence.UserProfileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.Filter;
@@ -47,7 +48,8 @@ import com.google.appengine.api.users.UserServiceFactory;
  * 
  */
 public class RoleFilter implements Filter {
-
+	private static final Logger log = Logger.getLogger(RoleFilter.class
+			.getName());
 	private UserService userService;
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -56,24 +58,40 @@ public class RoleFilter implements Filter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String requestURI = httpServletRequest.getRequestURI();
 		if (userService.isUserLoggedIn()) {
+			log.info("requestURI: " + requestURI);
 			if (requestURI.contains("/login")
 					|| requestURI.contains("/request_access")
 					|| requestURI.contains("/logout")) {
+				if (requestURI.contains("/logout")) {
+					httpServletRequest.getSession().invalidate();
+				}
+				log.info("calling chain.doFilter " + requestURI);
 				chain.doFilter(request, response);
 			} else {
 				User currentUser = userService.getCurrentUser();
 				if (isAllowed(currentUser, requestURI)) {
+					log.info("user is allowed: calling chain.doFilter "
+							+ requestURI);
 					chain.doFilter(request, response);
 				} else {
+					log.info("user disallowed: calling redirect to "
+							+ userService.createLoginURL(requestURI));
 					httpServletResponse.sendRedirect(userService
 							.createLoginURL(requestURI));
-					// response.getWriter().println("Access denied!");
 				}
 			}
 		} else {
-			if (requestURI.contains("/login") || requestURI.contains("/logout")) {
+			log.info("no user logged in yet");
+			if (requestURI.contains("/logout") || requestURI.contains("/login")) {
+				log.info("detecting login/logout uri: " + requestURI);
+				log.info("calling chain.doFilter");
+				if (requestURI.contains("/logout")) {
+					httpServletRequest.getSession().invalidate();
+				}
 				chain.doFilter(request, response);
 			} else {
+				log.info("calling send redirect to login url: "
+						+ userService.createLoginURL(requestURI));
 				httpServletResponse.sendRedirect(userService
 						.createLoginURL(requestURI));
 			}

@@ -24,6 +24,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.LoginService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.LoginServiceAsync;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -50,7 +51,7 @@ public class HeaderPanel extends Composite {
 			headerPanel
 					.addToLinkPanel(new Anchor("Upload Data", "#upload_data"));
 		}
-		loginService.login(GWT.getHostPageBaseURL(),
+		loginService.login(GWT.getModuleBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 
 					public void onSuccess(LoginInfo result) {
@@ -70,8 +71,7 @@ public class HeaderPanel extends Composite {
 					}
 
 					public void onFailure(Throwable caught) {
-						headerPanel.showError(true,
-								"Oops... an error occurred: Please try again");
+						Location.reload();
 					}
 				});
 		initWidget(headerPanel);

@@ -5,12 +5,15 @@ import gov.ca.bdo.modeling.dsm2.map.client.display.StudyManagerDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UnauthorizedUserDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDataDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.UserProfileDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyDataUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.UnauthorizedUserPresenter;
+import gov.ca.bdo.modeling.dsm2.map.client.presenter.UserProfilePresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
+import gov.ca.bdo.modeling.dsm2.map.client.service.UserProfileServiceAsync;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -22,10 +25,12 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 	private final HandlerManager eventBus;
 	private final DSM2InputServiceAsync dsm2InputService;
 	private HasWidgets container;
+	private UserProfileServiceAsync userProfileService;
 
 	public AppController(DSM2InputServiceAsync dsm2InputService,
-			HandlerManager eventBus) {
+			UserProfileServiceAsync userProfileService, HandlerManager eventBus) {
 		this.dsm2InputService = dsm2InputService;
+		this.userProfileService = userProfileService;
 		this.eventBus = eventBus;
 		bind();
 	}
@@ -63,7 +68,9 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			} else if (token.equals("upload_data")) {
 				presenter = new DSM2StudyDataUploadPresenter(eventBus,
 						new UploadStudyDataDisplay());
-			} else if (token.equals("profile")) {
+			} else if (token.equals("admin/profile")) {
+				presenter = new UserProfilePresenter(userProfileService,
+						eventBus, new UserProfileDisplay());
 			} else if (token.equals("request_access")) {
 				presenter = new UnauthorizedUserPresenter(
 						new UnauthorizedUserDisplay());
