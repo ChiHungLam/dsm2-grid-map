@@ -296,7 +296,7 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 		if (study == null) {
 			return "";
 		} else {
-			return study.getStudyName();
+			return study.getOwnerName() + "::" + study.getStudyName();
 		}
 	}
 
@@ -308,7 +308,6 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			DSM2Study study = dao.getStudyForSharingKey(key);
 			return study;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		} finally {

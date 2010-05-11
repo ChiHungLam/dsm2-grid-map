@@ -19,7 +19,6 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.service;
 
-import gov.ca.bdo.modeling.dsm2.map.server.data.DSM2Study;
 import gov.ca.dsm2.input.model.DSM2Model;
 
 import com.google.gwt.user.client.rpc.RemoteService;
