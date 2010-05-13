@@ -24,7 +24,7 @@ import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoirs;
-import gov.ca.modeling.dsm2.widgets.client.ExpandContractMapControl;
+import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.Copyright;
