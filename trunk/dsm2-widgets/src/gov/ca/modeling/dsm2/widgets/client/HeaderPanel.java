@@ -47,6 +47,8 @@ public class HeaderPanel extends FlowPanel {
 	public void addToRightSide(Widget w) {
 		if (w instanceof Anchor) {
 			w.setStyleName("linkbar");
+		} else {
+			w.setStyleName("name");
 		}
 		paragraphPanel.add(w);
 	}
