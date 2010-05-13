@@ -1,4 +1,5 @@
-package gov.ca.modeling.dsm2.widgets.client;
+package gov.ca.modeling.maps.widgets.client;
+
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
