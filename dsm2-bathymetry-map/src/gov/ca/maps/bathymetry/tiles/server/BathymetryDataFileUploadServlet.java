@@ -53,6 +53,8 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 		String yStr = req.getParameter("longitude");
 		double latitude = Double.parseDouble(xStr);
 		double longitude = Double.parseDouble(yStr);
+		String xWidth = req.getParameter("latw");
+		String yWidth = req.getParameter("lngw");
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
 		try {

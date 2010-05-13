@@ -39,9 +39,9 @@ public class BathymetryDataInfoPanel extends Composite {
 		table.getRowFormatter().setStyleName(0, "ae-table-thead");
 		int row = 1;
 		for (BathymetryDataPoint point : points) {
-			table.setHTML(row, 0, point.latitude + "");
-			table.setHTML(row, 1, point.longitude + "");
-			table.setHTML(row, 2, point.elevation + "");
+			table.setHTML(row, 0, displayPrecision(point.latitude, 6));
+			table.setHTML(row, 1, displayPrecision(point.longitude, 6));
+			table.setHTML(row, 2, displayPrecision(point.elevation, 2));
 			table.setHTML(row, 3, point.year + "");
 			table.setHTML(row, 4, point.agency + "");
 			table.getRowFormatter().setStyleName(row,
@@ -50,7 +50,12 @@ public class BathymetryDataInfoPanel extends Composite {
 		}
 		ScrollPanel sPanel = new ScrollPanel(table);
 		sPanel.setHeight("15em");
-		sPanel.setWidth("35em");
+		sPanel.setWidth("28em");
 		initWidget(sPanel);
+	}
+
+	private String displayPrecision(double value, int precision) {
+		double multiplier = Math.pow(10, precision);
+		return Math.round(value * multiplier) / multiplier + "";
 	}
 }

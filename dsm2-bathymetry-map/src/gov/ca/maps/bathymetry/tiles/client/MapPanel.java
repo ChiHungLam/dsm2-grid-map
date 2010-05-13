@@ -20,7 +20,7 @@ package gov.ca.maps.bathymetry.tiles.client;
 
 import gov.ca.maps.bathymetry.tiles.client.ExportOverlays.BathymetryTileLayer;
 import gov.ca.maps.bathymetry.tiles.client.model.BathymetryDataPoint;
-import gov.ca.modeling.dsm2.widgets.client.ExpandContractMapControl;
+import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
 
 import java.util.List;
 

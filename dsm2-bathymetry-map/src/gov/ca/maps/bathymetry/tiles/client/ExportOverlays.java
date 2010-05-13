@@ -42,9 +42,10 @@ public class ExportOverlays implements EntryPoint {
 			String uniqueValue = tile.getX() + "" + tile.getY() + ""
 					+ zoomLevel;
 			int hashCode = uniqueValue.hashCode();
-			if (GWT.getHostPageBaseURL().startsWith("localhost")) {
-				return "/tiles/" + hashCode + "_tile" + tile.getX() + "_"
-						+ tile.getY() + "_" + zoomLevel + ".png";
+			if (GWT.getHostPageBaseURL().contains("localhost")) {
+				return "/tiles/" + hashCode + "_" + prefix + "tile"
+						+ tile.getX() + "_" + tile.getY() + "_" + zoomLevel
+						+ ".png";
 			} else {
 				int version = (tile.getX() + tile.getY()) % 4 + 1;
 				return "http://" + version
