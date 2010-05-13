@@ -39,14 +39,21 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 
 import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 
 public class FileUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 8367618333138027430L;
 	private static final int MAX_SIZE_BYTES = 1024 * 1024;
 	private Cache cache;
+	private DatastoreService datastore;
 
 	@Override
 	public void init() throws ServletException {
+		datastore = DatastoreServiceFactory.getDatastoreService();
 		try {
 			cache = CacheManager.getInstance().getCacheFactory().createCache(
 					Collections.emptyMap());
@@ -76,15 +83,20 @@ public class FileUploadServlet extends HttpServlet {
 		Object data = cache.get(name);
 		// Object data = null;
 		if ((data == null) || !(data instanceof byte[])) {
-			PersistenceManager persistenceManager = PMF.get()
-					.getPersistenceManager();
-			TileImageFileDAOImpl dao = new TileImageFileDAOImpl(
-					persistenceManager);
-			TileImageFile file = dao.getFileNamed(name);
-			if (file != null) {
-				data = file.getContents().getBytes();
+			Entity imageFileEntity = null;
+			Query query = new Query("TileImageFile");
+			query.addFilter("name", Query.FilterOperator.EQUAL, name);
+			PreparedQuery preparedQuery = datastore.prepare(query);
+			imageFileEntity = preparedQuery.asSingleEntity();
+			if (imageFileEntity != null) {
+				Blob contents = (Blob) imageFileEntity.getProperty("contents");
+				data = contents.getBytes();
 				sendImageDataOrRedirect(resp, data);
-				cache.put(name, data);
+				try {
+					cache.put(name, data);
+				} catch (Exception ex) {
+					// GCache exception due to policy on put
+				}
 			} else {
 				data = "/transparent.png";
 				sendImageDataOrRedirect(resp, data);

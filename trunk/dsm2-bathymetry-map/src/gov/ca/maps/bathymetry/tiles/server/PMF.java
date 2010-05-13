@@ -26,6 +26,7 @@ public class PMF {
 			.getPersistenceManagerFactory("transactions-optional");
 
 	private PMF() {
+		System.out.println("Initialized PMF");
 	}
 
 	public static PersistenceManagerFactory get() {
