@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<servlet>
+		<servlet-name>userProfileServlet</servlet-name>
+		<servlet-class>gov.ca.modeling.timeseries.map.server.service.UserProfileServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>userProfileServlet</servlet-name>
+		<url-pattern>/timeseriesgooglemap/service/admin/userProfile</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>loginServlet</servlet-name>
+		<servlet-class>gov.ca.modeling.timeseries.map.server.service.LoginServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>loginServlet</servlet-name>
+		<url-pattern>/timeseriesgooglemap/service/login</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>authFilter</filter-name>
+		<filter-class>gov.ca.modeling.timeseries.map.server.RoleFilter</filter-class>
+		<init-param>
+			<param-name>whitelist</param-name>
+			<param-value></param-value>
+		</init-param>
+	</filter>
+	<!-- Log for all URLs-->
+	<filter-mapping>
+		<filter-name>authFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>TimeSeriesGoogleMap.html</welcome-file>
+	</welcome-file-list>
+	<!-- secured pages -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>general</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>*</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>admin</web-resource-name>
+			<url-pattern>/admin/*</url-pattern>
+			<url-pattern>/dsm2_grid_map/admin/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>public</web-resource-name>
+			<url-pattern>/public.html</url-pattern>
+		</web-resource-collection>
+	</security-constraint>
+</web-app>
