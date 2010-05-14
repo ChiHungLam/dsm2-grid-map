@@ -40,7 +40,6 @@ public class HeaderPresenter implements Presenter {
 		this.display = display;
 	}
 
-	@Override
 	public void go(HasWidgets container) {
 		container.clear();
 		bind();
