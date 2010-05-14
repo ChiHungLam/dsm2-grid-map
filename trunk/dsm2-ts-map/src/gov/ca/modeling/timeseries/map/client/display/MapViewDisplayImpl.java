@@ -15,7 +15,6 @@ public class MapViewDisplayImpl extends Composite implements MapViewDisplay {
 		initWidget(panel);
 	}
 
-	@Override
 	public Widget asWidget() {
 		return this;
 	}

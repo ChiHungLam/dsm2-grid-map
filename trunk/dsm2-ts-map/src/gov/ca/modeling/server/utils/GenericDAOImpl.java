@@ -38,7 +38,6 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 		ofy.delete(object);
 	}
 
-	@Override
 	public T findObjectById(Class<T> actualClass, long id) {
 		Objectify ofy = ObjectifyService.begin();
 		T result = ofy.find(actualClass, id);

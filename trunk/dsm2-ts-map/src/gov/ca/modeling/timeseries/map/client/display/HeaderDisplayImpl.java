@@ -58,7 +58,6 @@ public class HeaderDisplayImpl extends Composite implements HeaderDisplay {
 		headerPanel.showWarning(false, "");
 	}
 
-	@Override
 	public Widget asWidget() {
 		return this;
 	}
