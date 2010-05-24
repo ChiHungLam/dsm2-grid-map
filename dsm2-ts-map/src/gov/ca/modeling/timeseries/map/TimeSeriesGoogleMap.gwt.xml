@@ -12,7 +12,7 @@
 	<inherits name='gov.ca.modeling.dsm2.widgets.HeaderPanel' />
 
 	<!-- Other module inherits                                      -->
-
+	<inherits name="com.googlecode.objectify.Objectify" />
 	<!-- Specify the app entry point class.                         -->
 	<entry-point
 		class='gov.ca.modeling.timeseries.map.client.TimeSeriesGoogleMapEntryPoint' />

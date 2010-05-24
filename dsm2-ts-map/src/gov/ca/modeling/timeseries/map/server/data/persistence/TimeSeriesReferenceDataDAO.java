@@ -17,9 +17,25 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.modeling.timeseries.map.shared.service;
+package gov.ca.modeling.timeseries.map.server.data.persistence;
 
+import gov.ca.modeling.server.utils.GenericDAO;
+import gov.ca.modeling.timeseries.map.shared.data.TimeSeriesReferenceData;
 
-public interface DataServiceAsync {
+import java.util.List;
 
+public interface TimeSeriesReferenceDataDAO extends
+		GenericDAO<TimeSeriesReferenceData> {
+	/**
+	 * Finds matching time series references that match on source, location and
+	 * type. If any of these are null, then the match is not filtered by that
+	 * criteria. E.g. if all are null, everything is matched.
+	 * 
+	 * @param source
+	 * @param location
+	 * @param type
+	 * @return
+	 */
+	List<TimeSeriesReferenceData> findBySourceAndLocationAndType(String source,
+			String location, String type);
 }
