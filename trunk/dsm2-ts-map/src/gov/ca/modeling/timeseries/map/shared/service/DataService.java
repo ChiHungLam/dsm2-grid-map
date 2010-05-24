@@ -19,20 +19,10 @@
  */
 package gov.ca.modeling.timeseries.map.shared.service;
 
-import gov.ca.modeling.timeseries.map.shared.data.RegularTimeSeries;
-import gov.ca.modeling.timeseries.map.shared.data.TextAnnotation;
-
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("service/data")
 public interface DataService extends RemoteService {
-	public List<RegularTimeSeries> getRegularTimeSeries(String studyName,
-			String name, String[] variables);
 
-	public List<TextAnnotation> getNotes(String studyName);
-
-	public void saveNotes(String studyName, List<TextAnnotation> annotations);
 }

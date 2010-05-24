@@ -17,9 +17,18 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.modeling.timeseries.map.shared.service;
+package gov.ca.modeling.timeseries.map.server.data.persistence;
 
+import gov.ca.modeling.server.utils.GenericDAOImpl;
+import gov.ca.modeling.timeseries.map.shared.data.TimeSeriesData;
 
-public interface DataServiceAsync {
+import com.googlecode.objectify.ObjectifyService;
+
+public class TimeSeriesDataDAOImpl extends GenericDAOImpl<TimeSeriesData> implements
+		TimeSeriesDataDAO {
+
+	static {
+		ObjectifyService.register(TimeSeriesData.class);
+	}
 
 }

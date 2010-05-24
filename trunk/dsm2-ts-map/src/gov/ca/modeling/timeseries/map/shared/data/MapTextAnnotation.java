@@ -17,9 +17,53 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.modeling.timeseries.map.shared.service;
+package gov.ca.modeling.timeseries.map.shared.data;
 
+import java.io.Serializable;
 
-public interface DataServiceAsync {
+import javax.persistence.Id;
+
+import com.googlecode.objectify.annotation.Entity;
+
+@SuppressWarnings("serial")
+@Entity
+public class MapTextAnnotation implements Serializable {
+	@Id
+	private Long id;
+	private String text;
+	private double lat;
+	private double lng;
+
+	public MapTextAnnotation() {
+
+	}
+
+	public void setLatitude(double lat) {
+		this.lat = lat;
+	}
+
+	public void setLongitude(double lng) {
+		this.lng = lng;
+	}
+
+	public double getLatitude() {
+		return lat;
+	}
+
+	public double getLongitude() {
+		return lng;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public Long getId() {
+		return id;
+	}
 
 }
