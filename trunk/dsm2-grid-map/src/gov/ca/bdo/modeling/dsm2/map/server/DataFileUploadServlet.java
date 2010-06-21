@@ -103,9 +103,10 @@ public class DataFileUploadServlet extends HttpServlet {
 		DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
 		DSSOutParser parser = new DSSOutParser(fileAsStream);
 		RegularTimeSeries rts = null;
+		String email = Utils.getCurrentUserEmail();
 		while ((rts = parser.nextSeries()) != null) {
 			DataFile file = dao.getFileForStudyAndName(studyName,
-					rts.getName(), rts.getType());
+					rts.getName(), rts.getType(), email);
 			if (file == null) {
 				file = new DataFile();
 				file.setStudyName(studyName);

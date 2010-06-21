@@ -24,6 +24,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.LoginService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.LoginServiceAsync;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -32,16 +33,31 @@ import com.google.gwt.user.client.ui.HTML;
 public class HeaderPanel extends Composite {
 	private final LoginServiceAsync loginService;
 	private final gov.ca.modeling.dsm2.widgets.client.HeaderPanel headerPanel;
+	private String nickname;
+	protected String email;
 
 	public HeaderPanel() {
+		this(false);
+	}
+
+	public HeaderPanel(boolean noLinks) {
 		loginService = GWT.create(LoginService.class);
 		headerPanel = new gov.ca.modeling.dsm2.widgets.client.HeaderPanel();
-		headerPanel.addToLinkPanel(new HTML("<b>DSM2 Grid Map</b>"));
-		loginService.login(GWT.getHostPageBaseURL(),
+		if (!noLinks) {
+			headerPanel.addToLinkPanel(new Anchor("Map", "#map"));
+			headerPanel.addToLinkPanel(new Anchor("Studies", "#studies"));
+			headerPanel.addToLinkPanel(new Anchor("Upload Study",
+					"#upload_study"));
+			headerPanel
+					.addToLinkPanel(new Anchor("Upload Data", "#upload_data"));
+		}
+		loginService.login(GWT.getModuleBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 
 					public void onSuccess(LoginInfo result) {
 						if (result.isLoggedIn()) {
+							nickname = result.getNickname();
+							email = result.getEmailAddress();
 							HTML nameDisplay = new HTML("<b>"
 									+ result.getEmailAddress() + "</b>");
 							nameDisplay.setStyleName("name");
@@ -55,11 +71,18 @@ public class HeaderPanel extends Composite {
 					}
 
 					public void onFailure(Throwable caught) {
-						headerPanel.showError(true,
-								"Oops... an error occurred: Please try again");
+						Location.reload();
 					}
 				});
 		initWidget(headerPanel);
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public void showMessage(boolean show, String message) {
@@ -69,4 +92,9 @@ public class HeaderPanel extends Composite {
 	public void showError(boolean show, String message) {
 		headerPanel.showError(show, message);
 	}
+
+	public void clearMessages() {
+		headerPanel.showWarning(false, "");
+	}
+
 }

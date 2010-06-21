@@ -22,195 +22,74 @@ package gov.ca.bdo.modeling.dsm2.map.client.map;
 import gov.ca.bdo.modeling.dsm2.map.client.images.IconImages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 
 public class MapControlPanel extends Composite {
 
-	private final MapPanel mapPanel;
 	private final ListBox studyBox;
 	private Anchor downloadHydroEchoLink;
 	private Anchor downloadGisEchoLink;
 	private final FlexTable containerPanel;
-	private DisclosurePanel colorSchemePanel;
+	private TextBox findNodeBox;
+	private TextBox findChannelBox;
+	private ToggleButton saveEditModelButton;
+	private ToggleButton addTextAnnotationButton;
+	private ToggleButton addPolylineButton;
+	private ToggleButton addPolygonButton;
+	private String[] studies;
+	private boolean viewOnly;
+	private Label measurementLabel;
 
-	public MapControlPanel(MapPanel panel) {
-		mapPanel = panel;
+	public MapControlPanel(boolean viewOnly) {
+		this.viewOnly = viewOnly;
 		containerPanel = new FlexTable();
 		//
 		Label studyLabel = new Label("Study");
 		studyBox = new ListBox();
-
-		setStudies(mapPanel.getStudyNames());
-		studyBox.addChangeHandler(new ChangeHandler() {
-
-			public void onChange(ChangeEvent event) {
-
-				mapPanel.setStudy(studyBox
-						.getValue(studyBox.getSelectedIndex()));
-			}
-		});
 		//
 		Label findNodeLabel = new Label("Find Node Id:");
-		TextBox findNodeBox = new TextBox();
-		findNodeBox.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			public void onValueChange(ValueChangeEvent<String> event) {
-				String nodeId = event.getValue();
-				mapPanel.centerAndZoomOnNode(nodeId);
-			}
-		});
+		findNodeBox = new TextBox();
 		//
 		Label findChannelLabel = new Label("Find Channel Id:");
-		TextBox findChannelBox = new TextBox();
-		findChannelBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+		findChannelBox = new TextBox();
 
-			public void onValueChange(ValueChangeEvent<String> event) {
-				String channelId = event.getValue();
-				mapPanel.centerAndZoomOnChannel(channelId);
-			}
-		});
+		measurementLabel = new Label("");
+		addPolylineButton = new ToggleButton(new Image(IconImages.INSTANCE
+				.measureOffIcon()));
+		addPolygonButton = new ToggleButton(new Image(IconImages.INSTANCE
+				.measurePolygonIcon()), new Image(IconImages.INSTANCE
+				.measurePolygonIcon()));
+
 		//
-		final ToggleButton addPolylineButton = new ToggleButton(new Image(
-				IconImages.INSTANCE.measureOffIcon()));
-		final Label measurementLabel = new Label("");
-		addPolylineButton.addClickHandler(new ClickHandler() {
-			private MeasuringDistanceAlongLine measurer;
-
-			public void onClick(ClickEvent event) {
-				if (addPolylineButton.isDown()) {
-					if (measurer == null) {
-						measurer = new MeasuringDistanceAlongLine(mapPanel
-								.getMapWidget(), measurementLabel);
-						measurer.addPolyline();
-					} else {
-						measurer.addPolyline();
-					}
-				} else {
-					if (measurer != null) {
-						measurer.clearOverlay();
-						measurementLabel.setText("");
-					}
-
-				}
-
-			}
-		});
-		//
-		final ToggleButton addPolygonButton = new ToggleButton(new Image(
-				IconImages.INSTANCE.measurePolygonIcon()), new Image(
-				IconImages.INSTANCE.measurePolygonIcon()));
-		addPolygonButton.addClickHandler(new ClickHandler() {
-			private MeasuringAreaInPolygon measurer;
-
-			public void onClick(ClickEvent event) {
-				if (addPolygonButton.isDown()) {
-					if (measurer == null) {
-						measurer = new MeasuringAreaInPolygon(mapPanel
-								.getMapWidget(), measurementLabel);
-						measurer.addPolyline();
-					} else {
-						measurer.clearOverlay();
-						measurementLabel.setText("");
-						measurer.addPolyline();
-					}
-				} else {
-					if (measurer != null) {
-						measurer.clearOverlay();
-						measurementLabel.setText("");
-					}
-
-				}
-
-			}
-		});
-		//
-		Label colorArraySchemeLabel = new Label("Color variation scheme: ");
-		final ListBox colorArraySchemeOptions = new ListBox();
-		colorArraySchemeOptions.addItem("sequential");
-		colorArraySchemeOptions.addItem("qualitative");
-		colorArraySchemeOptions.addItem("diverging");
-		colorArraySchemeOptions.setSelectedIndex(0);
-		Label channelColorLabel = new Label("Color Channels By: ");
-		final ListBox channelColorOptions = new ListBox();
-		channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_PLAIN);
-		channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_MANNINGS);
-		channelColorOptions.addItem(MapPanel.CHANNEL_COLOR_DISPERSION);
-		ChangeHandler colorSchemeHandler = new ChangeHandler() {
-
-			public void onChange(ChangeEvent event) {
-				mapPanel.setChannelColorScheme(channelColorOptions
-						.getItemText(channelColorOptions.getSelectedIndex()),
-						colorArraySchemeOptions
-								.getItemText(colorArraySchemeOptions
-										.getSelectedIndex()));
-			}
-		};
-		channelColorOptions.addChangeHandler(colorSchemeHandler);
-		colorArraySchemeOptions.addChangeHandler(colorSchemeHandler);
-		//
-		final ToggleButton saveEditModelButton = new ToggleButton("Edit Model",
-				"Save Model");
-		if (mapPanel.isInEditMode()) {
-			saveEditModelButton.setDown(true);
-		} else {
-			saveEditModelButton.setDown(false);
-		}
-		saveEditModelButton.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				if (saveEditModelButton.isDown()) {
-					mapPanel.setEditMode(true);
-				} else {
-					mapPanel.saveCurrentStudy();
-					mapPanel.setEditMode(false);
-				}
-			}
-		});
-		//
-		final ToggleButton addTextAnnotationButton = new ToggleButton(
-				new Image(IconImages.INSTANCE.addingTextIcon()));
-		addTextAnnotationButton.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				if (addTextAnnotationButton.isDown()) {
-					mapPanel.turnOnTextAnnotation();
-				} else {
-					mapPanel.turnOffTextAnnotation();
-				}
-			}
-		});
+		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
+		addTextAnnotationButton = new ToggleButton(new Image(
+				IconImages.INSTANCE.addingTextIcon()));
 		if (downloadHydroEchoLink == null) {
 			downloadHydroEchoLink = new Anchor("Download Hydro Input");
-			downloadHydroEchoLink.setTarget("_download_input");
+			downloadHydroEchoLink.setTarget("hydro.inp");
 		}
 		if (downloadGisEchoLink == null) {
 			downloadGisEchoLink = new Anchor("Download GIS Input");
-			downloadGisEchoLink.setTarget("_download_input");
+			downloadGisEchoLink.setTarget("gis.inp");
 		}
-		Anchor uploadStudyLink = new Anchor("Upload study here",
-				"/upload_study.html");
-		Anchor uploadStudyDataLink = new Anchor("Upload study data here",
-				"/upload_data.html");
 		containerPanel.setWidget(0, 0, studyLabel);
 		containerPanel.setWidget(0, 1, studyBox);
-		containerPanel.setWidget(0, 2, saveEditModelButton);
+		if (!viewOnly) {
+			containerPanel.setWidget(0, 2, saveEditModelButton);
+		}
 		containerPanel.setWidget(1, 0, findNodeLabel);
 		containerPanel.setWidget(1, 1, findNodeBox);
 		containerPanel.setWidget(1, 2, findChannelLabel);
@@ -225,56 +104,105 @@ public class MapControlPanel extends Composite {
 		containerPanel.setWidget(3, 0, measurementLabel);
 		containerPanel.getFlexCellFormatter().setColSpan(3, 2, 3);
 
-		containerPanel.setWidget(4, 0, channelColorLabel);
-		containerPanel.setWidget(4, 1, channelColorOptions);
-		containerPanel.setWidget(4, 2, colorArraySchemeOptions);
-		containerPanel.setWidget(4, 3, colorSchemePanel = new DisclosurePanel(
-				"colorLegend"));
 		containerPanel.getFlexCellFormatter().setColSpan(5, 0, 3);
 		containerPanel.setWidget(6, 0, downloadHydroEchoLink);
 		containerPanel.getFlexCellFormatter().setColSpan(6, 0, 2);
 		containerPanel.setWidget(6, 2, downloadGisEchoLink);
 		containerPanel.getFlexCellFormatter().setColSpan(6, 2, 2);
-		containerPanel.setWidget(7, 0, uploadStudyLink);
-		containerPanel.getFlexCellFormatter().setColSpan(7, 0, 2);
-		containerPanel.setWidget(7, 2, uploadStudyDataLink);
-		containerPanel.getFlexCellFormatter().setColSpan(7, 2, 2);
 		initWidget(containerPanel);
 	}
 
 	private String buildDownloadLink(String inputName) {
-		if (studyBox.getItemCount() == 0) {
-			return "";
-		} else {
-			return GWT.getModuleBaseURL()
-					+ "dsm2_download?studyName="
-					+ URL.encode(studyBox.getItemText(studyBox
-							.getSelectedIndex())) + "&inputName="
+		if (viewOnly) {
+			// FIXME: not a good way. fix later
+			String token = History.getToken();
+			String studyKey = token.substring(token.indexOf("/") + 1);
+			return GWT.getModuleBaseURL() + "dsm2_download?studyKey="
+					+ URL.encode(studyKey) + "&inputName="
 					+ URL.encode(inputName);
+		} else {
+			if (studyBox.getItemCount() == 0) {
+				return "";
+			} else {
+				return GWT.getModuleBaseURL()
+						+ "dsm2_download?studyName="
+						+ URL.encode(studyBox.getItemText(studyBox
+								.getSelectedIndex())) + "&inputName="
+						+ URL.encode(inputName);
+			}
 		}
 	}
 
 	public void setStudies(String[] studyNames) {
+		studies = studyNames;
 		for (String studyName : studyNames) {
 			studyBox.addItem(studyName, studyName);
 		}
-		studyBox.setSelectedIndex(0);
+		if (studyBox.getItemCount() > 0) {
+			setStudy(studyBox.getItemText(0));
+		}
+	}
+
+	public HasChangeHandlers getStudyBox() {
+		return studyBox;
+	}
+
+	public String getStudyChoice() {
+		return studyBox.getItemText(studyBox.getSelectedIndex());
+	}
+
+	public HasValueChangeHandlers<String> getNodeIdBox() {
+		return findNodeBox;
+	}
+
+	public HasValueChangeHandlers<String> getChannelIdBox() {
+		return findChannelBox;
+	}
+
+	public HasClickHandlers getAddPolylineButton() {
+		return addPolylineButton;
+	}
+
+	public HasClickHandlers getAddPolygonButton() {
+		return addPolygonButton;
+	}
+
+	public HasClickHandlers getAddTextAnnonationButton() {
+		return addTextAnnotationButton;
+	}
+
+	public HasClickHandlers getSaveEditModelButton() {
+		return saveEditModelButton;
+	}
+
+	public void setStudy(String studyName) {
+		int count = studyBox.getItemCount();
+		for (int i = 0; i < count; i++) {
+			if (studyName.equals(studyBox.getItemText(i))) {
+				studyBox.setSelectedIndex(i);
+				updateLinks();
+				break;
+			}
+		}
+	}
+
+	public void updateLinks() {
 		if (downloadHydroEchoLink == null) {
 			downloadHydroEchoLink = new Anchor("Download Hydro Input");
-			downloadHydroEchoLink.setTarget("_download_input");
 		}
 		if (downloadGisEchoLink == null) {
 			downloadGisEchoLink = new Anchor("Download GIS Input");
-			downloadGisEchoLink.setTarget("_download_input");
 		}
 		downloadHydroEchoLink.setHref(buildDownloadLink("hydro_echo_inp"));
 		downloadGisEchoLink.setHref(buildDownloadLink("gis_inp"));
-
 	}
 
-	public void setColorPanel(Panel colorArraySchemePanel) {
-		colorSchemePanel.clear();
-		colorSchemePanel.add(colorArraySchemePanel);
+	public String[] getStudies() {
+		return studies;
+	}
+
+	public Label getMeasurementLabel() {
+		return measurementLabel;
 	}
 
 }

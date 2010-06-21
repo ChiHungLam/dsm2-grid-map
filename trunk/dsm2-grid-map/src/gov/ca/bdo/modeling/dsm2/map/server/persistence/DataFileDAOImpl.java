@@ -28,10 +28,6 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
 public class DataFileDAOImpl extends GenericDAOImpl<DataFile> implements
 		DataFileDAO {
 	public DataFileDAOImpl(PersistenceManager pm) {
@@ -39,10 +35,8 @@ public class DataFileDAOImpl extends GenericDAOImpl<DataFile> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DataFile> getFilesForStudy(String studyName) throws Exception {
-		UserService userService = UserServiceFactory.getUserService();
-		User currentUser = userService.getCurrentUser();
-		String email = currentUser.getEmail();
+	public List<DataFile> getFilesForStudy(String studyName, String email)
+			throws Exception {
 		try {
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(
@@ -59,11 +53,8 @@ public class DataFileDAOImpl extends GenericDAOImpl<DataFile> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DataFile> getFilesForStudyAndName(String studyName, String name)
-			throws Exception {
-		UserService userService = UserServiceFactory.getUserService();
-		User currentUser = userService.getCurrentUser();
-		String email = currentUser.getEmail();
+	public List<DataFile> getFilesForStudyAndName(String studyName,
+			String name, String email) throws Exception {
 		try {
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(
@@ -87,11 +78,7 @@ public class DataFileDAOImpl extends GenericDAOImpl<DataFile> implements
 
 	@SuppressWarnings("unchecked")
 	public DataFile getFileForStudyAndName(String studyName, String name,
-			String type) {
-
-		UserService userService = UserServiceFactory.getUserService();
-		User currentUser = userService.getCurrentUser();
-		String email = currentUser.getEmail();
+			String type, String email) {
 		try {
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(

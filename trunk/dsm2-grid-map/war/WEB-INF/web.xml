@@ -72,10 +72,19 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>requestAccessServlet</servlet-name>
+		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.RequestAccessServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>requestAccessServlet</servlet-name>
+		<url-pattern>/dsm2_grid_map/request_access</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>userProfileServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.UserProfileServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>userProfileServlet</servlet-name>
 		<url-pattern>/dsm2_grid_map/admin/userProfile</url-pattern>
@@ -128,5 +137,12 @@
 		<auth-constraint>
 			<role-name>admin</role-name>
 		</auth-constraint>
+
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>public</web-resource-name>
+			<url-pattern>/dsm2_guest.html</url-pattern>
+		</web-resource-collection>
 	</security-constraint>
 </web-app>

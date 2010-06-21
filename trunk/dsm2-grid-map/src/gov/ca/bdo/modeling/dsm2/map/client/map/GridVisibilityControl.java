@@ -76,7 +76,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox outputMarkerHideBox = new CheckBox("Output Markers");
+		final CheckBox outputMarkerHideBox = new CheckBox("Outputs");
 		outputMarkerHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -84,8 +84,16 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
+		final CheckBox boundaryMarkerHideBox = new CheckBox("Boundaries");
+		boundaryMarkerHideBox.setValue(true);
+		boundaryMarkerHideBox.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				mapPanel.hideBoundaryMarkers(boundaryMarkerHideBox.getValue());
+			}
+		});
+		//
 		final CheckBox bathymetryHideBox = new CheckBox("Bathymetry");
-		bathymetryHideBox.setEnabled(true);
 		bathymetryHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -101,6 +109,7 @@ public class GridVisibilityControl extends CustomControl {
 		vpanel.add(gatesHideBox);
 		vpanel.add(reservoirsHideBox);
 		vpanel.add(outputMarkerHideBox);
+		vpanel.add(boundaryMarkerHideBox);
 		vpanel.add(new HTML("<hr/>"));
 		vpanel.add(bathymetryHideBox);
 		DisclosurePanel panel = new DisclosurePanel("Visibility");

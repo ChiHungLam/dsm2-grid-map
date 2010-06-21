@@ -32,6 +32,7 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapInfoWindowCloseHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
+import com.google.gwt.maps.client.event.MarkerDragEndHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
@@ -95,10 +96,19 @@ public class TextAnnotationsManager implements MapClickHandler {
 				});
 	}
 
-	public Marker addMarker(TextAnnotation annotation) {
+	public Marker addMarker(final TextAnnotation annotation) {
 		textAnnotations.add(annotation);
 		Marker textMarker = createTextMarkerOverlay(LatLng.newInstance(
 				annotation.getLatitude(), annotation.getLongitude()));
+		textMarker.addMarkerDragEndHandler(new MarkerDragEndHandler() {
+
+			public void onDragEnd(MarkerDragEndEvent event) {
+				Marker sender = event.getSender();
+				annotation.setLatitude(sender.getLatLng().getLatitude());
+				annotation.setLongitude(sender.getLatLng().getLongitude());
+				saveTextAnnotations();
+			}
+		});
 		map.addOverlay(textMarker);
 		overlayTextMap.put(textMarker, annotation);
 		return textMarker;
@@ -168,9 +178,17 @@ public class TextAnnotationsManager implements MapClickHandler {
 
 		public void onInfoWindowClose(MapInfoWindowCloseEvent event) {
 			if ((getWidget() instanceof TextBox) && addingText) {
-				textAnnotation.setText(((TextBox) getWidget()).getText());
-				// TODO: this happens too often
-				saveTextAnnotations();
+				String text = ((TextBox) getWidget()).getText();
+				if ((text == null) || text.trim().equals("")) {
+					Object src = event.getSource();
+					if (src instanceof Overlay) {
+						event.getSender().removeOverlay((Overlay) src);
+					}
+				} else {
+					textAnnotation.setText(text);
+					// TODO: this happens too often
+					saveTextAnnotations();
+				}
 			}
 		}
 	}
