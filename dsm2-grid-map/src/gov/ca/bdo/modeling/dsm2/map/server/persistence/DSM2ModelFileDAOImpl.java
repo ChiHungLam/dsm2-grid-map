@@ -29,10 +29,6 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-
 public class DSM2ModelFileDAOImpl extends GenericDAOImpl<DSM2ModelFile>
 		implements DSM2ModelFileDAO {
 	public DSM2ModelFileDAOImpl(PersistenceManager pm) {
@@ -40,10 +36,8 @@ public class DSM2ModelFileDAOImpl extends GenericDAOImpl<DSM2ModelFile>
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DSM2ModelFile> getFilesForCurrentUser() throws Exception {
-		UserService userService = UserServiceFactory.getUserService();
-		User currentUser = userService.getCurrentUser();
-		String email = currentUser.getEmail();
+	public List<DSM2ModelFile> getFilesForCurrentUser(String email)
+			throws Exception {
 		try {
 			// look for item first else insert a new one
 			Query query = super.getPersistenceManager().newQuery(
@@ -58,8 +52,9 @@ public class DSM2ModelFileDAOImpl extends GenericDAOImpl<DSM2ModelFile>
 		}
 	}
 
-	public Collection<String> getStudyNamesForCurrentUser() throws Exception {
-		List<DSM2ModelFile> list = getFilesForCurrentUser();
+	public Collection<String> getStudyNamesForCurrentUser(String email)
+			throws Exception {
+		List<DSM2ModelFile> list = getFilesForCurrentUser(email);
 		HashMap<String, String> studyNames = new HashMap<String, String>();
 		for (DSM2ModelFile file : list) {
 			studyNames.put(file.getStudyName(), file.getStudyName());
@@ -68,11 +63,8 @@ public class DSM2ModelFileDAOImpl extends GenericDAOImpl<DSM2ModelFile>
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<DSM2ModelFile> getFilesForStudy(String studyName)
+	public List<DSM2ModelFile> getFilesForStudy(String studyName, String email)
 			throws Exception {
-		UserService userService = UserServiceFactory.getUserService();
-		User currentUser = userService.getCurrentUser();
-		String email = currentUser.getEmail();
 		try {
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(

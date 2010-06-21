@@ -32,7 +32,8 @@ public interface DataFileDAO extends GenericDAO<DataFile> {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<DataFile> getFilesForStudy(String studyName) throws Exception;
+	public List<DataFile> getFilesForStudy(String studyName, String email)
+			throws Exception;
 
 	/**
 	 * Gets the file for the study name and named data set
@@ -42,8 +43,8 @@ public interface DataFileDAO extends GenericDAO<DataFile> {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<DataFile> getFilesForStudyAndName(String studyName, String name)
-			throws Exception;
+	public List<DataFile> getFilesForStudyAndName(String studyName,
+			String name, String email) throws Exception;
 
 	/**
 	 * Get the file for study name, name and type of data set
@@ -53,6 +54,6 @@ public interface DataFileDAO extends GenericDAO<DataFile> {
 	 * @param type
 	 */
 	public DataFile getFileForStudyAndName(String studyName, String name,
-			String type);
+			String type, String email);
 
 }

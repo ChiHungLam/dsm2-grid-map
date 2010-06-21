@@ -26,6 +26,7 @@ import gov.ca.bdo.modeling.dsm2.map.server.data.DataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DataFileDAO;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DataFileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
+import gov.ca.bdo.modeling.dsm2.map.server.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -49,9 +50,10 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
 		try {
+			String email = Utils.getCurrentUserEmail();
 			DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
 			List<DataFile> filesForStudyAndName = dao.getFilesForStudyAndName(
-					studyName, name);
+					studyName, name, email);
 			if ((filesForStudyAndName == null)
 					|| (filesForStudyAndName.size() == 0)) {
 				return list;
@@ -98,8 +100,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 				.getPersistenceManager();
 		try {
 			DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
+			String email = Utils.getCurrentUserEmail();
 			List<DataFile> filesForStudyAndName = dao.getFilesForStudyAndName(
-					studyName, "text.annotations");
+					studyName, "text.annotations", email);
 			if ((filesForStudyAndName == null)
 					|| (filesForStudyAndName.size() == 0)) {
 				return list;
@@ -136,9 +139,10 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 				.getPersistenceManager();
 		DataFile annotationFile = null;
 		try {
+			String email = Utils.getCurrentUserEmail();
 			DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
 			List<DataFile> filesForStudyAndName = dao.getFilesForStudyAndName(
-					studyName, "text.annotations");
+					studyName, "text.annotations", email);
 			StringBuilder builder = new StringBuilder();
 			for (TextAnnotation textAnnotation : annotations) {
 				builder.append(textAnnotation.getLatitude()).append(",");

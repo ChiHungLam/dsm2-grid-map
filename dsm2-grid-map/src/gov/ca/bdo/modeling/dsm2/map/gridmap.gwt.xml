@@ -16,9 +16,9 @@
 	<inherits name='com.google.gwt.gen2.table.FixedWidthGrid' />
 	<inherits name='com.google.gwt.gen2.table.FixedWidthFlexTable' />
 	<inherits name='com.google.gwt.gen2.table.ScrollTable' />
-	<stylesheet src='ScrollTableDemo.css' />
 	<inherits name='gov.ca.dsm2.input.dsm2input' />
 	<inherits name='gov.ca.modeling.dsm2.widgets.HeaderPanel' />
+	<inherits name='gov.ca.modeling.maps.widgets.ExpandContractMapControl' />
 	<entry-point class='gov.ca.bdo.modeling.dsm2.map.client.MainEntryPoint' />
 	<script
 		src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA6i9cBPasVT8NdiGAvjA1cxRN9eNlOpkRfN0D6IuldAc4f_laZxRsbVZscM78QrawmaBB4G5GYmN_cg" />

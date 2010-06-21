@@ -47,9 +47,12 @@ public class ReservoirInfoPanel extends Composite {
 				+ reservoir.getBottomElevation());
 		panel.add(table);
 		FlexTable connectionTable = new FlexTable();
+		connectionTable.setStyleName("bordered-title");
+		connectionTable.setWidth("100%");
 		connectionTable.setHTML(0, 0, "<b>NODE</b>");
 		connectionTable.setHTML(0, 1, "<b>COEFF IN</b>");
 		connectionTable.setHTML(0, 2, "<b>COEFF OUT</b>");
+		connectionTable.getRowFormatter().setStyleName(0, "table-header");
 		List<ReservoirConnection> reservoirConnections = reservoir
 				.getReservoirConnections();
 		int index = 1;

@@ -87,7 +87,9 @@ public class FileUploadServlet extends HttpServlet {
 			}
 			DSM2ModelFileDAOImpl dao = new DSM2ModelFileDAOImpl(
 					persistenceManager);
-			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName);
+			String email = Utils.getCurrentUserEmail();
+			List<DSM2ModelFile> filesForStudy = dao.getFilesForStudy(studyName,
+					email);
 			DSM2ModelFile hydro_echo_file = null;
 			DSM2ModelFile gis_info_file = null;
 

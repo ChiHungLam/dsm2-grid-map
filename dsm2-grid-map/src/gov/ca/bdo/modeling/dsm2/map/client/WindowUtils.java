@@ -29,4 +29,11 @@ public class WindowUtils {
 		$wnd.cursor=cursor;
 	}-*/;
 
+	public static native String getUserAgent() /*-{
+		return navigator.userAgent.toLowerCase();
+	}-*/;
+
+	public static boolean isIE6() {
+		return getUserAgent().contains("msie");
+	}
 }
