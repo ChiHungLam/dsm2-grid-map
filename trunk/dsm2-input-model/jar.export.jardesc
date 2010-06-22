@@ -14,7 +14,6 @@
         <javaElement handleIdentifier="=dsm2-input-model/src"/>
         <file path="/dsm2-input-model/.classpath"/>
         <folder path="/dsm2-input-model/lib"/>
-        <javaElement handleIdentifier="=dsm2-input-model/test"/>
         <file path="/dsm2-input-model/.project"/>
     </selectedElements>
 </jardesc>

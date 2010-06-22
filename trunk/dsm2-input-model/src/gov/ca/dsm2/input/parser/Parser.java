@@ -25,7 +25,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Converts the text representation of tables into {@link Tables} containing the
@@ -40,10 +41,14 @@ import java.util.Arrays;
  * 
  */
 public class Parser {
+	private Pattern regex;
+
 	/**
 	 * Creates an empty parser
 	 */
 	public Parser() {
+		// regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
+		regex = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
 	}
 
 	/**
@@ -150,10 +155,27 @@ public class Parser {
 		}
 	}
 
+	private final boolean KEEP_QUOTES = true;
+
 	ArrayList<String> getFields(String text) {
-		String[] fields = text.split("(\\s)+");
-		ArrayList<String> fieldList = new ArrayList<String>();
-		fieldList.addAll(Arrays.asList(fields));
-		return fieldList;
+		ArrayList<String> matchList = new ArrayList<String>();
+		Matcher regexMatcher = regex.matcher(text);
+		while (regexMatcher.find()) {
+			if (KEEP_QUOTES) {
+				matchList.add(regexMatcher.group());
+			} else {
+				if (regexMatcher.group(1) != null) {
+					// Add double-quoted string without the quotes
+					matchList.add(regexMatcher.group(1));
+				} else if (regexMatcher.group(2) != null) {
+					// Add single-quoted string without the quotes
+					matchList.add(regexMatcher.group(2));
+				} else {
+					// Add unquoted word
+					matchList.add(regexMatcher.group());
+				}
+			}
+		}
+		return matchList;
 	}
 }

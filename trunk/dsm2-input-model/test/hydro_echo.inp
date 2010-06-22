@@ -11679,6 +11679,13 @@ END
 
 TRANSFER
 NAME  FROM_OBJ  FROM_IDENTIFIER  TO_OBJ  TO_IDENTIFIER  
+DMC2ONEILL	node	280	reservoir	oneillr
+ONEILL2AQ	reservoir	oneillr	node	414
+ONEILL2DMC	reservoir	oneillr	node	280
+SANLD	reservoir	oneillr	reservoir	sanluisr
+SANLR	reservoir	sanluisr	reservoir	oneillr
+SOBAYIN	node	401	node	600
+WESTBRD	node	448	node	700
 END
 
 CHANNEL_IC
