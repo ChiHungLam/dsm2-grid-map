@@ -1,11 +1,13 @@
 package gov.ca.modeling.timeseries.map.shared.data;
 
+import java.io.Serializable;
+
 import javax.persistence.Id;
 
 import com.googlecode.objectify.annotation.Entity;
 
 @Entity
-public class MarkerTypeData {
+public class MarkerTypeData implements Serializable {
 	@Id
 	private Long id;
 	private String name;
