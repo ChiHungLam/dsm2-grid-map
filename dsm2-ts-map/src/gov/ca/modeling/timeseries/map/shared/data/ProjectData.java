@@ -1,12 +1,15 @@
 package gov.ca.modeling.timeseries.map.shared.data;
 
+import java.io.Serializable;
+
 import javax.persistence.Id;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 
+@SuppressWarnings("serial")
 @Entity
-public class ProjectData {
+public class ProjectData implements Serializable {
 	@Id
 	private Long id;
 	private String name;
@@ -14,6 +17,8 @@ public class ProjectData {
 	private Key<MapTextAnnotation>[] textAnnotations;
 	// map center lat lng & zoom level
 	private double mapCenterLatitude;
+	private double mapCenterLongitude;
+	private int mapZoomLevel;
 
 	public String getName() {
 		return name;
@@ -68,6 +73,4 @@ public class ProjectData {
 		return id;
 	}
 
-	private double mapCenterLongitude;
-	private int mapZoomLevel;
 }
