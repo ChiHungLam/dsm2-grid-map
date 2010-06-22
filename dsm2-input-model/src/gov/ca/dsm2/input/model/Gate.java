@@ -19,6 +19,7 @@
 package gov.ca.dsm2.input.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * A gate in the model {@link DSM2Model} contained in {@link Gates}. Each gate
@@ -41,9 +42,12 @@ public class Gate implements Serializable {
 	private String toNode;
 	private double latitude;
 	private double longitude;
+	private ArrayList<GateDevice> gateDevices;
+	private ArrayList<OperatingRule> gateOperations;
 
 	public Gate() {
-
+		gateDevices = new ArrayList<GateDevice>();
+		gateOperations = new ArrayList<OperatingRule>();
 	}
 
 	public String getName() {
@@ -92,6 +96,22 @@ public class Gate implements Serializable {
 
 	public double getLongitude() {
 		return longitude;
+	}
+
+	public void addGateDevice(GateDevice device) {
+		gateDevices.add(device);
+	}
+
+	public void addGateOperation(OperatingRule gateOperation) {
+		gateOperations.add(gateOperation);
+	}
+
+	public ArrayList<GateDevice> getGateDevices() {
+		return gateDevices;
+	}
+
+	public ArrayList<OperatingRule> getGateOperations() {
+		return gateOperations;
 	}
 
 }

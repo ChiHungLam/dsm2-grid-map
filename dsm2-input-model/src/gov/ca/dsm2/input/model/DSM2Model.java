@@ -40,6 +40,7 @@ public class DSM2Model implements Serializable {
 	private Gates gates;
 	private Outputs outputs;
 	private BoundaryInputs inputs;
+	private Transfers transfers;
 
 	/**
 	 * 
@@ -97,5 +98,39 @@ public class DSM2Model implements Serializable {
 
 	public Outputs getOutputs() {
 		return outputs;
+	}
+
+	public Transfers getTransfers() {
+		return transfers;
+	}
+
+	public void setTransfers(Transfers transfers) {
+		this.transfers = transfers;
+	}
+
+	/**
+	 * This is to assist in finding objects that are specified by type and
+	 * identifier. E.g. in TRANSFER table the type can be one of node, channel,
+	 * reservoir and the identifier the appropriate id for that type
+	 * 
+	 * @return null or the object if found
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	public Object getObjectFromTypeAndIdentifier(String type, String id) {
+		Object found = null;
+		if ("node".equals(type)) {
+			found = getNodes().getNode(id);
+		} else if ("channel".equals(type)) {
+			found = getChannels().getChannel(id);
+		} else if ("reservoir".equals(type)) {
+			found = getReservoirs().getReservoir(id);
+		} else if ("gate".equals(type)) {
+			found = getGates().getGate(id);
+		} else if ("transfer".equals(type)) {
+			found = getTransfers().getTransfer(id);
+		}
+		return found;
 	}
 }

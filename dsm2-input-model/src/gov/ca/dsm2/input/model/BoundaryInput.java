@@ -56,6 +56,11 @@ public class BoundaryInput implements Serializable {
 	 */
 	public String path;
 
+	/**
+	 * The types recognized are sourcesink, flow, stage, ec
+	 */
+	public String type;
+
 	public BoundaryInput() {
 		sign = 1;
 	}

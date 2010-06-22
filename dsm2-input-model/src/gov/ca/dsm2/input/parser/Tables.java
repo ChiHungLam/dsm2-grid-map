@@ -25,14 +25,19 @@ import gov.ca.dsm2.input.model.ChannelOutput;
 import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.model.Gate;
+import gov.ca.dsm2.input.model.GatePipeDevice;
+import gov.ca.dsm2.input.model.GateWeirDevice;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Nodes;
+import gov.ca.dsm2.input.model.OperatingRule;
 import gov.ca.dsm2.input.model.Outputs;
 import gov.ca.dsm2.input.model.Reservoir;
 import gov.ca.dsm2.input.model.ReservoirConnection;
 import gov.ca.dsm2.input.model.ReservoirOutput;
 import gov.ca.dsm2.input.model.Reservoirs;
+import gov.ca.dsm2.input.model.Transfer;
+import gov.ca.dsm2.input.model.Transfers;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 
@@ -57,8 +62,8 @@ import java.util.List;
  * 
  */
 public class Tables {
-	private  ArrayList<InputTable> tables;
-	private  HashMap<String, InputTable> tableMap;
+	private ArrayList<InputTable> tables;
+	private HashMap<String, InputTable> tableMap;
 
 	/**
 	 * Creates an initial empty tables list
@@ -139,6 +144,7 @@ public class Tables {
 		model.setGates(toGates());
 		model.setInputs(toBoundaryInputs());
 		model.setOutputs(toOutputs());
+		model.setTransfers(toTransfers());
 		return model;
 	}
 
@@ -274,46 +280,50 @@ public class Tables {
 		}
 
 		InputTable xsectionTable = getTableNamed("XSECT_LAYER");
-		int nxsects = xsectionTable.getValues().size();
-		// FIXME: assumes all layers for a xsections are grouped together
-		boolean newLayer = true;
-		String currentChannelDist = "";
-		XSection currentXSection = null;
-		for (int i = 0; i < nxsects; i++) {
-			try {
-				if (!newLayer) {
-					String channelDist = xsectionTable.getValue(i, "CHAN_NO")
-							+ "_" + xsectionTable.getValue(i, "DIST");
-					if (!channelDist.equals(currentChannelDist)) {
-						newLayer = true;
+		if (xsectionTable != null) {
+			int nxsects = xsectionTable.getValues().size();
+			// FIXME: assumes all layers for a xsections are grouped together
+			boolean newLayer = true;
+			String currentChannelDist = "";
+			XSection currentXSection = null;
+			for (int i = 0; i < nxsects; i++) {
+				try {
+					if (!newLayer) {
+						String channelDist = xsectionTable.getValue(i,
+								"CHAN_NO")
+								+ "_" + xsectionTable.getValue(i, "DIST");
+						if (!channelDist.equals(currentChannelDist)) {
+							newLayer = true;
+						}
 					}
+					if (newLayer) {
+						Channel channel = channels.getChannel(xsectionTable
+								.getValue(i, "CHAN_NO"));
+						XSection xsection = new XSection();
+						xsection.setChannelId(channel.getId());
+						xsection.setDistance(Double.parseDouble(xsectionTable
+								.getValue(i, "DIST")));
+						currentChannelDist = xsectionTable.getValue(i,
+								"CHAN_NO")
+								+ "_" + xsectionTable.getValue(i, "DIST");
+						currentXSection = xsection;
+						channel.addXSection(xsection);
+						newLayer = false;
+					}
+					XSectionLayer layer = new XSectionLayer();
+					layer.setElevation(Double.parseDouble(xsectionTable
+							.getValue(i, "ELEV")));
+					layer.setArea(Double.parseDouble(xsectionTable.getValue(i,
+							"AREA")));
+					layer.setTopWidth(Double.parseDouble(xsectionTable
+							.getValue(i, "WIDTH")));
+					layer.setWettedPerimeter(Double.parseDouble(xsectionTable
+							.getValue(i, "WET_PERIM")));
+					currentXSection.addLayer(layer);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				if (newLayer) {
-					Channel channel = channels.getChannel(xsectionTable
-							.getValue(i, "CHAN_NO"));
-					XSection xsection = new XSection();
-					xsection.setChannelId(channel.getId());
-					xsection.setDistance(Double.parseDouble(xsectionTable
-							.getValue(i, "DIST")));
-					currentChannelDist = xsectionTable.getValue(i, "CHAN_NO")
-							+ "_" + xsectionTable.getValue(i, "DIST");
-					currentXSection = xsection;
-					channel.addXSection(xsection);
-					newLayer = false;
-				}
-				XSectionLayer layer = new XSectionLayer();
-				layer.setElevation(Double.parseDouble(xsectionTable.getValue(i,
-						"ELEV")));
-				layer.setArea(Double.parseDouble(xsectionTable.getValue(i,
-						"AREA")));
-				layer.setTopWidth(Double.parseDouble(xsectionTable.getValue(i,
-						"WIDTH")));
-				layer.setWettedPerimeter(Double.parseDouble(xsectionTable
-						.getValue(i, "WET_PERIM")));
-				currentXSection.addLayer(layer);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		InputTable gisTable = getTableNamed("CHANNEL_GIS");
@@ -516,7 +526,70 @@ public class Tables {
 		}
 		InputTable gateWeirTable = getTableNamed("GATE_WEIR_DEVICE");
 		if (gateWeirTable != null) {
+			int ndevices = gateWeirTable.getValues().size();
+			for (int i = 0; i < ndevices; i++) {
+				GateWeirDevice device = new GateWeirDevice();
+				device.gateName = gateWeirTable.getValue(i, "GATE_NAME");
+				device.device = gateWeirTable.getValue(i, "DEVICE");
+				device.numberOfDuplicates = Integer.parseInt(gateWeirTable
+						.getValue(i, "NDUPLICATE"));
+				device.width = Double.parseDouble(gateWeirTable.getValue(i,
+						"WIDTH"));
+				device.elevation = Double.parseDouble(gateWeirTable.getValue(i,
+						"ELEV"));
+				device.height = Double.parseDouble(gateWeirTable.getValue(i,
+						"HEIGHT"));
+				device.coefficientFromNode = Double.parseDouble(gateWeirTable
+						.getValue(i, "CF_FROM_NODE"));
+				device.coefficientToNode = Double.parseDouble(gateWeirTable
+						.getValue(i, "CF_TO_NODE"));
+				device.defaultOperation = gateWeirTable.getValue(i,
+						"DEFAULT_OP");
+				Gate gate = gates.getGate(device.gateName);
+				if (gate != null) {
+					gate.addGateDevice(device);
+				}
+			}
+		}
+		InputTable gatePipeTable = getTableNamed("GATE_PIPE_DEVICE");
+		if (gatePipeTable != null) {
+			int ndevices = gatePipeTable.getValues().size();
+			for (int i = 0; i < ndevices; i++) {
+				GatePipeDevice device = new GatePipeDevice();
+				device.gateName = gatePipeTable.getValue(i, "GATE_NAME");
+				device.device = gatePipeTable.getValue(i, "DEVICE");
+				device.numberOfDuplicates = Integer.parseInt(gatePipeTable
+						.getValue(i, "NDUPLICATE"));
+				device.radius = Double.parseDouble(gatePipeTable.getValue(i,
+						"RADIUS"));
+				device.elevation = Double.parseDouble(gatePipeTable.getValue(i,
+						"ELEV"));
+				device.coefficientFromNode = Double.parseDouble(gatePipeTable
+						.getValue(i, "CF_FROM_NODE"));
+				device.coefficientToNode = Double.parseDouble(gatePipeTable
+						.getValue(i, "CF_TO_NODE"));
+				device.defaultOperation = gatePipeTable.getValue(i,
+						"DEFAULT_OP");
+				Gate gate = gates.getGate(device.gateName);
+				if (gate != null) {
+					gate.addGateDevice(device);
+				}
+			}
 
+		}
+		InputTable operatingRuleTable = getTableNamed("OPERATING_RULE");
+		if (operatingRuleTable != null) {
+			int nrules = operatingRuleTable.getValues().size();
+			for (int i = 0; i < nrules; i++) {
+				OperatingRule opRule = new OperatingRule();
+				opRule.name = operatingRuleTable.getValue(i, "NAME");
+				opRule.action = operatingRuleTable.getValue(i, "ACTION");
+				opRule.trigger = operatingRuleTable.getValue(i, "TRIGGER");
+				Gate gate = gates.getGate(opRule.getGateName());
+				if (gate != null) {
+					gate.addGateOperation(opRule);
+				}
+			}
 		}
 		InputTable gisTable = getTableNamed("GATE_GIS");
 		if (gisTable != null) {
@@ -719,6 +792,7 @@ public class Tables {
 					input.fillIn = stageTable.getValue(i, "FILLIN");
 					input.file = stageTable.getValue(i, "FILE");
 					input.path = stageTable.getValue(i, "PATH");
+					input.type = "stage";
 					binputs.addStage(input);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -739,6 +813,7 @@ public class Tables {
 					input.fillIn = flowTable.getValue(i, "FILLIN");
 					input.file = flowTable.getValue(i, "FILE");
 					input.path = flowTable.getValue(i, "PATH");
+					input.type = "flow";
 					binputs.addFlow(input);
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
@@ -759,6 +834,7 @@ public class Tables {
 					input.fillIn = sourceFlowTable.getValue(i, "FILLIN");
 					input.file = sourceFlowTable.getValue(i, "FILE");
 					input.path = sourceFlowTable.getValue(i, "PATH");
+					input.type = "sourcesink";
 					binputs.addSourceFlow(input);
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
@@ -820,6 +896,32 @@ public class Tables {
 			}
 		}
 		return outputs;
+	}
+
+	/**
+	 * Finer grained conversion to model elements. Use {@link #toDSM2Model()}
+	 * instead unless you really need this level of access
+	 * 
+	 * @return
+	 */
+	public Transfers toTransfers() {
+		Transfers transfers = new Transfers();
+		InputTable transferTable = getTableNamed("TRANSFER");
+		if (transferTable != null) {
+			int ntransfers = transferTable.getValues().size();
+			for (int i = 0; i < ntransfers; i++) {
+				Transfer transfer = new Transfer();
+				transfer.name = transferTable.getValue(i, "NAME");
+				transfer.fromObject = transferTable.getValue(i, "FROM_OBJ");
+				transfer.fromIdentifier = transferTable.getValue(i,
+						"FROM_IDENTIFIER");
+				transfer.toObject = transferTable.getValue(i, "TO_OBJ");
+				transfer.toIdentifier = transferTable.getValue(i,
+						"TO_IDENTIFIER");
+				transfers.addTransfer(transfer);
+			}
+		}
+		return transfers;
 	}
 
 }
