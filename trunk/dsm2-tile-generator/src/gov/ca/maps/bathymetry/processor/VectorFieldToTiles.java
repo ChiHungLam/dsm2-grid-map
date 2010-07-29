@@ -6,7 +6,8 @@ import gov.ca.maps.tile.renderer.TileRenderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +22,7 @@ import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 
 public class VectorFieldToTiles {
 	public static void main(String[] args) throws Exception {
-		String inputFileStr = "d:/dev/3dgate-sdip/HORBifurcation.txt";
+		String inputFileStr = "/Users/nsandhu/tmp/vv/HORBifurcation.txt";// "resources/sample_vv_input.txt";
 		File inputFile = new File(inputFileStr);
 		String dir = inputFile.getParent();
 		dir = dir == null ? "./tiles" : dir + "/tiles";
@@ -122,16 +123,30 @@ public class VectorFieldToTiles {
 			Color color = new Color(colorForValue1.getRed(), colorForValue1
 					.getGreen(), colorForValue1.getBlue(), 255);
 			graphics.setColor(color);
-			/*
-			 * double theta = Double.parseDouble(valuesAtLatLon[1]);
-			 * AffineTransform rotateInstance = AffineTransform
-			 * .getRotateInstance(theta); graphics.setTransform(rotateInstance);
-			 * graphics.draw(new Line2D.Double(lx, ly, ly, ly - 10));
-			 * graphics.draw(new Line2D.Double(lx, ly, lx + 5, ly - 5));
-			 * graphics.draw(new Line2D.Double(lx, ly, lx - 5, ly - 5));
-			 */
-			graphics.fill(new Ellipse2D.Double(lx - width / 2, ly - height / 2,
-					width, height));
+			double angle = Double.parseDouble(valuesAtLatLon[1]);
+			drawVector(graphics, lx, ly, angle, color, (height + width) / 2);
+		}
+
+		private void drawVector(Graphics2D g, double x, double y, double angle,
+				Color c, double size) {
+			AffineTransform tr = g.getTransform();
+			AffineTransform localTransform = new AffineTransform();
+			localTransform.translate(x, y);
+			localTransform.rotate(angle);
+			g.setTransform(localTransform);
+			GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+			path.moveTo(0, 0);
+			path.lineTo(size, size);
+			path.lineTo(size, -size);
+			path.lineTo(0, 0);
+			path.closePath();
+			g.setColor(c);
+			g.fill(path);
+			GeneralPath stickPath = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+			stickPath.moveTo(size, 0);
+			stickPath.lineTo(3 * size, 0);
+			g.draw(stickPath);
+			g.setTransform(tr);
 		}
 
 		private Color getColorForValue1(double value) {
