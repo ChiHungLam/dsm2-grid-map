@@ -22,19 +22,23 @@ import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 
 public class VectorFieldToTiles {
 	public static void main(String[] args) throws Exception {
-		String inputFileStr = "/Users/nsandhu/tmp/vv/HORBifurcation.txt";// "resources/sample_vv_input.txt";
-		File inputFile = new File(inputFileStr);
-		String dir = inputFile.getParent();
-		dir = dir == null ? "./tiles" : dir + "/tiles";
+		// inputs needed
+		String inputFileStr = "d:/dev/3dgate-sdip/HORBifurcation.txt";
 		double depth = 2.8956;
+		int startZoom = 16;
+		int endZoom = 21;
 		double originEasting = 647218;
 		double originNorthing = 4185824;
 		//
+		File inputFile = new File(inputFileStr);
+		String dir = inputFile.getParent();
+		dir = dir == null ? "./tiles" : dir + "/tiles";
+		//
 		CoordinatesConverter<UTM, LatLong> utmToLatLong = UTM.CRS
 				.getConverterTo(LatLong.CRS);
-		TileCreator[] creators = new TileCreator[4];
-		for (int i = 16; i < 20; i++) {
-			creators[i - 16] = new TileCreator(dir, i,
+		TileCreator[] creators = new TileCreator[endZoom - startZoom + 1];
+		for (int i = startZoom; i <= endZoom; i++) {
+			creators[i - startZoom] = new TileCreator(dir, i,
 					new TileRenderer[] { new VectorArrowMagnitudeColor() });
 		}
 		LineNumberReader lnr = new LineNumberReader(new FileReader(inputFile));
@@ -107,7 +111,6 @@ public class VectorFieldToTiles {
 
 		public void renderData(BufferedImage image, double[] latLonBounds,
 				double lat, double lon, String[] valuesAtLatLon) {
-
 			Graphics2D graphics = (Graphics2D) image.getGraphics();
 			graphics.addRenderingHints(hints);
 			double latOrigin = latLonBounds[0];
