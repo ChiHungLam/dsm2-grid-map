@@ -40,6 +40,7 @@ public class VectorFieldToTiles {
 		for (int i = startZoom; i <= endZoom; i++) {
 			creators[i - startZoom] = new TileCreator(dir, i,
 					new TileRenderer[] { new VectorArrowMagnitudeColor() });
+			creators[i - startZoom].setRenderingWidth(15);
 		}
 		LineNumberReader lnr = new LineNumberReader(new FileReader(inputFile));
 		String line = lnr.readLine();
@@ -59,7 +60,7 @@ public class VectorFieldToTiles {
 		int vmi = nameToIndexMap.get("velocity-magnitude");
 		int vxi = nameToIndexMap.get("x-velocity");
 		int vyi = nameToIndexMap.get("y-velocity");
-
+		int count = 0;
 		while ((line = lnr.readLine()) != null) {
 			fields = line.split(",");
 			double z = Double.parseDouble(fields[zci].trim());
@@ -78,6 +79,10 @@ public class VectorFieldToTiles {
 				String[] values = { vm + "", Math.atan2(vy, vx) + "" };
 				for (TileCreator creator : creators) {
 					creator.renderData(lat, lng, values);
+				}
+				count++;
+				if (count % 10000 == 0) {
+					System.out.println("Processing line # " + count);
 				}
 			}
 		}
@@ -119,15 +124,15 @@ public class VectorFieldToTiles {
 			double lonExtent = latLonBounds[3] - latLonBounds[1];
 			double ly = 256 - (256 * (lat - latOrigin)) / latExtent;
 			double lx = (256 * (lon - lonOrigin)) / lonExtent;
-			double height = Math.max(3, LAT_WIDTH / latExtent);
-			double width = Math.max(3, LON_WIDTH / lonExtent);
+			double height = Math.max(10, LAT_WIDTH / latExtent);
+			double width = Math.max(10, LON_WIDTH / lonExtent);
 			Color colorForValue1 = getColorForValue1(Double
 					.parseDouble(valuesAtLatLon[0]));
 			Color color = new Color(colorForValue1.getRed(), colorForValue1
 					.getGreen(), colorForValue1.getBlue(), 255);
 			graphics.setColor(color);
 			double angle = Double.parseDouble(valuesAtLatLon[1]);
-			drawVector(graphics, lx, ly, angle, color, (height + width) / 2);
+			drawVector(graphics, lx, ly, angle, color, (height + width) / 4);
 		}
 
 		private void drawVector(Graphics2D g, double x, double y, double angle,
@@ -139,15 +144,15 @@ public class VectorFieldToTiles {
 			g.setTransform(localTransform);
 			GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 			path.moveTo(0, 0);
-			path.lineTo(size, size);
-			path.lineTo(size, -size);
+			path.lineTo(-size, size);
+			path.lineTo(-size, -size);
 			path.lineTo(0, 0);
 			path.closePath();
 			g.setColor(c);
 			g.fill(path);
 			GeneralPath stickPath = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-			stickPath.moveTo(size, 0);
-			stickPath.lineTo(3 * size, 0);
+			stickPath.moveTo(-size, 0);
+			stickPath.lineTo(-3 * size, 0);
 			g.draw(stickPath);
 			g.setTransform(tr);
 		}
