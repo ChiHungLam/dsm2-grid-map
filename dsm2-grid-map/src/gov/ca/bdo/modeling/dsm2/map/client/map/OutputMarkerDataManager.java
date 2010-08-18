@@ -69,6 +69,9 @@ public class OutputMarkerDataManager {
 				if ("length".equals(channelOutput.distance)) {
 					Channel channel = model.getChannels().getChannel(
 							channelOutput.channelId);
+					if (channel == null) {
+						continue;
+					}
 					distance = channel.getLength();
 				}
 			}
