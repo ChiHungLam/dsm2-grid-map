@@ -47,8 +47,9 @@ public class Parser {
 	 * Creates an empty parser
 	 */
 	public Parser() {
-		// regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
-		regex = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
+		String noQuoteString = "[^\\s\"']+";
+		String quotedStringWithEscapedQuotes = "'([^\\\\']+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*'|\"([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*\"";
+		regex = Pattern.compile(noQuoteString+"|"+quotedStringWithEscapedQuotes);
 	}
 
 	/**
