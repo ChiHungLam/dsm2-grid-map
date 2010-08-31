@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to='cdecmap'>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="com.google.gwt.http.HTTP"/>
+  <inherits name='com.google.gwt.json.JSON'/>
+  <inherits name='com.google.gwt.visualization.Visualization'/>
+  <inherits name="com.google.gwt.maps.GoogleMaps" />
+  <inherits name='com.google.gwt.maps.utility.GoogleMapsUtility' />
+  <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='gov.ca.cdec.maps.client.CdecMap'/>
+  <!--    
+  <script src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAglaP4sjC2PIcowNPLkkkHhSyFs1CXjUHtBZmkd3Zups9CFJIQRRmE076ya1TC23WQEYSofD-wVSCvQ" />
+  -->
+  <!-- -->
+  <script src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAglaP4sjC2PIcowNPLkkkHhRwY_BLkfz_b-BxWXEHAU-X5azmtxSfNvej_WtTDmNjvMS5iGb1Uz6ppQ" />
+</module>
