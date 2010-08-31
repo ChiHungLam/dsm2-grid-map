@@ -105,4 +105,29 @@ public class BathymetryDataFileDAOImpl extends
 		return list;
 	}
 
+	@Override
+	public List<BathymetryDataFile> getFilesWithin(double northLat,
+			double westLong, double southLat, double eastLong) throws Exception {
+		try {
+			// look for item first else insert a new one
+			Query query = getPersistenceManager().newQuery(
+					"select from " + BathymetryDataFile.class.getName());
+			int northLat100 = (int) Math.floor(northLat * BathymetryDataFile.FACTOR);
+			int westLong100 = (int) Math
+					.floor(westLong * BathymetryDataFile.FACTOR);
+			
+			int southLat100 = (int) Math.floor(southLat * BathymetryDataFile.FACTOR);
+			int eastLong100 = (int) Math
+					.floor(eastLong * BathymetryDataFile.FACTOR);
+			query
+					.setFilter("latitude100 >= southLat100 && latitude100 <= northLat100 && longitude100==longitudeParam");
+			query.declareParameters("int northLat100, int westLong100, int southLat100, int eastLong100");
+			List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
+					.execute(northLat100, westLong100, southLat100);
+			return files;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 }

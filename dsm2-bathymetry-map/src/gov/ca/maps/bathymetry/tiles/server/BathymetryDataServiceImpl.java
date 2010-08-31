@@ -89,7 +89,7 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		return data;
 	}
 
-	public List<BathymetryDataPoint> getBathymetryDataPoints(double x1,
+	public List<BathymetryDataPoint> getBathymetryDataPointsAlongLine(double x1,
 			double y1, double x2, double y2) throws SerializationException {
 		List<BathymetryDataPoint> list = new ArrayList<BathymetryDataPoint>();
 		PersistenceManager persistenceManager = PMF.get()
@@ -192,4 +192,28 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		}
 		return c;
 	}
+
+	@Override
+	public List<BathymetryDataPoint> getBathymetryDataPoints(double northLat,
+			double westLong, double southLat, double eastLong)
+			throws SerializationException {
+
+		List<BathymetryDataPoint> list = new ArrayList<BathymetryDataPoint>();
+		PersistenceManager persistenceManager = PMF.get()
+				.getPersistenceManager();
+		BathymetryDataFileDAO dao = new BathymetryDataFileDAOImpl(
+				persistenceManager);
+		List<BathymetryDataFile> filesWithin;
+		try {
+			List<BathymetryDataFile> filesAlongLine = dao.getFilesAlongLine(westLong, northLat, eastLong, southLat, 2);
+			for (BathymetryDataFile bathymetryDataFile : filesAlongLine) {
+				addBathymetryPointsToList(list, bathymetryDataFile);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 }
