@@ -40,4 +40,15 @@ public interface BathymetryDataFileDAO extends GenericDAO<BathymetryDataFile> {
 	 */
 	public List<BathymetryDataFile> getFilesAlongLine(double lat1, double lng1,
 			double lat2, double lng2, int width) throws Exception;
+	
+	/**
+	 * Gets the bathymetry data within the north,west and south,east rectangular bounds
+	 * @param northLat
+	 * @param westLong
+	 * @param southLat
+	 * @param eastLong
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BathymetryDataFile> getFilesWithin(double northLat, double westLong, double southLat, double eastLong) throws Exception;
 }

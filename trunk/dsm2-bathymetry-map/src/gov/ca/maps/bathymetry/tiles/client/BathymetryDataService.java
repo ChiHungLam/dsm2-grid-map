@@ -42,7 +42,7 @@ public interface BathymetryDataService extends RemoteService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<BathymetryDataPoint> getBathymetryDataPoints(double x1,
+	public List<BathymetryDataPoint> getBathymetryDataPointsAlongLine(double x1,
 			double y1, double x2, double y2) throws SerializationException;
 
 	/**
@@ -55,4 +55,7 @@ public interface BathymetryDataService extends RemoteService {
 	 */
 	public double getAverageDepthInPolygon(List<double[]> points)
 			throws SerializationException;
+	
+	
+	public List<BathymetryDataPoint> getBathymetryDataPoints(double northLat, double westLong, double southLat, double eastLong) throws SerializationException;
 }
