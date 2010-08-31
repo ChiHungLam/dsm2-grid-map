@@ -134,8 +134,7 @@ public class ControlPanel extends Composite {
 		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel
 				.add(new HTML(
-						"<h5>Depth soundings are color coded for depth and by transparency for age. "
-								+ "Click on the word Legend below to see the color mapping scheme.</h5>"));
+						"<h5>Depth soundings are color coded for depth and by transparency for age.</h5>"));
 		infoPanel = new FlowPanel();
 		infoPanel.setStyleName("infoPanel");
 
