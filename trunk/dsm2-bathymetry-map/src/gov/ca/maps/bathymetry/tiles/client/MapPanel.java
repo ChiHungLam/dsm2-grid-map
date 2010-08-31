@@ -43,6 +43,10 @@ import com.google.gwt.user.client.ui.Composite;
 
 public class MapPanel extends Composite {
 	private final MapWidget map;
+	public MapWidget getMap() {
+		return map;
+	}
+
 	private final BathymetryDataServiceAsync service;
 	private Polygon polygon;
 	private Polyline line;

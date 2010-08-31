@@ -69,6 +69,8 @@ public class MainEntryPoint implements EntryPoint {
 		lngCenter = extractValue(parameterMap, "lng", lngCenter);
 		zoom = (int) extractValue(parameterMap, "z", zoom);
 		mapPanel = new MapPanel(latCenter, lngCenter, zoom);
+		LegendControl legendControl = new LegendControl();
+		mapPanel.getMap().addControl(legendControl);
 		mainPanel
 				.addNorth(
 						new HTML(
@@ -76,7 +78,6 @@ public class MainEntryPoint implements EntryPoint {
 						5);
 		StackPanel sidePanel = new StackPanel();
 		sidePanel.add(new ControlPanel(mapPanel), "Controls");
-		sidePanel.add(ExportOverlays.getLegendPanel(), "Legend");
 		mainPanel.addEast(sidePanel, 25);
 		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);

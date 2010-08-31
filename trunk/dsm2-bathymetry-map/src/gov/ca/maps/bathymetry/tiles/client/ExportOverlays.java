@@ -187,25 +187,27 @@ public class ExportOverlays implements EntryPoint {
 	public static Panel getLegendPanel() {
 		Grid legend = new Grid(13, 2);
 		legend.setStyleName("legend");
-		String[] legendColors = new String[] { "black", "blue", "cyan",
-				"green", "yellow", "orange", "red", "pink", "magenta",
-				"darkviolet", "gray", "lightGray", "white" };
+		/*
+		 * These are SVG colors and so IE8 and below don't understand them :(
+		 * String[] legendColors = new String[] { "black", "blue", "cyan",
+		 * "green", "yellow", "orange", "red", "pink", "magenta", "darkviolet",
+		 * "gray", "lightGray", "white" };
+		 */
+		String[] legendColors = new String[] { "#000000", "#0000ff", "#00ffff",
+				"#008000", "#ffff00", "#ffa500", "#ff0000", "#ffc0cb",
+				"#ff00ff", "#9400d3", "#808080", "#d3d3d3", "#ffffff" };
 		String[] legendDepth = new String[] { "< -100", "-40", "-30", "-15",
-				"-10", "-5", " 0", " 5", "10", "15", "30", "40", " > 100" };
+				"-10", " -5", "  0", " +5", "+10", "+15", "+30", "+40",
+				" > +100" };
 		for (int i = 0; i < legendColors.length; i++) {
 			int gridIndex = legendColors.length - i - 1;
 			legend.setHTML(gridIndex, 0, "&nbsp;");
-			legend.getCellFormatter().setWidth(gridIndex, 0, "1em");
-			legend.getCellFormatter().getElement(gridIndex, 0).setAttribute(
-					"bgcolor", legendColors[i]);
+			legend.getCellFormatter().setWidth(gridIndex, 0, "15px");
+			legend.getCellFormatter().getElement(gridIndex, 0).getStyle().setBackgroundColor(legendColors[i]);
 			legend.setHTML(gridIndex, 1, legendDepth[i]);
 		}
 		FlowPanel legendContainerPanel = new FlowPanel();
-		legendContainerPanel.add(new HTML(
-				"<p> Transparency is mapped from 1925 to 2010</p>"));
-		legendContainerPanel
-				.add(new HTML(
-						"<p> The color scale below defines how depth is represented on the map. </p>"));
+		legendContainerPanel.add(new HTML("Depth<br/>[NGVD29]"));
 		legendContainerPanel.add(legend);
 		return legendContainerPanel;
 	}
