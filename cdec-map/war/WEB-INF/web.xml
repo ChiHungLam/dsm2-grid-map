@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  
+  <!-- Servlets -->
+	<servlet>
+		<servlet-name>cdec-data</servlet-name>
+		<servlet-class>gov.ca.cdec.maps.server.CDECDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>cdec-data</servlet-name>
+		<url-pattern>/cdec/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>cdec-data</servlet-name>
+		<url-pattern>/jspplot/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>cdec-data</servlet-name>
+		<url-pattern>/cgi-progs/*</url-pattern>
+	</servlet-mapping>
+  <!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>CdecMap.html</welcome-file>
+	</welcome-file-list>
+</web-app>
