@@ -1,9 +1,11 @@
 package gov.ca.cdec.maps.client;
 
+import java.util.Arrays;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 
@@ -13,7 +15,7 @@ public class MapControlPanel extends Composite {
 
 	public MapControlPanel(MapPanel mapPanel) {
 		this.mapPanel = mapPanel;
-		FlexTable table = new FlexTable();
+		FlowPanel panel = new FlowPanel();
 		sensorDescriptionsBox = new ListBox(false);
 		sensorDescriptionsBox.addChangeHandler(new ChangeHandler() {
 
@@ -26,14 +28,16 @@ public class MapControlPanel extends Composite {
 						.setSensorDescription(sensorSelected);
 			}
 		});
-		table.setWidget(0, 0, new Label(
+		panel.add(new Label(
 				"Choose sensor type to filter markers: "));
-		table.setWidget(0, 1, sensorDescriptionsBox);
-		initWidget(table);
+		panel.add(sensorDescriptionsBox);
+		initWidget(panel);
 	}
 
 	public void refreshSensorDescriptions() {
 		String[] sensorDescriptions = mapPanel.getSensorDescriptions();
+		Arrays.sort(sensorDescriptions);
+		sensorDescriptionsBox.addItem("ALL");
 		for (int i = 0; i < sensorDescriptions.length; i++) {
 			sensorDescriptionsBox.addItem(sensorDescriptions[i],
 					sensorDescriptions[i]);

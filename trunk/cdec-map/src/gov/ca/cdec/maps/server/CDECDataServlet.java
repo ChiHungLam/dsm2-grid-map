@@ -19,6 +19,7 @@ public class CDECDataServlet extends HttpServlet {
 		String requestPath = req.getRequestURI();
 		String cdecUrl = "http://cdec.water.ca.gov" + requestPath + "?"
 				+ req.getQueryString();
+		System.out.println("CDEC URL: "+cdecUrl);
 		URL url = new URL(cdecUrl);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(url
 				.openStream()));
@@ -34,24 +35,13 @@ public class CDECDataServlet extends HttpServlet {
 					break;
 				}
 				if (line.contains("href")) {
-					int index = line.indexOf("href");
-					line = line.substring(0, index)
-							+ " target=\"external_page\" "
-							+ line.substring(index);
+					line= line.replaceAll("href", "  target=\"external_page\" href");
 				}
 				if (line.contains("http://cdec.water.ca.gov:80")) {
-					line = line.replace("http://cdec.water.ca.gov:80/", "/");
+					line = line.replaceAll("http://cdec.water.ca.gov:80/", "/");
 				}
-				if (line.contains("href=")) {
-					int matchLength = 6;
-					int index = line.indexOf("href=\"");
-					if (index == -1) {
-						matchLength = 5;
-						index = line.indexOf("href=");
-					}
-					line = line.substring(0, index + matchLength)
-							+ "http://cdec.water.ca.gov"
-							+ line.substring(index + matchLength);
+				if (line.contains("href=\"")) {
+					line=line.replaceAll("href=\"","href=\"http://cdec.water.ca.gov");
 				}
 				buffer.append(line);
 			} else {

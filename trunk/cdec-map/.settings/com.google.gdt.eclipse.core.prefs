@@ -1,3 +1,5 @@
-#Thu Nov 19 22:50:33 PST 2009
+#Tue Aug 31 12:14:16 PDT 2010
 eclipse.preferences.version=1
-jarsExcludedFromWebInfLib=/Users/nsandhu/dev/wk/gwt-maps-utility/gwt-maps-utility.jar
+jarsExcludedFromWebInfLib=
+warSrcDir=war
+warSrcDirIsOutput=true
