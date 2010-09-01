@@ -9,7 +9,7 @@
   <inherits name='com.google.gwt.maps.utility.GoogleMapsUtility' />
   <inherits name='com.google.gwt.user.theme.standard.Standard'/>
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='gov.ca.cdec.maps.client.CdecMap'/>
+  <entry-point class='gov.ca.cdec.maps.client.MainEntryPoint'/>
   <!--    
   <script src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAglaP4sjC2PIcowNPLkkkHhSyFs1CXjUHtBZmkd3Zups9CFJIQRRmE076ya1TC23WQEYSofD-wVSCvQ" />
   -->

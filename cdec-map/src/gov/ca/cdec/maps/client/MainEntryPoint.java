@@ -10,7 +10,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class CdecMap implements EntryPoint {
+public class MainEntryPoint implements EntryPoint {
+
 	/**
 	 * This is the entry point method.
 	 */
@@ -29,7 +30,7 @@ public class CdecMap implements EntryPoint {
 		Runnable onLoadCallback = new Runnable() {
 
 			public void run() {
-				RootPanel.get("mapcontainer").add(new MapPanel());
+				createUI();
 			}
 		};
 		if (!GoogleMapsUtility.isLoaded(DefaultPackage.MARKER_CLUSTERER,
@@ -41,10 +42,9 @@ public class CdecMap implements EntryPoint {
 		} else {
 			onLoadCallback.run();
 		}
+	}
 
-		// Load the visualization api, passing the onLoadCallback to be called
-		// when loading is done.
-		// VisualizationUtils.loadVisualizationApi(onLoadCallback,
-		// ScatterChart.PACKAGE);
+	protected void createUI() {
+		RootPanel.get().add(new MainView());
 	}
 }

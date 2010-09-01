@@ -34,11 +34,69 @@ import com.google.gwt.maps.utility.client.markerclusterer.MarkerClustererOptions
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
 public class MapPanel extends Composite {
+	private final class MarkerShowDataHandler implements MarkerClickHandler {
+		private HashMap<String, Station> stationMap;
+
+		private MarkerShowDataHandler(HashMap<String, Station> stationMap) {
+			this.stationMap = stationMap;
+		}
+
+		public void onClick(MarkerClickEvent event) {
+			Marker marker = event.getSender();
+			FlowPanel panel = new FlowPanel();
+			final Station station = stationMap.get(marker.getTitle());
+			Anchor dataLink = new Anchor(station.displayName);
+			dataLink.addClickHandler(new ClickHandler() {
+
+				public void onClick(ClickEvent event) {
+					RequestBuilder requestBuilder = new RequestBuilder(
+							RequestBuilder.GET, "/cgi-progs/queryF?s="
+									+ station.stationId);
+					requestBuilder.setCallback(new RequestCallback() {
+
+						public void onResponseReceived(Request request,
+								Response response) {
+							String responseText = response.getText();
+							dataDisplayPanel.clear();
+							dataDisplayPanel.add(new HTMLPanel(
+									responseText));
+							dataDisplayPanel.getElement().scrollIntoView();
+						}
+
+						public void onError(Request request,
+								Throwable exception) {
+							dataDisplayPanel.clear();
+							dataDisplayPanel.add(new HTMLPanel(
+									"Could not fetch data for "
+											+ station.stationId
+											+ "<pre>"
+											+ exception.getMessage()
+											+ "</pre>"));
+							dataDisplayPanel.getElement().scrollIntoView();
+						}
+					});
+					try {
+						requestBuilder.send();
+					} catch (RequestException ex) {
+						dataDisplayPanel.clear();
+						dataDisplayPanel.add(new HTMLPanel(
+								"Could not fetch data for "
+										+ station.stationId + "<pre>"
+										+ ex.getMessage() + "</pre>"));
+					}
+
+				}
+			});
+			panel.add(dataLink);
+			map.getInfoWindow().open(marker,
+					new InfoWindowContent(panel));
+		}
+	}
+
 	private MapWidget map;
 	private FlowPanel dataDisplayPanel;
 	private HashMap<String, String> sensorDescriptions;
@@ -50,17 +108,17 @@ public class MapPanel extends Composite {
 	public MapPanel() {
 		sensorDescriptions = new HashMap<String, String>();
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 9));
-		getMap().setSize("1000", "600");
 		setOptions();
-		dataDisplayPanel = new FlowPanel();
-		controlPanel = new MapControlPanel(this);
-		// layout top level things here
-		FlexTable table = new FlexTable();
-		table.setWidget(0, 0, getMap());
-		table.setWidget(1, 0, controlPanel);
-		table.setWidget(2, 0, dataDisplayPanel);
-		initWidget(table);
-		requestMarkerData();
+		getMap().setSize("900px", "600px");
+		initWidget(getMap());
+	}
+	
+	void setDataDisplayPanel(FlowPanel p){
+		this.dataDisplayPanel =p;
+	}
+	
+	void setControlPanel(MapControlPanel p){
+		this.controlPanel = p;
 	}
 
 	private void setOptions() {
@@ -88,7 +146,7 @@ public class MapPanel extends Composite {
 		return map;
 	}
 
-	private void requestMarkerData() {
+	public void requestMarkerData() {
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,
 				"/stations.json.txt");
 		requestBuilder.setCallback(new RequestCallback() {
@@ -165,6 +223,7 @@ public class MapPanel extends Composite {
 		icon.setIconAnchor(Point.newInstance(16, 16));
 		icon.setInfoWindowAnchor(Point.newInstance(25, 7));
 		int index = 0;
+		MarkerShowDataHandler clickHandler = new MarkerShowDataHandler(stationMap);
 		for (final Station station : stations) {
 			stationMap.put(station.stationId, station);
 			LatLng latlng = LatLng.newInstance(station.latitude,
@@ -180,55 +239,7 @@ public class MapPanel extends Composite {
 			final Marker marker = new LabeledMarker(latlng, opts);
 			markers[index++] = marker;
 			stationMarkerMap.put(station.stationId, marker);
-			marker.addMarkerClickHandler(new MarkerClickHandler() {
-
-				public void onClick(MarkerClickEvent event) {
-					FlowPanel panel = new FlowPanel();
-					Anchor dataLink = new Anchor(station.displayName);
-					dataLink.addClickHandler(new ClickHandler() {
-
-						public void onClick(ClickEvent event) {
-							RequestBuilder requestBuilder = new RequestBuilder(
-									RequestBuilder.GET, "/cgi-progs/queryF?s="
-											+ station.stationId);
-							requestBuilder.setCallback(new RequestCallback() {
-
-								public void onResponseReceived(Request request,
-										Response response) {
-									String responseText = response.getText();
-									dataDisplayPanel.clear();
-									dataDisplayPanel.add(new HTMLPanel(
-											responseText));
-								}
-
-								public void onError(Request request,
-										Throwable exception) {
-									dataDisplayPanel.clear();
-									dataDisplayPanel.add(new HTMLPanel(
-											"Could not fetch data for "
-													+ station.stationId
-													+ "<pre>"
-													+ exception.getMessage()
-													+ "</pre>"));
-								}
-							});
-							try {
-								requestBuilder.send();
-							} catch (RequestException ex) {
-								dataDisplayPanel.clear();
-								dataDisplayPanel.add(new HTMLPanel(
-										"Could not fetch data for "
-												+ station.stationId + "<pre>"
-												+ ex.getMessage() + "</pre>"));
-							}
-
-						}
-					});
-					panel.add(dataLink);
-					map.getInfoWindow().open(marker,
-							new InfoWindowContent(panel));
-				}
-			});
+			marker.addMarkerClickHandler(clickHandler);
 		}
 		MarkerClustererOptions clusterOptions = MarkerClustererOptions
 				.newInstance();
@@ -250,9 +261,9 @@ public class MapPanel extends Composite {
 		for (String id : stationMap.keySet()) {
 			Station station = stationMap.get(id);
 			for (Sensor sensor : station.sensors) {
-				if (sensor.description.equalsIgnoreCase(sensorSelected)) {
+				if (sensorSelected.equals("ALL") || sensor.description.equalsIgnoreCase(sensorSelected)) {
 					markers.add(stationMarkerMap.get(id));
-				}
+				} 
 			}
 		}
 		MarkerClustererOptions clusterOptions = MarkerClustererOptions
@@ -261,5 +272,10 @@ public class MapPanel extends Composite {
 		clusterOptions.setMaxZoom(10);
 		markerClusterer = MarkerClusterer.newInstance(map, markers
 				.toArray(new Marker[markers.size()]), clusterOptions);
+		//markerClusterer.addMarkers(markers.toArray(new Marker[markers.size()]));
+	}
+
+	public void onResize() {
+		map.checkResizeAndCenter();
 	}
 }
