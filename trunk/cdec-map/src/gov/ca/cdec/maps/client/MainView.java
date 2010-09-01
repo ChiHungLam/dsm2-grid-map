@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MainView extends Composite{
+public class MainView extends Composite {
 	interface DisplayBinder extends UiBinder<Widget, MainView> {
 	}
 
@@ -28,7 +28,7 @@ public class MainView extends Composite{
 		mapPanel.setControlPanel(controlPanel);
 		controlPanelContainer.add(controlPanel);
 		mapPanel.setDataDisplayPanel(dataDisplayPanelContainer);
-		mapPanel.requestMarkerData();	
+		mapPanel.requestMarkerData();
 	}
 
 	public Widget asWidget() {

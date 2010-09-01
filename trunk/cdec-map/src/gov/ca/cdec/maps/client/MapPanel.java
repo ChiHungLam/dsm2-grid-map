@@ -6,6 +6,8 @@ import gov.ca.cdec.maps.client.model.Station;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.Request;
@@ -62,20 +64,21 @@ public class MapPanel extends Composite {
 								Response response) {
 							String responseText = response.getText();
 							dataDisplayPanel.clear();
-							dataDisplayPanel.add(new HTMLPanel(
-									responseText));
-							dataDisplayPanel.getElement().scrollIntoView();
+							dataDisplayPanel.add(new HTMLPanel(responseText));
+							NodeList<Element> nodeList = dataDisplayPanel
+									.getElement().getElementsByTagName("a");
+							nodeList.getItem(0).scrollIntoView();
 						}
 
-						public void onError(Request request,
-								Throwable exception) {
+						public void onError(Request request, Throwable exception) {
 							dataDisplayPanel.clear();
-							dataDisplayPanel.add(new HTMLPanel(
-									"Could not fetch data for "
-											+ station.stationId
-											+ "<pre>"
-											+ exception.getMessage()
-											+ "</pre>"));
+							dataDisplayPanel
+									.add(new HTMLPanel(
+											"Could not fetch data for "
+													+ station.stationId
+													+ "<pre>"
+													+ exception.getMessage()
+													+ "</pre>"));
 							dataDisplayPanel.getElement().scrollIntoView();
 						}
 					});
@@ -83,8 +86,8 @@ public class MapPanel extends Composite {
 						requestBuilder.send();
 					} catch (RequestException ex) {
 						dataDisplayPanel.clear();
-						dataDisplayPanel.add(new HTMLPanel(
-								"Could not fetch data for "
+						dataDisplayPanel
+								.add(new HTMLPanel("Could not fetch data for "
 										+ station.stationId + "<pre>"
 										+ ex.getMessage() + "</pre>"));
 					}
@@ -92,8 +95,7 @@ public class MapPanel extends Composite {
 				}
 			});
 			panel.add(dataLink);
-			map.getInfoWindow().open(marker,
-					new InfoWindowContent(panel));
+			map.getInfoWindow().open(marker, new InfoWindowContent(panel));
 		}
 	}
 
@@ -112,13 +114,13 @@ public class MapPanel extends Composite {
 		getMap().setSize("900px", "600px");
 		initWidget(getMap());
 	}
-	
-	void setDataDisplayPanel(FlowPanel p){
-		this.dataDisplayPanel =p;
+
+	void setDataDisplayPanel(FlowPanel p) {
+		dataDisplayPanel = p;
 	}
-	
-	void setControlPanel(MapControlPanel p){
-		this.controlPanel = p;
+
+	void setControlPanel(MapControlPanel p) {
+		controlPanel = p;
 	}
 
 	private void setOptions() {
@@ -223,7 +225,8 @@ public class MapPanel extends Composite {
 		icon.setIconAnchor(Point.newInstance(16, 16));
 		icon.setInfoWindowAnchor(Point.newInstance(25, 7));
 		int index = 0;
-		MarkerShowDataHandler clickHandler = new MarkerShowDataHandler(stationMap);
+		MarkerShowDataHandler clickHandler = new MarkerShowDataHandler(
+				stationMap);
 		for (final Station station : stations) {
 			stationMap.put(station.stationId, station);
 			LatLng latlng = LatLng.newInstance(station.latitude,
@@ -261,9 +264,10 @@ public class MapPanel extends Composite {
 		for (String id : stationMap.keySet()) {
 			Station station = stationMap.get(id);
 			for (Sensor sensor : station.sensors) {
-				if (sensorSelected.equals("ALL") || sensor.description.equalsIgnoreCase(sensorSelected)) {
+				if (sensorSelected.equals("ALL")
+						|| sensor.description.equalsIgnoreCase(sensorSelected)) {
 					markers.add(stationMarkerMap.get(id));
-				} 
+				}
 			}
 		}
 		MarkerClustererOptions clusterOptions = MarkerClustererOptions
@@ -272,7 +276,8 @@ public class MapPanel extends Composite {
 		clusterOptions.setMaxZoom(10);
 		markerClusterer = MarkerClusterer.newInstance(map, markers
 				.toArray(new Marker[markers.size()]), clusterOptions);
-		//markerClusterer.addMarkers(markers.toArray(new Marker[markers.size()]));
+		// markerClusterer.addMarkers(markers.toArray(new
+		// Marker[markers.size()]));
 	}
 
 	public void onResize() {
