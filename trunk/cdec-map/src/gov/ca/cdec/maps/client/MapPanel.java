@@ -20,23 +20,22 @@ import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.OverviewMapControl;
-import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
-import com.google.gwt.maps.client.event.MapZoomEndHandler.MapZoomEndEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.utility.client.labeledmarker.LabeledMarker;
-import com.google.gwt.maps.utility.client.labeledmarker.LabeledMarkerOptions;
+import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClusterer;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClustererOptions;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 
 public class MapPanel extends Composite {
 	private final class MarkerShowDataHandler implements MarkerClickHandler {
@@ -93,7 +92,19 @@ public class MapPanel extends Composite {
 
 				}
 			});
+			Label idLabel = new Label("STATION ID: " + station.getStationId());
+			JsArray<Sensor> sensors = station.getSensors();
+			int l = sensors.length();
+			Grid sensorTable = new Grid(l, 1);
+			for (int i = 0; i < l; i++) {
+				Sensor s = sensors.get(i);
+				sensorTable.setText(i, 0, s.getDescription());
+			}
+			CaptionPanel sensorPanel = new CaptionPanel("Sensors");
+			sensorPanel.add(sensorTable);
+			panel.add(idLabel);
 			panel.add(dataLink);
+			panel.add(sensorPanel);
 			map.getInfoWindow().open(marker, new InfoWindowContent(panel));
 		}
 	}
@@ -112,15 +123,6 @@ public class MapPanel extends Composite {
 		setOptions();
 		getMap().setSize("900px", "600px");
 		initWidget(getMap());
-		getMap().addMapZoomEndHandler(new MapZoomEndHandler() {
-			
-			@Override
-			public void onZoomEnd(MapZoomEndEvent event) {
-				if (markerClusterer != null){
-					markerClusterer.resetViewport();
-				}
-			}
-		});
 	}
 
 	void setDataDisplayPanel(FlowPanel p) {
@@ -173,35 +175,33 @@ public class MapPanel extends Composite {
 			stationMap.put(station.getStationId(), station);
 			LatLng latlng = LatLng.newInstance(station.getLatitude(), station
 					.getLongitude());
-			LabeledMarkerOptions opts = LabeledMarkerOptions.newInstance();
-			opts.setIcon(icon);
-			opts.setClickable(true);
-			opts.setLabelOffset(Size.newInstance(-10, -6));
-			opts.setLabelText(station.getStationId());
-			opts.setLabelClass("hm-marker-label");
+			/**
+			 * LabeledMarkerOptions opts = LabeledMarkerOptions.newInstance();
+			 * opts.setIcon(icon); opts.setClickable(true);
+			 * opts.setLabelOffset(Size.newInstance(-10, -6));
+			 * opts.setLabelText(station.getStationId());
+			 * opts.setLabelClass("hm-marker-label"); opts.setClickable(true);
+			 * opts.setTitle(station.getStationId()); final Marker marker = new
+			 * LabeledMarker(latlng, opts);
+			 */
+			MarkerOptions opts = MarkerOptions.newInstance(icon);
 			opts.setClickable(true);
 			opts.setTitle(station.getStationId());
-			final Marker marker = new LabeledMarker(latlng, opts);
+			Marker marker = new Marker(latlng, opts);
 			markers.add(marker);
 			stationMarkerMap.put(station.getStationId(), marker);
 			marker.addMarkerClickHandler(clickHandler);
 		}
-		MarkerClustererOptions clusterOptions = MarkerClustererOptions
-				.newInstance();
-		clusterOptions.setGridSize(100);
-		clusterOptions.setMaxZoom(10);
-		markerClusterer = MarkerClusterer.newInstance(map, markers
-				.toArray(new Marker[markers.size()]), clusterOptions);
 	}
 
 	private void updateSensorDescriptionsMap(Station station) {
 		JsArray<Sensor> sensors = station.getSensors();
-		int l=sensors.length();
-		for (int i=0; i<l; i++) {
+		int l = sensors.length();
+		for (int i = 0; i < l; i++) {
 			Sensor sensor = sensors.get(i);
 			String description = sensor.getDescription();
 			sensorDescriptions.put(description, description);
-		}		
+		}
 	}
 
 	public String[] getSensorDescriptions() {
@@ -211,14 +211,16 @@ public class MapPanel extends Composite {
 	}
 
 	public void setSensorDescription(String sensorSelected) {
-		markerClusterer.resetViewport();
-		markerClusterer.clearMarkers();
+		if (markerClusterer != null) {
+			markerClusterer.resetViewport();
+			markerClusterer.clearMarkers();
+		}
 		ArrayList<Marker> markers = new ArrayList<Marker>();
 		for (String id : stationMap.keySet()) {
 			Station station = stationMap.get(id);
 			JsArray<Sensor> sensors = station.getSensors();
-			int l=sensors.length();
-			for (int i=0; i<l; i++) {
+			int l = sensors.length();
+			for (int i = 0; i < l; i++) {
 				Sensor sensor = sensors.get(i);
 				if (sensorSelected.equals("ALL")
 						|| sensor.getDescription().equalsIgnoreCase(
