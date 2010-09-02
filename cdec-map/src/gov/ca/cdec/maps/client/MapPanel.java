@@ -25,6 +25,7 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.OverviewMapControl;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Icon;
@@ -33,6 +34,7 @@ import com.google.gwt.maps.utility.client.labeledmarker.LabeledMarker;
 import com.google.gwt.maps.utility.client.labeledmarker.LabeledMarkerOptions;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClusterer;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClustererOptions;
+import com.google.gwt.user.client.IncrementalCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -40,6 +42,19 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
 public class MapPanel extends Composite {
+	private final class MarkStationsIncrementalCommand implements
+			IncrementalCommand {
+		public MarkStationsIncrementalCommand(ArrayList<Station> stations,
+				HashMap<String, Station> stationMap) {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public boolean execute() {
+			return false;
+		}
+	}
+
 	private final class MarkerShowDataHandler implements MarkerClickHandler {
 		private HashMap<String, Station> stationMap;
 
@@ -227,10 +242,17 @@ public class MapPanel extends Composite {
 		int index = 0;
 		MarkerShowDataHandler clickHandler = new MarkerShowDataHandler(
 				stationMap);
+		LatLngBounds mapBounds = getMap().getBounds();
+		// DeferredCommand.addCommand(new
+		// MarkStationsIncrementalCommand(stations,
+		// stationMap));
 		for (final Station station : stations) {
 			stationMap.put(station.stationId, station);
 			LatLng latlng = LatLng.newInstance(station.latitude,
 					station.longitude);
+			if (!mapBounds.containsLatLng(latlng)) {
+				continue;
+			}
 			LabeledMarkerOptions opts = LabeledMarkerOptions.newInstance();
 			opts.setIcon(icon);
 			opts.setClickable(true);
