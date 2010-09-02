@@ -30,10 +30,8 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClusterer;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClustererOptions;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -93,18 +91,18 @@ public class MapPanel extends Composite {
 				}
 			});
 			Label idLabel = new Label("STATION ID: " + station.getStationId());
-			JsArray<Sensor> sensors = station.getSensors();
-			int l = sensors.length();
-			Grid sensorTable = new Grid(l, 1);
-			for (int i = 0; i < l; i++) {
-				Sensor s = sensors.get(i);
-				sensorTable.setText(i, 0, s.getDescription());
-			}
-			CaptionPanel sensorPanel = new CaptionPanel("Sensors");
-			sensorPanel.add(sensorTable);
+			/**
+			 * Too many sensors cause problems. Think of something else
+			 * JsArray<Sensor> sensors = station.getSensors(); int l =
+			 * sensors.length(); Grid sensorTable = new Grid(l, 1); for (int i =
+			 * 0; i < l; i++) { Sensor s = sensors.get(i);
+			 * sensorTable.setText(i, 0, s.getDescription()); } CaptionPanel
+			 * sensorPanel = new CaptionPanel("Sensors");
+			 * sensorPanel.add(sensorTable);
+			 */
 			panel.add(idLabel);
 			panel.add(dataLink);
-			panel.add(sensorPanel);
+			// panel.add(sensorPanel);
 			map.getInfoWindow().open(marker, new InfoWindowContent(panel));
 		}
 	}
