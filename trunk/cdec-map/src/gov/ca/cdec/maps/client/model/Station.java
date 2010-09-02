@@ -1,23 +1,30 @@
 package gov.ca.cdec.maps.client.model;
 
-import java.util.ArrayList;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 
-public class Station {
-	public String stationId;
-	public String displayName;
-	public String elevation;
-	public String county;
-	public String hydrologicArea;
-	public String nearbyCity;
-	public double latitude;
-	public double longitude;
-	public String operator;
-	public String dataCollection;
-	public ArrayList<Sensor> sensors = new ArrayList<Sensor>();
+public class Station extends JavaScriptObject {
+	protected Station() {
 
-	public String toString() {
-		return "Station " + stationId + " @ (" + latitude + "," + longitude
-				+ ") : " + displayName;
 	}
 
+	public final native String getStationId()/*-{
+		return this.stationId;
+	}-*/;
+
+	public final native String getDisplayName()/*-{
+		return this.displayName;
+	}-*/;
+
+	public final native double getLatitude()/*-{
+		return this.latitude;
+	}-*/;
+
+	public final native double getLongitude()/*-{
+		return this.longitude;
+	}-*/;
+
+	public final native JsArray<Sensor> getSensors()/*-{
+		return this.sensors;
+	}-*/;
 }

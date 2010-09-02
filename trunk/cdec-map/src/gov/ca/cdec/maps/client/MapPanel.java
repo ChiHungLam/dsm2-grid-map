@@ -6,6 +6,7 @@ import gov.ca.cdec.maps.client.model.Station;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,17 +16,14 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.OverviewMapControl;
+import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
+import com.google.gwt.maps.client.event.MapZoomEndHandler.MapZoomEndEvent;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Icon;
@@ -34,7 +32,6 @@ import com.google.gwt.maps.utility.client.labeledmarker.LabeledMarker;
 import com.google.gwt.maps.utility.client.labeledmarker.LabeledMarkerOptions;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClusterer;
 import com.google.gwt.maps.utility.client.markerclusterer.MarkerClustererOptions;
-import com.google.gwt.user.client.IncrementalCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -42,19 +39,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
 public class MapPanel extends Composite {
-	private final class MarkStationsIncrementalCommand implements
-			IncrementalCommand {
-		public MarkStationsIncrementalCommand(ArrayList<Station> stations,
-				HashMap<String, Station> stationMap) {
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public boolean execute() {
-			return false;
-		}
-	}
-
 	private final class MarkerShowDataHandler implements MarkerClickHandler {
 		private HashMap<String, Station> stationMap;
 
@@ -66,13 +50,13 @@ public class MapPanel extends Composite {
 			Marker marker = event.getSender();
 			FlowPanel panel = new FlowPanel();
 			final Station station = stationMap.get(marker.getTitle());
-			Anchor dataLink = new Anchor(station.displayName);
+			Anchor dataLink = new Anchor(station.getDisplayName());
 			dataLink.addClickHandler(new ClickHandler() {
 
 				public void onClick(ClickEvent event) {
 					RequestBuilder requestBuilder = new RequestBuilder(
 							RequestBuilder.GET, "/cgi-progs/queryF?s="
-									+ station.stationId);
+									+ station.getStationId());
 					requestBuilder.setCallback(new RequestCallback() {
 
 						public void onResponseReceived(Request request,
@@ -90,7 +74,7 @@ public class MapPanel extends Composite {
 							dataDisplayPanel
 									.add(new HTMLPanel(
 											"Could not fetch data for "
-													+ station.stationId
+													+ station.getStationId()
 													+ "<pre>"
 													+ exception.getMessage()
 													+ "</pre>"));
@@ -101,9 +85,9 @@ public class MapPanel extends Composite {
 						requestBuilder.send();
 					} catch (RequestException ex) {
 						dataDisplayPanel.clear();
-						dataDisplayPanel
-								.add(new HTMLPanel("Could not fetch data for "
-										+ station.stationId + "<pre>"
+						dataDisplayPanel.add(new HTMLPanel(
+								"Could not fetch data for "
+										+ station.getStationId() + "<pre>"
 										+ ex.getMessage() + "</pre>"));
 					}
 
@@ -128,6 +112,15 @@ public class MapPanel extends Composite {
 		setOptions();
 		getMap().setSize("900px", "600px");
 		initWidget(getMap());
+		getMap().addMapZoomEndHandler(new MapZoomEndHandler() {
+			
+			@Override
+			public void onZoomEnd(MapZoomEndEvent event) {
+				if (markerClusterer != null){
+					markerClusterer.resetViewport();
+				}
+			}
+		});
 	}
 
 	void setDataDisplayPanel(FlowPanel p) {
@@ -163,115 +156,52 @@ public class MapPanel extends Composite {
 		return map;
 	}
 
-	public void requestMarkerData() {
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,
-				"/stations.json.txt");
-		requestBuilder.setCallback(new RequestCallback() {
-
-			public void onResponseReceived(Request request, Response response) {
-				String text = response.getText();
-				sensorDescriptions = new HashMap<String, String>();
-				JSONValue value = JSONParser.parse(text);
-				JSONArray array = value.isArray();
-				ArrayList<Station> stations = new ArrayList<Station>();
-				for (int i = 0; i < array.size(); i++) {
-					JSONValue itemValue = array.get(i);
-					JSONObject stationObject = itemValue.isObject();
-					Station station = new Station();
-					station.displayName = stationObject.get("displayName")
-							.isString().stringValue();
-					station.stationId = stationObject.get("stationId")
-							.isString().stringValue();
-					station.latitude = stationObject.get("latitude").isNumber()
-							.doubleValue();
-					station.longitude = stationObject.get("longitude")
-							.isNumber().doubleValue();
-					JSONArray sensorArray = stationObject.get("sensors")
-							.isArray();
-					ArrayList<Sensor> sensors = new ArrayList<Sensor>();
-					for (int k = 0; k < sensorArray.size(); k++) {
-						sensors.add(buildSensor(sensorArray.get(k).isObject()));
-					}
-					station.sensors = sensors;
-					station.elevation = stationObject.get("elevation")
-							.isString().stringValue();
-					stations.add(station);
-				}
-				markStations(stations);
-				controlPanel.refreshSensorDescriptions();
-			}
-
-			private Sensor buildSensor(JSONObject object) {
-				Sensor sensor = new Sensor();
-				sensor.dataAvailable = object.get("dataAvailable").isString()
-						.stringValue();
-				sensor.dataCollection = object.get("dataCollection").isString()
-						.stringValue();
-				sensor.description = object.get("description").isString()
-						.stringValue();
-				if (!sensorDescriptions.containsKey(sensor.description)) {
-					sensorDescriptions.put(sensor.description,
-							sensor.description);
-				}
-				sensor.duration = object.get("duration").isString()
-						.stringValue();
-				sensor.sensorNumber = object.get("sensorNumber").isString()
-						.stringValue();
-				return sensor;
-			}
-
-			public void onError(Request request, Throwable exception) {
-				Window.alert("Nodes data file is missing: dsm2_nodes.json");
-			}
-		});
-		try {
-			requestBuilder.send();
-		} catch (RequestException e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected void markStations(ArrayList<Station> stations) {
+	protected void markStations(JsArray<Station> stations) {
 		stationMap = new HashMap<String, Station>();
 		stationMarkerMap = new HashMap<String, Marker>();
-		Marker[] markers = new Marker[stations.size()];
+		ArrayList<Marker> markers = new ArrayList<Marker>();
 		Icon icon = Icon.newInstance("images/greencirclemarker.png");
 		icon.setIconSize(Size.newInstance(32, 32));
 		icon.setIconAnchor(Point.newInstance(16, 16));
 		icon.setInfoWindowAnchor(Point.newInstance(25, 7));
-		int index = 0;
 		MarkerShowDataHandler clickHandler = new MarkerShowDataHandler(
 				stationMap);
-		LatLngBounds mapBounds = getMap().getBounds();
-		// DeferredCommand.addCommand(new
-		// MarkStationsIncrementalCommand(stations,
-		// stationMap));
-		for (final Station station : stations) {
-			stationMap.put(station.stationId, station);
-			LatLng latlng = LatLng.newInstance(station.latitude,
-					station.longitude);
-			if (!mapBounds.containsLatLng(latlng)) {
-				continue;
-			}
+		int l = stations.length();
+		for (int i = 0; i < l; i++) {
+			Station station = stations.get(i);
+			updateSensorDescriptionsMap(station);
+			stationMap.put(station.getStationId(), station);
+			LatLng latlng = LatLng.newInstance(station.getLatitude(), station
+					.getLongitude());
 			LabeledMarkerOptions opts = LabeledMarkerOptions.newInstance();
 			opts.setIcon(icon);
 			opts.setClickable(true);
 			opts.setLabelOffset(Size.newInstance(-10, -6));
-			opts.setLabelText(station.stationId);
+			opts.setLabelText(station.getStationId());
 			opts.setLabelClass("hm-marker-label");
 			opts.setClickable(true);
-			opts.setTitle(station.stationId);
+			opts.setTitle(station.getStationId());
 			final Marker marker = new LabeledMarker(latlng, opts);
-			markers[index++] = marker;
-			stationMarkerMap.put(station.stationId, marker);
+			markers.add(marker);
+			stationMarkerMap.put(station.getStationId(), marker);
 			marker.addMarkerClickHandler(clickHandler);
 		}
 		MarkerClustererOptions clusterOptions = MarkerClustererOptions
 				.newInstance();
 		clusterOptions.setGridSize(100);
 		clusterOptions.setMaxZoom(10);
-		markerClusterer = MarkerClusterer.newInstance(map, markers,
-				clusterOptions);
+		markerClusterer = MarkerClusterer.newInstance(map, markers
+				.toArray(new Marker[markers.size()]), clusterOptions);
+	}
+
+	private void updateSensorDescriptionsMap(Station station) {
+		JsArray<Sensor> sensors = station.getSensors();
+		int l=sensors.length();
+		for (int i=0; i<l; i++) {
+			Sensor sensor = sensors.get(i);
+			String description = sensor.getDescription();
+			sensorDescriptions.put(description, description);
+		}		
 	}
 
 	public String[] getSensorDescriptions() {
@@ -281,13 +211,18 @@ public class MapPanel extends Composite {
 	}
 
 	public void setSensorDescription(String sensorSelected) {
+		markerClusterer.resetViewport();
 		markerClusterer.clearMarkers();
 		ArrayList<Marker> markers = new ArrayList<Marker>();
 		for (String id : stationMap.keySet()) {
 			Station station = stationMap.get(id);
-			for (Sensor sensor : station.sensors) {
+			JsArray<Sensor> sensors = station.getSensors();
+			int l=sensors.length();
+			for (int i=0; i<l; i++) {
+				Sensor sensor = sensors.get(i);
 				if (sensorSelected.equals("ALL")
-						|| sensor.description.equalsIgnoreCase(sensorSelected)) {
+						|| sensor.getDescription().equalsIgnoreCase(
+								sensorSelected)) {
 					markers.add(stationMarkerMap.get(id));
 				}
 			}
@@ -298,11 +233,19 @@ public class MapPanel extends Composite {
 		clusterOptions.setMaxZoom(10);
 		markerClusterer = MarkerClusterer.newInstance(map, markers
 				.toArray(new Marker[markers.size()]), clusterOptions);
-		// markerClusterer.addMarkers(markers.toArray(new
-		// Marker[markers.size()]));
 	}
 
 	public void onResize() {
 		map.checkResizeAndCenter();
 	}
+
+	public void showMarkers() {
+		markStations(getStations());
+		controlPanel.refreshSensorDescriptions();
+	}
+
+	public final native JsArray<Station> getStations()/*-{
+		return $wnd.stations;
+	}-*/;
+
 }
