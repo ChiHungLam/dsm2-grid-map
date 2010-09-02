@@ -1,14 +1,12 @@
 package gov.ca.cdec.maps.client.model;
 
-public class Sensor {
-	public String description;
-	public String duration;
-	public String dataCollection;
-	public String dataAvailable;
-	public String sensorNumber;
+import com.google.gwt.core.client.JavaScriptObject;
 
-	public String toString() {
-		return "Sensor #" + sensorNumber + " " + description;
+public class Sensor extends JavaScriptObject{
+	protected Sensor(){
+		
 	}
-
+	public final native String getDescription()/*-{
+		return this.description;
+	}-*/;
 }

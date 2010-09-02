@@ -1,6 +1,9 @@
 package gov.ca.cdec.maps.client;
 
+import gov.ca.cdec.maps.client.model.Station;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -28,9 +31,9 @@ public class MainView extends Composite {
 		mapPanel.setControlPanel(controlPanel);
 		controlPanelContainer.add(controlPanel);
 		mapPanel.setDataDisplayPanel(dataDisplayPanelContainer);
-		mapPanel.requestMarkerData();
+		mapPanel.showMarkers();
 	}
-
+	
 	public Widget asWidget() {
 		return this;
 	}
