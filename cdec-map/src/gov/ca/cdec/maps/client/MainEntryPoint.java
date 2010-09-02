@@ -37,8 +37,7 @@ public class MainEntryPoint implements EntryPoint {
 				DefaultPackage.LABELED_MARKER, DefaultPackage.MAP_ICON_MAKER)) {
 			GoogleMapsUtility.loadUtilityApi(onLoadCallback,
 					DefaultPackage.MARKER_CLUSTERER,
-					DefaultPackage.LABELED_MARKER,
-					DefaultPackage.MAP_ICON_MAKER);
+					DefaultPackage.LABELED_MARKER);
 		} else {
 			onLoadCallback.run();
 		}
