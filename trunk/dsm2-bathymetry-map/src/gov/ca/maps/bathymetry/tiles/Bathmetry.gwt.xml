@@ -27,4 +27,5 @@
 	<script
 		src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAglaP4sjC2PIcowNPLkkkHhSyFs1CXjUHtBZmkd3Zups9CFJIQRRmE076ya1TC23WQEYSofD-wVSCvQ"
 		/> -->
+	<script src="usgs_topo.js"/>
 </module>
