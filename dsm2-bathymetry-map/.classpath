@@ -9,8 +9,8 @@
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dsm2-widgets"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-incubator"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-visualization-1.0"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-incubator-20100204-r1747"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

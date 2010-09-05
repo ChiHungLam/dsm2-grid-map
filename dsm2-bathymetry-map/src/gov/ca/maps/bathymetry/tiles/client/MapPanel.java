@@ -127,17 +127,13 @@ public class MapPanel extends Composite {
 		options.setKeyboard(true);
 		options.setMapTypeControl(false);
 		options.setMenuMapTypeControl(true);
-		/*
-		options.setNormalMapType(true);
-		options.setPhysicalMapType(true);
-		options.setSatelliteMapType(true);
-		*/
 		options.setScaleControl(true);
 		// options.setScrollwheel(true);
 		options.setLargeMapControl3d(true);
 		map.setUI(options);
 		//
 		map.addMapType(getTopoMapType());
+		map.addMapType(new MapType(new TileLayer[]{ExportOverlays.getNOAATileLayer()}, MapType.getNormalMap().getProjection(), "NOAA"));
 		OverviewMapControl control = new OverviewMapControl();
 		map.addControl(control);
 	}
