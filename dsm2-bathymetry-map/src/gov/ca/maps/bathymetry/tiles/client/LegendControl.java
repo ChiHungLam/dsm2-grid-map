@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class LegendControl extends CustomControl {
 
 	public LegendControl() {
-		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 55, 30));
+		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 125, 5));
 	}
 
 	@Override

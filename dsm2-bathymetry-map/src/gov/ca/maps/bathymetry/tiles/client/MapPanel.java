@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.InfoWindowContent;
+import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
@@ -61,7 +62,7 @@ public class MapPanel extends Composite {
 		service = (BathymetryDataServiceAsync) GWT
 				.create(BathymetryDataService.class);
 		map = new MapWidget(LatLng.newInstance(latCenter, lngCenter), zoom);
-
+		
 		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
 		map.addControl(fullScreenControl);
 
@@ -124,18 +125,28 @@ public class MapPanel extends Composite {
 		MapUIOptions options = MapUIOptions.newInstance(map.getSize());
 		options.setDoubleClick(true);
 		options.setKeyboard(true);
-		options.setMapTypeControl(true);
-		options.setMenuMapTypeControl(false);
+		options.setMapTypeControl(false);
+		options.setMenuMapTypeControl(true);
+		/*
 		options.setNormalMapType(true);
 		options.setPhysicalMapType(true);
 		options.setSatelliteMapType(true);
+		*/
 		options.setScaleControl(true);
 		// options.setScrollwheel(true);
 		options.setLargeMapControl3d(true);
 		map.setUI(options);
+		//
+		map.addMapType(getTopoMapType());
 		OverviewMapControl control = new OverviewMapControl();
 		map.addControl(control);
 	}
+
+	private final native MapType getTopoMapType()/*-{
+		var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
+		var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
+	    return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
+	}-*/;
 
 	public void onResize() {
 		map.checkResizeAndCenter();
