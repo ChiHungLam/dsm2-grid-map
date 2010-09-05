@@ -70,20 +70,6 @@ public class ControlPanel extends Composite {
 			}
 		});
 
-		//
-		final CheckBox noaaOverlay = new CheckBox(
-				"NOAA Overlay: Courtesy http://demo.geogarage.com/noaa");
-		noaaOverlay.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				if (noaaOverlay.getValue()) {
-					mapPanel.addNOAAOverlay();
-				} else {
-					mapPanel.removeNOAAOverlay();
-				}
-			}
-		});
-		noaaOverlay.setTitle("Adds NOAA Chart maps");
 		final ListBox overlayBox = new ListBox();
 		overlayBox.addItem("Raw Data", "");
 		overlayBox.addItem("Interpolated Data", "i");
@@ -119,8 +105,6 @@ public class ControlPanel extends Composite {
 		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(showData);
 		// buttonPanel.add(drawLineButton);
-		buttonPanel.add(new HTML("<hr/>"));
-		buttonPanel.add(noaaOverlay);
 		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(overlayBox);
 		buttonPanel.add(new HTML("<hr/>"));
