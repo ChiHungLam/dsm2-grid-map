@@ -8,6 +8,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
 import gov.ca.dsm2.input.model.DSM2Model;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -20,6 +21,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
+import com.google.gwt.maps.client.overlay.GeoXmlOverlay;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Command;
@@ -29,6 +32,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -208,6 +212,14 @@ public class MapDisplay extends Composite implements Display,
 		return controlPanel.getSaveEditModelButton();
 	}
 
+	public HasClickHandlers getAddKmlButton() {
+		return controlPanel.getAddKmlButton();
+	}
+
+	public HasText getKmlUrlBox() {
+		return controlPanel.getKmlUrlBox();
+	}
+
 	public void updateLinks() {
 		controlPanel.updateLinks();
 	}
@@ -262,6 +274,30 @@ public class MapDisplay extends Composite implements Display,
 
 	public void turnOffTextAnnotation() {
 		mapPanel.turnOffTextAnnotation();
+	}
+
+	public void addKmlOverlay(final String url) {
+		GeoXmlOverlay.load(url, new GeoXmlLoadCallback() {
+
+			@Override
+			public void onFailure(String url, Throwable e) {
+				StringBuffer message = new StringBuffer("KML File " + url
+						+ " failed to load");
+				if (e != null) {
+					message.append(e.toString());
+				}
+				Window.alert(message.toString());
+			}
+
+			@Override
+			public void onSuccess(String url, GeoXmlOverlay overlay) {
+				if (overlay == null) {
+					return;
+				}
+				GWT.log("KML File " + url + " loaded successfully", null);
+				mapPanel.getMap().addOverlay(overlay);
+			}
+		});
 	}
 
 }

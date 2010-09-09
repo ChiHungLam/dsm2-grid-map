@@ -18,6 +18,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -76,6 +77,12 @@ public class DSM2GridMapPresenter implements Presenter {
 		public HasClickHandlers getAddPolygonButton();
 
 		public void turnOffTextAnnotation();
+
+		public HasClickHandlers getAddKmlButton();
+
+		public HasText getKmlUrlBox();
+
+		public void addKmlOverlay(String url);
 
 	}
 
@@ -177,6 +184,13 @@ public class DSM2GridMapPresenter implements Presenter {
 						display.stopMeasuringAreaInPolygon();
 					}
 				}
+			}
+		});
+		display.getAddKmlButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				String url = display.getKmlUrlBox().getText();
+				display.addKmlOverlay(url);
 			}
 		});
 	}

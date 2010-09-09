@@ -28,8 +28,10 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -52,6 +54,8 @@ public class MapControlPanel extends Composite {
 	private String[] studies;
 	private boolean viewOnly;
 	private Label measurementLabel;
+	private TextBox kmlUrlBox;
+	private Button kmlButton;
 
 	public MapControlPanel(boolean viewOnly) {
 		this.viewOnly = viewOnly;
@@ -103,7 +107,16 @@ public class MapControlPanel extends Composite {
 		containerPanel.getFlexCellFormatter().setColSpan(2, 0, 3);
 		containerPanel.setWidget(3, 0, measurementLabel);
 		containerPanel.getFlexCellFormatter().setColSpan(3, 2, 3);
-
+		// add kml overlay
+		kmlUrlBox = new TextBox();
+		kmlButton = new Button("Add");
+		HorizontalPanel kmlOverlayPanel = new HorizontalPanel();
+		kmlOverlayPanel.add(new Label("Add KML URL"));
+		kmlOverlayPanel.add(kmlUrlBox);
+		kmlOverlayPanel.add(kmlButton);
+		containerPanel.setWidget(4, 0, kmlOverlayPanel);
+		containerPanel.getFlexCellFormatter().setColSpan(4, 0, 3);
+		//
 		containerPanel.getFlexCellFormatter().setColSpan(5, 0, 3);
 		containerPanel.setWidget(6, 0, downloadHydroEchoLink);
 		containerPanel.getFlexCellFormatter().setColSpan(6, 0, 2);
@@ -173,6 +186,14 @@ public class MapControlPanel extends Composite {
 
 	public HasClickHandlers getSaveEditModelButton() {
 		return saveEditModelButton;
+	}
+
+	public HasClickHandlers getAddKmlButton() {
+		return kmlButton;
+	}
+
+	public HasText getKmlUrlBox() {
+		return kmlUrlBox;
 	}
 
 	public void setStudy(String studyName) {
