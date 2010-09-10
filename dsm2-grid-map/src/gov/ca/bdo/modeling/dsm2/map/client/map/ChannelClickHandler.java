@@ -94,24 +94,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 
 		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
 				opacity);
-		LatLng[] points = null;
-		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
-				.getLongitude());
-		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
-				.getLongitude());
-		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
-			int size = latLngPoints.size();
-			points = new LatLng[size + 2];
-			for (int i = 1; i < points.length - 1; i++) {
-				double[] ds = latLngPoints.get(i - 1);
-				points[i] = LatLng.newInstance(ds[0], ds[1]);
-			}
-		} else {
-			points = new LatLng[2];
-		}
-		points[0] = upPoint;
-		points[points.length - 1] = downPoint;
+		LatLng[] points = ModelUtils.getPointsForChannel(channel, upNode, downNode);
 		line = new Polyline(points);
 		mapPanel.getMap().addOverlay(line);
 		line.setStrokeStyle(style);

@@ -19,12 +19,16 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoirs;
 import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
+
+import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.Copyright;
@@ -64,6 +68,7 @@ public class MapPanel extends Composite {
 	private final GridVisibilityControl visibilityControl;
 	private Panel infoPanel;
 	private TransfersManager transfersManager;
+	private ArrayList<Polyline> flowLines;
 
 	public MapPanel() {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
@@ -160,6 +165,7 @@ public class MapPanel extends Composite {
 	}
 
 	protected void populateChannelLines() {
+		flowLines=null;
 		getChannelManager().addLines(this);
 	}
 
@@ -408,5 +414,33 @@ public class MapPanel extends Composite {
 
 	public Panel getInfoPanel() {
 		return infoPanel;
+	}
+
+	public void showFlowLines() {
+		if (flowLines == null) {
+			NodeMarkerDataManager nm = getNodeManager();
+			DSM2Model model = getModel();
+			Channels channels = model.getChannels();
+			flowLines = new ArrayList<Polyline>();
+			for (Channel channel : channels.getChannels()) {
+				Node upNode = nm.getNodeData(channel.getUpNodeId());
+				Node downNode = nm.getNodeData(channel.getDownNodeId());
+				LatLng[] points = ModelUtils.getPointsForChannel(channel,
+						upNode, downNode);
+				Polyline line = new Polyline(points);
+				flowLines.add(line);
+			}
+		}
+		for(Polyline line: flowLines){
+			map.addOverlay(line);
+		}
+	}
+
+	public void hideFlowLines() {
+		if (flowLines != null) {
+			for (Polyline line : flowLines) {
+				map.removeOverlay(line);
+			}
+		}
 	}
 }
