@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ExpandContractMapControl extends CustomControl {
 
 	public ExpandContractMapControl() {
-		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 10, 24));
+		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 10, 30));
 	}
 
 	@Override
@@ -39,6 +39,7 @@ public class ExpandContractMapControl extends CustomControl {
 				map.checkResizeAndCenter();
 			}
 		});
+		button.getElement().getStyle().setBackgroundColor("#FFFFFF");
 		return button;
 	}
 
