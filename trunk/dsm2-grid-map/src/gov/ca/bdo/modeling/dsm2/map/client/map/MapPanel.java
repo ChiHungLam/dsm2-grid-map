@@ -31,6 +31,7 @@ import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.maps.client.Copyright;
 import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapUIOptions;
@@ -44,10 +45,12 @@ import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
+import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ToggleButton;
 
 public class MapPanel extends Composite {
 
@@ -422,12 +425,14 @@ public class MapPanel extends Composite {
 			DSM2Model model = getModel();
 			Channels channels = model.getChannels();
 			flowLines = new ArrayList<Polyline>();
+			PolyStyleOptions style = PolyStyleOptions.newInstance("#FF0000", 4, 1.0);
 			for (Channel channel : channels.getChannels()) {
 				Node upNode = nm.getNodeData(channel.getUpNodeId());
 				Node downNode = nm.getNodeData(channel.getDownNodeId());
 				LatLng[] points = ModelUtils.getPointsForChannel(channel,
 						upNode, downNode);
 				Polyline line = new Polyline(points);
+				line.setStrokeStyle(style);
 				flowLines.add(line);
 			}
 		}
@@ -443,4 +448,5 @@ public class MapPanel extends Composite {
 			}
 		}
 	}
+	
 }

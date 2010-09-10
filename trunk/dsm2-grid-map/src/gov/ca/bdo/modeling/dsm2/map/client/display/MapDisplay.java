@@ -300,4 +300,16 @@ public class MapDisplay extends Composite implements Display,
 		});
 	}
 
+	public HasClickHandlers getFlowLineButton() {
+		return controlPanel.getFlowLineButton();
+	}
+
+	public void hideFlowLines() {
+		mapPanel.hideFlowLines();
+	}
+
+	public void showFlowLines() {
+		mapPanel.showFlowLines();
+	}
+
 }

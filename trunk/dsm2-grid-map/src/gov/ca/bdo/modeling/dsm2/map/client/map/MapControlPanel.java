@@ -56,6 +56,7 @@ public class MapControlPanel extends Composite {
 	private Label measurementLabel;
 	private TextBox kmlUrlBox;
 	private Button kmlButton;
+	private ToggleButton flowLineButton;
 
 	public MapControlPanel(boolean viewOnly) {
 		this.viewOnly = viewOnly;
@@ -81,6 +82,7 @@ public class MapControlPanel extends Composite {
 		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
 		addTextAnnotationButton = new ToggleButton(new Image(
 				IconImages.INSTANCE.addingTextIcon()));
+		flowLineButton = new ToggleButton("Show Flowlines", "Hide Flowlines");
 		if (downloadHydroEchoLink == null) {
 			downloadHydroEchoLink = new Anchor("Download Hydro Input");
 			downloadHydroEchoLink.setTarget("hydro.inp");
@@ -103,6 +105,7 @@ public class MapControlPanel extends Composite {
 		toolbarPanel.add(addTextAnnotationButton);
 		toolbarPanel.add(addPolylineButton);
 		toolbarPanel.add(addPolygonButton);
+		toolbarPanel.add(flowLineButton);
 		containerPanel.setWidget(2, 0, toolbarPanel);
 		containerPanel.getFlexCellFormatter().setColSpan(2, 0, 3);
 		containerPanel.setWidget(3, 0, measurementLabel);
@@ -224,6 +227,10 @@ public class MapControlPanel extends Composite {
 
 	public Label getMeasurementLabel() {
 		return measurementLabel;
+	}
+
+	public HasClickHandlers getFlowLineButton() {
+		return flowLineButton;
 	}
 
 }
