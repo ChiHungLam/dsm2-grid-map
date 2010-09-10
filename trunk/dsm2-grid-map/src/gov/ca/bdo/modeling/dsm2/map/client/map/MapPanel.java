@@ -31,9 +31,9 @@ import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.maps.client.Copyright;
 import com.google.gwt.maps.client.CopyrightCollection;
+import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
@@ -50,7 +50,6 @@ import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ToggleButton;
 
 public class MapPanel extends Composite {
 
@@ -76,8 +75,8 @@ public class MapPanel extends Composite {
 	public MapPanel() {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
-		new ClearBackgroundLayer(getMap(), false);
-		new ClearBackgroundLayer(getMap(), true);
+		//new ClearBackgroundLayer(getMap(), false);
+		//new ClearBackgroundLayer(getMap(), true);
 		visibilityControl = new GridVisibilityControl(this);
 		getMap().addControl(visibilityControl);
 		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
@@ -101,15 +100,20 @@ public class MapPanel extends Composite {
 	}
 
 	private void setOptions() {
-		MapUIOptions options = MapUIOptions.newInstance(getMap().getSize());
+		MapUIOptions options = MapUIOptions.newInstance(Size.newInstance(1000, 800));
 		options.setKeyboard(true);
-		options.setMapTypeControl(false);
 		options.setMenuMapTypeControl(true);
 		options.setScaleControl(true);
 		options.setScrollwheel(true);
-		options.setSmallZoomControl3d(true);
 		getMap().setUI(options);
+		map.addMapType(getTopoMapType());
 	}
+
+	private final native MapType getTopoMapType()/*-{
+		var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
+		var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
+		return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
+	}-*/;
 
 	public void populateGrid() {
 		clearAllMarkers();
@@ -168,7 +172,7 @@ public class MapPanel extends Composite {
 	}
 
 	protected void populateChannelLines() {
-		flowLines=null;
+		flowLines = null;
 		getChannelManager().addLines(this);
 	}
 
@@ -425,7 +429,8 @@ public class MapPanel extends Composite {
 			DSM2Model model = getModel();
 			Channels channels = model.getChannels();
 			flowLines = new ArrayList<Polyline>();
-			PolyStyleOptions style = PolyStyleOptions.newInstance("#FF0000", 4, 1.0);
+			PolyStyleOptions style = PolyStyleOptions.newInstance("#FF0000", 4,
+					1.0);
 			for (Channel channel : channels.getChannels()) {
 				Node upNode = nm.getNodeData(channel.getUpNodeId());
 				Node downNode = nm.getNodeData(channel.getDownNodeId());
@@ -436,7 +441,7 @@ public class MapPanel extends Composite {
 				flowLines.add(line);
 			}
 		}
-		for(Polyline line: flowLines){
+		for (Polyline line : flowLines) {
 			map.addOverlay(line);
 		}
 	}
@@ -448,5 +453,5 @@ public class MapPanel extends Composite {
 			}
 		}
 	}
-	
+
 }

@@ -25,6 +25,7 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.ControlAnchor;
 import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.Control.CustomControl;
+import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -38,21 +39,21 @@ public class GridVisibilityControl extends CustomControl {
 	private CheckBox channelHideBox;
 
 	public GridVisibilityControl(MapPanel mapPanel) {
-		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 55, 30));
+		super(new ControlPosition(ControlAnchor.TOP_RIGHT, 135, 5));
 		this.mapPanel = mapPanel;
 	}
 
 	@Override
 	protected Widget initialize(MapWidget map) {
 		final Label hideLabel = new Label("Hide...");
-		final CheckBox nodeHideBox = new CheckBox("Nodes", false);
+		final CheckBox nodeHideBox = new CheckBox();
 		nodeHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
 				mapPanel.hideMarkers(nodeHideBox.getValue());
 			}
 		});
-		channelHideBox = new CheckBox("Channels");
+		channelHideBox = new CheckBox();
 		channelHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -60,7 +61,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox gatesHideBox = new CheckBox("Gates");
+		final CheckBox gatesHideBox = new CheckBox();
 		gatesHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -68,7 +69,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox reservoirsHideBox = new CheckBox("Reservoirs");
+		final CheckBox reservoirsHideBox = new CheckBox();
 		reservoirsHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -76,7 +77,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox outputMarkerHideBox = new CheckBox("Outputs");
+		final CheckBox outputMarkerHideBox = new CheckBox();
 		outputMarkerHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -84,7 +85,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox boundaryMarkerHideBox = new CheckBox("Boundaries");
+		final CheckBox boundaryMarkerHideBox = new CheckBox();
 		boundaryMarkerHideBox.setValue(true);
 		boundaryMarkerHideBox.addClickHandler(new ClickHandler() {
 
@@ -93,7 +94,7 @@ public class GridVisibilityControl extends CustomControl {
 			}
 		});
 		//
-		final CheckBox bathymetryHideBox = new CheckBox("Bathymetry");
+		final CheckBox bathymetryHideBox = new CheckBox();
 		bathymetryHideBox.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -104,18 +105,24 @@ public class GridVisibilityControl extends CustomControl {
 		VerticalPanel vpanel = new VerticalPanel();
 		vpanel.add(hideLabel);
 		vpanel.add(new HTML("<hr/>"));
-		vpanel.add(nodeHideBox);
-		vpanel.add(channelHideBox);
-		vpanel.add(gatesHideBox);
-		vpanel.add(reservoirsHideBox);
-		vpanel.add(outputMarkerHideBox);
-		vpanel.add(boundaryMarkerHideBox);
+		vpanel.add(wrapCaptionPanel(nodeHideBox, "Nodes"));
+		vpanel.add(wrapCaptionPanel(channelHideBox, "Channels"));
+		vpanel.add(wrapCaptionPanel(gatesHideBox, "Gates"));
+		vpanel.add(wrapCaptionPanel(reservoirsHideBox, "Reservoirs"));
+		vpanel.add(wrapCaptionPanel(outputMarkerHideBox, "Output"));
+		vpanel.add(wrapCaptionPanel(boundaryMarkerHideBox, "Boundaries"));
 		vpanel.add(new HTML("<hr/>"));
-		vpanel.add(bathymetryHideBox);
-		DisclosurePanel panel = new DisclosurePanel("Visibility");
+		vpanel.add(wrapCaptionPanel(bathymetryHideBox, "Bathymetry"));
+		DisclosurePanel panel = new DisclosurePanel("Visibility   ");
 		panel.setStyleName("visibilityPanel");
 		panel.setContent(vpanel);
 		return panel;
+	}
+
+	private Widget wrapCaptionPanel(CheckBox box, String caption) {
+		CaptionPanel captionPanel = new CaptionPanel(caption);
+		captionPanel.add(box);
+		return captionPanel;
 	}
 
 	@Override

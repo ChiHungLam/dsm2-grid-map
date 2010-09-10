@@ -30,4 +30,5 @@
 		/>
 	-->
 	<script src="PolylineEncoder.js" />
+	<script src="usgs_topo.js"/>
 </module>
