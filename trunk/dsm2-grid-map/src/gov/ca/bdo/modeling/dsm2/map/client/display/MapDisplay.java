@@ -48,6 +48,7 @@ public class MapDisplay extends Composite implements Display,
 	private final VerticalPanel controlPanelContainer;
 	private MeasuringDistanceAlongLine lengthMeasurer;
 	private MeasuringAreaInPolygon areaMeasurer;
+	private DSM2Model model;
 
 	public MapDisplay(boolean viewOnly) {
 		mainPanel = new DockLayoutPanel(Unit.EM);
@@ -98,6 +99,10 @@ public class MapDisplay extends Composite implements Display,
 				mainPanel.add(mapPanel);
 				if (studyName != null) {
 					mapPanel.setStudy(studyName);
+				}
+				if (model != null) {
+					mapPanel.setModel(model);
+					populateGrid();
 				}
 
 				InitializeEvent.fire(MapDisplay.this);
@@ -172,7 +177,10 @@ public class MapDisplay extends Composite implements Display,
 	}
 
 	public void setModel(DSM2Model result) {
-		mapPanel.setModel(result);
+		model = result;
+		if (mapPanel != null) {
+			mapPanel.setModel(result);
+		}
 	}
 
 	public void showError(String message) {
