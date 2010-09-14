@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.event.MapClickHandler;
@@ -41,9 +43,13 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TextAnnotationsManager implements MapClickHandler {
 	private final MapWidget map;
@@ -135,7 +141,7 @@ public class TextAnnotationsManager implements MapClickHandler {
 		annotation.setLongitude(latLng.getLongitude());
 		annotation.setText("");
 		Marker marker = addMarker(annotation);
-		TextPanel textPanel = new TextPanel(annotation);
+		TextPanel textPanel = new TextPanel(annotation, marker);
 		map.getInfoWindow().open(marker, new InfoWindowContent(textPanel));
 		map.addInfoWindowCloseHandler(textPanel);
 	}
@@ -163,13 +169,28 @@ public class TextAnnotationsManager implements MapClickHandler {
 	private class TextPanel extends Composite implements
 			MapInfoWindowCloseHandler {
 		private final TextAnnotation textAnnotation;
+		private Marker marker;
+		private TextArea textArea;
 
-		TextPanel(TextAnnotation annotation) {
+		TextPanel(TextAnnotation annotation, Marker m) {
 			textAnnotation = annotation;
+			marker = m;
 			if (addingText) {
-				TextBox textBox = new TextBox();
-				textBox.setText(annotation.getText());
-				initWidget(textBox);
+				textArea = new TextArea();
+				textArea.setText(annotation.getText());
+				Button removeAnnotation = new Button("Remove Annotation");
+				removeAnnotation.addClickHandler(new ClickHandler() {
+
+					public void onClick(ClickEvent event) {
+						map.removeOverlay(marker);
+						textAnnotations.remove(textAnnotation);
+						saveTextAnnotations();
+					}
+				});
+				VerticalPanel vPanel = new VerticalPanel();
+				vPanel.add(textArea);
+				vPanel.add(removeAnnotation);
+				initWidget(vPanel);
 			} else {
 				HTML html = new HTML(annotation.getText());
 				initWidget(html);
@@ -177,18 +198,11 @@ public class TextAnnotationsManager implements MapClickHandler {
 		}
 
 		public void onInfoWindowClose(MapInfoWindowCloseEvent event) {
-			if ((getWidget() instanceof TextBox) && addingText) {
-				String text = ((TextBox) getWidget()).getText();
-				if ((text == null) || text.trim().equals("")) {
-					Object src = event.getSource();
-					if (src instanceof Overlay) {
-						event.getSender().removeOverlay((Overlay) src);
-					}
-				} else {
-					textAnnotation.setText(text);
-					// TODO: this happens too often
-					saveTextAnnotations();
-				}
+			if (textArea != null) {
+				String text = textArea.getText();
+				textAnnotation.setText(text);
+				// TODO: this happens too often
+				saveTextAnnotations();
 			}
 		}
 	}
@@ -198,7 +212,7 @@ public class TextAnnotationsManager implements MapClickHandler {
 		public void onClick(MarkerClickEvent event) {
 			Marker sender = event.getSender();
 			TextAnnotation textAnnotation = overlayTextMap.get(sender);
-			TextPanel textPanel = new TextPanel(textAnnotation);
+			TextPanel textPanel = new TextPanel(textAnnotation, sender);
 			map.getInfoWindow().open(sender, new InfoWindowContent(textPanel));
 			map.addInfoWindowCloseHandler(textPanel);
 		}
