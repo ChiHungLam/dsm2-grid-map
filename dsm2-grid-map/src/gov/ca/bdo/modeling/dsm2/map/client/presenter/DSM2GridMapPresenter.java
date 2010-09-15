@@ -5,20 +5,14 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.InitializeEvent;
-import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.ToggleButton;
 
 public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
-	public interface Display extends DSM2ModelBasePresenter.Display{
-		public HandlerRegistration addInitializeHandler(
-				InitializeHandler initializeHandler);
-
+	public interface Display extends DSM2ModelBasePresenter.Display {
 		public boolean isInEditMode();
 
 		public void setEditMode(boolean editMode);
@@ -57,89 +51,78 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 	}
 
-	private Display display;
-
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
 			HandlerManager eventBus, Display display, boolean viewOnly) {
 		super(dsm2InputService, eventBus, display, viewOnly);
 	}
 
 	public void go(HasWidgets container) {
-		bind();
-		container.clear();
-		container.add(display.asWidget());
-		display.asWidget().setVisible(true);
+		super.go(container);
 	}
 
-	public void bind() {
-		display.addInitializeHandler(new InitializeHandler() {
-
-			public void onInitialize(InitializeEvent event) {
-					setStudyFromHistory();
-					loadStudy(display.getCurrentStudy());
-			}
-		});
-
-		display.getTextAnnotationButton().addClickHandler(new ClickHandler() {
+	protected void bind() {
+		super.bind();
+		final Display d = (Display) display;
+		d.getTextAnnotationButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
 				Object source = event.getSource();
 				if (source instanceof ToggleButton) {
 					ToggleButton button = (ToggleButton) source;
 					if (button.isDown()) {
-						display.turnOnTextAnnotation();
+						d.turnOnTextAnnotation();
 					} else {
-						display.turnOffTextAnnotation();
+						d.turnOffTextAnnotation();
 					}
 				}
 			}
 		});
 
-		display.getAddPolylineButton().addClickHandler(new ClickHandler() {
+		d.getAddPolylineButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				Object source = event.getSource();
 				if (source instanceof ToggleButton) {
 					ToggleButton button = (ToggleButton) source;
 					if (button.isDown()) {
-						display.startMeasuringDistanceAlongLine();
+						d.startMeasuringDistanceAlongLine();
 					} else {
-						display.stopMeasuringDistanceAlongLine();
+						d.stopMeasuringDistanceAlongLine();
 					}
 				}
 			}
 		});
-		display.getAddPolygonButton().addClickHandler(new ClickHandler() {
+		d.getAddPolygonButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				Object source = event.getSource();
 				if (source instanceof ToggleButton) {
 					ToggleButton button = (ToggleButton) source;
 					if (button.isDown()) {
-						display.startMeasuringAreaInPolygon();
+						d.startMeasuringAreaInPolygon();
 					} else {
-						display.stopMeasuringAreaInPolygon();
+						d.stopMeasuringAreaInPolygon();
 					}
 				}
 			}
 		});
-		display.getAddKmlButton().addClickHandler(new ClickHandler() {
+		d.getAddKmlButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				String url = display.getKmlUrlBox().getText();
-				display.addKmlOverlay(url);
+				String url = d.getKmlUrlBox().getText();
+				d.addKmlOverlay(url);
 			}
 		});
-		display.getFlowLineButton().addClickHandler(new ClickHandler() {
-			
+		d.getFlowLineButton().addClickHandler(new ClickHandler() {
+
 			public void onClick(ClickEvent event) {
-				HasClickHandlers flowLineButton = display.getFlowLineButton();
-				if (flowLineButton instanceof ToggleButton){
+				HasClickHandlers flowLineButton = d.getFlowLineButton();
+				if (flowLineButton instanceof ToggleButton) {
 					ToggleButton flowButton = (ToggleButton) flowLineButton;
-					if (flowButton.isDown()){
-						display.showFlowLines();
+					if (flowButton.isDown()) {
+						d.showFlowLines();
 					} else {
-						display.hideFlowLines();
+						d.hideFlowLines();
 					}
-				} else{
+				} else {
 					Window.alert("This button should be a toggle!!");
 				}
 			}

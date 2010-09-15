@@ -10,6 +10,8 @@ import gov.ca.dsm2.input.model.DSM2Model;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasInitializeHandlers;
@@ -34,6 +36,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -132,6 +135,13 @@ public class MapDisplay extends Composite implements Display,
 								mapPanel.centerAndZoomOnChannel(channelId);
 							}
 						});
+				getSaveEditButton().addClickHandler(new ClickHandler() {
+
+					public void onClick(ClickEvent event) {
+						setEditMode(((ToggleButton) getSaveEditButton())
+								.isDown());
+					}
+				});
 			}
 		};
 
@@ -322,11 +332,6 @@ public class MapDisplay extends Composite implements Display,
 
 	public void showFlowLines() {
 		mapPanel.showFlowLines();
-	}
-
-	public HasChangeHandlers onModelChange() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

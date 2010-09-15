@@ -11,7 +11,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.InitializeEvent;
+import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,8 +48,6 @@ public class DSM2ModelBasePresenter implements Presenter {
 
 		public HasChangeHandlers onStudyChange();
 
-		public HasChangeHandlers onModelChange();
-
 		public HasClickHandlers getSaveEditButton();
 
 		public void showMessage(String string);
@@ -56,12 +57,16 @@ public class DSM2ModelBasePresenter implements Presenter {
 		public void clearMessages();
 
 		public Widget asWidget();
+
+		public HandlerRegistration addInitializeHandler(
+				InitializeHandler initializeHandler);
+
 	}
 
-	private Display display;
-	private HandlerManager eventBus;
-	private DSM2InputServiceAsync dsm2InputService;
-	private boolean viewOnly;
+	protected Display display;
+	protected HandlerManager eventBus;
+	protected DSM2InputServiceAsync dsm2InputService;
+	protected boolean viewOnly;
 
 	public DSM2ModelBasePresenter(DSM2InputServiceAsync dsm2InputService,
 			HandlerManager eventBus, Display display, boolean viewOnly) {
@@ -78,11 +83,16 @@ public class DSM2ModelBasePresenter implements Presenter {
 		container.clear();
 		container.add(display.asWidget());
 		display.asWidget().setVisible(true);
-
-		loadStudies();
 	}
 
 	protected void bind() {
+		display.addInitializeHandler(new InitializeHandler() {
+
+			public void onInitialize(InitializeEvent event) {
+				loadStudies();
+			}
+		});
+
 		display.onStudyChange().addChangeHandler(new ChangeHandler() {
 
 			public void onChange(ChangeEvent event) {
@@ -108,11 +118,6 @@ public class DSM2ModelBasePresenter implements Presenter {
 								display.clearMessages();
 							}
 						});
-			}
-		});
-
-		display.onModelChange().addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
 			}
 		});
 
@@ -165,25 +170,25 @@ public class DSM2ModelBasePresenter implements Presenter {
 			return;
 		}
 		display.showMessage("Loading study " + study + "...");
-		dsm2InputService.getInputModel(study,
-				new AsyncCallback<DSM2Model>() {
+		dsm2InputService.getInputModel(study, new AsyncCallback<DSM2Model>() {
 
-					public void onSuccess(DSM2Model result) {
-						setStudyToHistory(study);
-						display.setModel(result);
-						if (result != null) {
-							display.showMessage("Drawing...");
-							display.refresh();
-						}
-						display.clearMessages();
-					}
+			public void onSuccess(DSM2Model result) {
+				setStudyToHistory(study);
+				display.setCurrentStudy(study);
+				display.setModel(result);
+				if (result != null) {
+					display.showMessage("Drawing...");
+					display.refresh();
+				}
+				display.clearMessages();
+			}
 
-					public void onFailure(Throwable caught) {
-						display.showError("Oops, an error occurred: "
-								+ caught.getMessage() + ". Try again");
-						GWT.log("Error on loading study: "+ study, caught);
-					}
-				});
+			public void onFailure(Throwable caught) {
+				display.showError("Oops, an error occurred: "
+						+ caught.getMessage() + ". Try again");
+				GWT.log("Error on loading study: " + study, caught);
+			}
+		});
 
 	}
 
@@ -205,7 +210,6 @@ public class DSM2ModelBasePresenter implements Presenter {
 				}
 			}
 			loadStudy(currentStudy);
-			display.setCurrentStudy(currentStudy);
 		}
 
 	}
