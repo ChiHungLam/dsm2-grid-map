@@ -24,6 +24,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.LoginService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.LoginServiceAsync;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -97,4 +98,15 @@ public class HeaderPanel extends Composite {
 		headerPanel.showWarning(false, "");
 	}
 
+	public void showMessageFor(String message, int delayInMillisecs) {
+		showMessage(true, message);
+		Timer timer = new Timer() {
+
+			@Override
+			public void run() {
+				clearMessages();
+			}
+		};
+		timer.schedule(delayInMillisecs);
+	}
 }

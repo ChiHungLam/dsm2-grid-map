@@ -102,7 +102,7 @@ public class MapDisplay extends Composite implements Display,
 				}
 				if (model != null) {
 					mapPanel.setModel(model);
-					populateGrid();
+					refresh();
 				}
 
 				InitializeEvent.fire(MapDisplay.this);
@@ -146,7 +146,7 @@ public class MapDisplay extends Composite implements Display,
 		}
 	}
 
-	public void setStudy(String studyName) {
+	public void setCurrentStudy(String studyName) {
 		if (mapPanel != null) {
 			mapPanel.setStudy(studyName);
 			controlPanel.setStudy(studyName);
@@ -160,7 +160,7 @@ public class MapDisplay extends Composite implements Display,
 		headerPanel.clearMessages();
 		controlPanel.setStudies(studyNames);
 		if (studyNames.length > 0) {
-			setStudy(studyNames[0]);
+			setCurrentStudy(studyNames[0]);
 		}
 	}
 
@@ -172,7 +172,7 @@ public class MapDisplay extends Composite implements Display,
 		return mapPanel.getModel();
 	}
 
-	public void populateGrid() {
+	public void refresh() {
 		mapPanel.populateGrid();
 	}
 
@@ -191,11 +191,15 @@ public class MapDisplay extends Composite implements Display,
 		headerPanel.showError(true, message);
 	}
 
-	public HasChangeHandlers getStudyBox() {
+	public void showMessageFor(String message, int delayInMillisecs) {
+		headerPanel.showMessageFor(message, delayInMillisecs);
+	}
+
+	public HasChangeHandlers onStudyChange() {
 		return controlPanel.getStudyBox();
 	}
 
-	public String getStudyChoice() {
+	public String getCurrentStudy() {
 		return controlPanel.getStudyChoice();
 	}
 
@@ -318,6 +322,11 @@ public class MapDisplay extends Composite implements Display,
 
 	public void showFlowLines() {
 		mapPanel.showFlowLines();
+	}
+
+	public HasChangeHandlers onModelChange() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
