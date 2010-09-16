@@ -29,6 +29,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasText;
@@ -38,6 +39,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MapControlPanel extends Composite {
 
@@ -57,6 +59,9 @@ public class MapControlPanel extends Composite {
 	private TextBox kmlUrlBox;
 	private Button kmlButton;
 	private ToggleButton flowLineButton;
+	private Widget elementEditPanel;
+	private ToggleButton addElementButton;
+	private ToggleButton deleteElementButton;
 
 	public MapControlPanel(boolean viewOnly) {
 		this.viewOnly = viewOnly;
@@ -101,11 +106,22 @@ public class MapControlPanel extends Composite {
 		containerPanel.setWidget(1, 2, findChannelLabel);
 		containerPanel.setWidget(1, 3, findChannelBox);
 
+		addElementButton = new ToggleButton("Add", "Adding...");
+		deleteElementButton = new ToggleButton("Delete", "Deleting...");
+		HorizontalPanel addDeleteButtonPanel = new HorizontalPanel();
+		addDeleteButtonPanel.add(addElementButton);
+		addDeleteButtonPanel.add(deleteElementButton);
+		CaptionPanel cp = new CaptionPanel("Add/Delete Grid Elements");
+		cp.add(addDeleteButtonPanel);
+		elementEditPanel = cp;
+		elementEditPanel.setVisible(false);
+
 		HorizontalPanel toolbarPanel = new HorizontalPanel();
 		toolbarPanel.add(addTextAnnotationButton);
 		toolbarPanel.add(addPolylineButton);
 		toolbarPanel.add(addPolygonButton);
 		toolbarPanel.add(flowLineButton);
+		toolbarPanel.add(elementEditPanel);
 		containerPanel.setWidget(2, 0, toolbarPanel);
 		containerPanel.getFlexCellFormatter().setColSpan(2, 0, 3);
 		containerPanel.setWidget(3, 0, measurementLabel);
@@ -231,6 +247,14 @@ public class MapControlPanel extends Composite {
 
 	public HasClickHandlers getFlowLineButton() {
 		return flowLineButton;
+	}
+
+	public void setEditMode(boolean editMode) {
+		if (editMode) {
+			elementEditPanel.setVisible(true);
+		} else {
+			elementEditPanel.setVisible(false);
+		}
 	}
 
 }

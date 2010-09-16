@@ -228,6 +228,7 @@ public class MapDisplay extends Composite implements Display,
 
 	public void setEditMode(boolean editMode) {
 		mapPanel.setEditMode(editMode);
+		controlPanel.setEditMode(editMode);
 	}
 
 	public HasClickHandlers getSaveEditButton() {
