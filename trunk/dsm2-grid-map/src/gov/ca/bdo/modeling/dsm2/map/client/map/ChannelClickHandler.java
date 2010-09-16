@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -94,7 +95,8 @@ public class ChannelClickHandler implements PolylineClickHandler {
 
 		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
 				opacity);
-		LatLng[] points = ModelUtils.getPointsForChannel(channel, upNode, downNode);
+		LatLng[] points = ModelUtils.getPointsForChannel(channel, upNode,
+				downNode);
 		line = new Polyline(points);
 		mapPanel.getMap().addOverlay(line);
 		line.setStrokeStyle(style);
@@ -127,14 +129,14 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					updateDisplay();
 				}
 			});
-			// drawXSectionLines();
+			drawXSectionLines();
 		}
 	}
 
 	private void drawXSectionLines() {
 		LatLng[] channelOutlinePoints = getChannelOutlinePoints();
 		ArrayList<XSection> xsections = channel.getXsections();
-		for (XSection xSection : xsections) {
+		for (final XSection xSection : xsections) {
 			double distance = xSection.getDistance();
 			distance = channel.getLength() * distance;
 			int segmentIndex = GeomUtils.findSegmentAtDistance(
@@ -151,6 +153,12 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
 			Polyline line = new Polyline(latLngs, "green", 4);
+			line.addPolylineClickHandler(new PolylineClickHandler() {
+
+				public void onClick(PolylineClickEvent event) {
+					GWT.log("Draw Xsection: " + xSection);
+				}
+			});
 			xsectionLineMap.put(xSection, line);
 			mapPanel.getMap().addOverlay(line);
 		}
