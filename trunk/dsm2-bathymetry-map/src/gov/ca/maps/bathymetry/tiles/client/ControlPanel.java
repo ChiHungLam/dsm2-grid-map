@@ -25,12 +25,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.SliderBar;
@@ -43,22 +41,8 @@ import com.google.gwt.widgetideas.client.SliderBar;
  */
 public class ControlPanel extends Composite {
 
-	private final FlowPanel infoPanel;
 
 	public ControlPanel(final MapPanel mapPanel) {
-		final ToggleButton showData = new ToggleButton("Click to show data");
-		showData.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				if (showData.isDown()) {
-					mapPanel.activateShowDataHandler(true);
-				} else {
-					mapPanel.activateShowDataHandler(false);
-				}
-			}
-		});
-		showData
-				.setTitle("Toggle button to display raw data around point clicked on map");
 		//
 		final Anchor bookmarkLink = new Anchor("Goto Bookmarkable URL");
 		bookmarkLink.addClickHandler(new ClickHandler() {
@@ -103,9 +87,6 @@ public class ControlPanel extends Composite {
 		//
 		VerticalPanel buttonPanel = new VerticalPanel();
 		buttonPanel.add(new HTML("<hr/>"));
-		buttonPanel.add(showData);
-		// buttonPanel.add(drawLineButton);
-		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(overlayBox);
 		buttonPanel.add(new HTML("<hr/>"));
 		buttonPanel.add(opacitySlider);
@@ -119,17 +100,10 @@ public class ControlPanel extends Composite {
 		buttonPanel
 				.add(new HTML(
 						"<h5>Depth soundings are color coded for depth and by transparency for age.</h5>"));
-		infoPanel = new FlowPanel();
-		infoPanel.setStyleName("infoPanel");
-
 		FlowPanel mainPanel = new FlowPanel();
 		mainPanel.add(buttonPanel);
-		mainPanel.add(infoPanel);
+		
 		initWidget(mainPanel);
 	}
 
-	public void showInInfoPanel(Widget widget) {
-		infoPanel.clear();
-		infoPanel.add(widget);
-	}
 }

@@ -78,6 +78,7 @@ public class MainEntryPoint implements EntryPoint {
 						5);
 		StackPanel sidePanel = new StackPanel();
 		sidePanel.add(new ControlPanel(mapPanel), "Controls");
+		sidePanel.add(new DataPanel(mapPanel), "Data Tools");
 		mainPanel.addEast(sidePanel, 25);
 		mainPanel.add(mapPanel);
 		RootLayoutPanel.get().add(mainPanel);

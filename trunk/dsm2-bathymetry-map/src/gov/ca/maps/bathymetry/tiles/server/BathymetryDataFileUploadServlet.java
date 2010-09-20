@@ -134,7 +134,12 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 					}
 				} else {
 					if (item.getFieldName().equals("bathymetryFile")) {
-						saveData(persistenceManager, inputStream);
+						String parameter = req.getParameter("append");
+						boolean append = false;
+						if (parameter != null && !parameter.equalsIgnoreCase("n")){
+							append = true;
+						}
+						saveData(persistenceManager, inputStream, append);
 					}
 				}
 			}
@@ -150,7 +155,7 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 	}
 
 	public void saveData(PersistenceManager persistenceManager,
-			InputStream fileAsStream) throws Exception {
+			InputStream fileAsStream, boolean append) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				fileAsStream));
 		String line = null;
@@ -202,7 +207,6 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 				bathymetryDataFile.setContents(new Blob(new byte[0]));
 				dao.createObject(bathymetryDataFile);
 			}
-			boolean append = false;
 			byte[] data = baos.toByteArray();
 			if (append) {
 				byte[] existing = bathymetryDataFile.getContents().getBytes();
