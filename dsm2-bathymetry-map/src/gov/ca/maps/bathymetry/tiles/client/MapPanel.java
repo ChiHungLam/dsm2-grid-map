@@ -33,17 +33,28 @@ import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.control.OverviewMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapInfoWindowCloseHandler;
+import com.google.gwt.maps.client.event.PolylineCancelLineHandler;
+import com.google.gwt.maps.client.event.PolylineClickHandler;
+import com.google.gwt.maps.client.event.PolylineEndLineHandler;
+import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
+import com.google.gwt.maps.client.event.PolylineCancelLineHandler.PolylineCancelLineEvent;
+import com.google.gwt.maps.client.event.PolylineClickHandler.PolylineClickEvent;
+import com.google.gwt.maps.client.event.PolylineEndLineHandler.PolylineEndLineEvent;
+import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler.PolylineLineUpdatedEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Overlay;
+import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ToggleButton;
 
 public class MapPanel extends Composite {
 	private final MapWidget map;
+
 	public MapWidget getMap() {
 		return map;
 	}
@@ -62,7 +73,7 @@ public class MapPanel extends Composite {
 		service = (BathymetryDataServiceAsync) GWT
 				.create(BathymetryDataService.class);
 		map = new MapWidget(LatLng.newInstance(latCenter, lngCenter), zoom);
-		
+
 		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
 		map.addControl(fullScreenControl);
 
@@ -71,7 +82,7 @@ public class MapPanel extends Composite {
 		initWidget(map);
 	}
 
-	public void drawXSection(final ControlPanel controlPanel) {
+	public void drawXSection(final DataPanel dataPanel) {
 		if ((line == null) || (line.getVertexCount() != 2)) {
 			return;
 		}
@@ -83,13 +94,63 @@ public class MapPanel extends Composite {
 				new AsyncCallback<List<BathymetryDataPoint>>() {
 
 					public void onSuccess(List<BathymetryDataPoint> result) {
-						controlPanel
+						dataPanel
 								.showInInfoPanel(new ElevationChart(result));
 					}
 
 					public void onFailure(Throwable caught) {
 					}
 				});
+	}
+
+	public void addLine(final DataPanel dataPanel) {
+		final ToggleButton drawLineButton = dataPanel.getDrawLineButton();
+		PolyStyleOptions style = PolyStyleOptions.newInstance("#0000ff", 3,
+				opacity);
+		if (line != null) {
+			map.removeOverlay(line);
+		}
+		line = new Polyline(new LatLng[0]);
+		map.addOverlay(line);
+		line.setDrawingEnabled();
+		line.setEditingEnabled(true);
+		line.setStrokeStyle(style);
+		line.addPolylineClickHandler(new PolylineClickHandler() {
+
+			public void onClick(PolylineClickEvent event) {
+				// editPolyline();
+			}
+		});
+		line.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
+
+			public void onUpdate(PolylineLineUpdatedEvent event) {
+				if (line.getVertexCount() == 2) {
+					line.setEditingEnabled(false);
+					drawLineButton.setDown(false);
+					drawXSection(dataPanel);
+				}
+				Window.setStatus("Length : " + getLengthInFeet() + " ft");
+			}
+		});
+
+		line.addPolylineCancelLineHandler(new PolylineCancelLineHandler() {
+
+			public void onCancel(PolylineCancelLineEvent event) {
+				Window.setStatus("Length : " + getLengthInFeet() + " ft");
+			}
+		});
+
+		line.addPolylineEndLineHandler(new PolylineEndLineHandler() {
+
+			public void onEnd(PolylineEndLineEvent event) {
+				Window.setStatus("Length : " + getLengthInFeet() + " ft");
+			}
+		});
+
+	}
+
+	public double getLengthInFeet() {
+		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
 	}
 
 	public void addNOAAOverlay() {
@@ -133,7 +194,9 @@ public class MapPanel extends Composite {
 		map.setUI(options);
 		//
 		map.addMapType(getTopoMapType());
-		map.addMapType(new MapType(new TileLayer[]{ExportOverlays.getNOAATileLayer()}, MapType.getNormalMap().getProjection(), "NOAA"));
+		map.addMapType(new MapType(new TileLayer[] { ExportOverlays
+				.getNOAATileLayer() }, MapType.getNormalMap().getProjection(),
+				"NOAA"));
 		OverviewMapControl control = new OverviewMapControl();
 		map.addControl(control);
 	}
@@ -141,7 +204,7 @@ public class MapPanel extends Composite {
 	private final native MapType getTopoMapType()/*-{
 		var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
 		var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
-	    return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
+		return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
 	}-*/;
 
 	public void onResize() {

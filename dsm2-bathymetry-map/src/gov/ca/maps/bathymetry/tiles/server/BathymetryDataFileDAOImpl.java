@@ -90,9 +90,9 @@ public class BathymetryDataFileDAOImpl extends
 			while (y <= ygf) {
 				// distance to line ( mx - y + b ) is Math.abs( mx - y +
 				// b)/Math.sqrt( m*m+1)
-				double distance = Math.abs(m * x - y + b)
-						/ Math.sqrt(m * m + 1);
-				if (distance <= 2 * gridSize) {
+				double[] projections = GeomUtils.projectionOfPointOntoLine(x, y, lat1, lng1, lat2, lng2);
+				double distance = projections[1];
+				if (distance <= width * gridSize) {
 					BathymetryDataFile bathymetryDataFile = getFileForLocation(
 							x, y);
 					list.add(bathymetryDataFile);

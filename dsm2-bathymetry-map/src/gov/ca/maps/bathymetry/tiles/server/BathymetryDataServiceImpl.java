@@ -129,9 +129,9 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		for (BathymetryDataPoint point : points) {
 			xy[0] = point.latitude;
 			xy[1] = point.longitude;
-			GeomUtils.projectOntoLine(x1, y1, x2, y2, xy);
-			point.latitude = xy[0];
-			point.longitude = xy[1];
+			double[] projection = GeomUtils.projectionOfPointOntoLine(xy[0], xy[1], x1, y1, x2, y2);
+			point.latitude = projection[0];
+			point.longitude = projection[1];
 		}
 	}
 
@@ -205,7 +205,7 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 				persistenceManager);
 		List<BathymetryDataFile> filesWithin;
 		try {
-			List<BathymetryDataFile> filesAlongLine = dao.getFilesAlongLine(westLong, northLat, eastLong, southLat, 2);
+			List<BathymetryDataFile> filesAlongLine = dao.getFilesAlongLine(northLat, westLong, southLat, eastLong, 2);
 			for (BathymetryDataFile bathymetryDataFile : filesAlongLine) {
 				addBathymetryPointsToList(list, bathymetryDataFile);
 			}
