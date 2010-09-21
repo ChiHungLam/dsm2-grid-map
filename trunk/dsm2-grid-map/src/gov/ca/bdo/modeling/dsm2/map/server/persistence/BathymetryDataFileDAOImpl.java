@@ -1,6 +1,5 @@
 /**
- *   Copyright (C) 2009, 2010 
- *    Nicky Sandhu
+ *    Copyright (C) 2009, 2010 
  *    State of California,
  *    Department of Water Resources.
  *    This file is part of DSM2 Grid Map
@@ -12,10 +11,10 @@
  *    DSM2 Grid Map is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
-
- *    You should have received a copy of the GNU General Public License
- *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
  */
 package gov.ca.bdo.modeling.dsm2.map.server.persistence;
 
@@ -35,19 +34,19 @@ public class BathymetryDataFileDAOImpl extends
 	}
 
 	@SuppressWarnings("unchecked")
-	public BathymetryDataFile getFileForLocation(double latitude,
-			double longitude) throws Exception {
+	public BathymetryDataFile getFileForLocation(double x, double y)
+			throws Exception {
 		try {
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(
 					"select from " + BathymetryDataFile.class.getName());
-			int lat100 = (int) Math.ceil(latitude * BathymetryDataFile.FACTOR);
-			int lng100 = (int) Math.ceil(longitude * BathymetryDataFile.FACTOR);
+			int x100 = (int) BathymetryDataFile.roundOff(x);
+			int y100 = (int) BathymetryDataFile.roundOff(y);
 			query
-					.setFilter("latitude100==latitudeParam && longitude100==longitudeParam");
-			query.declareParameters("int latitudeParam, int longitudeParam");
+					.setFilter("x==xParam && y==yParam");
+			query.declareParameters("int xParam, int yParam");
 			List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
-					.execute(lat100, lng100);
+					.execute(x100, y100);
 			if ((files == null) || (files.size() == 0)) {
 				return null;
 			} else {
@@ -63,30 +62,57 @@ public class BathymetryDataFileDAOImpl extends
 	 * (lat1,lng1) and (lat2,lng2) with a width in increments of the lat,lng by
 	 * 100 grid.
 	 */
-	public List<BathymetryDataFile> getFilesAlongLine(double lat1, double lng1,
-			double lat2, double lng2, int width) throws Exception {
-		try {
-			// 
-			List<BathymetryDataFile> list = new ArrayList<BathymetryDataFile>();
-			for (int i = 0; i < width; i++) {
-				double inverseFactor = 1 / (BathymetryDataFile.FACTOR * 1.0);
-				double x1 = lat1 + width * inverseFactor;
-				double y1 = lng1 + width * inverseFactor;
-				double x2 = lat2 + width * inverseFactor;
-				double y2 = lng2 + width * inverseFactor;
-				// FIXME: for divide by zero error
-				double m = (y2 - y1) / (x2 - x1);
-				double xn = x1;
-				double yn = y1;
-				while (xn < x2) {
+	public List<BathymetryDataFile> getFilesAlongLine(double x1, double y1,
+			double x2, double y2, int width) throws Exception {
+		List<BathymetryDataFile> list = new ArrayList<BathymetryDataFile>();
+		// equation of line y=mx+b
+		// 
+		double m = (y2 - y1) / (x2 - x1);
+		double b = y2 - m * x2;
+		//
+		double xg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(x1), BathymetryDataFile.roundOff(x2)));
+		double yg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(y1), BathymetryDataFile.roundOff(y2)));
+		double xgf = Math.ceil(Math.max(BathymetryDataFile.roundOff(x1), BathymetryDataFile.roundOff(x2)));
+		double ygf = Math.ceil(Math.max(BathymetryDataFile.roundOff(y1), BathymetryDataFile.roundOff(y2)));
+		double gridSize = BathymetryDataFile.FACTOR;
+
+		double x = xg0;
+		// loops below simply cover the smallest rectangle of grids that
+		// cover the line completely
+		while (x <= xgf) {
+			double y = yg0;
+			while (y <= ygf) {
+				// distance to line ( mx - y + b ) is Math.abs( mx - y +
+				// b)/Math.sqrt( m*m+1)
+				double[] projections = GeomUtils.projectionOfPointOntoLine(x,
+						y, x1, y1, x2, y2);
+				double distance = projections[1];
+				if (distance <= width * gridSize) {
 					BathymetryDataFile bathymetryDataFile = getFileForLocation(
-							xn, yn);
+							x, y);
 					list.add(bathymetryDataFile);
-					xn += inverseFactor;
-					yn += m * (xn - x1) + y1;
 				}
+				//
+				y += gridSize;
 			}
-			return list;
+			x += gridSize;
+		}
+		return list;
+	}
+
+	public List<BathymetryDataFile> getFilesWithin(double xtopleft,
+			double ytopleft, double xbottomright, double ybottomright) throws Exception {
+		try {
+			// look for item first else insert a new one
+			Query query = getPersistenceManager().newQuery(
+					"select from " + BathymetryDataFile.class.getName());
+			query
+					.setFilter("x >= xbr && y <= xtl && y==longitudeParam");
+			query
+					.declareParameters("int northx100, int westLong100, int southx100, int eastLong100");
+			//List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
+			//		.execute(northx100, westLong100, southx100);
+			return null;
 		} catch (Exception e) {
 			throw e;
 		}

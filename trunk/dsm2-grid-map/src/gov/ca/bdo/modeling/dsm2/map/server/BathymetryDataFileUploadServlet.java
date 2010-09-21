@@ -1,6 +1,5 @@
 /**
- *   Copyright (C) 2009, 2010 
- *    Nicky Sandhu
+ *    Copyright (C) 2009, 2010 
  *    State of California,
  *    Department of Water Resources.
  *    This file is part of DSM2 Grid Map
@@ -12,10 +11,10 @@
  *    DSM2 Grid Map is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
-
- *    You should have received a copy of the GNU General Public License
- *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
  */
 package gov.ca.bdo.modeling.dsm2.map.server;
 
@@ -34,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 
 import javax.jdo.PersistenceManager;
@@ -49,12 +49,18 @@ import com.google.appengine.api.datastore.Blob;
 
 @SuppressWarnings("serial")
 public class BathymetryDataFileUploadServlet extends HttpServlet {
-	private static final int MAX_SIZE_BYTES = 1024 * 1024;
+	private static final int MAX_SIZE_BYTES = 1024 * 1024 * 10;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		String xStr = req.getParameter("latitude");
-		String yStr = req.getParameter("longitude");
+		String xStr = req.getParameter("x");
+		String yStr = req.getParameter("y");
+		if (xStr == null || yStr == null){
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND,
+					"No Bathymetry Data Available for x=" + xStr
+							+ "&y=" + yStr);
+			return;
+		}
 		double latitude = Double.parseDouble(xStr);
 		double longitude = Double.parseDouble(yStr);
 		PersistenceManager persistenceManager = PMF.get()
@@ -65,33 +71,45 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 			BathymetryDataFile bathymetryDataFile = dao.getFileForLocation(
 					latitude, longitude);
 			if (bathymetryDataFile != null) {
-				resp.getWriter().println(
-						"Bathymetry Data File: "
-								+ bathymetryDataFile.getLatitude100() + ","
-								+ bathymetryDataFile.getLongitude100());
-				DataInputStream dis = new DataInputStream(
-						new ByteArrayInputStream(bathymetryDataFile
-								.getContents().getBytes()));
-				while (dis.available() > 0) {
-					BathymetryDataPoint dataPoint = readBathymetryDataPoint(dis);
-					resp.getWriter().println(dataPoint.toString());
-				}
+				resp.setContentType("text/csv");
+				resp.setHeader("Content-Disposition",
+						"attachment; filename=bathydata_"
+								+ bathymetryDataFile.getX100() + "_"
+								+ bathymetryDataFile.getY100() + ".csv");
+				String contents = convertToString(bathymetryDataFile);
+				resp.setContentLength(contents.length() * 2); // number of bytes
+				// sent
+				resp.getWriter().write(contents);
 			} else {
-				resp.getWriter().println("No data found!");
+				resp.sendError(HttpServletResponse.SC_NOT_FOUND,
+						"No Bathymetry Data Available for latitude=" + latitude
+								+ "&longitude=" + longitude);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			persistenceManager.close();
 		}
 	}
 
+	private String convertToString(BathymetryDataFile bathymetryDataFile)
+			throws IOException {
+		StringWriter strWriter = new StringWriter();
+		PrintWriter writer = new PrintWriter(strWriter);
+		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(
+				bathymetryDataFile.getContents().getBytes()));
+		while (dis.available() > 0) {
+			BathymetryDataPoint dataPoint = readBathymetryDataPoint(dis);
+			writer.println(dataPoint.toString());
+		}
+		return strWriter.toString();
+	}
+
 	private BathymetryDataPoint readBathymetryDataPoint(DataInputStream dis) {
 		BathymetryDataPoint data = new BathymetryDataPoint();
 		try {
-			data.latitude = dis.readDouble();
-			data.longitude = dis.readDouble();
+			data.x = dis.readDouble();
+			data.y = dis.readDouble();
 			data.elevation = dis.readDouble();
 			data.year = dis.readInt();
 			data.agency = dis.readUTF();
@@ -101,7 +119,6 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 		return data;
 	}
 
-	@SuppressWarnings( { "deprecation" })
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		PrintWriter out = resp.getWriter();
@@ -122,7 +139,13 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 					}
 				} else {
 					if (item.getFieldName().equals("bathymetryFile")) {
-						saveData(persistenceManager, inputStream);
+						String parameter = req.getParameter("append");
+						boolean append = false;
+						if (parameter != null
+								&& !parameter.equalsIgnoreCase("n")) {
+							append = true;
+						}
+						saveData(persistenceManager, inputStream, append);
 					}
 				}
 			}
@@ -132,13 +155,13 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 			persistenceManager.close();
 		}
 		// Return result
-		String resultUrl = "bathymetry_upload.html";
+		String resultUrl = "upload_bathymetry.html";
 		resp.sendRedirect(resultUrl);
 		out.close();
 	}
 
 	public void saveData(PersistenceManager persistenceManager,
-			InputStream fileAsStream) throws Exception {
+			InputStream fileAsStream, boolean append) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				fileAsStream));
 		String line = null;
@@ -155,9 +178,8 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 			}
 			double latitude = Double.parseDouble(fields[0]);
 			double longitude = Double.parseDouble(fields[1]);
-			int x = (int) Math.floor(latitude * BathymetryDataFile.FACTOR);
-			int y = (int) Math.floor(longitude * BathymetryDataFile.FACTOR);
-
+			int x = (int) BathymetryDataFile.roundOff(latitude);
+			int y = (int) BathymetryDataFile.roundOff(longitude);
 			ByteArrayOutputStream baos = fileMap.get(x + "_" + y);
 			if (baos == null) {
 				baos = new ByteArrayOutputStream();
@@ -174,29 +196,28 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 				persistenceManager);
 		for (String key : fileMap.keySet()) {
 			String[] fields = key.split("_");
-			double x = Double.parseDouble(fields[0])
-					/ BathymetryDataFile.FACTOR;
-			double y = Double.parseDouble(fields[1])
-					/ BathymetryDataFile.FACTOR;
+			int x = Integer.parseInt(fields[0]);
+			int y = Integer.parseInt(fields[1]);
 			ByteArrayOutputStream baos = fileMap.get(key);
 			BathymetryDataFile bathymetryDataFile = dao
 					.getFileForLocation(x, y);
 			if (bathymetryDataFile == null) {
 				bathymetryDataFile = new BathymetryDataFile();
-				bathymetryDataFile.setLatitude100((int) Math.floor(x
-						* BathymetryDataFile.FACTOR));
-				bathymetryDataFile.setLongitude100((int) Math.floor(y
-						* BathymetryDataFile.FACTOR));
+				bathymetryDataFile.setX100(x);
+				bathymetryDataFile.setY100(y);
 				bathymetryDataFile.setContents(new Blob(new byte[0]));
 				dao.createObject(bathymetryDataFile);
 			}
-			byte[] existing = bathymetryDataFile.getContents().getBytes();
-			byte[] newdata = baos.toByteArray();
-			byte[] data = new byte[existing.length + newdata.length];
-			System.arraycopy(existing, 0, data, 0, existing.length);
-			System.arraycopy(newdata, 0, data, existing.length, newdata.length);
+			byte[] data = baos.toByteArray();
+			if (append) {
+				byte[] existing = bathymetryDataFile.getContents().getBytes();
+				byte[] newdata = baos.toByteArray();
+				data = new byte[existing.length + newdata.length];
+				System.arraycopy(existing, 0, data, 0, existing.length);
+				System.arraycopy(newdata, 0, data, existing.length,
+						newdata.length);
+			}
 			bathymetryDataFile.setContents(new Blob(data));
-			dao.updateObject(bathymetryDataFile);
 		}
 	}
 }

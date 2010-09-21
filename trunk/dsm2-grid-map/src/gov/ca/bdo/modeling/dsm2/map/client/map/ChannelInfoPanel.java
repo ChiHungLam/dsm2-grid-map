@@ -39,9 +39,33 @@ import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 // panels rather than creating new ones
 public class ChannelInfoPanel extends Composite {
 
+	private FlowPanel xsectionPanel;
+
 	public ChannelInfoPanel(Channel channel) {
-		// Panel basicInfo = getBasicInfoPanel(channel);
-		FlowPanel xsectionPanel = new FlowPanel();
+		xsectionPanel = new FlowPanel();
+		drawXSection(channel, -1);
+		VerticalPanel vpanel = new VerticalPanel();
+		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");
+		basicDisclosure.setOpen(true);
+		basicDisclosure.add(getBasicInfoPanel(channel));
+		vpanel.add(basicDisclosure);
+		DisclosurePanel xsectionDisclosure = new DisclosurePanel("XSection");
+		xsectionDisclosure.setOpen(true);
+		xsectionDisclosure.add(xsectionPanel);
+		vpanel.add(xsectionDisclosure);
+		initWidget(vpanel);
+	}
+
+	/**
+	 * Creates a profile of the xsection perpendicular to the flow line for the
+	 * channel
+	 * 
+	 * @param channel
+	 * @param index
+	 *            , the index of the xsection to be drawn or -1 for all
+	 * @return
+	 */
+	public void drawXSection(Channel channel, int index) {
 		String title = "Channel: " + channel.getId() + " Length: "
 				+ channel.getLength() + " X-Section View";
 		Options options = Options.create();
@@ -56,41 +80,43 @@ public class ChannelInfoPanel extends Composite {
 		DataTable table = DataTable.create();
 		table.addColumn(ColumnType.NUMBER, "Width");
 		int i = 0;
-		String[] colors = new String[channel.getXsections().size()];
+		int numberOfXSections = channel.getXsections().size();
+		String[] colors = new String[numberOfXSections];
+		int actualCount=0;
 		for (XSection xsection : channel.getXsections()) {
+			if ((index >= 0 && index < numberOfXSections) && (i != index)) {
+				i++;
+				continue; // skip if index specified is valid
+			}
 			double distance = xsection.getDistance();
-			colors[i] = "#" + getHexString((int) Math.round(255 * distance))
+			colors[actualCount] = "#" + getHexString((int) Math.round(255 * distance))
 					+ "33"
 					+ getHexString((int) Math.round(255 - 255 * distance));
 			i++;
+			actualCount++;
 			table.addColumn(ColumnType.NUMBER, " @ " + distance);
 			for (XSectionLayer layer : xsection.getLayers()) {
 				double elevation = layer.getElevation();
 				double topWidth = layer.getTopWidth();
 				table.insertRows(0, 1);
-				table.setValue(0, i, elevation);
+				table.setValue(0, actualCount, elevation);
 				table.setValue(0, 0, -topWidth / 2);
 				int nrows = table.getNumberOfRows();
 				if (nrows >= table.getNumberOfRows()) {
 					table.insertRows(nrows, 1);
 				}
-				table.setValue(nrows, i, elevation);
+				table.setValue(nrows, actualCount, elevation);
 				table.setValue(nrows, 0, topWidth / 2);
 			}
 		}
-		options.setColors(colors);
+		String[] cArray = new String[actualCount];
+		System.arraycopy(colors, 0, cArray, 0, actualCount);
+		options.setColors(cArray);
 		ScatterChart chart = new ScatterChart(table, options);
+		xsectionPanel.setVisible(false);
+		xsectionPanel.clear();
 		xsectionPanel.add(chart);
-		VerticalPanel vpanel = new VerticalPanel();
-		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");
-		basicDisclosure.setOpen(true);
-		basicDisclosure.add(getBasicInfoPanel(channel));
-		vpanel.add(basicDisclosure);
-		DisclosurePanel xsectionDisclosure = new DisclosurePanel("XSection");
-		xsectionDisclosure.setOpen(true);
-		xsectionDisclosure.add(xsectionPanel);
-		vpanel.add(xsectionDisclosure);
-		initWidget(vpanel);
+		xsectionPanel.setVisible(true);
 	}
 
 	private String getHexString(int value) {

@@ -40,6 +40,23 @@ import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 public class ChannelClickHandler implements PolylineClickHandler {
+	private final class XSectionLineClickHandler implements
+			PolylineClickHandler {
+		private final XSection xSection;
+		private int xSectionIndex;
+
+		private XSectionLineClickHandler(XSection xSection, int index) {
+			this.xSection=xSection;
+			this.xSectionIndex = index;
+		}
+
+		public void onClick(PolylineClickEvent event) {
+			Polyline line = xsectionLineMap.get(xSection);
+			line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
+			infoPanel.drawXSection(channel, xSectionIndex);
+		}
+	}
+
 	private final Channel channel;
 	private final MapPanel mapPanel;
 	private final String color = "#FF0000";
@@ -47,6 +64,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	private final double opacity = 0.75;
 	private Polyline line;
 	private final HashMap<XSection, Polyline> xsectionLineMap;
+	private ChannelInfoPanel infoPanel;
 
 	public ChannelClickHandler(Channel lineData, MapPanel mapPanel) {
 		channel = lineData;
@@ -67,9 +85,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void doOnClick(PolylineClickEvent event) {
-		ChannelInfoPanel panel = new ChannelInfoPanel(channel);
+		infoPanel = new ChannelInfoPanel(channel);
 		mapPanel.getInfoPanel().clear();
-		mapPanel.getInfoPanel().add(panel);
+		mapPanel.getInfoPanel().add(infoPanel);
 		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
 		Node upNode = nodeManager.getNodeData(channel.getUpNodeId());
 		Node downNode = nodeManager.getNodeData(channel.getDownNodeId());
@@ -136,6 +154,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	private void drawXSectionLines() {
 		LatLng[] channelOutlinePoints = getChannelOutlinePoints();
 		ArrayList<XSection> xsections = channel.getXsections();
+		int xSectionIndex = 0;
 		for (final XSection xSection : xsections) {
 			double distance = xSection.getDistance();
 			distance = channel.getLength() * distance;
@@ -148,21 +167,33 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			LatLng point0 = GeomUtils.findPointAtDistance(point1, point2,
 					distance - segmentDistance);
 			double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
-			double width = getTopWidthAtElevation(xSection, 0);
+			//assumes a channel 2/3rds filled for approx. visualization
+			double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection)));
 			LatLng[] latLngs = GeomUtils
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
-			Polyline line = new Polyline(latLngs, "green", 4);
-			line.addPolylineClickHandler(new PolylineClickHandler() {
-
-				public void onClick(PolylineClickEvent event) {
-					GWT.log("Draw Xsection: " + xSection);
-				}
-			});
+			final Polyline line = new Polyline(latLngs, "green", 4);
+			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,xSectionIndex));
 			xsectionLineMap.put(xSection, line);
 			mapPanel.getMap().addOverlay(line);
+			xSectionIndex++;
 		}
 	}
+	
+	private double getTopWidthAtDepth(XSection xsection, double depth){
+		ArrayList<XSectionLayer> layers = xsection.getLayers();
+		//assumes sorted layers with index 0 being the bottom
+		double bottomElevation = layers.get(0).getElevation();
+		return bottomElevation+depth;
+	}
+	
+	private double getMaxDepth(XSection xsection){
+		ArrayList<XSectionLayer> layers = xsection.getLayers();
+		double minElevation = layers.get(0).getElevation();
+		double maxElevation = layers.get(layers.size()-1).getElevation();
+		return maxElevation-minElevation;
+	}
+	
 
 	private double getTopWidthAtElevation(XSection xsection, double elevation) {
 		ArrayList<XSectionLayer> layers = xsection.getLayers();

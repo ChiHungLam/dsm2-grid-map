@@ -6,6 +6,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
+import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.DSM2Model;
 
 import com.google.gwt.core.client.GWT;
@@ -22,9 +23,14 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
+import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
+import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
 import com.google.gwt.maps.client.overlay.GeoXmlOverlay;
+import com.google.gwt.maps.client.overlay.PolyStyleOptions;
+import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Command;
@@ -334,5 +340,36 @@ public class MapDisplay extends Composite implements Display,
 	public void showFlowLines() {
 		mapPanel.showFlowLines();
 	}
+	
+	private Polyline line;
+	public void addLine(Channel channel) {
+		MapWidget map = mapPanel.getMap();
+		PolyStyleOptions style = PolyStyleOptions.newInstance("#0000ff", 3,
+				1);
+		if (line != null) {
+			map.removeOverlay(line);
+		}
+		line = new Polyline(new LatLng[0]);
+		map.addOverlay(line);
+		line.setDrawingEnabled();
+		line.setEditingEnabled(true);
+		line.setStrokeStyle(style);
+		line.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
+
+			public void onUpdate(PolylineLineUpdatedEvent event) {
+				if (line.getVertexCount() == 2) {
+					line.setEditingEnabled(false);
+					
+					//drawLineButton.setDown(false);
+					//drawXSection(line.getVertex(0),line.getVertex(1));
+				}
+			}
+		});
+
+	}
+	public double getLengthInFeet() {
+		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
+	}
+
 
 }

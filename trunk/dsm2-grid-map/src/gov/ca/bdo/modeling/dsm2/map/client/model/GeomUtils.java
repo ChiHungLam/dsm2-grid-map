@@ -43,7 +43,7 @@ public class GeomUtils {
 				break;
 			}
 		}
-		return i;
+		return Math.min(i,segments.length-2);
 	}
 
 	/**
@@ -121,8 +121,16 @@ public class GeomUtils {
 	}
 
 	public static double getSlopeBetweenPoints(LatLng point1, LatLng point2) {
-		return (point2.getLongitude() - point1.getLongitude())
+		double rawScale =  (point2.getLongitude() - point1.getLongitude())
 				/ (point2.getLatitude() - point1.getLatitude());
+		double scale = rawScale*getAspectRatio(point1, point2);
+		return scale;
+	}
+	
+	public static double getAspectRatio(LatLng point1, LatLng point2){
+		double latScale = LatLng.newInstance(point1.getLatitude()+0.001, point1.getLongitude()).distanceFrom(point1);
+		double lngScale = LatLng.newInstance(point1.getLatitude(), point1.getLongitude()+0.001).distanceFrom(point1);
+		return lngScale/latScale;
 	}
 
 	public static double getLengthInFeet(double length) {

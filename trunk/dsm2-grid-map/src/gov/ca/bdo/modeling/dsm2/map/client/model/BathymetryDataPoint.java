@@ -23,15 +23,15 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class BathymetryDataPoint implements Serializable {
-	public double latitude;
-	public double longitude;
+	public double x;
+	public double y;
 	public double elevation;
 	public int year;
 	public String agency;
 
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(latitude).append(",").append(longitude).append(",")
+		builder.append(x).append(",").append(y).append(",")
 				.append(elevation);
 		builder.append(year).append(",").append(agency);
 		return builder.toString();

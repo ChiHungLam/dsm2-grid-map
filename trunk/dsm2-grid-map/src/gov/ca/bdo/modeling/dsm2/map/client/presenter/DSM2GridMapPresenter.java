@@ -127,6 +127,13 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 				}
 			}
 		});
+		d.getAddPolygonButton().addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 }

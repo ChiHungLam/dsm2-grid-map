@@ -1,6 +1,5 @@
 /**
- *   Copyright (C) 2009, 2010 
- *    Nicky Sandhu
+ *    Copyright (C) 2009, 2010 
  *    State of California,
  *    Department of Water Resources.
  *    This file is part of DSM2 Grid Map
@@ -12,10 +11,10 @@
  *    DSM2 Grid Map is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
-
- *    You should have received a copy of the GNU General Public License
- *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
  */
 package gov.ca.bdo.modeling.dsm2.map.client.service;
 
@@ -30,6 +29,13 @@ public interface BathymetryDataServiceAsync {
 	void getBathymetryDataPoints(double latitude, double longitude,
 			AsyncCallback<List<BathymetryDataPoint>> callback);
 
-	void getBathymetryDataPoints(double x1, double y1, double x2, double y2,
+	void getBathymetryDataPointsAlongLine(double x1, double y1, double x2, double y2,
+			AsyncCallback<List<BathymetryDataPoint>> callback);
+
+	void getAverageDepthInPolygon(List<double[]> points,
+			AsyncCallback<Double> callback);
+
+	void getBathymetryDataPoints(double northLat, double westLong,
+			double southLat, double eastLong,
 			AsyncCallback<List<BathymetryDataPoint>> callback);
 }

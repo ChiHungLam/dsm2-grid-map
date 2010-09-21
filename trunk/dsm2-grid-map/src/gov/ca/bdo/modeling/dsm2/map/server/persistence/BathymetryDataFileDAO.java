@@ -1,6 +1,5 @@
 /**
- *   Copyright (C) 2009, 2010 
- *    Nicky Sandhu
+ *    Copyright (C) 2009, 2010 
  *    State of California,
  *    Department of Water Resources.
  *    This file is part of DSM2 Grid Map
@@ -12,10 +11,10 @@
  *    DSM2 Grid Map is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
-
- *    You should have received a copy of the GNU General Public License
- *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
  */
 package gov.ca.bdo.modeling.dsm2.map.server.persistence;
 
@@ -44,4 +43,15 @@ public interface BathymetryDataFileDAO extends GenericDAO<BathymetryDataFile> {
 	 */
 	public List<BathymetryDataFile> getFilesAlongLine(double lat1, double lng1,
 			double lat2, double lng2, int width) throws Exception;
+	
+	/**
+	 * Gets the bathymetry data within the north,west and south,east rectangular bounds
+	 * @param northLat
+	 * @param westLong
+	 * @param southLat
+	 * @param eastLong
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BathymetryDataFile> getFilesWithin(double northLat, double westLong, double southLat, double eastLong) throws Exception;
 }
