@@ -58,20 +58,16 @@ public class RoleFilter implements Filter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String requestURI = httpServletRequest.getRequestURI();
 		if (userService.isUserLoggedIn()) {
-			log.info("requestURI: " + requestURI);
 			if (requestURI.contains("/login")
 					|| requestURI.contains("/request_access")
 					|| requestURI.contains("/logout")) {
 				if (requestURI.contains("/logout")) {
 					httpServletRequest.getSession().invalidate();
 				}
-				log.info("calling chain.doFilter " + requestURI);
 				chain.doFilter(request, response);
 			} else {
 				User currentUser = userService.getCurrentUser();
 				if (isAllowed(currentUser, requestURI)) {
-					log.info("user is allowed: calling chain.doFilter "
-							+ requestURI);
 					chain.doFilter(request, response);
 				} else {
 					log.info("user disallowed: calling redirect to "
@@ -82,16 +78,12 @@ public class RoleFilter implements Filter {
 			}
 		} else {
 			log.info("no user logged in yet");
-			if (requestURI.contains("/logout") || requestURI.contains("/login")) {
-				log.info("detecting login/logout uri: " + requestURI);
-				log.info("calling chain.doFilter");
+			if (requestURI.contains("/logout") || requestURI.contains("/login") || requestURI.contains("/public") || requestURI.contains("upload_bathymetry")) {
 				if (requestURI.contains("/logout")) {
 					httpServletRequest.getSession().invalidate();
 				}
 				chain.doFilter(request, response);
 			} else {
-				log.info("calling send redirect to login url: "
-						+ userService.createLoginURL(requestURI));
 				httpServletResponse.sendRedirect(userService
 						.createLoginURL(requestURI));
 			}

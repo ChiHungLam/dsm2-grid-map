@@ -16,7 +16,7 @@
  *    @author Nicky Sandhu
  *    
  */
-package gov.ca.bdo.modeling.dsm2.map.server.data;
+package gov.ca.bdo.modeling.dsm2.map.server.persistence;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -73,9 +73,4 @@ public class BathymetryDataFile {
 	public Long getId() {
 		return id;
 	}
-	
-	public static int roundOff(double v){
-		return (int) (Math.round(v/FACTOR)*FACTOR);
-	}
-
 }
