@@ -190,7 +190,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
 			//assumes a channel 2/3rds filled for approx. visualization
 			// @a certain depth option needed getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection))
-			double width = getTopWidthAtElevation(xSection, 4);
+			double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection)));
 			LatLng[] latLngs = GeomUtils
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
