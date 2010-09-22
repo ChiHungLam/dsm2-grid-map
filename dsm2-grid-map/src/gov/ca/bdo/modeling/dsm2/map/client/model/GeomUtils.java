@@ -87,7 +87,7 @@ public class GeomUtils {
 		double x0 = point0.getLatitude();
 		double y0 = point0.getLongitude();
 		double c = y0 - m * x0;
-		LatLng pointx = LatLng.newInstance(x0 + 0.001, y0);
+		LatLng pointx = LatLng.newInstance(x0 + 0.001, m*(x0+0.001)+c);
 		double distanceFrom = getLengthInFeet(point0.distanceFrom(pointx));
 		double ratio = 0.5 * length / distanceFrom;
 		double xa = x0 + (pointx.getLatitude() - x0) * ratio;
