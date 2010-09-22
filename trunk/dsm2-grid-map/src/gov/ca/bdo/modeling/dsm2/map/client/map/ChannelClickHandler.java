@@ -19,6 +19,7 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.bdo.modeling.dsm2.map.client.WindowUtils;
 import gov.ca.bdo.modeling.dsm2.map.client.model.GeomUtils;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
@@ -32,6 +33,8 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
+import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
+import com.google.gwt.maps.client.event.PolylineMouseOverHandler.PolylineMouseOverEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
@@ -40,6 +43,8 @@ import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 public class ChannelClickHandler implements PolylineClickHandler {
+	private static final PolyStyleOptions redLineStyle = PolyStyleOptions.newInstance("red");
+	private static final PolyStyleOptions greenLineStyle = PolyStyleOptions.newInstance("green");
 	private final class XSectionLineClickHandler implements
 			PolylineClickHandler {
 		private final XSection xSection;
@@ -51,6 +56,15 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		}
 
 		public void onClick(PolylineClickEvent event) {
+			for(XSection xs: xsectionLineMap.keySet()){
+				Polyline line = xsectionLineMap.get(xs);
+				if(xs == xSection){
+					line.setStrokeStyle(redLineStyle);
+					infoPanel.drawXSection(channel, xSectionIndex);					
+				} else {
+					line.setStrokeStyle(greenLineStyle);
+				}
+			}
 			Polyline line = xsectionLineMap.get(xSection);
 			line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
 			infoPanel.drawXSection(channel, xSectionIndex);
@@ -121,7 +135,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		if (mapPanel.isInEditMode()) {
 
 			// allow up to 10 vertices to exist in the line.
-			line.setEditingEnabled(PolyEditingOptions.newInstance(15));
+			line.setEditingEnabled(PolyEditingOptions.newInstance(25));
 			line.addPolylineClickHandler(new PolylineClickHandler() {
 				public void onClick(PolylineClickEvent event) {
 					updateChannelLengthLatLng();
@@ -143,9 +157,16 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			line.addPolylineClickHandler(new PolylineClickHandler() {
 
 				public void onClick(PolylineClickEvent event) {
-					mapPanel.getMap().removeOverlay(line);
+					clearOverlays();
 					updateDisplay();
 				}
+			});
+			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
+
+				public void onMouseOver(PolylineMouseOverEvent event) {
+					WindowUtils.changeCursor("pointer");
+				}
+
 			});
 			drawXSectionLines();
 		}
@@ -174,6 +195,14 @@ public class ChannelClickHandler implements PolylineClickHandler {
 							width, point0);
 			final Polyline line = new Polyline(latLngs, "green", 4);
 			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,xSectionIndex));
+			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
+
+				public void onMouseOver(PolylineMouseOverEvent event) {
+					WindowUtils.changeCursor("pointer");
+				}
+
+			});
+
 			xsectionLineMap.put(xSection, line);
 			mapPanel.getMap().addOverlay(line);
 			xSectionIndex++;
