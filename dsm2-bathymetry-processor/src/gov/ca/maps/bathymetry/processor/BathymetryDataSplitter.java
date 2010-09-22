@@ -21,7 +21,7 @@ public class BathymetryDataSplitter {
 	private final String directory;
 	private final HashMap<String, PrintWriter> fileMap;
 	private File inFile;
-	public static int SPLIT_FACTOR = 10;
+	public static int SPLIT_FACTOR = 100;
 
 	public BathymetryDataSplitter(String inFileName, String directoryName) {
 		inFile = new File(inFileName);

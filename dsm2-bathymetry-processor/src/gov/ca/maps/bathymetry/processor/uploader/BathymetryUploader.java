@@ -8,9 +8,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class BathymetryUploader {
-	String baseUrl = "http://dsm2bathymetry.appspot.com/upload_bathymetry.html";
+	//String baseUrl = "http://dsm2bathymetry.appspot.com/upload_bathymetry.html";
 
-	// String baseUrl = "http://localhost:8888/upload_bathymetry.html";
+	String baseUrl = "http://localhost:8888/upload_bathymetry.html";
 
 	private BathymetryUploader() {
 	}
@@ -66,12 +66,5 @@ public class BathymetryUploader {
 			} catch (Exception ex) {
 			}
 		}
-		/*
-		 * ExecutorService pool = Executors.newFixedThreadPool(1); Runnable
-		 * uploadTask = new Runnable() { public void run() { BathymetryUploader
-		 * uploader = new BathymetryUploader();
-		 * uploader.upload("/Users/nsandhu/tmp/dsm2-bathymetry-files"); } };
-		 * pool.execute(uploadTask); pool.awaitTermination(0, TimeUnit.SECONDS);
-		 */
 	}
 }
