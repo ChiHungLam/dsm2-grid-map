@@ -27,8 +27,8 @@ public class VectorFieldToTiles {
 		double depth = 2.8956;
 		int startZoom = 16;
 		int endZoom = 21;
-		double originEasting = 647218;
-		double originNorthing = 4185824;
+		double originEasting = 647224;
+		double originNorthing = 4185845;
 		//
 		File inputFile = new File(inputFileStr);
 		String dir = inputFile.getParent();
