@@ -31,9 +31,9 @@ public class DEMDataFile {
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
 	@Persistent
-	private int xc;
+	private int x;
 	@Persistent
-	private int yc;
+	private int y;
 	@Persistent
 	private Blob contents;
 
@@ -41,20 +41,24 @@ public class DEMDataFile {
 
 	}
 
-	public int getXc() {
-		return xc;
+	public int getX() {
+		return x;
 	}
 
-	public void setXc(int xc) {
-		this.xc = xc;
+	public void setX(int xc) {
+		this.x = xc;
 	}
 
-	public int getYc() {
-		return yc;
+	public int getY() {
+		return y;
 	}
 
-	public void setYc(int yc) {
-		this.yc = yc;
+	public void setY(int yc) {
+		this.y = yc;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public void setBlobData(int[] values) {
