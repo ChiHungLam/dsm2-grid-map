@@ -23,7 +23,6 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.BathymetryDataService;
 import gov.ca.bdo.modeling.dsm2.map.server.data.BathymetryDataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.BathymetryDataFileDAO;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.BathymetryDataFileDAOImpl;
-import gov.ca.bdo.modeling.dsm2.map.server.persistence.GeomUtils;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 
 import java.io.ByteArrayInputStream;
@@ -69,7 +68,7 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		return getBathymetryDataPointsAtXY(utm[0], utm[1]);
 	}
 
-	public double[] convertToUTM(double latitude, double longitude) {
+	public static double[] convertToUTM(double latitude, double longitude) {
 		CoordinateConversion cc = new CoordinateConversion();
 		String latLon2UTM = cc.latLon2UTM(latitude, longitude);
 		String[] split = latLon2UTM.split("\\s");
@@ -157,7 +156,7 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		for (BathymetryDataPoint point : points) {
 			xy[0] = point.x;
 			xy[1] = point.y;
-			double[] projection = GeomUtils.projectionOfPointOntoLine(xy[0],
+			double[] projection = CoordinateGeometryUtils.projectionOfPointOntoLine(xy[0],
 					xy[1], x1, y1, x2, y2);
 			point.x = projection[0];
 			point.y = projection[1];

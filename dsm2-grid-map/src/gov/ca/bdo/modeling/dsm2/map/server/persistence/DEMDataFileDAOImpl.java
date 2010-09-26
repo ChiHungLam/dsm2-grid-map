@@ -18,8 +18,9 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server.persistence;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
 import gov.ca.bdo.modeling.dsm2.map.server.CoordinateGeometryUtils;
-import gov.ca.bdo.modeling.dsm2.map.server.data.BathymetryDataFile;
+import gov.ca.bdo.modeling.dsm2.map.server.data.DEMDataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.GenericDAOImpl;
 
 import java.util.ArrayList;
@@ -28,26 +29,24 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-public class BathymetryDataFileDAOImpl extends
-		GenericDAOImpl<BathymetryDataFile> implements BathymetryDataFileDAO {
-	public BathymetryDataFileDAOImpl(PersistenceManager pm) {
+public class DEMDataFileDAOImpl extends GenericDAOImpl<DEMDataFile> implements
+		DEMDataFileDAO {
+	public DEMDataFileDAOImpl(PersistenceManager pm) {
 		super(pm);
 	}
 
 	@SuppressWarnings("unchecked")
-	public BathymetryDataFile getFileForLocation(double x, double y)
-			throws Exception {
+	public DEMDataFile getFileForLocation(double x, double y) throws Exception {
 		try {
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(
-					"select from " + BathymetryDataFile.class.getName());
-			int x100 = (int) BathymetryDataFile.roundOff(x);
-			int y100 = (int) BathymetryDataFile.roundOff(y);
-			query
-					.setFilter("x==xParam && y==yParam");
+					"select from " + DEMDataFile.class.getName());
+			int x100 = (int) DEMDataFile.roundOff(x);
+			int y100 = (int) DEMDataFile.roundOff(y);
+			query.setFilter("x==xParam && y==yParam");
 			query.declareParameters("int xParam, int yParam");
-			List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
-					.execute(x100, y100);
+			List<DEMDataFile> files = (List<DEMDataFile>) query.execute(x100,
+					y100);
 			if ((files == null) || (files.size() == 0)) {
 				return null;
 			} else {
@@ -63,19 +62,27 @@ public class BathymetryDataFileDAOImpl extends
 	 * (lat1,lng1) and (lat2,lng2) with a width in increments of the lat,lng by
 	 * 100 grid.
 	 */
-	public List<BathymetryDataFile> getFilesAlongLine(double x1, double y1,
-			double x2, double y2, int width) throws Exception {
-		List<BathymetryDataFile> list = new ArrayList<BathymetryDataFile>();
+	public List<DEMDataFile> getFilesAlongLine(double x1, double y1, double x2,
+			double y2, int width) throws Exception {
+		List<DEMDataFile> list = new ArrayList<DEMDataFile>();
+		List<DataPoint> points = CoordinateGeometryUtils.getIntersectionOfLineAndGrid(x1, y1, x2, y2, 100);
+		for(DataPoint p: points){
+			
+		}
 		// equation of line y=mx+b
 		// 
 		double m = (y2 - y1) / (x2 - x1);
 		double b = y2 - m * x2;
 		//
-		double xg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(x1), BathymetryDataFile.roundOff(x2)));
-		double yg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(y1), BathymetryDataFile.roundOff(y2)));
-		double xgf = Math.ceil(Math.max(BathymetryDataFile.roundOff(x1), BathymetryDataFile.roundOff(x2)));
-		double ygf = Math.ceil(Math.max(BathymetryDataFile.roundOff(y1), BathymetryDataFile.roundOff(y2)));
-		double gridSize = BathymetryDataFile.FACTOR;
+		double xg0 = Math.floor(Math.min(DEMDataFile.roundOff(x1), DEMDataFile
+				.roundOff(x2)));
+		double yg0 = Math.floor(Math.min(DEMDataFile.roundOff(y1), DEMDataFile
+				.roundOff(y2)));
+		double xgf = Math.ceil(Math.max(DEMDataFile.roundOff(x1), DEMDataFile
+				.roundOff(x2)));
+		double ygf = Math.ceil(Math.max(DEMDataFile.roundOff(y1), DEMDataFile
+				.roundOff(y2)));
+		double gridSize = DEMDataFile.FACTOR;
 
 		double x = xg0;
 		// loops below simply cover the smallest rectangle of grids that
@@ -89,9 +96,8 @@ public class BathymetryDataFileDAOImpl extends
 						y, x1, y1, x2, y2);
 				double distance = projections[1];
 				if (distance <= width * gridSize) {
-					BathymetryDataFile bathymetryDataFile = getFileForLocation(
-							x, y);
-					list.add(bathymetryDataFile);
+					DEMDataFile DEMDataFile = getFileForLocation(x, y);
+					list.add(DEMDataFile);
 				}
 				//
 				y += gridSize;
@@ -101,22 +107,33 @@ public class BathymetryDataFileDAOImpl extends
 		return list;
 	}
 
-	public List<BathymetryDataFile> getFilesWithin(double xtopleft,
-			double ytopleft, double xbottomright, double ybottomright) throws Exception {
+	@SuppressWarnings("unchecked")
+	public List<DEMDataFile> getFilesWithin(double x1, double y1, double x2,
+			double y2) throws Exception {
+		List<DEMDataFile> files = new ArrayList<DEMDataFile>();
 		try {
+			int xl = Math.min(DEMDataFile.roundOff(x1), DEMDataFile
+					.roundOff(x2));
+			int yl = Math.min(DEMDataFile.roundOff(y1), DEMDataFile
+					.roundOff(y2));
+			int xr = Math.max(DEMDataFile.roundOff(x1), DEMDataFile
+					.roundOff(x2));
+			int yr = Math.max(DEMDataFile.roundOff(y1), DEMDataFile
+					.roundOff(y2));
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(
-					"select from " + BathymetryDataFile.class.getName());
+					"select from " + DEMDataFile.class.getName());
+			query.setFilter("x >= xbr && y <= xtl && y==longitudeParam");
 			query
-					.setFilter("x >= xbr && y <= xtl && y==longitudeParam");
-			query
-					.declareParameters("int northx100, int westLong100, int southx100, int eastLong100");
-			//List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
-			//		.execute(northx100, westLong100, southx100);
-			return null;
+					.declareParameters("int xl, int xr, int y");
+			for(int y = yl; y <= yr; y+=DEMDataFile.FACTOR) {
+				files.addAll((List<DEMDataFile>) query.execute(
+						xl,xr,y));
+			}
+			return files;
 		} catch (Exception e) {
-			throw e;
+			e.printStackTrace();
+			return files;
 		}
 	}
-
 }
