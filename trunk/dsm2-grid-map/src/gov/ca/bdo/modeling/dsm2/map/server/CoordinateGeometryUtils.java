@@ -16,9 +16,14 @@
  *    @author Nicky Sandhu
  *    
  */
-package gov.ca.bdo.modeling.dsm2.map.server.persistence;
+package gov.ca.bdo.modeling.dsm2.map.server;
 
-public class GeomUtils {
+import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CoordinateGeometryUtils {
 	/**
 	 * Calculates distance between the two points (x1,y1) and (x2,y2)
 	 * @param x1
@@ -69,5 +74,50 @@ public class GeomUtils {
 		double perpendicularProjection = Math.abs(d*Math.sin(angle));
 		double [] projection = {lineProjection, perpendicularProjection};
 		return projection;
+	}
+	
+	public static List<DataPoint> getIntersectionOfLineAndGrid(double x1, double y1, double x2, double y2, int gridSize){
+		List<DataPoint> points = new ArrayList<DataPoint>();
+		double delx = x2 - x1;
+		double dely = y2 - y1;
+		if ( Math.abs(dely) > Math.abs(delx) ){
+			double x = x1;
+			double y = y1;
+			double slope = delx/dely;
+			double intercept = x1 - slope*y1;
+			double step = Math.signum(dely)*gridSize;
+			double nsteps = dely/gridSize;
+			points.add(createPoint(x,y));
+			for(int i=0; i < nsteps; i++){
+				y += step;
+				x = slope*y+intercept;
+				points.add(createPoint(x, y));
+			}
+		} else {
+			double x = x1;
+			double y = y1;
+			double slope = dely/delx;
+			double intercept = y1 - slope*x1;
+			double step = Math.signum(delx)*gridSize;
+			double nsteps = delx/gridSize;
+			points.add(createPoint(x,y));
+			for(int i=0; i < nsteps; i++){
+				x += step;
+				y = slope*x+intercept;
+				points.add(createPoint(x, y));
+			}
+		}
+		return points;
+	}
+
+	private static DataPoint createPoint(double x, double y) {
+		DataPoint point = new DataPoint();
+		point.x=x;
+		point.y=y;
+		return point;
+	}
+
+	public static int roundDown(double value, int gridSize) {
+		return (int) (Math.floor(value/gridSize)*gridSize);
 	}
 }

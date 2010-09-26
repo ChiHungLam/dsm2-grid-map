@@ -176,6 +176,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng[] channelOutlinePoints = getChannelOutlinePoints();
 		ArrayList<XSection> xsections = channel.getXsections();
 		int xSectionIndex = 0;
+		double width = calculateAverageWidthForChannel();
 		for (final XSection xSection : xsections) {
 			double distance = xSection.getDistance();
 			distance = channel.getLength() * distance;
@@ -190,7 +191,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
 			//assumes a channel 2/3rds filled for approx. visualization
 			// @a certain depth option needed getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection))
-			double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection)));
+			//double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection)));
 			LatLng[] latLngs = GeomUtils
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
@@ -210,6 +211,16 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		}
 	}
 	
+	private double calculateAverageWidthForChannel() {
+		double width = 0;
+		int c=0;
+		for (final XSection xSection : channel.getXsections()) {
+			width+=getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection));
+			c++;
+		}
+		return width/c;
+	}
+
 	private double getTopWidthAtDepth(XSection xsection, double depth){
 		ArrayList<XSectionLayer> layers = xsection.getLayers();
 		//assumes sorted layers with index 0 being the bottom

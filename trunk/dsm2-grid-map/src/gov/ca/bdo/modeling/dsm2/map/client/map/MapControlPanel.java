@@ -62,6 +62,8 @@ public class MapControlPanel extends Composite {
 	private Widget elementEditPanel;
 	private ToggleButton addElementButton;
 	private ToggleButton deleteElementButton;
+	private ToggleButton clickForElevationButton;
+	private ToggleButton drawXSectionButton;
 
 	public MapControlPanel(boolean viewOnly) {
 		this.viewOnly = viewOnly;
@@ -82,7 +84,8 @@ public class MapControlPanel extends Composite {
 		addPolygonButton = new ToggleButton(new Image(IconImages.INSTANCE
 				.measurePolygonIcon()), new Image(IconImages.INSTANCE
 				.measurePolygonIcon()));
-
+		clickForElevationButton = new ToggleButton("Click to show elevation", "Click to stop showing elevation");
+		drawXSectionButton = new ToggleButton("Click to start drawing elevation");
 		//
 		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
 		addTextAnnotationButton = new ToggleButton(new Image(
@@ -122,6 +125,8 @@ public class MapControlPanel extends Composite {
 		toolbarPanel.add(addPolygonButton);
 		toolbarPanel.add(flowLineButton);
 		toolbarPanel.add(elementEditPanel);
+		toolbarPanel.add(clickForElevationButton);
+		toolbarPanel.add(drawXSectionButton);
 		containerPanel.setWidget(2, 0, toolbarPanel);
 		containerPanel.getFlexCellFormatter().setColSpan(2, 0, 3);
 		containerPanel.setWidget(3, 0, measurementLabel);
@@ -255,6 +260,14 @@ public class MapControlPanel extends Composite {
 		} else {
 			elementEditPanel.setVisible(false);
 		}
+	}
+	
+	public HasClickHandlers getClickForElevationButton(){
+		return clickForElevationButton;
+	}
+	
+	public HasClickHandlers getDrawXSectionButton(){
+		return drawXSectionButton;
 	}
 
 }

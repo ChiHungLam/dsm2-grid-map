@@ -1,5 +1,7 @@
 package gov.ca.bdo.modeling.dsm2.map.server.data;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.DEMGridSquare;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -7,6 +9,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
@@ -22,6 +26,7 @@ import com.google.appengine.api.datastore.Blob;
  * @author nsandhu
  * 
  */
+@PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class DEMDataFile {
 	public static int FACTOR = 100;
 	/**
@@ -80,7 +85,7 @@ public class DEMDataFile {
 		}
 	}
 
-	public int[] getGridFromBlob() {
+	public int[] getBlobData() {
 		try {
 			DataInputStream dais = new DataInputStream(
 					new ByteArrayInputStream(contents.getBytes()));
@@ -93,5 +98,14 @@ public class DEMDataFile {
 			e.printStackTrace();
 			return new int[0];
 		}
+	}
+
+	public static int roundOff(double v) {
+		return (int) Math.floor(v/FACTOR)*FACTOR;
+	}
+	
+	public DEMGridSquare toDEMGrid(){
+		DEMGridSquare sq = new DEMGridSquare(x, y, getBlobData());
+		return sq;
 	}
 }

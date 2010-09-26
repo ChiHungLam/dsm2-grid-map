@@ -101,6 +101,16 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>demServlet</servlet-name>
+		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.DEMDataServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>demServlet</servlet-name>
+		<url-pattern>/dsm2_grid_map/dem</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>bathymetryDataUploadServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.BathymetryDataFileUploadServlet</servlet-class>
 	</servlet>
