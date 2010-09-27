@@ -26,8 +26,13 @@ public class DEMGridSquare implements Serializable{
 		this.y = y;
 		this.elevations = elevations;
 	}
-	
-	public double getElevationAt(double x, double y){
+	/**
+	 * Elevations are in tenths of a foot
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public int getElevationAt(double x, double y){
 		int xo = offset(x, this.x);
 		int yo = offset(y, this.y);
 		return elevations[xo+yo*10];
@@ -40,7 +45,7 @@ public class DEMGridSquare implements Serializable{
 	 * Number of 10 m increments this value is from the specified origin
 	*/
 	private int offset(double value, int origin) {
-		return (int) Math.floor((origin-value)/10);
+		return (int) Math.floor((value-origin)/10);
 	}
 	public double getX() {
 		return x;

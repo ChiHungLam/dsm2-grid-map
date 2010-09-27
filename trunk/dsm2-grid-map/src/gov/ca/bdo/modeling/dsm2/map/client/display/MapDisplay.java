@@ -2,6 +2,7 @@ package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.ElevationDisplayer;
+import gov.ca.bdo.modeling.dsm2.map.client.map.ElevationProfileDisplayer;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapControlPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
@@ -266,15 +267,15 @@ public class MapDisplay extends Composite implements Display,
 	public HasClickHandlers getTextAnnotationButton() {
 		return controlPanel.getAddTextAnnonationButton();
 	}
-	
-	public HasClickHandlers getClickForElevationButton(){
+
+	public HasClickHandlers getClickForElevationButton() {
 		return controlPanel.getClickForElevationButton();
 	}
-	
-	public HasClickHandlers getDrawXSectionButton(){
+
+	public HasClickHandlers getDrawXSectionButton() {
 		return controlPanel.getDrawXSectionButton();
 	}
-	
+
 	public void startMeasuringDistanceAlongLine() {
 		if (lengthMeasurer == null) {
 			lengthMeasurer = new MeasuringDistanceAlongLine(mapPanel
@@ -350,12 +351,13 @@ public class MapDisplay extends Composite implements Display,
 	public void showFlowLines() {
 		mapPanel.showFlowLines();
 	}
-	
+
 	private Polyline line;
+	private ElevationProfileDisplayer elevationProfileDisplayer;
+
 	public void addLine(Channel channel) {
 		MapWidget map = mapPanel.getMap();
-		PolyStyleOptions style = PolyStyleOptions.newInstance("#0000ff", 3,
-				1);
+		PolyStyleOptions style = PolyStyleOptions.newInstance("#0000ff", 3, 1);
 		if (line != null) {
 			map.removeOverlay(line);
 		}
@@ -369,30 +371,44 @@ public class MapDisplay extends Composite implements Display,
 			public void onUpdate(PolylineLineUpdatedEvent event) {
 				if (line.getVertexCount() == 2) {
 					line.setEditingEnabled(false);
-					
-					//drawLineButton.setDown(false);
-					//drawXSection(line.getVertex(0),line.getVertex(1));
+
+					// drawLineButton.setDown(false);
+					// drawXSection(line.getVertex(0),line.getVertex(1));
 				}
 			}
 		});
 
 	}
+
 	public double getLengthInFeet() {
 		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
 	}
 
 	public void startClickingForElevation() {
-		if (elevationDisplayer == null){
+		if (elevationDisplayer == null) {
 			elevationDisplayer = new ElevationDisplayer(mapPanel.getMap());
 		}
 		elevationDisplayer.start();
 	}
 
 	public void stopClickingForElevation() {
-		if (elevationDisplayer != null){
+		if (elevationDisplayer != null) {
 			elevationDisplayer.stop();
 		}
 	}
 
+	public void startDrawingElevationProfileLine() {
+		if (elevationProfileDisplayer == null) {
+			elevationProfileDisplayer = new ElevationProfileDisplayer(mapPanel
+					.getMap(), infoPanel);
+		}
+		elevationProfileDisplayer.startDrawingLine((ToggleButton)this.getDrawXSectionButton());
+	}
+
+	public void stopDrawingElevationProfileLine() {
+		if (elevationProfileDisplayer != null) {
+			elevationProfileDisplayer.stopDrawingLine();
+		}
+	}
 
 }

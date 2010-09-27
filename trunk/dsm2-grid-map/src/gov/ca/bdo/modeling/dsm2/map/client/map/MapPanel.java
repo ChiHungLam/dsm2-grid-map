@@ -75,8 +75,8 @@ public class MapPanel extends Composite {
 	public MapPanel() {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
-		//new ClearBackgroundLayer(getMap(), false);
-		//new ClearBackgroundLayer(getMap(), true);
+		// new ClearBackgroundLayer(getMap(), false);
+		// new ClearBackgroundLayer(getMap(), true);
 		visibilityControl = new GridVisibilityControl(this);
 		getMap().addControl(visibilityControl);
 		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
@@ -100,7 +100,8 @@ public class MapPanel extends Composite {
 	}
 
 	private void setOptions() {
-		MapUIOptions options = MapUIOptions.newInstance(Size.newInstance(1000, 800));
+		MapUIOptions options = MapUIOptions.newInstance(Size.newInstance(1000,
+				800));
 		options.setKeyboard(true);
 		options.setMenuMapTypeControl(true);
 		options.setScaleControl(true);
@@ -245,8 +246,10 @@ public class MapPanel extends Composite {
 	}
 
 	public void hideChannelLines(boolean hide) {
-		for (Polyline line : getChannelManager().getPolylines()) {
-			line.setVisible(!hide);
+		if (getChannelManager() != null) {
+			for (Polyline line : getChannelManager().getPolylines()) {
+				line.setVisible(!hide);
+			}
 		}
 	}
 

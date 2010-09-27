@@ -1,5 +1,7 @@
 package gov.ca.bdo.modeling.dsm2.map.client.model;
 
+import java.io.Serializable;
+
 /**
  * Represents a point in space. Used in storing a cross section profile as a set
  * of distance (x) and elevations (z)
@@ -7,8 +9,13 @@ package gov.ca.bdo.modeling.dsm2.map.client.model;
  * @author nsandhu
  * 
  */
-public class DataPoint {
+@SuppressWarnings("serial")
+public class DataPoint implements Serializable {
 	public double x;
 	public double y;
 	public double z;
+
+	public DataPoint() {
+
+	}
 }
