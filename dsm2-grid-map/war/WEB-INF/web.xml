@@ -42,7 +42,7 @@
 		<servlet-name>dataServlet</servlet-name>
 		<url-pattern>/dsm2_grid_map/data</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>dataServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.DataServiceImpl</servlet-class>
@@ -89,7 +89,7 @@
 		<servlet-name>loginServlet</servlet-name>
 		<url-pattern>/dsm2_grid_map/login</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>bathymetryServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.BathymetryDataServiceImpl</servlet-class>
@@ -99,7 +99,7 @@
 		<servlet-name>bathymetryServlet</servlet-name>
 		<url-pattern>/dsm2_grid_map/bathymetry</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>demServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.DEMDataServiceImpl</servlet-class>
@@ -119,7 +119,16 @@
 		<servlet-name>bathymetryDataUploadServlet</servlet-name>
 		<url-pattern>/upload_bathymetry</url-pattern>
 	</servlet-mapping>
-	
+
+	<servlet>
+		<servlet-name>demDataUploadServlet</servlet-name>
+		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.DEMDataFileUploadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>demDataUploadServlet</servlet-name>
+		<url-pattern>/upload_dem</url-pattern>
+	</servlet-mapping>
 
 	<filter>
 		<filter-name>authFilter</filter-name>

@@ -23,7 +23,7 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements DEMDataS
 			double y1, double x2, double y2) throws SerializationException {
 		List<DataPoint> points = new ArrayList<DataPoint>();
 		double[] utm1 = BathymetryDataServiceImpl.convertToUTM(x1, y1);
-		double[] utm2 = BathymetryDataServiceImpl.convertToUTM(x1, y1);
+		double[] utm2 = BathymetryDataServiceImpl.convertToUTM(x2, y2);
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
 		try {
@@ -37,9 +37,12 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements DEMDataS
 				int y0 = CoordinateGeometryUtils.roundDown(y, 100);
 				if (grid==null || (grid.getX() != x0 || grid.getY() != y0)){
 					DEMDataFile demDataFile = dao.getFileForLocation(x0, y0);
+					if (demDataFile==null){
+						return null;
+					}
 					grid = demDataFile.toDEMGrid();
 				}
-				point.z = grid.getElevationAt(x, y);
+				point.z = grid.getElevationAt(x, y)/10.0;
 			}
 			return points;
 		} catch (Exception e) {
@@ -54,13 +57,13 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements DEMDataS
 			throws SerializationException {
 		DEMGridSquare gridAt = getGridAt(latitude, longitude);
 		if (gridAt == null){
-			return DEMGridSquare.NODATA;
+			return DEMGridSquare.NODATA/10.0;
 		} else {
 			double[] utm = BathymetryDataServiceImpl.convertToUTM(latitude,
 					longitude);
 			double x = utm[0];
 			double y = utm[1];
-			return gridAt.getElevationAt(x, y);
+			return gridAt.getElevationAt(x, y)/10.0;
 		}
 	}
 

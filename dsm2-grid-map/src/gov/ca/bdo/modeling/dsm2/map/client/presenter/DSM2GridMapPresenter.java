@@ -57,6 +57,10 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void stopClickingForElevation();
 
+		public void startDrawingElevationProfileLine();
+
+		public void stopDrawingElevationProfileLine();
+
 	}
 
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
@@ -153,6 +157,15 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		d.getDrawXSectionButton().addClickHandler(new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
+				HasClickHandlers button = d.getDrawXSectionButton();
+				if (button instanceof ToggleButton){
+					ToggleButton tb = (ToggleButton) button;
+					if (tb.isDown()){
+						d.startDrawingElevationProfileLine();
+					}else {
+						d.stopDrawingElevationProfileLine();
+					}
+				}
 			}
 		});
 	}
