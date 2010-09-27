@@ -26,84 +26,93 @@ import java.util.List;
 public class CoordinateGeometryUtils {
 	/**
 	 * Calculates distance between the two points (x1,y1) and (x2,y2)
+	 * 
 	 * @param x1
 	 * @param y1
 	 * @param x2
 	 * @param y2
 	 * @return
 	 */
-	public static double distanceBetween(double x1, double y1, double x2, double y2){
-		double delx=x2-x1;
-		double dely=y2-y1;
-		return Math.sqrt(delx*delx+dely*dely);
+	public static double distanceBetween(double x1, double y1, double x2,
+			double y2) {
+		double delx = x2 - x1;
+		double dely = y2 - y1;
+		return Math.sqrt(delx * delx + dely * dely);
 	}
 
 	/**
 	 * Calculates angle formed by line from (x1,y1) to (x2,y2)
+	 * 
 	 * @param x1
 	 * @param y1
 	 * @param x2
 	 * @param y2
 	 * @return
 	 */
-	public static double angle(double x1, double y1, double x2, double y2){
-		double dely = y2-y1;
-		double delx = x2-x1;
-		if (delx == 0.0 && dely == 0.0){
+	public static double angle(double x1, double y1, double x2, double y2) {
+		double dely = y2 - y1;
+		double delx = x2 - x1;
+		if ((delx == 0.0) && (dely == 0.0)) {
 			return 0;
 		}
-		return Math.atan(dely/delx);
+		return Math.atan(dely / delx);
 	}
+
 	/**
-	 * Calculate the lengths of projection formed by line between given point (x,y) and (x1,y1)
-	 * onto the line formed by (x1,y1) and (x2,y2) as well as the projection prependicular to the latter line.
+	 * Calculate the lengths of projection formed by line between given point
+	 * (x,y) and (x1,y1) onto the line formed by (x1,y1) and (x2,y2) as well as
+	 * the projection prependicular to the latter line.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param x1
 	 * @param y1
 	 * @param x2
 	 * @param y2
-	 * @return two values, projection along line (x1,y1) to (x2,y2) and projection perpendicular to it.
+	 * @return two values, projection along line (x1,y1) to (x2,y2) and
+	 *         projection perpendicular to it.
 	 */
-	public static double [] projectionOfPointOntoLine(double x, double y, double x1, double y1, double x2, double y2){
+	public static double[] projectionOfPointOntoLine(double x, double y,
+			double x1, double y1, double x2, double y2) {
 		double d = distanceBetween(x1, y1, x, y);
-		double a = angle(x1,y1,x,y);
-		double al = angle(x1,y1,x2,y2);
-		double angle=a-al;
-		double lineProjection = Math.abs(d*Math.cos(angle));
-		double perpendicularProjection = Math.abs(d*Math.sin(angle));
-		double [] projection = {lineProjection, perpendicularProjection};
+		double a = angle(x1, y1, x, y);
+		double al = angle(x1, y1, x2, y2);
+		double angle = a - al;
+		double lineProjection = Math.abs(d * Math.cos(angle));
+		double perpendicularProjection = Math.abs(d * Math.sin(angle));
+		double[] projection = { lineProjection, perpendicularProjection };
 		return projection;
 	}
-	
-	public static List<DataPoint> getIntersectionOfLineAndGrid(double x1, double y1, double x2, double y2, int gridSize){
+
+	public static List<DataPoint> getIntersectionOfLineAndGrid(double x1,
+			double y1, double x2, double y2, int gridSize) {
 		List<DataPoint> points = new ArrayList<DataPoint>();
 		double delx = x2 - x1;
 		double dely = y2 - y1;
-		if ( Math.abs(dely) > Math.abs(delx) ){
+		if (Math.abs(dely) > Math.abs(delx)) {
 			double x = x1;
 			double y = y1;
-			double slope = delx/dely;
-			double intercept = x1 - slope*y1;
-			double step = Math.signum(dely)*gridSize;
-			double nsteps = dely/gridSize;
-			points.add(createPoint(x,y));
-			for(int i=0; i < nsteps; i++){
+			double slope = delx / dely;
+			double intercept = x1 - slope * y1;
+			double step = Math.signum(dely) * gridSize;
+			double nsteps = Math.ceil(Math.abs(dely) / gridSize);
+			points.add(createPoint(x, y));
+			for (int i = 0; i < nsteps; i++) {
 				y += step;
-				x = slope*y+intercept;
+				x = slope * y + intercept;
 				points.add(createPoint(x, y));
 			}
 		} else {
 			double x = x1;
 			double y = y1;
-			double slope = dely/delx;
-			double intercept = y1 - slope*x1;
-			double step = Math.signum(delx)*gridSize;
-			double nsteps = delx/gridSize;
-			points.add(createPoint(x,y));
-			for(int i=0; i < nsteps; i++){
+			double slope = dely / delx;
+			double intercept = y1 - slope * x1;
+			double step = Math.signum(delx) * gridSize;
+			double nsteps = Math.ceil(Math.abs(delx) / gridSize);
+			points.add(createPoint(x, y));
+			for (int i = 0; i < nsteps; i++) {
 				x += step;
-				y = slope*x+intercept;
+				y = slope * x + intercept;
 				points.add(createPoint(x, y));
 			}
 		}
@@ -112,12 +121,12 @@ public class CoordinateGeometryUtils {
 
 	private static DataPoint createPoint(double x, double y) {
 		DataPoint point = new DataPoint();
-		point.x=x;
-		point.y=y;
+		point.x = x;
+		point.y = y;
 		return point;
 	}
 
 	public static int roundDown(double value, int gridSize) {
-		return (int) (Math.floor(value/gridSize)*gridSize);
+		return (int) (Math.floor(value / gridSize) * gridSize);
 	}
 }

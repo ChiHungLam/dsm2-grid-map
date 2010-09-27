@@ -1,5 +1,6 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.DEMGridSquare;
 import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
 import gov.ca.bdo.modeling.dsm2.map.client.model.GeomUtils;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DEMDataService;
@@ -15,6 +16,7 @@ import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.DataTable;
@@ -38,7 +40,7 @@ public class ElevationProfileDisplayer {
 	private DEMDataServiceAsync service;
 
 	public ElevationProfileDisplayer(MapWidget map, FlowPanel panel) {
-		this.service = (DEMDataServiceAsync) GWT.create(DEMDataService.class);
+		service = (DEMDataServiceAsync) GWT.create(DEMDataService.class);
 		this.map = map;
 		this.panel = panel;
 	}
@@ -71,6 +73,7 @@ public class ElevationProfileDisplayer {
 	}
 
 	private void fetchProfile() {
+		panel.clear();
 		LatLng latLng1 = line.getVertex(0);
 		LatLng latLng2 = line.getVertex(1);
 		service.getElevationAlong(latLng1.getLatitude(),
@@ -79,13 +82,20 @@ public class ElevationProfileDisplayer {
 
 					public void onSuccess(final List<DataPoint> result) {
 						panel.clear();
-						// Load the visualization api
-						VisualizationUtils.loadVisualizationApi(new Runnable() {
+						if (result == null) {
+							Label label = new Label("NO DATA AVAILABLE!");
+							label.setStyleName("warning");
+							panel.add(label);
+						} else {
+							// Load the visualization api
+							VisualizationUtils.loadVisualizationApi(
+									new Runnable() {
 
-							public void run() {
-								panel.add(drawProfile(result));
-							}
-						}, ScatterChart.PACKAGE);
+										public void run() {
+											panel.add(drawProfile(result));
+										}
+									}, ScatterChart.PACKAGE);
+						}
 					}
 
 					public void onFailure(Throwable caught) {
@@ -110,9 +120,19 @@ public class ElevationProfileDisplayer {
 		table.addColumn(ColumnType.NUMBER, "Length");
 		table.addColumn(ColumnType.NUMBER, "Elevation");
 		int row = 0;
+		double x0 = 0;
+		if (result.size() > 0) {
+			x0 = result.get(0).x;
+		}
+		double nodata = DEMGridSquare.NODATA / 10.;
 		for (DataPoint point : result) {
-			table.setValue(row, 0, GeomUtils.getLengthInFeet(point.x));
-			table.setValue(row, 1, point.z);
+			table.setValue(row, 0, GeomUtils.getLengthInFeet(Math.abs(point.x
+					- x0)));
+			if (Math.abs(point.z - nodata) < 1e-5) {
+
+			} else {
+				table.setValue(row, 1, point.z);
+			}
 			row++;
 		}
 		options.setColors("blue");
