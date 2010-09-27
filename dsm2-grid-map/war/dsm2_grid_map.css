@@ -118,4 +118,9 @@
 .mainMapContainer {
 	position: static;
 }
+
+.warning {
+	color:red;
+	font-size: large;
+}
 /* dsm2 widgets css */
