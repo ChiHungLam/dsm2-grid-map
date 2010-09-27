@@ -122,6 +122,7 @@ public class GridVisibilityControl extends CustomControl {
 	private Widget wrapCaptionPanel(CheckBox box, String caption) {
 		CaptionPanel captionPanel = new CaptionPanel(caption);
 		captionPanel.add(box);
+		captionPanel.setStyleName("small-captions");
 		return captionPanel;
 	}
 
