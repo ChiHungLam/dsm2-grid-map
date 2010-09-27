@@ -8,7 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class BathymetryUploader {
-	//String baseUrl = "http://dsm2bathymetry.appspot.com/upload_bathymetry.html";
+	// String baseUrl =
+	// "http://3.latest.dsm2grid.appspot.com/upload_bathymetry.html";
 
 	String baseUrl = "http://localhost:8888/upload_bathymetry.html";
 
