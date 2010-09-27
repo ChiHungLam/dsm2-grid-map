@@ -310,7 +310,7 @@ public class MapPanel extends Composite {
 				int hashCode = uniqueValue.hashCode();
 				return "http://" + version
 						+ ".latest.dsm2bathymetry.appspot.com/tiles/"
-						+ hashCode + "_tile" + tile.getX() + "_" + tile.getY()
+						+ hashCode + "_itile" + tile.getX() + "_" + tile.getY()
 						+ "_" + zoomLevel + ".png";
 			}
 
