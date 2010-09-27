@@ -30,11 +30,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
-import com.google.gwt.maps.client.event.PolylineMouseOverHandler.PolylineMouseOverEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
@@ -43,24 +41,27 @@ import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 public class ChannelClickHandler implements PolylineClickHandler {
-	private static final PolyStyleOptions redLineStyle = PolyStyleOptions.newInstance("red");
-	private static final PolyStyleOptions greenLineStyle = PolyStyleOptions.newInstance("green");
+	private static final PolyStyleOptions redLineStyle = PolyStyleOptions
+			.newInstance("red");
+	private static final PolyStyleOptions greenLineStyle = PolyStyleOptions
+			.newInstance("green");
+
 	private final class XSectionLineClickHandler implements
 			PolylineClickHandler {
 		private final XSection xSection;
 		private int xSectionIndex;
 
 		private XSectionLineClickHandler(XSection xSection, int index) {
-			this.xSection=xSection;
-			this.xSectionIndex = index;
+			this.xSection = xSection;
+			xSectionIndex = index;
 		}
 
 		public void onClick(PolylineClickEvent event) {
-			for(XSection xs: xsectionLineMap.keySet()){
+			for (XSection xs : xsectionLineMap.keySet()) {
 				Polyline line = xsectionLineMap.get(xs);
-				if(xs == xSection){
+				if (xs == xSection) {
 					line.setStrokeStyle(redLineStyle);
-					infoPanel.drawXSection(channel, xSectionIndex);					
+					infoPanel.drawXSection(channel, xSectionIndex);
 				} else {
 					line.setStrokeStyle(greenLineStyle);
 				}
@@ -176,7 +177,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		LatLng[] channelOutlinePoints = getChannelOutlinePoints();
 		ArrayList<XSection> xsections = channel.getXsections();
 		int xSectionIndex = 0;
-		double width = calculateAverageWidthForChannel();
 		for (final XSection xSection : xsections) {
 			double distance = xSection.getDistance();
 			distance = channel.getLength() * distance;
@@ -191,7 +191,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
 			//assumes a channel 2/3rds filled for approx. visualization
 			// @a certain depth option needed getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection))
-			//double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection)));
+			double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection)));
 			LatLng[] latLngs = GeomUtils
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
@@ -210,31 +210,30 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			xSectionIndex++;
 		}
 	}
-	
-	private double calculateAverageWidthForChannel() {
-		double width = 0;
-		int c=0;
-		for (final XSection xSection : channel.getXsections()) {
-			width+=getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection));
+
+	private double getAverageMaxDepth() {
+		double d = 0;
+		int c = 0;
+		for (XSection xs : channel.getXsections()) {
+			d += getMaxDepth(xs);
 			c++;
 		}
-		return width/c;
+		return d / c;
 	}
 
-	private double getTopWidthAtDepth(XSection xsection, double depth){
+	private double getTopWidthAtDepth(XSection xsection, double depth) {
 		ArrayList<XSectionLayer> layers = xsection.getLayers();
-		//assumes sorted layers with index 0 being the bottom
+		// assumes sorted layers with index 0 being the bottom
 		double bottomElevation = layers.get(0).getElevation();
-		return bottomElevation+depth;
+		return bottomElevation + depth;
 	}
-	
-	private double getMaxDepth(XSection xsection){
+
+	private double getMaxDepth(XSection xsection) {
 		ArrayList<XSectionLayer> layers = xsection.getLayers();
 		double minElevation = layers.get(0).getElevation();
-		double maxElevation = layers.get(layers.size()-1).getElevation();
-		return maxElevation-minElevation;
+		double maxElevation = layers.get(layers.size() - 1).getElevation();
+		return maxElevation - minElevation;
 	}
-	
 
 	private double getTopWidthAtElevation(XSection xsection, double elevation) {
 		ArrayList<XSectionLayer> layers = xsection.getLayers();
