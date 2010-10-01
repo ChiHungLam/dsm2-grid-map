@@ -84,8 +84,10 @@ public class MapControlPanel extends Composite {
 		addPolygonButton = new ToggleButton(new Image(IconImages.INSTANCE
 				.measurePolygonIcon()), new Image(IconImages.INSTANCE
 				.measurePolygonIcon()));
-		clickForElevationButton = new ToggleButton("Click to show elevation", "Click to stop showing elevation");
-		drawXSectionButton = new ToggleButton("Click to start drawing elevation");
+		clickForElevationButton = new ToggleButton(new Image(
+				IconImages.INSTANCE.elevationIcon()));
+		drawXSectionButton = new ToggleButton(new Image(IconImages.INSTANCE
+				.elevationProfileIcon()));
 		//
 		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
 		addTextAnnotationButton = new ToggleButton(new Image(
@@ -261,12 +263,12 @@ public class MapControlPanel extends Composite {
 			elementEditPanel.setVisible(false);
 		}
 	}
-	
-	public HasClickHandlers getClickForElevationButton(){
+
+	public HasClickHandlers getClickForElevationButton() {
 		return clickForElevationButton;
 	}
-	
-	public HasClickHandlers getDrawXSectionButton(){
+
+	public HasClickHandlers getDrawXSectionButton() {
 		return drawXSectionButton;
 	}
 

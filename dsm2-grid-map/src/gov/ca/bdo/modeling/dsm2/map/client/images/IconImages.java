@@ -52,4 +52,10 @@ public interface IconImages extends ClientBundle {
 
 	@Source("adding_text_1.gif")
 	public ImageResource addingTextIcon();
+
+	@Source("elevation.gif")
+	public ImageResource elevationIcon();
+
+	@Source("elevationProfile.gif")
+	public ImageResource elevationProfileIcon();
 }
