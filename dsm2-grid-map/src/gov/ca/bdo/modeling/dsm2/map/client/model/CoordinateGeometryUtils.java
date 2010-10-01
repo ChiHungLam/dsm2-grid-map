@@ -16,9 +16,7 @@
  *    @author Nicky Sandhu
  *    
  */
-package gov.ca.bdo.modeling.dsm2.map.server;
-
-import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
+package gov.ca.bdo.modeling.dsm2.map.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,26 +93,28 @@ public class CoordinateGeometryUtils {
 			double slope = delx / dely;
 			double intercept = x1 - slope * y1;
 			double step = Math.signum(dely) * gridSize;
-			double nsteps = Math.ceil(Math.abs(dely) / gridSize);
+			double nsteps = Math.floor(Math.abs(dely) / gridSize);
 			points.add(createPoint(x, y));
 			for (int i = 0; i < nsteps; i++) {
 				y += step;
 				x = slope * y + intercept;
 				points.add(createPoint(x, y));
 			}
+			points.add(createPoint(x2, y2));
 		} else {
 			double x = x1;
 			double y = y1;
 			double slope = dely / delx;
 			double intercept = y1 - slope * x1;
 			double step = Math.signum(delx) * gridSize;
-			double nsteps = Math.ceil(Math.abs(delx) / gridSize);
+			double nsteps = Math.floor(Math.abs(delx) / gridSize);
 			points.add(createPoint(x, y));
 			for (int i = 0; i < nsteps; i++) {
 				x += step;
 				y = slope * x + intercept;
 				points.add(createPoint(x, y));
 			}
+			points.add(createPoint(x2, y2));
 		}
 		return points;
 	}

@@ -1,5 +1,6 @@
 package gov.ca.bdo.modeling.dsm2.map.server;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateGeometryUtils;
 import gov.ca.bdo.modeling.dsm2.map.client.model.DEMGridSquare;
 import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DEMDataService;

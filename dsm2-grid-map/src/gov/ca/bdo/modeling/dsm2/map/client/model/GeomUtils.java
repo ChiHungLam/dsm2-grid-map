@@ -43,7 +43,7 @@ public class GeomUtils {
 				break;
 			}
 		}
-		return Math.min(i,segments.length-2);
+		return Math.min(i, segments.length - 2);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class GeomUtils {
 		double x0 = point0.getLatitude();
 		double y0 = point0.getLongitude();
 		double c = y0 - m * x0;
-		LatLng pointx = LatLng.newInstance(x0 + 0.001, m*(x0+0.001)+c);
+		LatLng pointx = LatLng.newInstance(x0 + 0.001, m * (x0 + 0.001) + c);
 		double distanceFrom = getLengthInFeet(point0.distanceFrom(pointx));
 		double ratio = 0.5 * length / distanceFrom;
 		double xa = x0 + (pointx.getLatitude() - x0) * ratio;
@@ -121,16 +121,18 @@ public class GeomUtils {
 	}
 
 	public static double getSlopeBetweenPoints(LatLng point1, LatLng point2) {
-		double rawScale =  (point2.getLongitude() - point1.getLongitude())
+		double rawScale = (point2.getLongitude() - point1.getLongitude())
 				/ (point2.getLatitude() - point1.getLatitude());
-		double scale = rawScale*getAspectRatio(point1, point2);
+		double scale = rawScale * getAspectRatio(point1, point2);
 		return scale;
 	}
-	
-	public static double getAspectRatio(LatLng point1, LatLng point2){
-		double latScale = LatLng.newInstance(point1.getLatitude()+0.001, point1.getLongitude()).distanceFrom(point1);
-		double lngScale = LatLng.newInstance(point1.getLatitude(), point1.getLongitude()+0.001).distanceFrom(point1);
-		return lngScale/latScale;
+
+	public static double getAspectRatio(LatLng point1, LatLng point2) {
+		double latScale = LatLng.newInstance(point1.getLatitude() + 0.001,
+				point1.getLongitude()).distanceFrom(point1);
+		double lngScale = LatLng.newInstance(point1.getLatitude(),
+				point1.getLongitude() + 0.001).distanceFrom(point1);
+		return lngScale / latScale;
 	}
 
 	public static double getLengthInFeet(double length) {

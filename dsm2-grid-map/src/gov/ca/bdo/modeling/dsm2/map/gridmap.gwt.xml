@@ -31,4 +31,6 @@
 	-->
 	<script src="PolylineEncoder.js" />
 	<script src="usgs_topo.js"/>
+	<script src="protovis-d3.3.js"/>
+	<script src="plots.js"/>
 </module>
