@@ -18,7 +18,7 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server.persistence;
 
-import gov.ca.bdo.modeling.dsm2.map.server.CoordinateGeometryUtils;
+import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateGeometryUtils;
 import gov.ca.bdo.modeling.dsm2.map.server.data.BathymetryDataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.GenericDAOImpl;
 

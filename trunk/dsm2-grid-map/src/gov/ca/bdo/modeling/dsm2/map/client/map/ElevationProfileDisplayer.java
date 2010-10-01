@@ -1,5 +1,6 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateGeometryUtils;
 import gov.ca.bdo.modeling.dsm2.map.client.model.DEMGridSquare;
 import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
 import gov.ca.bdo.modeling.dsm2.map.client.model.GeomUtils;
@@ -121,13 +122,16 @@ public class ElevationProfileDisplayer {
 		table.addColumn(ColumnType.NUMBER, "Elevation");
 		int row = 0;
 		double x0 = 0;
+		double y0 = 0;
 		if (result.size() > 0) {
 			x0 = result.get(0).x;
+			y0 = result.get(0).y;
 		}
 		double nodata = DEMGridSquare.NODATA / 10.;
 		for (DataPoint point : result) {
-			table.setValue(row, 0, GeomUtils.getLengthInFeet(Math.abs(point.x
-					- x0)));
+			table.setValue(row, 0, GeomUtils
+					.getLengthInFeet(CoordinateGeometryUtils.distanceBetween(
+							x0, y0, point.x, point.y)));
 			if (Math.abs(point.z - nodata) < 1e-5) {
 
 			} else {

@@ -19,6 +19,7 @@
 package gov.ca.bdo.modeling.dsm2.map.server;
 
 import gov.ca.bdo.modeling.dsm2.map.client.model.BathymetryDataPoint;
+import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateGeometryUtils;
 import gov.ca.bdo.modeling.dsm2.map.client.service.BathymetryDataService;
 import gov.ca.bdo.modeling.dsm2.map.server.data.BathymetryDataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.BathymetryDataFileDAO;
@@ -100,7 +101,7 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		try {
 			data.x = dis.readDouble();
 			data.y = dis.readDouble();
-			data.elevation = dis.readDouble();
+			data.z = dis.readDouble();
 			data.year = dis.readInt();
 			data.agency = dis.readUTF();
 		} catch (IOException ex) {
@@ -156,8 +157,8 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 		for (BathymetryDataPoint point : points) {
 			xy[0] = point.x;
 			xy[1] = point.y;
-			double[] projection = CoordinateGeometryUtils.projectionOfPointOntoLine(xy[0],
-					xy[1], x1, y1, x2, y2);
+			double[] projection = CoordinateGeometryUtils
+					.projectionOfPointOntoLine(xy[0], xy[1], x1, y1, x2, y2);
 			point.x = projection[0];
 			point.y = projection[1];
 		}

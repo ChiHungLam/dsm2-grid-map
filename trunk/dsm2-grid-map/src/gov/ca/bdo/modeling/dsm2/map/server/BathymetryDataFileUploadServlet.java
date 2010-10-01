@@ -55,10 +55,11 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 			throws IOException {
 		String xStr = req.getParameter("x");
 		String yStr = req.getParameter("y");
-		if (xStr == null || yStr == null){
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND,
-					"No Bathymetry Data Available for x=" + xStr
-							+ "&y=" + yStr);
+		if ((xStr == null) || (yStr == null)) {
+			resp
+					.sendError(HttpServletResponse.SC_NOT_FOUND,
+							"No Bathymetry Data Available for x=" + xStr
+									+ "&y=" + yStr);
 			return;
 		}
 		double latitude = Double.parseDouble(xStr);
@@ -110,7 +111,7 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 		try {
 			data.x = dis.readDouble();
 			data.y = dis.readDouble();
-			data.elevation = dis.readDouble();
+			data.z = dis.readDouble();
 			data.year = dis.readInt();
 			data.agency = dis.readUTF();
 		} catch (IOException ex) {
@@ -141,7 +142,7 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 					if (item.getFieldName().equals("bathymetryFile")) {
 						String parameter = req.getParameter("append");
 						boolean append = false;
-						if (parameter != null
+						if ((parameter != null)
 								&& !parameter.equalsIgnoreCase("n")) {
 							append = true;
 						}
@@ -178,8 +179,8 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 			}
 			double latitude = Double.parseDouble(fields[0]);
 			double longitude = Double.parseDouble(fields[1]);
-			int x = (int) BathymetryDataFile.roundOff(latitude);
-			int y = (int) BathymetryDataFile.roundOff(longitude);
+			int x = BathymetryDataFile.roundOff(latitude);
+			int y = BathymetryDataFile.roundOff(longitude);
 			ByteArrayOutputStream baos = fileMap.get(x + "_" + y);
 			if (baos == null) {
 				baos = new ByteArrayOutputStream();
