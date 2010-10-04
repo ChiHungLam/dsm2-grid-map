@@ -4,14 +4,17 @@ import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
 import gov.ca.bdo.modeling.dsm2.map.client.model.XSectionProfile;
 import gov.ca.bdo.modeling.dsm2.map.client.model.XYZPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Composite;
 
 public class CrossSectionEditor extends Composite {
+	private XYZPoint[] xsectionPoints;
+
 	public CrossSectionEditor(String divId, XSectionProfile xsProfile,
 			List<DataPoint> profile, List<DataPoint> bathymetry) {
-		XYZPoint[] xsectionPoints = convertDataToXYZPoints(xsProfile.points);
+		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
 		XYZPoint[] profilePoints = convertDataToXYZPoints(profile);
 		XYZPoint[] points = convertDataToXYZPoints(bathymetry);
 		plot(divId, xsectionPoints, profilePoints, points);
@@ -32,4 +35,15 @@ public class CrossSectionEditor extends Composite {
 		$wnd.plots.xsection_editor(divId, xsection_points, profile, points);
 	}-*/;
 
+	public List<DataPoint> getXSectionProfilePoints() {
+		List<DataPoint> points = new ArrayList<DataPoint>();
+		for (XYZPoint xsectionPoint : xsectionPoints) {
+			DataPoint p = new DataPoint();
+			p.x = xsectionPoint.getX();
+			p.y = xsectionPoint.getZ();
+			p.z = xsectionPoint.getY();
+			points.add(p);
+		}
+		return points;
+	}
 }

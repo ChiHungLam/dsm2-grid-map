@@ -58,4 +58,25 @@ public interface IconImages extends ClientBundle {
 
 	@Source("elevationProfile.gif")
 	public ImageResource elevationProfileIcon();
+
+	@Source("add.png")
+	public ImageResource addIcon();
+
+	@Source("edit.png")
+	public ImageResource editIcon();
+
+	@Source("delete.png")
+	public ImageResource deleteIcon();
+
+	@Source("blue_MarkerG.png")
+	public ImageResource blueGMarkerIcon();
+
+	@Source("blue_MarkerN.png")
+	public ImageResource blueNMarkerIcon();
+
+	@Source("blue_MarkerO.png")
+	public ImageResource blueOMarkerIcon();
+
+	@Source("blue_MarkerR.png")
+	public ImageResource blueRMarkerIcon();
 }

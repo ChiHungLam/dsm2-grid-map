@@ -19,6 +19,7 @@
 package gov.ca.bdo.modeling.dsm2.map.server;
 
 import gov.ca.bdo.modeling.dsm2.map.client.model.BathymetryDataPoint;
+import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateConversion;
 import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateGeometryUtils;
 import gov.ca.bdo.modeling.dsm2.map.client.service.BathymetryDataService;
 import gov.ca.bdo.modeling.dsm2.map.server.data.BathymetryDataFile;

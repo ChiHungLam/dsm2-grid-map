@@ -82,6 +82,23 @@ public class CoordinateGeometryUtils {
 		return projection;
 	}
 
+	public static double[] getIntersectionOfLineAndSegments(double x1,
+			double y1, double x2, double y2, List<double[]> segmentPoints) {
+		return null;
+
+	}
+
+	/**
+	 * Calculates the points along the path from x1,y1 to x2,y2 where a grid of
+	 * the given size intersects it.
+	 * 
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param gridSize
+	 * @return
+	 */
 	public static List<DataPoint> getIntersectionOfLineAndGrid(double x1,
 			double y1, double x2, double y2, int gridSize) {
 		List<DataPoint> points = new ArrayList<DataPoint>();

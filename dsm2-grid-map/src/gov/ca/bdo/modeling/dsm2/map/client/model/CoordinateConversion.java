@@ -3,9 +3,9 @@
  *
  * (c) Copyright IBM Corp. 2007
  */
-package gov.ca.bdo.modeling.dsm2.map.server;
+package gov.ca.bdo.modeling.dsm2.map.client.model;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CoordinateConversion {
@@ -26,8 +26,8 @@ public class CoordinateConversion {
 	}
 
 	private void validate(double latitude, double longitude) {
-		if (latitude < -90.0 || latitude > 90.0 || longitude < -180.0
-				|| longitude >= 180.0) {
+		if ((latitude < -90.0) || (latitude > 90.0) || (longitude < -180.0)
+				|| (longitude >= 180.0)) {
 			throw new IllegalArgumentException(
 					"Legal ranges: latitude [-90,90], longitude [-180,180).");
 		}
@@ -494,9 +494,9 @@ public class CoordinateConversion {
 	}
 
 	private class Digraphs {
-		private Map digraph1 = new Hashtable();
+		private Map<Integer, String> digraph1 = new HashMap();
 
-		private Map digraph2 = new Hashtable();
+		private Map<Integer, String> digraph2 = new HashMap();
 
 		private String[] digraph1Array = { "A", "B", "C", "D", "E", "F", "G",
 				"H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U",
@@ -582,7 +582,7 @@ public class CoordinateConversion {
 
 			double a3 = easting;
 			double a4 = a2 + ((int) (a3 / 100000)) - 1;
-			return (String) digraph1.get(new Integer((int) Math.floor(a4)));
+			return digraph1.get(new Integer((int) Math.floor(a4)));
 		}
 
 		public String getDigraph2(int longZone, double northing) {
@@ -595,7 +595,7 @@ public class CoordinateConversion {
 			if (a4 < 0) {
 				a4 = a4 + 19;
 			}
-			return (String) digraph2.get(new Integer((int) Math.floor(a4)));
+			return digraph2.get(new Integer((int) Math.floor(a4)));
 
 		}
 

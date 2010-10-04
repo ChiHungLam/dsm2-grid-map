@@ -19,15 +19,20 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.bdo.modeling.dsm2.map.client.images.IconImages;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.LegendPosition;
@@ -40,9 +45,21 @@ import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 public class ChannelInfoPanel extends Composite {
 
 	private FlowPanel xsectionPanel;
+	private ToggleButton xSectionButton;
 
-	public ChannelInfoPanel(Channel channel) {
+	public ChannelInfoPanel(Channel channel, final MapPanel mapPanel) {
 		xsectionPanel = new FlowPanel();
+		xsectionPanel.getElement().setId("xsection");
+		if (mapPanel.isInEditMode()) {
+			xSectionButton = new ToggleButton(new Image(IconImages.INSTANCE
+					.elevationProfileIcon()));
+			xSectionButton.addClickHandler(new ClickHandler() {
+
+				public void onClick(ClickEvent event) {
+
+				}
+			});
+		}
 		drawXSection(channel, -1);
 		VerticalPanel vpanel = new VerticalPanel();
 		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");
@@ -82,15 +99,15 @@ public class ChannelInfoPanel extends Composite {
 		int i = 0;
 		int numberOfXSections = channel.getXsections().size();
 		String[] colors = new String[numberOfXSections];
-		int actualCount=0;
+		int actualCount = 0;
 		for (XSection xsection : channel.getXsections()) {
-			if ((index >= 0 && index < numberOfXSections) && (i != index)) {
+			if (((index >= 0) && (index < numberOfXSections)) && (i != index)) {
 				i++;
 				continue; // skip if index specified is valid
 			}
 			double distance = xsection.getDistance();
-			colors[actualCount] = "#" + getHexString((int) Math.round(255 * distance))
-					+ "33"
+			colors[actualCount] = "#"
+					+ getHexString((int) Math.round(255 * distance)) + "33"
 					+ getHexString((int) Math.round(255 - 255 * distance));
 			i++;
 			actualCount++;

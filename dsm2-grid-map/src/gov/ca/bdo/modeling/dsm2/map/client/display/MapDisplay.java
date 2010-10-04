@@ -402,13 +402,22 @@ public class MapDisplay extends Composite implements Display,
 			elevationProfileDisplayer = new ElevationProfileDisplayer(mapPanel
 					.getMap(), infoPanel);
 		}
-		elevationProfileDisplayer.startDrawingLine((ToggleButton)this.getDrawXSectionButton());
+		elevationProfileDisplayer
+				.startDrawingLine((ToggleButton) getDrawXSectionButton());
 	}
 
 	public void stopDrawingElevationProfileLine() {
 		if (elevationProfileDisplayer != null) {
 			elevationProfileDisplayer.stopDrawingLine();
 		}
+	}
+
+	public HasClickHandlers getAddButton() {
+		return controlPanel.getAddButton();
+	}
+
+	public HasClickHandlers getDeleteButton() {
+		return controlPanel.getDeleteButton();
 	}
 
 }

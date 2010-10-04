@@ -39,12 +39,26 @@ import com.google.gwt.maps.utility.client.markerclusterer.MarkerClustererOptions
 public class NodeMarkerDataManager {
 	private Nodes nodes;
 	private final HashMap<String, Marker> markerMap;
-	private boolean isLabeled = true;
 	private MarkerClusterer markerClusterer;
+	private MapPanel mapPanel;
+	private MarkNewNodePosition dragEndHandler;
+	private Icon labelIcon;
+	private Icon editModeIcon;
 
-	public NodeMarkerDataManager(Nodes nodes) {
+	public NodeMarkerDataManager(MapPanel mapPanel, Nodes nodes) {
 		this.nodes = nodes;
+		this.mapPanel = mapPanel;
+		dragEndHandler = new MarkNewNodePosition(this.mapPanel);
 		markerMap = new HashMap<String, Marker>();
+		labelIcon = Icon.newInstance("images/greencirclemarker.png");
+		labelIcon.setIconSize(Size.newInstance(22, 22));
+		labelIcon.setIconAnchor(Point.newInstance(11, 11));
+		labelIcon.setInfoWindowAnchor(Point.newInstance(11, 7));
+		editModeIcon = Icon.newInstance("images/blue_MarkerN.png");
+		editModeIcon.setIconSize(Size.newInstance(12, 20));
+		editModeIcon.setShadowSize(Size.newInstance(22, 20));
+		editModeIcon.setIconAnchor(Point.newInstance(6, 20));
+		editModeIcon.setInfoWindowAnchor(Point.newInstance(5, 1));
 	}
 
 	public void clear() {
@@ -58,13 +72,19 @@ public class NodeMarkerDataManager {
 
 	public void addNode(Node node) {
 		nodes.addNode(node);
+		addMarkerForNode(node);
+	}
+
+	public void deleteNode(Node node) {
+		nodes.removeNode(node);
+		removeMarkerForNode(node);
 	}
 
 	public Node getNodeData(String id) {
 		return nodes.getNode(id);
 	}
 
-	public void addMarker(Node mapMarkerData, Marker marker) {
+	private void addMarker(Node mapMarkerData, Marker marker) {
 		markerMap.put(mapMarkerData.getId(), marker);
 	}
 
@@ -76,24 +96,11 @@ public class NodeMarkerDataManager {
 		return nodes;
 	}
 
-	private Icon createNodeIcon() {
-		if (isLabeled) {
-			Icon icon = Icon.newInstance("images/greencirclemarker.png");
-			icon.setIconSize(Size.newInstance(22, 22));
-			icon.setIconAnchor(Point.newInstance(11, 11));
-			icon.setInfoWindowAnchor(Point.newInstance(11, 7));
-			return icon;
+	private Icon getNodeIcon() {
+		if (mapPanel.isInEditMode()) {
+			return editModeIcon;
 		} else {
-			// Create our "tiny" marker icon
-			Icon icon = Icon
-					.newInstance("http://labs.google.com/ridefinder/images/mm_20_blue.png");
-			icon
-					.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
-			icon.setIconSize(Size.newInstance(12, 20));
-			icon.setShadowSize(Size.newInstance(22, 20));
-			icon.setIconAnchor(Point.newInstance(6, 20));
-			icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-			return icon;
+			return labelIcon;
 		}
 	}
 
@@ -103,58 +110,15 @@ public class NodeMarkerDataManager {
 	 * 
 	 * @param mapPanel
 	 */
-	public void displayNodeMarkers(MapPanel mapPanel) {
-		if (mapPanel.isInEditMode()) {
-			isLabeled = false;
-		} else {
-			isLabeled = true;
+	public void displayNodeMarkers() {
+		for (Node node : getAllNodes()) {
+			addMarkerForNode(node);
 		}
-		Icon icon = createNodeIcon();
-		MarkNewNodePosition dragEndHandler = new MarkNewNodePosition(mapPanel);
-		for (Node mapMarkerData : getAllNodes()) {
-			MarkerOptions options = null;
-			if (isLabeled) {
-				LabeledMarkerOptions opts = LabeledMarkerOptions.newInstance();
-				opts.setLabelOffset(Size.newInstance(-5, -5));
-				opts.setLabelText(mapMarkerData.getId());
-				opts.setLabelClass("hm-marker-label");
-				options = opts;
-			} else {
-				options = MarkerOptions.newInstance();
-			}
-			options.setTitle(mapMarkerData.getId());
-			options.setIcon(icon);
-			// -- edit mode options and only for the marker being
-			// manipulated --
-			if (mapPanel.isInEditMode()) {
-				options.setDragCrossMove(mapPanel.isInEditMode());
-				options.setDraggable(mapPanel.isInEditMode());
-				options.setClickable(mapPanel.isInEditMode());
-				options.setAutoPan(mapPanel.isInEditMode());
-			}
-			// -- edit mode options
-			Marker marker = null;
-			LatLng point = LatLng.newInstance(mapMarkerData.getLatitude(),
-					mapMarkerData.getLongitude());
-			if (isLabeled) {
-				marker = new LabeledMarker(point,
-						(LabeledMarkerOptions) options);
-			} else {
-				marker = new Marker(point, options);
-			}
-			if (mapPanel.isInEditMode()) {
-				marker.addMarkerDragEndHandler(dragEndHandler);
-			}
-			addMarker(mapMarkerData, marker);
-			if (!isLabeled) {
-				mapPanel.getMap().addOverlay(marker);
-			}
-		}
-		if (isLabeled) {
+		if (!mapPanel.isInEditMode()) {
 			MarkerClustererOptions clusterOptions = MarkerClustererOptions
 					.newInstance();
 			clusterOptions.setGridSize(100);
-			clusterOptions.setMaxZoom(12);
+			clusterOptions.setMaxZoom(10);
 			Marker[] markers = new Marker[getAllNodes().size()];
 			int i = 0;
 			for (Marker marker : markerMap.values()) {
@@ -166,11 +130,64 @@ public class NodeMarkerDataManager {
 	}
 
 	/**
+	 * Works when adding one node at a time in edit mode. for labeled mode,
+	 * you'll have to call refresh
+	 * 
+	 * @param mapMarkerData
+	 */
+	private void addMarkerForNode(Node mapMarkerData) {
+		MarkerOptions options = null;
+		if (!mapPanel.isInEditMode()) {
+			LabeledMarkerOptions opts = LabeledMarkerOptions.newInstance();
+			opts.setLabelOffset(Size.newInstance(-5, -5));
+			opts.setLabelText(mapMarkerData.getId());
+			opts.setLabelClass("hm-marker-label");
+			options = opts;
+		} else {
+			options = MarkerOptions.newInstance();
+		}
+		options.setTitle(mapMarkerData.getId());
+		options.setIcon(getNodeIcon());
+		// -- edit mode options and only for the marker being
+		// manipulated --
+		if (!mapPanel.isInEditMode()) {
+			options.setDragCrossMove(mapPanel.isInEditMode());
+			options.setDraggable(mapPanel.isInEditMode());
+			options.setClickable(mapPanel.isInEditMode());
+			options.setAutoPan(mapPanel.isInEditMode());
+		}
+		// -- edit mode options
+		Marker marker = null;
+		LatLng point = LatLng.newInstance(mapMarkerData.getLatitude(),
+				mapMarkerData.getLongitude());
+		if (!mapPanel.isInEditMode()) {
+			marker = new LabeledMarker(point, (LabeledMarkerOptions) options);
+		} else {
+			marker = new Marker(point, options);
+		}
+		if (!mapPanel.isInEditMode()) {
+			marker.addMarkerDragEndHandler(dragEndHandler);
+		}
+		addMarker(mapMarkerData, marker);
+		if (mapPanel.isInEditMode()) {
+			mapPanel.getMap().addOverlay(marker);
+		}
+	}
+
+	private void removeMarkerForNode(Node node) {
+		if (mapPanel.isInEditMode()) {
+			mapPanel.getMap().removeOverlay(getMarkerFor(node.getId()));
+		} else {
+			markerClusterer.removeMarker(getMarkerFor(node.getId()));
+		}
+	}
+
+	/**
 	 * clears node markers
 	 * 
 	 * @param mapPanel
 	 */
-	public void clearNodeMarkers(MapPanel mapPanel) {
+	public void clearNodeMarkers() {
 		if (markerClusterer != null) {
 			markerClusterer.clearMarkers();
 			markerClusterer = null;
