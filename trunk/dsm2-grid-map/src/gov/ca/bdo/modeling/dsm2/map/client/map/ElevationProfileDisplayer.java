@@ -4,9 +4,11 @@ import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateGeometryUtils;
 import gov.ca.bdo.modeling.dsm2.map.client.model.DEMGridSquare;
 import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
 import gov.ca.bdo.modeling.dsm2.map.client.model.GeomUtils;
+import gov.ca.bdo.modeling.dsm2.map.client.model.XSectionProfile;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DEMDataService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DEMDataServiceAsync;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -39,6 +41,8 @@ public class ElevationProfileDisplayer {
 	private FlowPanel panel;
 	private Polyline line;
 	private DEMDataServiceAsync service;
+	private boolean editMode = false;
+	private CrossSectionEditor editor;
 
 	public ElevationProfileDisplayer(MapWidget map, FlowPanel panel) {
 		service = (DEMDataServiceAsync) GWT.create(DEMDataService.class);
@@ -88,14 +92,23 @@ public class ElevationProfileDisplayer {
 							label.setStyleName("warning");
 							panel.add(label);
 						} else {
-							// Load the visualization api
-							VisualizationUtils.loadVisualizationApi(
-									new Runnable() {
+							if (editMode) {
+								XSectionProfile xsProfile = new XSectionProfile();
+								xsProfile.points = new ArrayList<DataPoint>(
+										result);
+								List<DataPoint> bathymetry = new ArrayList<DataPoint>();
+								editor = new CrossSectionEditor("xsect",
+										xsProfile, result, bathymetry);
 
-										public void run() {
-											panel.add(drawProfile(result));
-										}
-									}, ScatterChart.PACKAGE);
+							} else {
+								VisualizationUtils.loadVisualizationApi(
+										new Runnable() {
+
+											public void run() {
+												panel.add(drawProfile(result));
+											}
+										}, ScatterChart.PACKAGE);
+							}
 						}
 					}
 
@@ -143,4 +156,17 @@ public class ElevationProfileDisplayer {
 		ScatterChart chart = new ScatterChart(table, options);
 		return chart;
 	}
+
+	public boolean isEditMode() {
+		return editMode;
+	}
+
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
+	}
+
+	public List<DataPoint> getXSectionProfilePoints() {
+		return editor.getXSectionProfilePoints();
+	}
+
 }

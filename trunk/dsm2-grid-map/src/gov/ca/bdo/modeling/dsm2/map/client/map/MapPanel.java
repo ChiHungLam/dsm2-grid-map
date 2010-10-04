@@ -75,8 +75,6 @@ public class MapPanel extends Composite {
 	public MapPanel() {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
-		// new ClearBackgroundLayer(getMap(), false);
-		// new ClearBackgroundLayer(getMap(), true);
 		visibilityControl = new GridVisibilityControl(this);
 		getMap().addControl(visibilityControl);
 		ExpandContractMapControl fullScreenControl = new ExpandContractMapControl();
@@ -118,7 +116,7 @@ public class MapPanel extends Composite {
 
 	public void populateGrid() {
 		clearAllMarkers();
-		setNodeManager(new NodeMarkerDataManager(model.getNodes()));
+		setNodeManager(new NodeMarkerDataManager(this, model.getNodes()));
 		setChannelManager(new ChannelLineDataManager(getNodeManager(), model
 				.getChannels()));
 		refreshGrid();
@@ -161,7 +159,7 @@ public class MapPanel extends Composite {
 
 	protected void clearAllMarkers() {
 		if (getNodeManager() != null) {
-			getNodeManager().clearNodeMarkers(this);
+			getNodeManager().clearNodeMarkers();
 		}
 		if (getMap() != null) {
 			getMap().clearOverlays();
@@ -169,7 +167,7 @@ public class MapPanel extends Composite {
 	}
 
 	protected void populateNodeMarkers() {
-		getNodeManager().displayNodeMarkers(this);
+		getNodeManager().displayNodeMarkers();
 	}
 
 	protected void populateChannelLines() {
@@ -239,9 +237,9 @@ public class MapPanel extends Composite {
 
 	public void hideMarkers(boolean hide) {
 		if (hide) {
-			getNodeManager().clearNodeMarkers(this);
+			getNodeManager().clearNodeMarkers();
 		} else {
-			getNodeManager().displayNodeMarkers(this);
+			getNodeManager().displayNodeMarkers();
 		}
 	}
 

@@ -100,7 +100,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void doOnClick(PolylineClickEvent event) {
-		infoPanel = new ChannelInfoPanel(channel);
+		infoPanel = new ChannelInfoPanel(channel, mapPanel);
 		mapPanel.getInfoPanel().clear();
 		mapPanel.getInfoPanel().add(infoPanel);
 		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
@@ -189,14 +189,17 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			LatLng point0 = GeomUtils.findPointAtDistance(point1, point2,
 					distance - segmentDistance);
 			double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
-			//assumes a channel 2/3rds filled for approx. visualization
-			// @a certain depth option needed getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection))
-			double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(xSection, 0.67*getMaxDepth(xSection)));
+			// assumes a channel 2/3rds filled for approx. visualization
+			// @a certain depth option needed getTopWidthAtDepth(xSection,
+			// 0.67*getMaxDepth(xSection))
+			double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(
+					xSection, 0.67 * getMaxDepth(xSection)));
 			LatLng[] latLngs = GeomUtils
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
 			final Polyline line = new Polyline(latLngs, "green", 4);
-			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,xSectionIndex));
+			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,
+					xSectionIndex));
 			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
 
 				public void onMouseOver(PolylineMouseOverEvent event) {
@@ -298,7 +301,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void updateDisplay() {
-		ChannelInfoPanel panel = new ChannelInfoPanel(channel);
+		ChannelInfoPanel panel = new ChannelInfoPanel(channel, mapPanel);
 		mapPanel.getInfoPanel().clear();
 		mapPanel.getInfoPanel().add(panel);
 	}

@@ -157,7 +157,7 @@
 		<welcome-file>dsm2_grid_map.html</welcome-file>
 	</welcome-file-list>
 
-	<!-- secured pages -->
+	<!-- secured pages 
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>general</web-resource-name>
@@ -168,7 +168,7 @@
 			<role-name>*</role-name>
 		</auth-constraint>
 	</security-constraint>
-
+	-->
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>admin</web-resource-name>

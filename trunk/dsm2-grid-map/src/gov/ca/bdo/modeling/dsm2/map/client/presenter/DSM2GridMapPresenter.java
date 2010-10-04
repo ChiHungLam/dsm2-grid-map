@@ -61,6 +61,10 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void stopDrawingElevationProfileLine();
 
+		public HasClickHandlers getAddButton();
+
+		public HasClickHandlers getDeleteButton();
+
 	}
 
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
@@ -139,33 +143,38 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 				}
 			}
 		});
-		
+
 		d.getClickForElevationButton().addClickHandler(new ClickHandler() {
-			
+
 			public void onClick(ClickEvent event) {
 				HasClickHandlers button = d.getClickForElevationButton();
-				if (button instanceof ToggleButton){
+				if (button instanceof ToggleButton) {
 					ToggleButton tb = (ToggleButton) button;
-					if(tb.isDown()){
+					if (tb.isDown()) {
 						d.startClickingForElevation();
-					}else {
+					} else {
 						d.stopClickingForElevation();
 					}
 				}
 			}
 		});
 		d.getDrawXSectionButton().addClickHandler(new ClickHandler() {
-			
+
 			public void onClick(ClickEvent event) {
 				HasClickHandlers button = d.getDrawXSectionButton();
-				if (button instanceof ToggleButton){
+				if (button instanceof ToggleButton) {
 					ToggleButton tb = (ToggleButton) button;
-					if (tb.isDown()){
+					if (tb.isDown()) {
 						d.startDrawingElevationProfileLine();
-					}else {
+					} else {
 						d.stopDrawingElevationProfileLine();
 					}
 				}
+			}
+		});
+		d.getAddButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
 			}
 		});
 	}

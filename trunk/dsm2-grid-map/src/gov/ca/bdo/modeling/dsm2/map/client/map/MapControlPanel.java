@@ -111,8 +111,10 @@ public class MapControlPanel extends Composite {
 		containerPanel.setWidget(1, 2, findChannelLabel);
 		containerPanel.setWidget(1, 3, findChannelBox);
 
-		addElementButton = new ToggleButton("Add", "Adding...");
-		deleteElementButton = new ToggleButton("Delete", "Deleting...");
+		addElementButton = new ToggleButton(new Image(IconImages.INSTANCE
+				.addIcon()));
+		deleteElementButton = new ToggleButton(new Image(IconImages.INSTANCE
+				.deleteIcon()));
 		HorizontalPanel addDeleteButtonPanel = new HorizontalPanel();
 		addDeleteButtonPanel.add(addElementButton);
 		addDeleteButtonPanel.add(deleteElementButton);
@@ -270,6 +272,14 @@ public class MapControlPanel extends Composite {
 
 	public HasClickHandlers getDrawXSectionButton() {
 		return drawXSectionButton;
+	}
+
+	public HasClickHandlers getAddButton() {
+		return addElementButton;
+	}
+
+	public HasClickHandlers getDeleteButton() {
+		return deleteElementButton;
 	}
 
 }
