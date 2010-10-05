@@ -64,6 +64,7 @@ public class MapControlPanel extends Composite {
 	private ToggleButton deleteElementButton;
 	private ToggleButton clickForElevationButton;
 	private ToggleButton drawXSectionButton;
+	private ToggleButton showBathymetryPoints;
 
 	public MapControlPanel(boolean viewOnly) {
 		this.viewOnly = viewOnly;
@@ -85,9 +86,11 @@ public class MapControlPanel extends Composite {
 				.measurePolygonIcon()), new Image(IconImages.INSTANCE
 				.measurePolygonIcon()));
 		clickForElevationButton = new ToggleButton(new Image(
-				IconImages.INSTANCE.elevationIcon()));
-		drawXSectionButton = new ToggleButton(new Image(IconImages.INSTANCE
+				gov.ca.modeling.maps.elevation.client.images.IconImages.INSTANCE.elevationIcon()));
+		drawXSectionButton = new ToggleButton(new Image(gov.ca.modeling.maps.elevation.client.images.IconImages.INSTANCE
 				.elevationProfileIcon()));
+		showBathymetryPoints = new ToggleButton("Show Bathymetry");
+		
 		//
 		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
 		addTextAnnotationButton = new ToggleButton(new Image(
@@ -280,6 +283,10 @@ public class MapControlPanel extends Composite {
 
 	public HasClickHandlers getDeleteButton() {
 		return deleteElementButton;
+	}
+	
+	public HasClickHandlers getShowBathymetryPointsButton(){
+		return showBathymetryPoints;
 	}
 
 }

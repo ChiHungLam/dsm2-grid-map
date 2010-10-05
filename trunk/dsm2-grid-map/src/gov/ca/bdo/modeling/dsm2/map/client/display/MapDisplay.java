@@ -1,8 +1,6 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
-import gov.ca.bdo.modeling.dsm2.map.client.map.ElevationDisplayer;
-import gov.ca.bdo.modeling.dsm2.map.client.map.ElevationProfileDisplayer;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapControlPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
@@ -10,6 +8,9 @@ import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.DSM2Model;
+import gov.ca.modeling.maps.elevation.client.BathymetryDisplayer;
+import gov.ca.modeling.maps.elevation.client.ElevationDisplayer;
+import gov.ca.modeling.maps.elevation.client.ElevationProfileDisplayer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -354,6 +355,7 @@ public class MapDisplay extends Composite implements Display,
 
 	private Polyline line;
 	private ElevationProfileDisplayer elevationProfileDisplayer;
+	private BathymetryDisplayer bathymetryDisplayer;
 
 	public void addLine(Channel channel) {
 		MapWidget map = mapPanel.getMap();
@@ -418,6 +420,23 @@ public class MapDisplay extends Composite implements Display,
 
 	public HasClickHandlers getDeleteButton() {
 		return controlPanel.getDeleteButton();
+	}
+	
+	public HasClickHandlers getShowBathymetryPointsButton(){
+		return controlPanel.getShowBathymetryPointsButton();
+	}
+
+	public void startShowingBathymetryPoints() {
+		if (bathymetryDisplayer==null){
+			bathymetryDisplayer = new BathymetryDisplayer(mapPanel.getMap());
+		}
+		bathymetryDisplayer.activateShowDataHandler(true);
+	}
+
+	public void stopShowingBathymetryPoints() {
+		if (bathymetryDisplayer != null){
+			bathymetryDisplayer.activateShowDataHandler(false);
+		}
 	}
 
 }

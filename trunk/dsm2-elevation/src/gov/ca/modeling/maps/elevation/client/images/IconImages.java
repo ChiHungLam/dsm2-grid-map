@@ -17,7 +17,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
  */
-package gov.ca.bdo.modeling.dsm2.map.client.images;
+package gov.ca.modeling.maps.elevation.client.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -26,51 +26,9 @@ import com.google.gwt.resources.client.ImageResource;
 public interface IconImages extends ClientBundle {
 	public static final IconImages INSTANCE = GWT.create(IconImages.class);
 
-	@Source("hide.png")
-	public ImageResource hideIcon();
+	@Source("elevation.gif")
+	public ImageResource elevationIcon();
 
-	@Source("show.png")
-	public ImageResource showIcon();
-
-	@Source("expand.png")
-	public ImageResource expandIcon();
-
-	@Source("close.png")
-	public ImageResource closeIcon();
-
-	@Source("pin.png")
-	public ImageResource pinIcon();
-
-	@Source("measure_ON.gif")
-	public ImageResource measureOnIcon();
-
-	@Source("measure_OFF.gif")
-	public ImageResource measureOffIcon();
-
-	@Source("measure-poly.png")
-	public ImageResource measurePolygonIcon();
-
-	@Source("adding_text_1.gif")
-	public ImageResource addingTextIcon();
-
-	@Source("add.png")
-	public ImageResource addIcon();
-
-	@Source("edit.png")
-	public ImageResource editIcon();
-
-	@Source("delete.png")
-	public ImageResource deleteIcon();
-
-	@Source("blue_MarkerG.png")
-	public ImageResource blueGMarkerIcon();
-
-	@Source("blue_MarkerN.png")
-	public ImageResource blueNMarkerIcon();
-
-	@Source("blue_MarkerO.png")
-	public ImageResource blueOMarkerIcon();
-
-	@Source("blue_MarkerR.png")
-	public ImageResource blueRMarkerIcon();
+	@Source("elevationProfile.gif")
+	public ImageResource elevationProfileIcon();
 }
