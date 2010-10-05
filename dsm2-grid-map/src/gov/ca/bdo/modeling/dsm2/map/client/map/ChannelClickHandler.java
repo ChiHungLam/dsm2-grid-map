@@ -20,11 +20,11 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.bdo.modeling.dsm2.map.client.WindowUtils;
-import gov.ca.bdo.modeling.dsm2.map.client.model.GeomUtils;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
+import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

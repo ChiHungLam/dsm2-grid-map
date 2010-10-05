@@ -64,6 +64,12 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		public HasClickHandlers getAddButton();
 
 		public HasClickHandlers getDeleteButton();
+		
+		public HasClickHandlers getShowBathymetryPointsButton();
+
+		public void startShowingBathymetryPoints();
+
+		public void stopShowingBathymetryPoints();
 
 	}
 
@@ -172,6 +178,22 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 				}
 			}
 		});
+		
+		d.getShowBathymetryPointsButton().addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				HasClickHandlers button = d.getShowBathymetryPointsButton();
+				if (button instanceof ToggleButton) {
+					ToggleButton tb = (ToggleButton) button;
+					if (tb.isDown()) {
+						d.startShowingBathymetryPoints();
+					} else {
+						d.stopShowingBathymetryPoints();
+					}
+				}
+			}
+		});
+		
 		d.getAddButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {

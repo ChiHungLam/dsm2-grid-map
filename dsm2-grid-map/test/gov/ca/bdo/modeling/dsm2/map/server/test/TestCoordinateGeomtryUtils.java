@@ -2,8 +2,8 @@ package gov.ca.bdo.modeling.dsm2.map.server.test;
 
 import java.util.List;
 
-import gov.ca.bdo.modeling.dsm2.map.client.model.CoordinateGeometryUtils;
-import gov.ca.bdo.modeling.dsm2.map.client.model.DataPoint;
+import gov.ca.modeling.maps.elevation.client.model.CoordinateGeometryUtils;
+import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import junit.framework.TestCase;
 
 public class TestCoordinateGeomtryUtils extends TestCase{

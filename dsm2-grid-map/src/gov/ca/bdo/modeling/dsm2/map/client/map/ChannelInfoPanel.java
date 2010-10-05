@@ -19,10 +19,10 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.bdo.modeling.dsm2.map.client.images.IconImages;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
+import gov.ca.modeling.maps.elevation.client.images.IconImages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

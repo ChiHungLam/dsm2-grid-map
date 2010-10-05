@@ -18,11 +18,11 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server;
 
-import gov.ca.bdo.modeling.dsm2.map.client.model.BathymetryDataPoint;
 import gov.ca.bdo.modeling.dsm2.map.server.data.BathymetryDataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.BathymetryDataFileDAO;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.BathymetryDataFileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
+import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

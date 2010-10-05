@@ -13,6 +13,8 @@
 	<inherits name="com.google.gwt.maps.GoogleMaps" />
 	<inherits name='gov.ca.modeling.maps.widgets.ExpandContractMapControl' />
 	<inherits name='com.google.gwt.widgetideas.WidgetIdeas'/>
+	
+	<inherits name='gov.ca.modeling.maps.elevation.elevation'/>
 	<!-- Specify the app entry point class.                         -->
 	<entry-point
 		class='gov.ca.maps.bathymetry.tiles.client.MainEntryPoint' />

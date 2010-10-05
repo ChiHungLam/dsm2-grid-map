@@ -53,7 +53,9 @@ public class RoleFilter implements Filter {
 	private UserService userService;
 	private static final String[] noLoginNeededURLS = new String[] { "/logout",
 			"/login", "/public", "upload_bathymetry", "/request_access",
-			"/dsm2_grid_map/dem" };
+			"/dsm2_grid_map/dem", 
+			"/dsm2_grid_map/bathymetry",
+			".gwt.rpc"};
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -80,13 +82,13 @@ public class RoleFilter implements Filter {
 				}
 			}
 		} else {
-			log.info("no user logged in yet");
 			if (noLoginNeeded(requestURI)) {
 				if (requestURI.contains("/logout")) {
 					httpServletRequest.getSession().invalidate();
 				}
 				chain.doFilter(request, response);
 			} else {
+				log.info("Login needed to access: "+requestURI);
 				httpServletResponse.sendRedirect(userService
 						.createLoginURL(requestURI));
 			}

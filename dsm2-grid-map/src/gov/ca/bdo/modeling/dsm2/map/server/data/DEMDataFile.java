@@ -1,6 +1,6 @@
 package gov.ca.bdo.modeling.dsm2.map.server.data;
 
-import gov.ca.bdo.modeling.dsm2.map.client.model.DEMGridSquare;
+import gov.ca.modeling.maps.elevation.client.model.DEMGridSquare;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

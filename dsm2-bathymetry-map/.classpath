@@ -13,5 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-maps-1.1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-visualization-1.1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-incubator-20100204-r1747"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/dsm2-elevation.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
