@@ -125,7 +125,7 @@ public class ElevationProfileDisplayer {
 		options.setTitle(title);
 		options.setTitleX("Length (ft)");
 		options.setTitleY("Elevation (ft)");
-		options.setWidth(500);
+		options.setWidth(this.panel.getParent().getParent().getOffsetWidth());
 		options.setLineSize(1);
 		options.setLegend(LegendPosition.BOTTOM);
 		options.setShowCategories(false);
