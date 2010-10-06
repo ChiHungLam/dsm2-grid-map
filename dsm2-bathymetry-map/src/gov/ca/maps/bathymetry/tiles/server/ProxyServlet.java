@@ -44,20 +44,28 @@ public class ProxyServlet extends HttpServlet {
 		request.getInputStream().read(payload);
 		String payloadStr = new String(payload);
 		String moduleBase = payloadStr.split("\\|")[3];
-		payloadStr = payloadStr.replace(moduleBase,
-				proxyModuleBase);
+		payloadStr = payloadStr.replace(moduleBase, proxyModuleBase);
 		proxyRequest.setPayload(payloadStr.getBytes());
-		HTTPResponse proxyResponse = urlFetchService.fetch(proxyRequest);
-		byte[] content = proxyResponse.getContent();
-		List<HTTPHeader> headers = proxyResponse.getHeaders();
-		for (HTTPHeader header : headers) {
-			response.addHeader(header.getName(), header.getValue());
+		int retryCount = 0;
+		while (retryCount < 2) {
+			try {
+				HTTPResponse proxyResponse = urlFetchService
+						.fetch(proxyRequest);
+				byte[] content = proxyResponse.getContent();
+				List<HTTPHeader> headers = proxyResponse.getHeaders();
+				for (HTTPHeader header : headers) {
+					response.addHeader(header.getName(), header.getValue());
+				}
+				int responseCode = proxyResponse.getResponseCode();
+				response.setStatus(responseCode);
+				response.setContentLength(content.length);
+				response.getOutputStream().write(content);
+				response.flushBuffer();
+				retryCount = 2;
+			} catch (IOException ex) {
+				retryCount++;
+			}
 		}
-		int responseCode = proxyResponse.getResponseCode();
-		response.setStatus(responseCode);
-		response.setContentLength(content.length);
-		response.getOutputStream().write(content);
-		response.flushBuffer();
 	}
 
 	@Override
