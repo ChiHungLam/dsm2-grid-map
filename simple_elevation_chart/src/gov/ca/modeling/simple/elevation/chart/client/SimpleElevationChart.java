@@ -1,11 +1,11 @@
 package gov.ca.modeling.simple.elevation.chart.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gov.ca.modeling.maps.elevation.client.CrossSectionEditor;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import gov.ca.modeling.maps.elevation.client.model.XSectionProfile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,53 +26,65 @@ public class SimpleElevationChart implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		XSectionProfile xsProfile = new XSectionProfile();
-		List<DataPoint> profile = new ArrayList<DataPoint>();
-		profile.add(createDataPoint(0.5, 10, 1.03));
-		profile.add(createDataPoint(0.75,-5.3,2.1));
-		profile.add(createDataPoint(10.5,-5.2,3.1));
-		profile.add(createDataPoint(10.3,10.99,4.4));
+		final XSectionProfile xsProfile = new XSectionProfile();
+		final List<DataPoint> profile = new ArrayList<DataPoint>();
+		profile.add(createDataPoint(0.5, 1.03, 10));
+		profile.add(createDataPoint(0.75, 2.1, -5.3));
+		profile.add(createDataPoint(10.5, 3.1, -5.2));
+		profile.add(createDataPoint(10.3, 4.1, 10.44));
 		xsProfile.points = new ArrayList<DataPoint>(profile);
-		xsProfile.channelId="451";
-		xsProfile.id=993884;
-		xsProfile.x1=0.2;
-		xsProfile.y1=0.5;
-		xsProfile.x2=10.2;
-		xsProfile.y2=10.3;
-		List<DataPoint> bathymetry = new ArrayList<DataPoint>();
-		bathymetry.add(createDataPoint(0.5, 10.3, 53.4));
-		bathymetry.add(createDataPoint(3.1, 8.1, 152.3));
-		bathymetry.add(createDataPoint(8.33, 6.3, 250.4));
-		/*
-		editor = new CrossSectionEditor("xsect", xsProfile,
-				profile, bathymetry);
-				*/
-		Button doneButton = new Button("Done");
-		final HTML infoArea = new HTML();
-		doneButton.addClickHandler(new ClickHandler() {
-			
+		xsProfile.channelId = "451";
+		xsProfile.id = 993884;
+		xsProfile.x1 = 0.2;
+		xsProfile.y1 = 0.5;
+		xsProfile.x2 = 10.2;
+		xsProfile.y2 = 10.3;
+		final List<DataPoint> bathymetry = new ArrayList<DataPoint>();
+		bathymetry.add(createDataPoint(2.5, 53.4, 10.3));
+		bathymetry.add(createDataPoint(3.1, 152.3, 8.1));
+		bathymetry.add(createDataPoint(8.33, 250.4, 6.3));
+		Button sampleButton = new Button("Sample Plot");
+		sampleButton.addClickHandler(new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent event) {
+				editor = null;
 				sample_plot();
-				List<DataPoint> profilePoints = editor.getXSectionProfilePoints();
-				StringBuffer b=new StringBuffer();
-				for(DataPoint p: profilePoints){
-					b.append("x:").append(p.x).append(" y:").append(p.y).append(" z:").append(p.z);
+			}
+		});
+		final HTML infoArea = new HTML();
+		Button xsectionButton = new Button("XSection Plot");
+		xsectionButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (editor == null) {
+					editor = new CrossSectionEditor("xsect", xsProfile,
+							profile, bathymetry);
+				}
+				List<DataPoint> profilePoints = editor
+						.getXSectionProfilePoints();
+				StringBuffer b = new StringBuffer();
+				for (DataPoint p : profilePoints) {
+					b.append("x:").append(p.x).append(" y:").append(p.y)
+							.append(" z:").append(p.z);
 					b.append("<br/>");
 				}
 				infoArea.setHTML(b.toString());
+
 			}
 		});
 		FlowPanel controlPanel = new FlowPanel();
-		controlPanel.add(doneButton);
+		controlPanel.add(xsectionButton);
+		controlPanel.add(infoArea);
 		RootPanel.get("control").add(controlPanel);
 	}
 
 	public native void sample_plot() /*-{
 		var profile = [{x: -400, y: -4.5}, {x:-100, y: -8.0}, {x:-25, y: -9.7}, {x:155, y:-7.6}, {x: 300, y:-4.3}, {x: 355, y: -3.1}];
 		var points = $wnd.pv.range(1,100).map(function(i) { return (
-			{x: Math.random()*800-400, y:-10+Math.random()*7, z: Math.random()*400}
-			);
+		{x: Math.random()*800-400, y:-10+Math.random()*7, z: Math.random()*400}
+		);
 		});
 		var xsection_points = [{x: -400, y: -4.5}, {x:-100, y: -8.0}, {x:-25, y: -9.7}, {x:155, y:-7.6}, {x: 300, y:-4.3}, {x: 355, y: -3.1}];
 		$wnd.plots.xsection_editor('xsect',xsection_points, profile, points);
