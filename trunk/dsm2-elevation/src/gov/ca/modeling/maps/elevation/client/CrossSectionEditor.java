@@ -11,6 +11,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.ui.Composite;
 
 public class CrossSectionEditor extends Composite {
+	private JavaScriptObject xpArray;
 	private XYZPoint[] xsectionPoints;
 
 	public CrossSectionEditor(String divId, XSectionProfile xsProfile,
@@ -18,7 +19,7 @@ public class CrossSectionEditor extends Composite {
 		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
 		XYZPoint[] profilePoints = convertDataToXYZPoints(profile);
 		XYZPoint[] points = convertDataToXYZPoints(bathymetry);
-		plot(divId, ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
+		plot(divId, xpArray = ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
 				.toJsArray(profilePoints), ArrayUtils.toJsArray(points));
 	}
 
@@ -39,11 +40,12 @@ public class CrossSectionEditor extends Composite {
 
 	public List<DataPoint> getXSectionProfilePoints() {
 		List<DataPoint> points = new ArrayList<DataPoint>();
-		for (XYZPoint xsectionPoint : xsectionPoints) {
+		int count = ArrayUtils.lengthArray(xpArray);
+		for (int i = 0; i < count; i++) {
 			DataPoint p = new DataPoint();
-			p.x = xsectionPoint.getX();
-			p.y = xsectionPoint.getZ();
-			p.z = xsectionPoint.getY();
+			XYZPoint xp = (XYZPoint) ArrayUtils.getElementAt(xpArray, i);
+			p.x = xp.getX();
+			p.z = xp.getY();
 			points.add(p);
 		}
 		return points;
