@@ -7,6 +7,7 @@ import gov.ca.modeling.maps.elevation.client.model.XYZPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.ui.Composite;
 
 public class CrossSectionEditor extends Composite {
@@ -17,7 +18,8 @@ public class CrossSectionEditor extends Composite {
 		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
 		XYZPoint[] profilePoints = convertDataToXYZPoints(profile);
 		XYZPoint[] points = convertDataToXYZPoints(bathymetry);
-		plot(divId, xsectionPoints, profilePoints, points);
+		plot(divId, ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
+				.toJsArray(profilePoints), ArrayUtils.toJsArray(points));
 	}
 
 	private XYZPoint[] convertDataToXYZPoints(List<DataPoint> points) {
@@ -30,9 +32,9 @@ public class CrossSectionEditor extends Composite {
 		return xyzs;
 	}
 
-	public native void plot(String divId, XYZPoint[] xsectionPoints,
-			XYZPoint[] profilePoints, XYZPoint[] points)/*-{
-		$wnd.plots.xsection_editor(divId, xsection_points, profile, points);
+	public native void plot(String divId, JavaScriptObject xsectionPoints,
+			JavaScriptObject profilePoints, JavaScriptObject points)/*-{
+		$wnd.plots.xsection_editor(divId, xsectionPoints, profilePoints, points);
 	}-*/;
 
 	public List<DataPoint> getXSectionProfilePoints() {

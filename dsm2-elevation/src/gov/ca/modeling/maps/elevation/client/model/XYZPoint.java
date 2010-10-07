@@ -8,9 +8,7 @@ public class XYZPoint extends JavaScriptObject {
 	}
 
 	public static native XYZPoint create(double x0, double y0, double z0)/*-{
-		this.x = x0;
-		this.y = y0;
-		this.z = z0;
+		return {x: x0, y: y0, z: z0};
 	}-*/;
 
 	public final native double getX()/*-{
