@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='simple_elevation_chart'>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+  <!-- Other module inherits                                      -->
+  <inherits name='gov.ca.modeling.maps.elevation.elevation'/>
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='gov.ca.modeling.simple.elevation.chart.client.SimpleElevationChart'/>
+
+  <!-- Specify the paths for translatable code                    -->
+  <source path='client'/>
+  <source path='shared'/>
+</module>
