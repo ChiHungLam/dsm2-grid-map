@@ -18,11 +18,9 @@
  */
 package gov.ca.maps.bathymetry.tiles.server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.Map;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -33,27 +31,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
-
-import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
 
 public class FileUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 8367618333138027430L;
-	private static final int MAX_SIZE_BYTES = 1024 * 1024;
 	private Cache cache;
 	private DatastoreService datastore;
+	private BlobstoreService blobstoreService;
+	private ImagesService imagesService;
 
 	@Override
 	public void init() throws ServletException {
 		datastore = DatastoreServiceFactory.getDatastoreService();
+		blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+		imagesService = ImagesServiceFactory.getImagesService();
 		try {
 			cache = CacheManager.getInstance().getCacheFactory().createCache(
 					Collections.emptyMap());
@@ -81,40 +81,28 @@ public class FileUploadServlet extends HttpServlet {
 		String name = pathInfo.substring(pathInfo.indexOf("_") + 1);
 
 		Object data = cache.get(name);
-		// Object data = null;
-		if ((data == null) || !(data instanceof byte[])) {
+		if (data == null) {
 			Entity imageFileEntity = null;
 			Query query = new Query("TileImageFile");
 			query.addFilter("name", Query.FilterOperator.EQUAL, name);
 			PreparedQuery preparedQuery = datastore.prepare(query);
 			imageFileEntity = preparedQuery.asSingleEntity();
 			if (imageFileEntity != null) {
-				Blob contents = (Blob) imageFileEntity.getProperty("contents");
-				data = contents.getBytes();
-				sendImageDataOrRedirect(resp, data);
-				try {
-					cache.put(name, data);
-				} catch (Exception ex) {
-					// GCache exception due to policy on put
-				}
+				BlobKey key = (BlobKey) imageFileEntity.getProperty("blobKey");
+				data = key;
+				// String servingUrl = imagesService.getServingUrl(key);
+				// data = servingUrl;
 			} else {
 				data = "/transparent.png";
-				sendImageDataOrRedirect(resp, data);
-				cache.put(name, data);
 			}
-		} else {
-			sendImageDataOrRedirect(resp, data);
+			try {
+				cache.put(name, data);
+			} catch (Exception ex) {
+				// GCache exception due to policy on put
+			}
 		}
-	}
-
-	private void sendImageDataOrRedirect(HttpServletResponse resp, Object data)
-			throws IOException {
-		if (data instanceof byte[]) {
-			byte[] dataAsBytes = (byte[]) data;
-			resp.setContentType("image/png");
-			resp.setContentLength(dataAsBytes.length);
-			resp.setHeader("Cache-Control", "public, max-age=222222222");
-			resp.getOutputStream().write(dataAsBytes);
+		if (data instanceof BlobKey) {
+			blobstoreService.serve((BlobKey) data, resp);
 		} else {
 			resp.sendRedirect(resp.encodeRedirectURL(data.toString()));
 		}
@@ -122,46 +110,28 @@ public class FileUploadServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		PrintWriter out = resp.getWriter();
-		String name = "blank.png";
-		ServletFileUpload upload = new ServletFileUpload();
-		upload.setSizeMax(MAX_SIZE_BYTES);
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
+		String name = req.getParameter("name");
 		try {
-			// Parse the request
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(5000);
-			FileItemIterator iterator = upload.getItemIterator(req);
-
-			while (iterator.hasNext()) {
-				FileItemStream item = iterator.next();
-				InputStream inputStream = item.openStream();
-				if (item.isFormField()) {
-					if (item.getFieldName().equals("name")) {
-						name = Streams.asString(inputStream);
-					}
-				} else if (item.getFieldName().equals("file")) {
-					Streams.copy(inputStream, baos, true);
-				}
-			}
 			TileImageFileDAOImpl dao = new TileImageFileDAOImpl(
 					persistenceManager);
 			TileImageFile file = dao.getFileNamed(name);
 			if (file != null) {
+				blobstoreService.delete(file.getBlobKey());
 				dao.deleteObject(file);
 			}
 			file = new TileImageFile();
 			file.setName(name);
-			file.setContents(new Blob(baos.toByteArray()));
+			Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
+			BlobKey blobKey = blobs.get("file");
+			file.setBlobKey(blobKey);
 			dao.createObject(file);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			persistenceManager.close();
 		}
-		// Return result
-		String resultUrl = "/upload.html";
-		resp.sendRedirect(resultUrl);
-		out.close();
+		resp.sendRedirect("/upload.jsp");
 	}
 }

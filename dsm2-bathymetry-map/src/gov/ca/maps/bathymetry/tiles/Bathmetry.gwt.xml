@@ -21,9 +21,14 @@
 
 	<!-- Specify the paths for translatable code                    -->
 	<source path='client' />
-	<!-- Host based key dsm2bathymetry.appspot.com -->
+	<!-- Host based key dsm2bathymetry.appspot.com 
 	<script
 		src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA6i9cBPasVT8NdiGAvjA1cxSzkjkRSpHaf2PSSRwplNA9Zw-7HBRJ6xC86Pz-l9XLONjPreqHmnuBhg" />
+		
+	-->
+	<!-- Host based key noaabathy.appspot.com -->
+	<script
+		src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAglaP4sjC2PIcowNPLkkkHhTHaTIZIBrPdvv1UrQTNyL5aRgGARSQgnoiyQGgLvrqT5hmxkXUq0_g8g" />
 	<!--
 		Local host based key
 	<script

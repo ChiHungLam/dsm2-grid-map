@@ -1,6 +1,0 @@
-<module>
-  <!-- Standard inherit.                                           -->
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name='com.google.gwt.visualization.Visualization' />
-  <inherits name='gov.ca.modeling.calsim.report.CompareReport'/>
-</module>

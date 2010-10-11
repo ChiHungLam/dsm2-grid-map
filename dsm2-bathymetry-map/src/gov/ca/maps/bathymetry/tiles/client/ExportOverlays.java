@@ -49,8 +49,8 @@ public class ExportOverlays implements EntryPoint {
 			} else {
 				int version = (tile.getX() + tile.getY()) % 4 + 1;
 				return "http://" + version
-						+ ".latest.dsm2bathymetry.appspot.com/tiles/"
-						+ hashCode + "_" + prefix + "tile" + tile.getX() + "_"
+						+ ".latest.noaabathy.appspot.com/tiles/" + hashCode
+						+ "_" + prefix + "tile" + tile.getX() + "_"
 						+ tile.getY() + "_" + zoomLevel + ".png";
 			}
 		}
@@ -130,7 +130,7 @@ public class ExportOverlays implements EntryPoint {
 		};
 		return tileLayer;
 	}
-	
+
 	/**
 	 * Generate a sequence of QRST that match the tile requested by the
 	 * parameters. The parameters are in the google maps tile numbering style,
@@ -203,7 +203,8 @@ public class ExportOverlays implements EntryPoint {
 			int gridIndex = legendColors.length - i - 1;
 			legend.setHTML(gridIndex, 0, "&nbsp;");
 			legend.getCellFormatter().setWidth(gridIndex, 0, "15px");
-			legend.getCellFormatter().getElement(gridIndex, 0).getStyle().setBackgroundColor(legendColors[i]);
+			legend.getCellFormatter().getElement(gridIndex, 0).getStyle()
+					.setBackgroundColor(legendColors[i]);
 			legend.setHTML(gridIndex, 1, legendDepth[i]);
 		}
 		FlowPanel legendContainerPanel = new FlowPanel();

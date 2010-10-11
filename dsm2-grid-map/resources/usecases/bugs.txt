@@ -1,1 +1,0 @@
-clicking on channel connection creates multiple edit polylines and the old polylines cannot be deleted.

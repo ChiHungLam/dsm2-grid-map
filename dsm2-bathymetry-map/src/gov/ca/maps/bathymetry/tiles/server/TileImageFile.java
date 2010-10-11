@@ -24,7 +24,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.api.blobstore.BlobKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class TileImageFile {
@@ -40,10 +40,10 @@ public class TileImageFile {
 	@Persistent
 	private String name;
 	/**
-	 * file contents
+	 * 
 	 */
 	@Persistent
-	private Blob contents;
+	BlobKey blobKey;
 
 	public String getName() {
 		return name;
@@ -53,16 +53,16 @@ public class TileImageFile {
 		this.name = name;
 	}
 
-	public Blob getContents() {
-		return contents;
-	}
-
-	public void setContents(Blob contents) {
-		this.contents = contents;
-	}
-
 	public Long getId() {
 		return id;
+	}
+
+	public BlobKey getBlobKey() {
+		return blobKey;
+	}
+
+	public void setBlobKey(BlobKey blobKey) {
+		this.blobKey = blobKey;
 	}
 
 }
