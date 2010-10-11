@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link type="text/css" rel="stylesheet" href="index.css">
+<title>Bathymetry Data Map for Sacramento - San Joaquin Delta</title>
+
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA"
+            type="text/javascript"></script> 
+    <script type="text/javascript"> 
+ 
+    function initialize() {
+      if (GBrowserIsCompatible()) {
+        var map = new GMap2(document.getElementById("map_canvas"));
+        map.setCenter(new GLatLng(38.15, -121.70), 11);
+        map.setUIToDefault();
+        addBathy(map);
+      }
+    }
+
+    function addBathy(map){
+    	// Set up the copyright information
+    	// Each image used should indicate its copyright permissions
+    	var myCopyright = new GCopyrightCollection("");
+    	myCopyright.addCopyright(new GCopyright('DWR 2010',
+    	  new GLatLngBounds(new GLatLng(-90,-180), new GLatLng(90,180)),
+    	  0,'©2010 California DWR'));
+
+    	// Create the tile layer overlay and 
+    	// implement the three abstract methods                 
+    	var tilelayer = new GTileLayer(myCopyright);
+    	tilelayer.getTileUrl = function(tile, zoomLevel) {
+        	hashCode = tile.x*tile.y*zoomLevel;
+    		version = (tile.x + tile.y) % 4 + 1;
+    		return "http://" + version
+			+ ".latest.dsm2bathymetry.appspot.com/tiles/"
+			+ hashCode + "_tile" + tile.x + "_"
+			+ tile.y + "_" + zoomLevel + ".png"; 
+        	};
+    	tilelayer.isPng = function() { return true;};
+    	tilelayer.getOpacity = function() { return 1.0; }
+    	var myTileLayer = new GTileLayerOverlay(tilelayer);
+    	map.addOverlay(myTileLayer);    
+    	}
+	 
+     </script> 
+  </head> 
+  <body onload="initialize()" onunload="GUnload()"> 
+    <div id="map_canvas" style="width: 700px; height: 600px"></div> 
+  </body> 
+</html>
