@@ -496,11 +496,11 @@ return vis;
  * points are an array of objects {x: <distance along the xsection>, y: <depth
  * of the point>, z: <distance perpendicular to the xsection>}
  */
-Plots.prototype.xsection_editor = function(div_id,xsection_points,profile_points,points){
-	
-	var w = 896,
-		w2 = 50,
-	    h = 586,
+Plots.prototype.xsection_editor = function(div_id,xsection_points,profile_points,points, w, h){
+	if (!w) { var w = 400; }
+	if (!h) { var h = 275; }
+		
+	var w2 = 50,
 	    h2 = 50,
 	    i = 3,
 	    interpolate = "linear";
