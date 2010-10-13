@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.util.Collections;
 
 import javax.cache.Cache;
@@ -50,6 +51,7 @@ public class FileUploadServlet extends HttpServlet {
 	private static final int MAX_SIZE_BYTES = 1024 * 1024;
 	private Cache cache;
 	private DatastoreService datastore;
+	private byte[] transparentTile;
 
 	@Override
 	public void init() throws ServletException {
@@ -59,6 +61,12 @@ public class FileUploadServlet extends HttpServlet {
 					Collections.emptyMap());
 		} catch (CacheException e) {
 			cache = null;
+			e.printStackTrace();
+		}
+		try {
+			transparentTile = loadTransparentTileImage();
+		} catch (Exception e) {
+			System.err.println("Could not load transparent tile");
 			e.printStackTrace();
 		}
 		super.init();
@@ -90,8 +98,7 @@ public class FileUploadServlet extends HttpServlet {
 			imageFileEntity = preparedQuery.asSingleEntity();
 			if (imageFileEntity != null) {
 				Blob contents = (Blob) imageFileEntity.getProperty("contents");
-				data = contents.getBytes();
-				sendImageDataOrRedirect(resp, data);
+				sendImageData(resp, contents.getBytes());
 				try {
 					cache.put(name, data);
 				} catch (Exception ex) {
@@ -99,25 +106,36 @@ public class FileUploadServlet extends HttpServlet {
 				}
 			} else {
 				data = "/transparent.png";
-				sendImageDataOrRedirect(resp, data);
+				sendImageData(resp, transparentTile);
 				cache.put(name, data);
 			}
 		} else {
-			sendImageDataOrRedirect(resp, data);
+			sendImageData(resp, transparentTile);
 		}
 	}
 
-	private void sendImageDataOrRedirect(HttpServletResponse resp, Object data)
+	private void sendImageData(HttpServletResponse resp, byte[] dataAsBytes)
 			throws IOException {
-		if (data instanceof byte[]) {
-			byte[] dataAsBytes = (byte[]) data;
-			resp.setContentType("image/png");
-			resp.setContentLength(dataAsBytes.length);
-			resp.setHeader("Cache-Control", "public, max-age=222222222");
-			resp.getOutputStream().write(dataAsBytes);
-		} else {
-			resp.sendRedirect(resp.encodeRedirectURL(data.toString()));
-		}
+		resp.setContentType("image/png");
+		resp.setContentLength(dataAsBytes.length);
+		resp.setHeader("Cache-Control", "public, max-age=222222222");
+		resp.getOutputStream().write(dataAsBytes);
+	}
+
+	private byte[] loadTransparentTileImage() throws MalformedURLException,
+			IOException {
+		InputStream resourceAsStream = getClass().getResourceAsStream(
+				"transparent.png");
+		int available = resourceAsStream.available();
+		byte[] buffer = new byte[available];
+		resourceAsStream.read(buffer);
+		return buffer;
+		/*
+		 * URLFetchService urlFetchService = URLFetchServiceFactory
+		 * .getURLFetchService(); HTTPResponse response =
+		 * urlFetchService.fetch(new URL( "/transparent.png")); return
+		 * response.getContent();
+		 */
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
