@@ -52,6 +52,7 @@ public class ElevationProfileDisplayer {
 
 	public void startDrawingLine(final ToggleButton drawLineButton) {
 		PolyStyleOptions style = PolyStyleOptions.newInstance("blue", 3, 1);
+		stopDrawingLine();
 		line = new Polyline(new LatLng[0]);
 		map.addOverlay(line);
 		line.setDrawingEnabled();
@@ -125,7 +126,7 @@ public class ElevationProfileDisplayer {
 		options.setTitle(title);
 		options.setTitleX("Length (ft)");
 		options.setTitleY("Elevation (ft)");
-		options.setWidth(this.panel.getParent().getParent().getOffsetWidth());
+		options.setWidth(panel.getParent().getParent().getOffsetWidth());
 		options.setLineSize(1);
 		options.setLegend(LegendPosition.BOTTOM);
 		options.setShowCategories(false);
