@@ -33,7 +33,8 @@ import java.util.ArrayList;
 public class XSection implements Serializable {
 	private String channelId;
 	private double distance;
-	private  ArrayList<XSectionLayer> layers;
+	private ArrayList<XSectionLayer> layers;
+	private XSectionProfile profile;
 
 	public XSection() {
 		layers = new ArrayList<XSectionLayer>();
@@ -61,5 +62,13 @@ public class XSection implements Serializable {
 
 	public void addLayer(XSectionLayer layer) {
 		layers.add(layer);
+	}
+
+	public void setProfile(XSectionProfile xsProfile) {
+		profile = xsProfile;
+	}
+
+	public XSectionProfile getProfile() {
+		return profile;
 	}
 }

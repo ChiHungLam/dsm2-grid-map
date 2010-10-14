@@ -110,13 +110,14 @@ public class TableUtil {
 		return interiorPoints;
 	}
 
-	public static List<double[]> toLatLngPointsWithDepth(String value) {
+	public static List<double[]> toProfilePoints(String value) {
 		ArrayList<double[]> interiorPoints = new ArrayList<double[]>();
 		if (value != null) {
 			String[] fieldLatLngs = value.split("\\|");
 			for (String fieldLatLng : fieldLatLngs) {
 				double[] latLngPoint = new double[3];
-				String s = fieldLatLng.substring(fieldLatLng.indexOf("(")+1, fieldLatLng.indexOf(")"));
+				String s = fieldLatLng.substring(fieldLatLng.indexOf("(") + 1,
+						fieldLatLng.indexOf(")"));
 				String[] fields = s.split(",");
 				latLngPoint[0] = Double.parseDouble(fields[0]);
 				latLngPoint[1] = Double.parseDouble(fields[1]);
@@ -125,5 +126,17 @@ public class TableUtil {
 			}
 		}
 		return interiorPoints;
+	}
+
+	public static String fromProfilePoints(List<double[]> pointsList) {
+		StringBuffer buf = new StringBuffer();
+		for (double[] point : pointsList) {
+			buf.append("(");
+			buf.append(point[0]).append(",").append(point[1]).append(",")
+					.append(point[2]);
+			buf.append(")");
+			buf.append("|");
+		}
+		return buf.toString();
 	}
 }

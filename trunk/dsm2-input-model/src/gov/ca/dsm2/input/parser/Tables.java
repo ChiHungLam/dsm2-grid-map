@@ -40,6 +40,7 @@ import gov.ca.dsm2.input.model.Transfer;
 import gov.ca.dsm2.input.model.Transfers;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
+import gov.ca.dsm2.input.model.XSectionProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -344,6 +345,36 @@ public class Tables {
 				e.printStackTrace();
 			}
 		}
+		InputTable xsectGisTable = getTableNamed("XSECTION_GIS");
+		if (xsectGisTable != null) {
+			try {
+				int nvals = xsectGisTable.getValues().size();
+				for (int i = 0; i < nvals; i++) {
+					String id = xsectGisTable.getValue(i, "XSECTION_ID");
+					String channelId = xsectGisTable.getValue(i, "CHAN_NO");
+					Channel channel = channels.getChannel(channelId);
+					if (channel != null) {
+						XSectionProfile xsProfile = new XSectionProfile();
+						xsProfile.setId(Integer.parseInt(id));
+						xsProfile.setChannelId(Integer.parseInt(channelId));
+						double dist = Double.parseDouble(xsectGisTable
+								.getValue(i, "DIST"));
+						XSection xSectionAt = channel.getXSectionAt(dist);
+						xSectionAt.setProfile(xsProfile);
+						xsProfile.setDistance(dist);
+						xsProfile.setEndPoints(TableUtil
+								.toLatLngPoints(xsectGisTable.getValue(i,
+										"LATLNG_ENDPOINTS")));
+						xsProfile.setProfilePoints(TableUtil
+								.toProfilePoints(xsectGisTable.getValue(i,
+										"PROFILE_POINTS")));
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return channels;
 	}
 
@@ -625,7 +656,7 @@ public class Tables {
 		InputTable reservoirTable = new InputTable();
 		reservoirTable.setName("RESERVOIR");
 		reservoirTable.setHeaders(Arrays.asList(new String[] { "NAME", "AREA",
-				"BOT_ELEV"}));
+				"BOT_ELEV" }));
 		ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
 		for (Reservoir reservoir : reservoirs.getReservoirs()) {
 			try {
