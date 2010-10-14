@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
@@ -13,7 +12,7 @@ public class DEMUploader {
 	// String baseUrl =
 	// "http://dsm2bathymetry.appspot.com/upload_bathymetry.html";
 
-	static String baseUrl = "http://localhost:8080/upload_dem.html";
+	static String baseUrl = "http://localhost:8888/upload_dem.html";
 
 	private DEMUploader() {
 	}
@@ -41,7 +40,7 @@ public class DEMUploader {
 				}
 				String name = files[i];
 				String filePath = uploadDemFile(driver, dir, name);
-				if (i==0){
+				if (i == 0) {
 					doLogin(driver);
 					driver.get(baseUrl);
 					uploadDemFile(driver, dir, name);
@@ -58,11 +57,9 @@ public class DEMUploader {
 	private String uploadDemFile(HtmlUnitDriver driver, File dir, String name) {
 		System.out.println("Processing file: " + name);
 		String filePath = dir + "/" + name;
-		WebElement fileElement = driver.findElement(By
-				.name("demFile"));
+		WebElement fileElement = driver.findElement(By.name("demFile"));
 		fileElement.sendKeys(filePath);
-		driver.findElement(By.xpath("//input[@value=\"Send\"]"))
-				.click();
+		driver.findElement(By.xpath("//input[@value=\"Send\"]")).click();
 		return filePath;
 	}
 

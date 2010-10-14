@@ -8,9 +8,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class TileUploader {
-	// String baseUrl = "http://noaabathy.appspot.com/upload.html";
+	String baseUrl = "http://noaabathy.appspot.com/upload.jsp";
 	// String baseUrl = "http://localhost:8888/upload.html";
-	String baseUrl = "http://dsm2bathymetry.appspot.com/upload.html";
+	// String baseUrl = "http://dsm2bathymetry.appspot.com/upload.html";
 	private final int zoomLevel;
 
 	private TileUploader(int zoomLevel) {

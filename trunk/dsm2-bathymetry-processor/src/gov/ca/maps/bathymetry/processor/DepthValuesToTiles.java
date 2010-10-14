@@ -9,6 +9,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Date;
+
+import javax.measure.unit.SI;
+
+import org.jscience.geography.coordinates.LatLong;
+import org.jscience.geography.coordinates.UTM;
+import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 
 public class DepthValuesToTiles {
 	public static void main(String[] args) {
@@ -43,7 +50,8 @@ public class DepthValuesToTiles {
 				String filePath = inputDirectory.getAbsolutePath()
 						+ File.separator + file;
 				DepthValuesToTiles tiler = new DepthValuesToTiles(filePath);
-				for (int i = 4; i < 17; i++) {
+				for (int i = 17; i > 3; i--) {
+					System.out.println("Date: " + new Date());
 					System.out.println("Generating zoom level: " + i);
 					try {
 						tiler.generateForZoom(
@@ -71,22 +79,31 @@ public class DepthValuesToTiles {
 				directory,
 				zoomLevel,
 				new TileRenderer[] { new ShapeColoredAndAlphaedByValueRenderer() });
+		CoordinatesConverter<UTM, LatLong> utmToLatLong = UTM.CRS
+				.getConverterTo(LatLong.CRS);
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = reader.readLine();
 		String[] values = new String[2];
 		while ((line = reader.readLine()) != null) {
-			String[] fields = line.trim().split("\\s+");
-			if (fields.length < 3) {
+			if (line.startsWith(";")) {
+				continue;
+			}
+			String[] fields = line.trim().split(",");
+			if (fields.length < 4) {
 				System.err
 						.println("Line: "
 								+ line
-								+ " has does not have the 3 required fields: lon, lat, depth");
+								+ " has does not have the 4 required fields: lon, lat, depth, year");
 				continue;
 			}
-			double lat = Double.parseDouble(fields[0]);
-			double lon = Double.parseDouble(fields[1]);
+			UTM utm = UTM.valueOf(10, 'N', Double.parseDouble(fields[0]),
+					Double.parseDouble(fields[1]), SI.METER);
+			LatLong latlng = utmToLatLong.convert(utm);
+			double[] coordinates = latlng.getCoordinates();
+			double lat = coordinates[0];
+			double lon = coordinates[1];
 			values[0] = Double.parseDouble(fields[2]) + "";
-			values[1] = "2009";
+			values[1] = fields[3];
 			tileCreator.renderData(lat, lon, values);
 		}
 		reader.close();

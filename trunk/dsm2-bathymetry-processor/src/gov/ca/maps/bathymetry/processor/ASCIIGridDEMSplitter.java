@@ -3,7 +3,6 @@ package gov.ca.maps.bathymetry.processor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
@@ -37,7 +36,7 @@ public class ASCIIGridDEMSplitter {
 			throw new IllegalArgumentException(inFile
 					+ " either doesn't exist or is not a file");
 		}
-		this.directory = inFile.getParent() + "/" + directoryName;
+		directory = inFile.getParent() + "/" + directoryName;
 		File dir = new File(directory);
 		if (!dir.exists()) {
 			dir.mkdirs();
@@ -86,12 +85,12 @@ public class ASCIIGridDEMSplitter {
 			for (int j = 0; j < fields.length; j++) {
 				double x = xllcorner + j * cellsize;
 				double y = yllcorner + (nrows - i) * cellsize;
-				int depth = Integer.parseInt(fields[j]);
-				// depth value in feet => *100 for centimeters
-				// values[0] = depth * 3.2808399 + "";
-				if (depth == 100) {// delta islands are indicated by this
-					// elevation
-					depth = nodataValue;
+				int depth = 0;
+				int rawDepth = Integer.parseInt(fields[j]);
+				if (Math.abs(rawDepth - nodataValue) <= 1e-5) {
+					depth = -9999;
+				} else {
+					depth = rawDepth;
 				}
 				appendToFile(x, y, depth);
 			}
@@ -142,8 +141,8 @@ public class ASCIIGridDEMSplitter {
 			int count = 0;
 			while ((line = lnr.readLine()) != null) {
 				String[] cols = line.split("\\s");
-				for (int i = 0; i < cols.length; i++) {
-					values[count++] = Integer.parseInt(cols[i]);
+				for (String col : cols) {
+					values[count++] = Integer.parseInt(col);
 				}
 			}
 		} catch (Exception ex) {
@@ -163,15 +162,15 @@ public class ASCIIGridDEMSplitter {
 
 	private void writeToFile(String filename, int[] values) {
 		PrintWriter wr = null;
-		if( allNoDataValues(values)){
+		if (allNoDataValues(values)) {
 			return;
 		}
 		try {
 			wr = new PrintWriter(new File(filename));
-			for(int i=0;i<100;i++){
+			for (int i = 0; i < 100; i++) {
 				wr.print(values[i]);
 				wr.print(" ");
-				if (i%10==9){
+				if (i % 10 == 9) {
 					wr.println();
 				}
 			}
@@ -185,8 +184,8 @@ public class ASCIIGridDEMSplitter {
 	}
 
 	private boolean allNoDataValues(int[] values) {
-		for(int i=0; i<values.length; i++){
-			if (values[i]!=-9999){
+		for (int value : values) {
+			if (value != -9999) {
 				return false;
 			}
 		}
@@ -204,7 +203,7 @@ public class ASCIIGridDEMSplitter {
 	}
 
 	private int offSet(double val) {
-		return (int) (val - roundDown(val) - 5)/10;
+		return (int) (val - roundDown(val) - 5) / 10;
 	}
 
 	private void closeAll() {

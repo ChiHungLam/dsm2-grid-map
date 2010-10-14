@@ -55,7 +55,7 @@ public class ASCIIGridValuesInUTMToTiles {
 			System.out.println("Working on: " + file);
 			String filePath = inputDirectory.getAbsolutePath() + File.separator
 					+ file;
-			for (int i = 15; i > 6; i--) {
+			for (int i = 16; i > 11; i--) {
 				executor.execute(new GenerateTileTask(i, filePath,
 						outputDirectory));
 			}
@@ -130,12 +130,8 @@ public class ASCIIGridValuesInUTMToTiles {
 				if (Math.abs(depth - nodataValue) <= 1e-6) {
 					continue;
 				}
-				// depth value in feet => *100 for centimeters
-				values[0] = depth * 3.2808399 + "";
-				// if (depth >= 99) {
-				// continue;
-				// }
-				// values[0] = depth / 10.0 + "";
+				// depth value in feet*10
+				values[0] = depth * 0.1 + "";
 				UTM utm = UTM.valueOf(10, 'N', x, y, SI.METER);
 				LatLong latlng = utmToLatLong.convert(utm);
 				double[] coordinates = latlng.getCoordinates();
