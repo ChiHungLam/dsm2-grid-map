@@ -44,8 +44,8 @@ public class Channel implements Serializable {
 	private double dispersion;
 	private String upNodeId;
 	private String downNodeId;
-	private  ArrayList<XSection> xsections;
-	private  ArrayList<double[]> latLngPoints;
+	private ArrayList<XSection> xsections;
+	private ArrayList<double[]> latLngPoints;
 
 	public Channel() {
 		xsections = new ArrayList<XSection>();
@@ -115,6 +115,18 @@ public class Channel implements Serializable {
 
 	public List<double[]> getLatLngPoints() {
 		return latLngPoints;
+	}
+
+	public XSection getXSectionAt(double dist) {
+		XSection x = null;
+		for (XSection xs : getXsections()) {
+			double distance = xs.getDistance();
+			if (Math.abs(dist - distance) <= 0.0011) {
+				x = xs;
+				break;
+			}
+		}
+		return x;
 	}
 
 }
