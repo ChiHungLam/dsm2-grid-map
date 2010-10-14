@@ -110,4 +110,20 @@ public class TableUtil {
 		return interiorPoints;
 	}
 
+	public static List<double[]> toLatLngPointsWithDepth(String value) {
+		ArrayList<double[]> interiorPoints = new ArrayList<double[]>();
+		if (value != null) {
+			String[] fieldLatLngs = value.split("\\|");
+			for (String fieldLatLng : fieldLatLngs) {
+				double[] latLngPoint = new double[3];
+				String s = fieldLatLng.substring(fieldLatLng.indexOf("(")+1, fieldLatLng.indexOf(")"));
+				String[] fields = s.split(",");
+				latLngPoint[0] = Double.parseDouble(fields[0]);
+				latLngPoint[1] = Double.parseDouble(fields[1]);
+				latLngPoint[2] = Double.parseDouble(fields[2]);
+				interiorPoints.add(latLngPoint);
+			}
+		}
+		return interiorPoints;
+	}
 }
