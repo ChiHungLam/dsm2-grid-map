@@ -18,7 +18,6 @@
  */
 package gov.ca.maps.bathymetry.tiles.server;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -31,12 +30,10 @@ public class TileImageFile {
 	/**
 	 * A unique id for this file
 	 */
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
 	/**
 	 * Name of the file
 	 */
+	@PrimaryKey
 	@Persistent
 	private String name;
 	/**
@@ -59,10 +56,6 @@ public class TileImageFile {
 
 	public void setContents(Blob contents) {
 		this.contents = contents;
-	}
-
-	public Long getId() {
-		return id;
 	}
 
 }
