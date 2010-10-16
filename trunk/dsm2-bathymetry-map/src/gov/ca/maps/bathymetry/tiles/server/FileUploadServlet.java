@@ -28,6 +28,7 @@ import java.util.Collections;
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.CacheManager;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,6 +53,7 @@ public class FileUploadServlet extends HttpServlet {
 	private Cache cache;
 	private DatastoreService datastore;
 	private byte[] transparentTile;
+	private PersistenceManager persistenceManager;
 
 	@Override
 	public void init() throws ServletException {
@@ -69,6 +71,8 @@ public class FileUploadServlet extends HttpServlet {
 			System.err.println("Could not load transparent tile");
 			e.printStackTrace();
 		}
+		persistenceManager = PMF.get().getPersistenceManager();
+
 		super.init();
 	}
 
@@ -91,13 +95,16 @@ public class FileUploadServlet extends HttpServlet {
 		Object data = cache.get(name);
 		// Object data = null;
 		if ((data == null) || !(data instanceof byte[])) {
-			Entity imageFileEntity = null;
-			Query query = new Query("TileImageFile");
-			query.addFilter("name", Query.FilterOperator.EQUAL, name);
-			PreparedQuery preparedQuery = datastore.prepare(query);
-			imageFileEntity = preparedQuery.asSingleEntity();
-			if (imageFileEntity != null) {
-				Blob contents = (Blob) imageFileEntity.getProperty("contents");
+			TileImageFileDAOImpl dao = new TileImageFileDAOImpl(
+					persistenceManager);
+			TileImageFile imageFile = null;
+			try {
+				imageFile = dao.findObjectById(name);
+			} catch (JDOObjectNotFoundException ex) {
+				imageFile = null;
+			}
+			if (imageFile != null) {
+				Blob contents = imageFile.getContents();
 				sendImageData(resp, contents.getBytes());
 				try {
 					cache.put(name, data);
