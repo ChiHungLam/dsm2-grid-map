@@ -204,6 +204,7 @@ public class BathymetryDataFileUploadServlet extends HttpServlet {
 					.getFileForLocation(x, y);
 			if (bathymetryDataFile == null) {
 				bathymetryDataFile = new BathymetryDataFile();
+				bathymetryDataFile.setName(x+"_"+y);
 				bathymetryDataFile.setX100(x);
 				bathymetryDataFile.setY100(y);
 				bathymetryDataFile.setContents(new Blob(new byte[0]));

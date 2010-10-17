@@ -18,7 +18,6 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server.data;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -33,8 +32,7 @@ public class BathymetryDataFile {
 	 * A unique id for this file
 	 */
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
+	private String name;
 	@Persistent
 	private int x;
 	@Persistent
@@ -43,7 +41,6 @@ public class BathymetryDataFile {
 	private Blob contents;
 
 	public BathymetryDataFile() {
-
 	}
 
 	public int getX100() {
@@ -70,8 +67,12 @@ public class BathymetryDataFile {
 		this.contents = contents;
 	}
 
-	public Long getId() {
-		return id;
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name){
+		this.name = name;
 	}
 	
 	public static int roundOff(double v){

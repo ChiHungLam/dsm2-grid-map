@@ -38,21 +38,10 @@ public class BathymetryDataFileDAOImpl extends
 	public BathymetryDataFile getFileForLocation(double x, double y)
 			throws Exception {
 		try {
-			// look for item first else insert a new one
-			Query query = getPersistenceManager().newQuery(
-					"select from " + BathymetryDataFile.class.getName());
 			int x100 = (int) BathymetryDataFile.roundOff(x);
 			int y100 = (int) BathymetryDataFile.roundOff(y);
-			query
-					.setFilter("x==xParam && y==yParam");
-			query.declareParameters("int xParam, int yParam");
-			List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
-					.execute(x100, y100);
-			if ((files == null) || (files.size() == 0)) {
-				return null;
-			} else {
-				return files.get(0);
-			}
+			String id = x100+"_"+y100;
+			return findObjectById(id);
 		} catch (Exception e) {
 			throw e;
 		}
