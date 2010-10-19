@@ -44,6 +44,9 @@ import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
@@ -53,7 +56,6 @@ public class FileUploadServlet extends HttpServlet {
 	private Cache cache;
 	private DatastoreService datastore;
 	private byte[] transparentTile;
-	private PersistenceManager persistenceManager;
 
 	@Override
 	public void init() throws ServletException {
@@ -71,7 +73,6 @@ public class FileUploadServlet extends HttpServlet {
 			System.err.println("Could not load transparent tile");
 			e.printStackTrace();
 		}
-		persistenceManager = PMF.get().getPersistenceManager();
 
 		super.init();
 	}
@@ -95,16 +96,14 @@ public class FileUploadServlet extends HttpServlet {
 		Object data = cache.get(name);
 		// Object data = null;
 		if ((data == null) || !(data instanceof byte[])) {
-			TileImageFileDAOImpl dao = new TileImageFileDAOImpl(
-					persistenceManager);
-			TileImageFile imageFile = null;
-			try {
-				imageFile = dao.findObjectById(name);
-			} catch (JDOObjectNotFoundException ex) {
-				imageFile = null;
+			Entity e =null;
+			try{
+				e = datastore.get(KeyFactory.createKey("TileImageFile", name));
+			}catch(EntityNotFoundException ex){
+				e=null;
 			}
-			if (imageFile != null) {
-				Blob contents = imageFile.getContents();
+			if (e != null) {
+				Blob contents = (Blob) e.getProperty("contents");
 				sendImageData(resp, contents.getBytes());
 				try {
 					cache.put(name, data);

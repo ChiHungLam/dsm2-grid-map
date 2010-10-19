@@ -101,7 +101,7 @@ public class ExportOverlays implements EntryPoint {
 		myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
 				southWest, northEast), 10, "@ Copyright California DWR"));
 		BathymetryTileLayer tileLayer = new BathymetryTileLayer(myCopyright,
-				10, 17, prefix);
+				10, 16, prefix);
 		return tileLayer;
 	}
 
@@ -112,7 +112,7 @@ public class ExportOverlays implements EntryPoint {
 		LatLng northEast = LatLng.newInstance(39.5, -120.5);
 		myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
 				southWest, northEast), 10, "@ Copyright California DWR"));
-		TileLayer tileLayer = new TileLayer(myCopyright, 10, 17) {
+		TileLayer tileLayer = new TileLayer(myCopyright, 10, 16) {
 
 			public double getOpacity() {
 				return 0.6;
