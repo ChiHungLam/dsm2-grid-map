@@ -80,7 +80,7 @@ USGSTopoTileLayer.prototype.getTileUrl = function(a,b) {
  return lURL;
 }
 USGSTopoTileLayer.prototype.maxResolution = function() {
- return 17;
+ return 16;
 }
 USGSTopoTileLayer.prototype.minResolution = function() {
  return 0;
