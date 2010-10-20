@@ -67,6 +67,12 @@ public class XSectionProfile {
 		layer.setTopWidth(0);
 		layer.setWettedPerimeter(0);
 		layers.add(layer);
+		//TODO: 
+		//1.calculate rate of change of slope (second difference).
+		//2.identify elevations where there are changes above a certain threshold
+		//  in rate of change of slope
+		//  a.) for elevations spaced closer than 2 feet... combine into one such elevation
+		//3. calculate layer for each such elevation.
 		return layers;
 	}
 
@@ -79,6 +85,7 @@ public class XSectionProfile {
 	}
 
 	public double calculateArea(double elevation) {
+		
 		return 0;
 	}
 
