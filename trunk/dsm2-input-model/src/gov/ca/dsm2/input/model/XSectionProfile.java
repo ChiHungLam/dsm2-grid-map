@@ -11,6 +11,7 @@ import java.util.List;
  * 
  */
 public class XSectionProfile {
+	private static final int MAX_LAYERS = 10;
 	private int id;
 	private int channelId;
 	private double distance;
@@ -67,12 +68,7 @@ public class XSectionProfile {
 		layer.setTopWidth(0);
 		layer.setWettedPerimeter(0);
 		layers.add(layer);
-		//TODO: 
-		//1.calculate rate of change of slope (second difference).
-		//2.identify elevations where there are changes above a certain threshold
-		//  in rate of change of slope
-		//  a.) for elevations spaced closer than 2 feet... combine into one such elevation
-		//3. calculate layer for each such elevation.
+		// 3. calculate layer for each such elevation.
 		return layers;
 	}
 
@@ -84,8 +80,16 @@ public class XSectionProfile {
 		return depth;
 	}
 
+	public double getMaximumElevation() {
+		double depth = Double.MIN_VALUE;
+		for (double[] point : profilePoints) {
+			depth = Math.max(depth, point[2]);
+		}
+		return depth;
+	}
+
 	public double calculateArea(double elevation) {
-		
+
 		return 0;
 	}
 
@@ -95,5 +99,36 @@ public class XSectionProfile {
 
 	public double calculateWettedPerimeter(double elevation) {
 		return 0;
+	}
+
+	/**
+	 * Calculate and return the elevations that are important in defining the
+	 * cross section from a DSM2 prespective.
+	 * <p>
+	 * TODO: Improve this by calculating derivative of slope and finding out
+	 * inflexion points where slope changes faster than a certain threshold.
+	 * <ul>
+	 * <li>calculate rate of change of slope (second difference).</li>
+	 * <li>identify elevations where there are changes above a certain threshold
+	 * in rate of change of slope</li>
+	 * <li>for elevations spaced closer than 2 feet... combine into one such
+	 * elevation</li>
+	 * </ul>
+	 * 
+	 * @return
+	 */
+	public double[] calculateElevations() {
+		double minElevation = getMinimumElevation();
+		double maxElevation = getMaximumElevation();
+		double stepSize = (maxElevation - minElevation) / MAX_LAYERS;
+		if (stepSize < 2) {
+			stepSize = 2;
+		}
+		int nlayers = (int) Math.ceil((maxElevation - minElevation) / stepSize);
+		double[] elevations = new double[nlayers];
+		for (int i = 0; i < nlayers; i++) {
+			elevations[i] = Math.min(minElevation + i * stepSize, maxElevation);
+		}
+		return elevations;
 	}
 }
