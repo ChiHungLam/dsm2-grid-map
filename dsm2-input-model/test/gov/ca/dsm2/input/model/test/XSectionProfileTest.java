@@ -20,23 +20,26 @@ public class XSectionProfileTest extends TestCase {
 		profile.setProfilePoints(Arrays.asList(new double[] { 0, 0 },
 				new double[] { 0, -10 }, new double[] { 15, -10 },
 				new double[] { 15, 0 }));
-		assertApproxEquals(0, profile.calculateArea(-10));
-		assertApproxEquals(75, profile.calculateArea(-5));
-		assertApproxEquals(150, profile.calculateArea(0));
+		XSectionLayer l_0 = profile.calculateLayer(0);
+		XSectionLayer l_5 = profile.calculateLayer(-5);
+		XSectionLayer l_10 = profile.calculateLayer(-10);
+		assertApproxEquals(0, l_10.getArea());
+		assertApproxEquals(75, l_5.getArea());
+		assertApproxEquals(150, l_0.getArea());
 		//
-		assertApproxEquals(15, profile.calculateTopWidth(-10));
-		assertApproxEquals(15, profile.calculateTopWidth(-5));
-		assertApproxEquals(15, profile.calculateTopWidth(0));
+		assertApproxEquals(15, l_10.getTopWidth());
+		assertApproxEquals(15, l_5.getTopWidth());
+		assertApproxEquals(15, l_0.getTopWidth());
 		//
-		assertApproxEquals(15, profile.calculateWettedPerimeter(-10));
-		assertApproxEquals(25, profile.calculateWettedPerimeter(-5));
-		assertApproxEquals(35, profile.calculateWettedPerimeter(0));
+		assertApproxEquals(15, l_10.getWettedPerimeter());
+		assertApproxEquals(25, l_5.getWettedPerimeter());
+		assertApproxEquals(35, l_0.getWettedPerimeter());
 		//
 		double[] calculateElevations = profile.calculateElevations();
 		assertApproxEquals(profile.getMinimumElevation(),
 				calculateElevations[0]);
 		assertApproxEquals(profile.getMaximumElevation(),
-				calculateElevations[1]);
+				calculateElevations[calculateElevations.length-1]);
 		//
 		List<XSectionLayer> layers = profile.calculateLayers();
 		assertNotNull(layers);

@@ -16,6 +16,7 @@ public class XSectionProfile {
 	private int channelId;
 	private double distance;
 	private List<double[]> endPoints;
+	private List<double[]> profilePoints;
 
 	public int getId() {
 		return id;
@@ -57,25 +58,21 @@ public class XSectionProfile {
 		this.profilePoints = profilePoints;
 	}
 
-	private List<double[]> profilePoints;
-
 	// ---------- calculation methods ------------//
 	public List<XSectionLayer> calculateLayers() {
 		ArrayList<XSectionLayer> layers = new ArrayList<XSectionLayer>();
-		XSectionLayer layer = new XSectionLayer();
-		layer.setElevation(getMinimumElevation());
-		layer.setArea(0);
-		layer.setTopWidth(0);
-		layer.setWettedPerimeter(0);
-		layers.add(layer);
-		// 3. calculate layer for each such elevation.
+		//
+		double[] elevations = calculateElevations();
+		for (int i = 0; i < elevations.length; i++) {
+			layers.add(calculateLayer(elevations[i]));
+		}
 		return layers;
 	}
 
 	public double getMinimumElevation() {
 		double depth = Double.MAX_VALUE;
 		for (double[] point : profilePoints) {
-			depth = Math.min(depth, point[2]);
+			depth = Math.min(depth, point[1]);
 		}
 		return depth;
 	}
@@ -83,22 +80,83 @@ public class XSectionProfile {
 	public double getMaximumElevation() {
 		double depth = Double.MIN_VALUE;
 		for (double[] point : profilePoints) {
-			depth = Math.max(depth, point[2]);
+			depth = Math.max(depth, point[1]);
 		}
 		return depth;
 	}
 
-	public double calculateArea(double elevation) {
-
-		return 0;
+	public XSectionLayer calculateLayer(double elevation) {
+		double mine = getMinimumElevation();
+		double maxe = getMaximumElevation();
+		if (elevation > maxe) {
+			throw new RuntimeException("Elevation: " + elevation
+					+ " is greater than maximum elevation: " + maxe);
+		}
+		if (elevation < mine) {
+			throw new RuntimeException("Elevation: " + elevation
+					+ " is less than minimum elevation: " + mine);
+		}
+		XSectionLayer layer = new XSectionLayer();
+		layer.setElevation(elevation);
+		double[] previousPoint = null;
+		boolean insideChannel = false;
+		double area = 0;
+		double topWidth = 0;
+		double wettedPerimeter = 0;
+		for (double[] point : profilePoints) {
+			double y = point[1];
+			if (!insideChannel
+					&& (previousPoint != null && previousPoint[1] >= point[1])) {
+				insideChannel = true;
+			}
+			if (y <= elevation && insideChannel) {
+				if (previousPoint[1] > elevation){
+					previousPoint = createPointOnLineAt(elevation, previousPoint, point);
+				}
+				double xp = point[0];
+				double xp_1 = previousPoint[0];
+				double yp = elevation - point[1];
+				double yp_1 = elevation - previousPoint[1];
+				double w = xp - xp_1;
+				double h = yp - yp_1;
+				topWidth += w;
+				area += (yp_1 + yp) / 2.0 * w;
+				wettedPerimeter += Math.sqrt(h * h + w * w);
+			} else if ( y > elevation && insideChannel){
+				if (previousPoint[1] < elevation){
+					double[] intersectionPoint = createPointOnLineAt(elevation, previousPoint, point);
+					double xp = intersectionPoint[0];
+					double xp_1 = previousPoint[0];
+					double yp = elevation - intersectionPoint[1];
+					double yp_1 = elevation - previousPoint[1];
+					double w = xp - xp_1;
+					double h = yp - yp_1;
+					topWidth += w;
+					area += (yp_1 + yp) / 2.0 * w;
+					wettedPerimeter += Math.sqrt(h * h + w * w);
+					
+				}
+			}
+			previousPoint = point;
+		}
+		layer.setArea(area);
+		layer.setTopWidth(topWidth);
+		layer.setWettedPerimeter(wettedPerimeter);
+		return layer;
 	}
 
-	public double calculateTopWidth(double elevation) {
-		return 0;
-	}
-
-	public double calculateWettedPerimeter(double elevation) {
-		return 0;
+	private double[] createPointOnLineAt(double elevation,
+			double[] previousPoint, double[] point) {
+		double xp = point[0];
+		double yp = point[1];
+		double xp_1 = previousPoint[0];
+		double yp_1 = previousPoint[1];
+		if (xp - xp_1 < 1e-8) {
+			return new double[] { xp, elevation };
+		}
+		double m = (yp - yp_1) / (xp - xp_1);
+		double c = yp - m * xp;
+		return new double[] { (elevation - c) / m, elevation };
 	}
 
 	/**
@@ -124,7 +182,7 @@ public class XSectionProfile {
 		if (stepSize < 2) {
 			stepSize = 2;
 		}
-		int nlayers = (int) Math.ceil((maxElevation - minElevation) / stepSize);
+		int nlayers = (int) Math.ceil((maxElevation - minElevation) / stepSize)+1;
 		double[] elevations = new double[nlayers];
 		for (int i = 0; i < nlayers; i++) {
 			elevations[i] = Math.min(minElevation + i * stepSize, maxElevation);
