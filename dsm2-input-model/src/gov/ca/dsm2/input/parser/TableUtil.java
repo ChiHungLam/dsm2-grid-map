@@ -115,14 +115,13 @@ public class TableUtil {
 		if (value != null) {
 			String[] fieldLatLngs = value.split("\\|");
 			for (String fieldLatLng : fieldLatLngs) {
-				double[] latLngPoint = new double[3];
+				double[] xypoint = new double[2];
 				String s = fieldLatLng.substring(fieldLatLng.indexOf("(") + 1,
 						fieldLatLng.indexOf(")"));
 				String[] fields = s.split(",");
-				latLngPoint[0] = Double.parseDouble(fields[0]);
-				latLngPoint[1] = Double.parseDouble(fields[1]);
-				latLngPoint[2] = Double.parseDouble(fields[2]);
-				interiorPoints.add(latLngPoint);
+				xypoint[0] = Double.parseDouble(fields[0]);
+				xypoint[1] = Double.parseDouble(fields[1]);
+				interiorPoints.add(xypoint);
 			}
 		}
 		return interiorPoints;
@@ -132,8 +131,7 @@ public class TableUtil {
 		StringBuffer buf = new StringBuffer();
 		for (double[] point : pointsList) {
 			buf.append("(");
-			buf.append(point[0]).append(",").append(point[1]).append(",")
-					.append(point[2]);
+			buf.append(point[0]).append(",").append(point[1]);
 			buf.append(")");
 			buf.append("|");
 		}
