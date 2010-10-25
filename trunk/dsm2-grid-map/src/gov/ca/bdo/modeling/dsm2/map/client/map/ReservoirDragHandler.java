@@ -39,8 +39,7 @@ public class ReservoirDragHandler implements MarkerDragEndHandler {
 		LatLng latLng = event.getSender().getLatLng();
 		reservoir.setLatitude(latLng.getLatitude());
 		reservoir.setLongitude(latLng.getLongitude());
-		manager.removeReserviorConnectionLines(reservoir.getName());
-		manager.addReservoirConnectionLines(reservoir);
+		manager.refresh(reservoir);
 	}
 
 }

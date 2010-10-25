@@ -52,9 +52,9 @@ public class MarkNewNodePosition implements MarkerDragEndHandler {
 			mapPanel.getMap().removeOverlay(
 					mapPanel.getChannelManager().getPolyline(channelId));
 			mapPanel.getChannelManager().removePolyline(channelId);
-			mapPanel.getChannelManager().addChannelPolyline(
+			mapPanel.getChannelManager().addPolylineForChannel(
 					mapPanel.getChannelManager().getChannels().getChannel(
-							channelId), mapPanel);
+							channelId));
 		}
 	}
 
