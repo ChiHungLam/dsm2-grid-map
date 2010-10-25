@@ -37,53 +37,17 @@
  *     USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  *     DAMAGE.
  *******************************************************************************/
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 /**
- *   Copyright (C) 2009, 2010 
- *    Nicky Sandhu
- *    State of California,
- *    Department of Water Resources.
- *    This file is part of DSM2 Grid Map
- *    The DSM2 Grid Map is free software: 
- *    you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *    DSM2 Grid Map is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
-
- *    You should have received a copy of the GNU General Public License
- *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
- */package gov.ca.bdo.modeling.dsm2.map.client.map;
-
-import gov.ca.dsm2.input.model.Channel;
-import gov.ca.dsm2.input.model.Node;
-
-import java.util.List;
-
-import com.google.gwt.maps.client.geom.LatLng;
-
-public class ModelUtils {
-	public static LatLng[] getPointsForChannel(Channel channel, Node upNode, Node downNode){
-		LatLng[] points = null;
-		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
-				.getLongitude());
-		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
-				.getLongitude());
-		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
-			int size = latLngPoints.size();
-			points = new LatLng[size + 2];
-			for (int i = 1; i < points.length - 1; i++) {
-				double[] ds = latLngPoints.get(i - 1);
-				points[i] = LatLng.newInstance(ds[0], ds[1]);
-			}
-		} else {
-			points = new LatLng[2];
-		}
-		points[0] = upPoint;
-		points[points.length - 1] = downPoint;
-		return points;
-	}
+ * Maps an integer value to type of element
+ * @author nsandhu
+ *
+ */
+public interface ElementType {
+	int NODE = 100;
+	int CHANNEL = 200;
+	int RESERVOIR = 300;
+	int RESERVOIR_CONNECTION = 310;
+	int GATE = 400;
+	int OUTPUT = 500;
 }

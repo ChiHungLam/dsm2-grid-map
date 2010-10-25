@@ -103,14 +103,18 @@ public class ReservoirOverlayManager {
 
 	public void displayReservoirMarkers() {
 		for (Reservoir reservoir : reservoirs.getReservoirs()) {
-			Marker reservoirMarker = createReservoirMarker(reservoir);
-			addReservoirMarker(reservoir.getName(), reservoirMarker);
-			mapPanel.getMap().addOverlay(reservoirMarker);
-			addReservoirConnectionLines(reservoir);
+			addReservoirMarker(reservoir);
 		}
 	}
+	
+	public void addReservoirMarker(Reservoir reservoir){
+		Marker reservoirMarker = createReservoirMarker(reservoir);
+		addReservoirMarker(reservoir.getName(), reservoirMarker);
+		mapPanel.getMap().addOverlay(reservoirMarker);
+		addReservoirConnectionLines(reservoir);		
+	}
 
-	public Marker createReservoirMarker(Reservoir reservoir) {
+	 private Marker createReservoirMarker(Reservoir reservoir) {
 		// Create our "tiny" marker icon
 		Icon icon = Icon.newInstance("images/lake.png");
 		icon.setShadowURL("images/water.shadow.png");
@@ -135,7 +139,7 @@ public class ReservoirOverlayManager {
 		return reservoirMarker;
 	}
 
-	public void addReservoirConnectionLines(Reservoir reservoir) {
+	private void addReservoirConnectionLines(Reservoir reservoir) {
 		// add connection lines
 		LatLng reservoirPoint = LatLng.newInstance(reservoir.getLatitude(),
 				reservoir.getLongitude());
@@ -153,7 +157,7 @@ public class ReservoirOverlayManager {
 		}
 	}
 
-	public void removeReserviorConnectionLines(String reservoirId) {
+	private void removeReserviorConnectionLines(String reservoirId) {
 		for (String key : reservoirConnnectionLineMap.keySet()) {
 			String reservoirName = key.split("_")[0];
 			if (reservoirName.equals(reservoirId)) {
@@ -161,5 +165,19 @@ public class ReservoirOverlayManager {
 						reservoirConnnectionLineMap.get(key));
 			}
 		}
+	}
+
+	public int getNumberOfReservoirs() {
+		return reservoirs.getReservoirs().size();
+	}
+
+	public void addReservoir(Reservoir r) {
+		reservoirs.addReservoir(r);
+		addReservoirMarker(r);
+	}
+
+	public void refresh(Reservoir reservoir) {
+		removeReserviorConnectionLines(reservoir.getName());
+		addReservoirConnectionLines(reservoir);
 	}
 }
