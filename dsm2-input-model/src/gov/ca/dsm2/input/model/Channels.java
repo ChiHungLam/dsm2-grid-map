@@ -122,5 +122,17 @@ public class Channels implements Serializable {
 	public String getDownChannels(String nodeId) {
 		return downNodeMap.get(nodeId);
 	}
+	
+	/**
+	 * assuming that all channel ids are integers, return the maximum of all
+	 * @return
+	 */
+	public int getMaxChannelId(){
+		int max=0;
+		for(Channel channel: channels){
+			max=Math.max(max,Integer.parseInt(channel.getId()));
+		}
+		return max;
+	}
 
 }

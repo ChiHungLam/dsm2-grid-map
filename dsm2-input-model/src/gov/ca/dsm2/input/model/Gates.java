@@ -67,4 +67,5 @@ public class Gates implements Serializable {
 		buf.append("END\n");
 		return buf.toString();
 	}
+	
 }

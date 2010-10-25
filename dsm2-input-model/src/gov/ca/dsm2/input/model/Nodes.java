@@ -25,8 +25,8 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class Nodes implements Serializable {
-	private  ArrayList<Node> nodes;
-	private  HashMap<String, Node> nodeMap;
+	private ArrayList<Node> nodes;
+	private HashMap<String, Node> nodeMap;
 
 	public Nodes() {
 		nodes = new ArrayList<Node>();
@@ -49,6 +49,19 @@ public class Nodes implements Serializable {
 
 	public List<Node> getNodes() {
 		return nodes;
+	}
+	
+	/**
+	 * Assuming that all nodes are integers, find the maximum
+	 * node id amongst all nodes
+	 * @return
+	 */
+	public int calculateMaxNodeId(){
+		int max=0;
+		for(Node n: nodes){
+			max=Math.max(max,Integer.parseInt(n.getId()));
+		}
+		return max;
 	}
 
 	public String buildGISTable() {
