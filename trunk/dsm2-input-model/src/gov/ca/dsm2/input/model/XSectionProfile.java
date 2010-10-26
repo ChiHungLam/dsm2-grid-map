@@ -1,5 +1,6 @@
 package gov.ca.dsm2.input.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +11,18 @@ import java.util.List;
  * @author nsandhu
  * 
  */
-public class XSectionProfile {
+@SuppressWarnings("serial")
+public class XSectionProfile implements Serializable {
 	private static final int MAX_LAYERS = 10;
 	private int id;
 	private int channelId;
 	private double distance;
 	private List<double[]> endPoints;
 	private List<double[]> profilePoints;
+
+	public XSectionProfile() {
+
+	}
 
 	public int getId() {
 		return id;
@@ -63,8 +69,8 @@ public class XSectionProfile {
 		ArrayList<XSectionLayer> layers = new ArrayList<XSectionLayer>();
 		//
 		double[] elevations = calculateElevations();
-		for (int i = 0; i < elevations.length; i++) {
-			layers.add(calculateLayer(elevations[i]));
+		for (double elevation : elevations) {
+			layers.add(calculateLayer(elevation));
 		}
 		return layers;
 	}
@@ -106,12 +112,13 @@ public class XSectionProfile {
 		for (double[] point : profilePoints) {
 			double y = point[1];
 			if (!insideChannel
-					&& (previousPoint != null && previousPoint[1] >= point[1])) {
+					&& ((previousPoint != null) && (previousPoint[1] >= point[1]))) {
 				insideChannel = true;
 			}
-			if (y <= elevation && insideChannel) {
-				if (previousPoint[1] > elevation){
-					previousPoint = createPointOnLineAt(elevation, previousPoint, point);
+			if ((y <= elevation) && insideChannel) {
+				if (previousPoint[1] > elevation) {
+					previousPoint = createPointOnLineAt(elevation,
+							previousPoint, point);
 				}
 				double xp = point[0];
 				double xp_1 = previousPoint[0];
@@ -122,9 +129,10 @@ public class XSectionProfile {
 				topWidth += w;
 				area += (yp_1 + yp) / 2.0 * w;
 				wettedPerimeter += Math.sqrt(h * h + w * w);
-			} else if ( y > elevation && insideChannel){
-				if (previousPoint[1] < elevation){
-					double[] intersectionPoint = createPointOnLineAt(elevation, previousPoint, point);
+			} else if ((y > elevation) && insideChannel) {
+				if (previousPoint[1] < elevation) {
+					double[] intersectionPoint = createPointOnLineAt(elevation,
+							previousPoint, point);
 					double xp = intersectionPoint[0];
 					double xp_1 = previousPoint[0];
 					double yp = elevation - intersectionPoint[1];
@@ -134,7 +142,7 @@ public class XSectionProfile {
 					topWidth += w;
 					area += (yp_1 + yp) / 2.0 * w;
 					wettedPerimeter += Math.sqrt(h * h + w * w);
-					
+
 				}
 			}
 			previousPoint = point;
@@ -182,7 +190,7 @@ public class XSectionProfile {
 		if (stepSize < 2) {
 			stepSize = 2;
 		}
-		int nlayers = (int) Math.ceil((maxElevation - minElevation) / stepSize)+1;
+		int nlayers = (int) Math.ceil((maxElevation - minElevation) / stepSize) + 1;
 		double[] elevations = new double[nlayers];
 		for (int i = 0; i < nlayers; i++) {
 			elevations[i] = Math.min(minElevation + i * stepSize, maxElevation);
