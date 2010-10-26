@@ -52,7 +52,7 @@ public class HeaderPanel extends Composite {
 			headerPanel
 					.addToLinkPanel(new Anchor("Upload Data", "#upload_data"));
 		}
-		loginService.login(GWT.getModuleBaseURL(),
+		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 
 					public void onSuccess(LoginInfo result) {
@@ -66,6 +66,7 @@ public class HeaderPanel extends Composite {
 							headerPanel.addToRightSide(new Anchor("Logout",
 									result.getLogoutUrl()));
 						} else {
+							showMessageFor("You are not logged in!", 15000);
 							headerPanel.addToRightSide(new Anchor("Login",
 									result.getLoginUrl()));
 						}

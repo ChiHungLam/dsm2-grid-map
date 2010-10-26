@@ -42,7 +42,6 @@ package gov.ca.bdo.modeling.dsm2.map.client.map;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.DSM2Model;
-import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoirs;
@@ -62,12 +61,12 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
-import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
+import com.google.gwt.user.client.Random;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -91,6 +90,7 @@ public class MapPanel extends Composite {
 	private Panel infoPanel;
 	private TransfersManager transfersManager;
 	private ArrayList<Polyline> flowLines;
+	private Timer timer;
 
 	public MapPanel() {
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
@@ -137,8 +137,7 @@ public class MapPanel extends Composite {
 	public void populateGrid() {
 		clearAllMarkers();
 		setNodeManager(new NodeMarkerDataManager(this, model.getNodes()));
-		setChannelManager(new ChannelLineDataManager(this, model
-				.getChannels()));
+		setChannelManager(new ChannelLineDataManager(this, model.getChannels()));
 		refreshGrid();
 	}
 
@@ -197,7 +196,7 @@ public class MapPanel extends Composite {
 
 	protected void populateGateImages() {
 		Gates gates = model.getGates();
-		gateOverlayManager = new GateOverlayManager(this);
+		gateOverlayManager = new GateOverlayManager(this, gates);
 		gateOverlayManager.addGates();
 	}
 
@@ -403,8 +402,8 @@ public class MapPanel extends Composite {
 			DSM2Model model = getModel();
 			Channels channels = model.getChannels();
 			flowLines = new ArrayList<Polyline>();
-			PolyStyleOptions style = PolyStyleOptions.newInstance("#FF0000", 4,
-					1.0);
+			final PolyStyleOptions style = PolyStyleOptions.newInstance(
+					"#FF0000", 4, 1.0);
 			for (Channel channel : channels.getChannels()) {
 				Node upNode = nm.getNodeData(channel.getUpNodeId());
 				Node downNode = nm.getNodeData(channel.getDownNodeId());
@@ -414,14 +413,43 @@ public class MapPanel extends Composite {
 				line.setStrokeStyle(style);
 				flowLines.add(line);
 			}
+			timer = new Timer() {
+
+				@Override
+				public void run() {
+					int r = Random.nextInt(255);
+					int g = Random.nextInt(255);
+					int b = Random.nextInt(255);
+					String colorSpec = "#" + toHex(r) + toHex(g) + toHex(b);
+					style.setColor(colorSpec);
+					GWT.log("Setting color to " + colorSpec);
+					for (Polyline line : flowLines) {
+						line.setVisible(false);
+					}
+					for (Polyline line : flowLines) {
+						line.setStrokeStyle(style);
+					}
+					for (Polyline line : flowLines) {
+						line.setVisible(true);
+					}
+
+				}
+
+				public String toHex(int val) {
+					String hex = Integer.toHexString(val).toUpperCase();
+					return hex.length() == 1 ? "0" + hex : hex;
+				}
+			};
 		}
 		for (Polyline line : flowLines) {
 			map.addOverlay(line);
 		}
+		timer.scheduleRepeating(1000);
 	}
 
 	public void hideFlowLines() {
 		if (flowLines != null) {
+			timer.cancel();
 			for (Polyline line : flowLines) {
 				map.removeOverlay(line);
 			}
