@@ -59,10 +59,10 @@ public class GateOverlayManager {
 	private final HashMap<String, Marker> gateMarkerMap;
 	private MapPanel mapPanel;
 
-	public GateOverlayManager(MapPanel mapPanel) {
+	public GateOverlayManager(MapPanel mapPanel, Gates gates) {
 		this.mapPanel = mapPanel;
 		gateMarkerMap = new HashMap<String, Marker>();
-
+		setGates(gates);
 	}
 
 	public void setGates(Gates gates) {
@@ -93,8 +93,8 @@ public class GateOverlayManager {
 			addMarkerForGate(gate);
 		}
 	}
-	
-	public void addGate(Gate gate){
+
+	public void addGate(Gate gate) {
 		gates.addGate(gate);
 		addMarkerForGate(gate);
 	}
@@ -141,14 +141,13 @@ public class GateOverlayManager {
 			Marker gateOverMarker = new Marker(gatePoint, options);
 			gateOverMarker.addMarkerClickHandler(new GateClickHandler(gate,
 					mapPanel));
-			gateOverMarker
-					.addMarkerDragEndHandler(new GateDragHandler(gate));
-			this.addGateMarker(gate.getName(), gateOverMarker);
+			gateOverMarker.addMarkerDragEndHandler(new GateDragHandler(gate));
+			addGateMarker(gate.getName(), gateOverMarker);
 			mapPanel.getMap().addOverlay(gateOverMarker);
 		}
 	}
 
-	public int getNumberOfGates(){
+	public int getNumberOfGates() {
 		return gates.getGates().size();
 	}
 }
