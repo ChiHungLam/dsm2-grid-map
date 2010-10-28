@@ -105,14 +105,19 @@ public class MapControlPanel extends Composite {
 		addPolygonButton = new ToggleButton(new Image(IconImages.INSTANCE
 				.measurePolygonIcon()), new Image(IconImages.INSTANCE
 				.measurePolygonIcon()));
-		clickForElevationButton = new ToggleButton(new Image(
-				gov.ca.modeling.maps.elevation.client.images.IconImages.INSTANCE.elevationIcon()));
-		drawXSectionButton = new ToggleButton(new Image(gov.ca.modeling.maps.elevation.client.images.IconImages.INSTANCE
-				.elevationProfileIcon()));
+		clickForElevationButton = new ToggleButton(
+				new Image(
+						gov.ca.modeling.maps.elevation.client.images.IconImages.INSTANCE
+								.elevationIcon()));
+		drawXSectionButton = new ToggleButton(
+				new Image(
+						gov.ca.modeling.maps.elevation.client.images.IconImages.INSTANCE
+								.elevationProfileIcon()));
 		showBathymetryPoints = new ToggleButton("Show Bathymetry");
-		
+
 		//
-		saveEditModelButton = new ToggleButton("Edit Model", "Save Model");
+		saveEditModelButton = new ToggleButton(new Image(IconImages.INSTANCE
+				.editIcon()), new Image(IconImages.INSTANCE.saveIcon()));
 		addTextAnnotationButton = new ToggleButton(new Image(
 				IconImages.INSTANCE.addingTextIcon()));
 		flowLineButton = new ToggleButton("Show Flowlines", "Hide Flowlines");
@@ -304,8 +309,8 @@ public class MapControlPanel extends Composite {
 	public HasClickHandlers getDeleteButton() {
 		return deleteElementButton;
 	}
-	
-	public HasClickHandlers getShowBathymetryPointsButton(){
+
+	public HasClickHandlers getShowBathymetryPointsButton() {
 		return showBathymetryPoints;
 	}
 
