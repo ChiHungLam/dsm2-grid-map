@@ -41,14 +41,11 @@ public interface IconImages extends ClientBundle {
 	@Source("pin.png")
 	public ImageResource pinIcon();
 
-	@Source("measure_ON.gif")
-	public ImageResource measureOnIcon();
+	@Source("measureLength.gif")
+	public ImageResource measureLengthIcon();
 
-	@Source("measure_OFF.gif")
-	public ImageResource measureOffIcon();
-
-	@Source("measure-poly.png")
-	public ImageResource measurePolygonIcon();
+	@Source("measureArea.png")
+	public ImageResource measureAreaIcon();
 
 	@Source("adding_text_1.gif")
 	public ImageResource addingTextIcon();
@@ -61,6 +58,9 @@ public interface IconImages extends ClientBundle {
 
 	@Source("save.png")
 	public ImageResource saveIcon();
+	
+	@Source("save.png")
+	public ImageResource downloadIcon();
 
 	@Source("delete.png")
 	public ImageResource deleteIcon();

@@ -5,11 +5,15 @@
 		.important {
 			font-weight: bold;
 		}
-		.control-panel{
-			width:600px;
+		
+		.control-panel {
+			width: 600px;
 		}
 	</ui:style>
-	<ui:with type="gov.ca.bdo.modeling.dsm2.map.client.images.IconImages" field="images"></ui:with>
+	<ui:with type="gov.ca.bdo.modeling.dsm2.map.client.images.IconImages"
+		field="images"></ui:with>
+	<ui:with type="gov.ca.modeling.maps.elevation.client.images.IconImages"
+		field="el_images"></ui:with>
 	<g:VerticalPanel styleName="{style.control-panel}">
 		<g:HorizontalPanel>
 			<g:Label>Study:</g:Label>
@@ -37,22 +41,46 @@
 		<g:DisclosurePanel open="false">
 			<g:header>Download</g:header>
 			<g:VerticalPanel>
-				<g:Button ui:field="downloadHydroButton">Download Hydro Input</g:Button>
-				<g:Button ui:field="downloadGISButton">Download GIS Input</g:Button>
+				<g:PushButton ui:field="downloadHydroButton">
+				<g:upFace image="{images.downloadIcon}"></g:upFace>
+				Download Hydro Input</g:PushButton>
+				<g:PushButton ui:field="downloadGISButton">
+				<g:upFace image="{images.downloadIcon}"></g:upFace>
+				Download GIS Input</g:PushButton>
 			</g:VerticalPanel>
 		</g:DisclosurePanel>
 		<g:DisclosurePanel open="false">
-			<g:CaptionPanel captionText="GIS Tools">
-				<g:HorizontalPanel>
-					<g:ToggleButton title="Measure Length">
-						<g:upFace images="{images.measureOnIcon}"></g:upFace>
-					</g:ToggleButton>
-				</g:HorizontalPanel>
-			</g:CaptionPanel>
+			<g:header>Tools</g:header>
+			<g:VerticalPanel>
+				<g:CaptionPanel captionText="GIS Tools">
+					<g:HorizontalPanel>
+						<g:ToggleButton title="Measure Length" ui:field="measureLengthButton">
+							<g:upFace images="{images.measureLengthIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Measure Area" ui:field="measureAreaButton">
+							<g:upFace images="{images.measureAreaIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Elevation" ui:field="displayElevationButton">
+							<g:upFace images="{el_images.elevationIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Elevation Profile" ui:field="displayElevationProfileButton">
+							<g:upFace images="{el_images.elevationProfileIcon}"></g:upFace>
+						</g:ToggleButton>
+					</g:HorizontalPanel>
+				</g:CaptionPanel>
+				<g:CaptionPanel captionText="Search">
+					<g:HorizontalPanel>
+						<g:PushButton ui:field="findButton">
+							<g:upFace image="images.findIcon"></g:upFace>
+						</g:PushButton>
+						<g:TextBox ui:field="findTextBox"></g:TextBox>
+					</g:HorizontalPanel>
+				</g:CaptionPanel>
+			</g:VerticalPanel>
+		</g:DisclosurePanel>
+		<g:DisclosurePanel>
+			<g:header>Selected Element Info</g:header>
+			<g:FlowPanel ui:field="infoPanel"></g:FlowPanel>
 		</g:DisclosurePanel>
 	</g:VerticalPanel>
-	<g:HTMLPanel>
-		Hello,
-		<g:Button styleName="{style.important}" ui:field="button" />
-	</g:HTMLPanel>
 </ui:UiBinder> 

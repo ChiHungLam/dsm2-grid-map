@@ -1,13 +1,14 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MapControlPanelNew extends Composite {
@@ -19,17 +20,43 @@ public class MapControlPanelNew extends Composite {
 			UiBinder<Widget, MapControlPanelNew> {
 	}
 
+	private boolean viewOnly;
 	@UiField
-	Button button;
+	ListBox studyBox;
+	@UiField
+	ToggleButton saveEditButton;
+	@UiField
+	ToggleButton addButton;
+	@UiField
+	ToggleButton deleteButton;
+	@UiField
+	ListBox elementTypeBox;
+	@UiField
+	PushButton downloadHydroButton;
+	@UiField
+	PushButton downloadGISButton;
+	@UiField
+	ToggleButton measureLengthButton;
+	@UiField
+	ToggleButton measureAreaButton;
+	@UiField
+	ToggleButton displayElevationButton;
+	@UiField
+	ToggleButton displayElevationProfileButton;
+	@UiField
+	PushButton findButton;
+	@UiField
+	TextBox findTextBox;
+	@UiField
+	Panel infoPanel;
 
-	public MapControlPanelNew(String firstName) {
+	public MapControlPanelNew(boolean viewOnly) {
+		this.viewOnly = viewOnly;
 		initWidget(uiBinder.createAndBindUi(this));
-		button.setText(firstName);
-	}
-
-	@UiHandler("button")
-	void onClick(ClickEvent e) {
-		Window.alert("Hello!");
+		String[] elementTypes = new String[]{"Node", "Channel", "Reservoir", "Gate", "XSection", "Output", "KML"};
+		for(String item: elementTypes){
+			elementTypeBox.addItem(item);			
+		}
 	}
 
 }
