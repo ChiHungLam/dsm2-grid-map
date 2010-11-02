@@ -38,16 +38,21 @@
  *     DAMAGE.
  *******************************************************************************/
 package gov.ca.bdo.modeling.dsm2.map.client.map;
+
 /**
  * Maps an integer value to type of element
+ * 
  * @author nsandhu
- *
+ * 
  */
 public interface ElementType {
 	int NODE = 100;
 	int CHANNEL = 200;
+	int XSECTION = 210;
 	int RESERVOIR = 300;
 	int RESERVOIR_CONNECTION = 310;
 	int GATE = 400;
 	int OUTPUT = 500;
+	int TEXT = 600;
+	int KML = 700;
 }

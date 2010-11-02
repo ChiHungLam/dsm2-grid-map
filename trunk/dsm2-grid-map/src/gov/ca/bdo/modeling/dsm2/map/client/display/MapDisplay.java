@@ -41,7 +41,6 @@ package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.AddMapElementClickHandler;
-import gov.ca.bdo.modeling.dsm2.map.client.map.ElementType;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapControlPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
@@ -62,8 +61,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasInitializeHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
@@ -84,7 +81,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -168,22 +164,30 @@ public class MapDisplay extends Composite implements Display,
 						mapPanel.onResize();
 					}
 				});
-				controlPanel.getNodeIdBox().addValueChangeHandler(
-						new ValueChangeHandler<String>() {
+				controlPanel.getFindButton().addClickHandler(
+						new ClickHandler() {
 
-							public void onValueChange(
-									ValueChangeEvent<String> event) {
-								String nodeId = event.getValue();
-								mapPanel.centerAndZoomOnNode(nodeId);
-							}
-						});
-				controlPanel.getChannelIdBox().addValueChangeHandler(
-						new ValueChangeHandler<String>() {
-
-							public void onValueChange(
-									ValueChangeEvent<String> event) {
-								String channelId = event.getValue();
-								mapPanel.centerAndZoomOnChannel(channelId);
+							public void onClick(ClickEvent event) {
+								String findText = controlPanel.getFindTextBox()
+										.getText();
+								if ((findText == null)
+										|| findText.trim().equals("")) {
+									return;
+								}
+								String fields[] = findText.split("\\s");
+								if (fields.length >= 2) {
+									if (fields[0].equalsIgnoreCase("node")) {
+										mapPanel.centerAndZoomOnNode(fields[1]);
+									} else if (fields[0]
+											.equalsIgnoreCase("channel")) {
+										mapPanel
+												.centerAndZoomOnChannel(fields[1]);
+									} else {
+										// FIXME: do other searches
+									}
+								} else {
+									// FIXME: do other searches
+								}
 							}
 						});
 				getSaveEditButton().addClickHandler(new ClickHandler() {
@@ -283,15 +287,7 @@ public class MapDisplay extends Composite implements Display,
 	}
 
 	public HasClickHandlers getSaveEditButton() {
-		return controlPanel.getSaveEditModelButton();
-	}
-
-	public HasClickHandlers getAddKmlButton() {
-		return controlPanel.getAddKmlButton();
-	}
-
-	public HasText getKmlUrlBox() {
-		return controlPanel.getKmlUrlBox();
+		return controlPanel.getSaveEditButton();
 	}
 
 	public void updateLinks() {
@@ -321,7 +317,7 @@ public class MapDisplay extends Composite implements Display,
 	public void startMeasuringDistanceAlongLine() {
 		if (lengthMeasurer == null) {
 			lengthMeasurer = new MeasuringDistanceAlongLine(mapPanel
-					.getMapWidget(), controlPanel.getMeasurementLabel());
+					.getMapWidget());
 			lengthMeasurer.addPolyline();
 		}
 	}
@@ -336,8 +332,7 @@ public class MapDisplay extends Composite implements Display,
 
 	public void startMeasuringAreaInPolygon() {
 		if (areaMeasurer == null) {
-			areaMeasurer = new MeasuringAreaInPolygon(mapPanel.getMap(),
-					controlPanel.getMeasurementLabel());
+			areaMeasurer = new MeasuringAreaInPolygon(mapPanel.getMap());
 			areaMeasurer.addPolyline();
 		}
 	}

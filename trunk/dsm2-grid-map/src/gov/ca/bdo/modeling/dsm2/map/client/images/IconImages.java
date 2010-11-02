@@ -58,12 +58,15 @@ public interface IconImages extends ClientBundle {
 
 	@Source("save.png")
 	public ImageResource saveIcon();
-	
+
 	@Source("save.png")
 	public ImageResource downloadIcon();
 
 	@Source("delete.png")
 	public ImageResource deleteIcon();
+
+	@Source("flowline.png")
+	public ImageResource flowLineIcon();
 
 	@Source("blue_MarkerG.png")
 	public ImageResource blueGMarkerIcon();
