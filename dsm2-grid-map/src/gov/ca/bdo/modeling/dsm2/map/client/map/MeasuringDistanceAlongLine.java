@@ -19,16 +19,15 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.event.PolylineCancelLineHandler;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineEndLineHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * Creates a polyline and displays distance as polyline is drawn
@@ -42,11 +41,9 @@ public class MeasuringDistanceAlongLine {
 	private final String color = "#FF0000";
 	private final int weight = 5;
 	private final double opacity = 0.75;
-	private final Label messageLabel;
 
-	public MeasuringDistanceAlongLine(MapWidget map, Label messageLabel) {
+	public MeasuringDistanceAlongLine(MapWidget map) {
 		this.map = map;
-		this.messageLabel = messageLabel;
 	}
 
 	public void addPolyline() {
@@ -56,31 +53,30 @@ public class MeasuringDistanceAlongLine {
 		map.addOverlay(line);
 		line.setDrawingEnabled();
 		line.setStrokeStyle(style);
-		messageLabel.setText("");
 		line.addPolylineClickHandler(new PolylineClickHandler() {
 
 			public void onClick(PolylineClickEvent event) {
-				editPolyline();
+				displayLength();
 			}
 		});
 		line.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
 
 			public void onUpdate(PolylineLineUpdatedEvent event) {
-				messageLabel.setText("Length : " + getLengthInFeet() + " ft");
+				displayLength();
 			}
 		});
 
 		line.addPolylineCancelLineHandler(new PolylineCancelLineHandler() {
 
 			public void onCancel(PolylineCancelLineEvent event) {
-				messageLabel.setText("Length : " + getLengthInFeet() + " ft");
+				displayLength();
 			}
 		});
 
 		line.addPolylineEndLineHandler(new PolylineEndLineHandler() {
 
 			public void onEnd(PolylineEndLineEvent event) {
-				messageLabel.setText("Length : " + getLengthInFeet() + " ft");
+				displayLength();
 			}
 		});
 	}
@@ -89,17 +85,15 @@ public class MeasuringDistanceAlongLine {
 		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
 	}
 
-	public void editPolyline() {
-		if (line == null) {
-			return;
-		}
-		// allow up to 10 vertices to exist in the line.
-		line.setEditingEnabled(PolyEditingOptions.newInstance(10));
-	}
-
 	public void clearOverlay() {
 		if (line != null) {
 			map.removeOverlay(line);
 		}
+	}
+
+	public void displayLength() {
+		LatLng vertex = line.getVertex(line.getVertexCount() - 1);
+		map.getInfoWindow().open(vertex,
+				new InfoWindowContent("Length: " + getLengthInFeet() + " ft"));
 	}
 }

@@ -19,6 +19,7 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.event.PolygonCancelLineHandler;
 import com.google.gwt.maps.client.event.PolygonClickHandler;
@@ -28,7 +29,6 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polygon;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * Creates a polyline and displays distance as polyline is drawn
@@ -42,11 +42,9 @@ public class MeasuringAreaInPolygon {
 	private final String color = "#FF0000";
 	private final int weight = 5;
 	private final double opacity = 0.75;
-	private final Label messageLabel;
 
-	public MeasuringAreaInPolygon(MapWidget map, Label messageLabel) {
+	public MeasuringAreaInPolygon(MapWidget map) {
 		this.map = map;
-		this.messageLabel = messageLabel;
 	}
 
 	public void addPolyline() {
@@ -56,33 +54,42 @@ public class MeasuringAreaInPolygon {
 		map.addOverlay(polygon);
 		polygon.setDrawingEnabled();
 		polygon.setStrokeStyle(style);
-		messageLabel.setText("");
 		polygon.addPolygonClickHandler(new PolygonClickHandler() {
 
 			public void onClick(PolygonClickEvent event) {
-				editPolygon();
+				displayArea();
 			}
 		});
 		polygon.addPolygonLineUpdatedHandler(new PolygonLineUpdatedHandler() {
 
 			public void onUpdate(PolygonLineUpdatedEvent event) {
-				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
+				displayArea();
 			}
 		});
 
 		polygon.addPolygonCancelLineHandler(new PolygonCancelLineHandler() {
 
 			public void onCancel(PolygonCancelLineEvent event) {
-				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
+				displayArea();
 			}
 		});
 
 		polygon.addPolygonEndLineHandler(new PolygonEndLineHandler() {
 
 			public void onEnd(PolygonEndLineEvent event) {
-				messageLabel.setText("Area : " + getAreaInSquareFeet() + " ft");
+				displayArea();
 			}
 		});
+	}
+
+	public void displayArea() {
+		LatLng vertex = polygon.getVertex(polygon.getVertexCount() - 1);
+		if (vertex != null) {
+			map.getInfoWindow().open(
+					vertex,
+					new InfoWindowContent("Area : " + getAreaInSquareFeet()
+							+ " ft"));
+		}
 	}
 
 	public double getAreaInSquareFeet() {

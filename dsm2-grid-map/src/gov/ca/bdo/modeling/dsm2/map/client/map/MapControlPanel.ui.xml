@@ -26,27 +26,31 @@
 					<g:upFace image="{images.editIcon}"></g:upFace>
 					<g:downFace image="{images.saveIcon}"></g:downFace>
 				</g:ToggleButton>
-				<g:VerticalPanel>
-					<g:ToggleButton ui:field="addButton">
-						<g:upFace image="{images.addIcon}"></g:upFace>
-					</g:ToggleButton>
-					<g:ToggleButton ui:field="deleteButton">
-						<g:upFace images="{images.deleteIcon}"></g:upFace>
-					</g:ToggleButton>
-				</g:VerticalPanel>
-				<g:ListBox ui:field="elementTypeBox">
-				</g:ListBox>
+				<g:HorizontalPanel ui:field="elementEditPanel">
+					<g:VerticalPanel>
+						<g:ToggleButton ui:field="addButton">
+							<g:upFace image="{images.addIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton ui:field="deleteButton">
+							<g:upFace images="{images.deleteIcon}"></g:upFace>
+						</g:ToggleButton>
+					</g:VerticalPanel>
+					<g:ListBox ui:field="elementTypeBox">
+					</g:ListBox>
+				</g:HorizontalPanel>
 			</g:HorizontalPanel>
 		</g:DisclosurePanel>
 		<g:DisclosurePanel open="false">
 			<g:header>Download</g:header>
 			<g:VerticalPanel>
 				<g:PushButton ui:field="downloadHydroButton">
-				<g:upFace image="{images.downloadIcon}"></g:upFace>
-				Download Hydro Input</g:PushButton>
+					<g:upFace image="{images.downloadIcon}"></g:upFace>
+					Download Hydro Input
+				</g:PushButton>
 				<g:PushButton ui:field="downloadGISButton">
-				<g:upFace image="{images.downloadIcon}"></g:upFace>
-				Download GIS Input</g:PushButton>
+					<g:upFace image="{images.downloadIcon}"></g:upFace>
+					Download GIS Input
+				</g:PushButton>
 			</g:VerticalPanel>
 		</g:DisclosurePanel>
 		<g:DisclosurePanel open="false">
@@ -63,8 +67,13 @@
 						<g:ToggleButton title="Display Elevation" ui:field="displayElevationButton">
 							<g:upFace images="{el_images.elevationIcon}"></g:upFace>
 						</g:ToggleButton>
-						<g:ToggleButton title="Display Elevation Profile" ui:field="displayElevationProfileButton">
+						<g:ToggleButton title="Display Elevation Profile"
+							ui:field="displayElevationProfileButton">
 							<g:upFace images="{el_images.elevationProfileIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Channel Outlines"
+							ui:field="flowlineButton">
+							<g:upFace images="{images.flowLineIcon}"></g:upFace>
 						</g:ToggleButton>
 					</g:HorizontalPanel>
 				</g:CaptionPanel>
