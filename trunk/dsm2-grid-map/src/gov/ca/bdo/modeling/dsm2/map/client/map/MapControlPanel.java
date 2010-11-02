@@ -7,11 +7,13 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -23,14 +25,13 @@ public class MapControlPanel extends Composite {
 
 	interface MapControlPanelUiBinder extends UiBinder<Widget, MapControlPanel> {
 	}
-
 	private boolean viewOnly;
 	@UiField
 	ListBox studyBox;
 	@UiField
 	ToggleButton saveEditButton;
 	@UiField
-	Panel elementEditPanel;
+	CaptionPanel elementEditPanel;
 	@UiField
 	ToggleButton addButton;
 	@UiField
@@ -54,8 +55,6 @@ public class MapControlPanel extends Composite {
 	@UiField
 	TextBox findTextBox;
 	@UiField
-	Panel infoPanel;
-	@UiField
 	ToggleButton flowlineButton;
 
 	private String[] studies;
@@ -78,6 +77,7 @@ public class MapControlPanel extends Composite {
 		for (String item : elementTypes) {
 			elementTypeBox.addItem(item);
 		}
+		elementEditPanel.setVisible(false);
 	}
 
 	public void setStudies(String[] studyNames) {
@@ -137,18 +137,14 @@ public class MapControlPanel extends Composite {
 	}
 
 	public void setEditMode(boolean editMode) {
-		if (editMode) {
-			elementEditPanel.setVisible(true);
-		} else {
-			elementEditPanel.setVisible(false);
-		}
+		elementEditPanel.setVisible(editMode);
 	}
 
 	public HasClickHandlers getDisplayElevationButton() {
 		return displayElevationButton;
 	}
 
-	public HasClickHandlers displayElevationProfileButton() {
+	public HasClickHandlers getDisplayElevationProfileButton() {
 		return displayElevationProfileButton;
 	}
 

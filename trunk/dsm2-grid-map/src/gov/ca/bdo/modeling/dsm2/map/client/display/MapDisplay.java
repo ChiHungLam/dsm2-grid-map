@@ -66,6 +66,7 @@ import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
@@ -78,10 +79,14 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -111,7 +116,11 @@ public class MapDisplay extends Composite implements Display,
 
 		controlPanelContainer = new VerticalPanel();
 		controlPanelContainer.add(controlPanel);
-		controlPanelContainer.add(infoPanel);
+		DisclosurePanel infoPanelContainer = new DisclosurePanel();
+		infoPanelContainer.setOpen(true);
+		infoPanelContainer.setHeader(new Label("Selected Element Info"));
+		infoPanelContainer.add(infoPanel);
+		controlPanelContainer.add(infoPanelContainer);
 		mainPanel.addWest(new FlowPanel(), 5);
 		mainPanel.addEast(new FlowPanel(), 5);
 		mainPanel.addNorth(headerPanel, 2);
@@ -145,7 +154,7 @@ public class MapDisplay extends Composite implements Display,
 			public void run() {
 				mapPanel = new MapPanel();
 				mapPanel.setInfoPanel(infoPanel);
-				mainPanel.addEast(controlPanelContainer, 40);
+				mainPanel.addEast(new ScrollPanel(controlPanelContainer), 40);
 				mainPanel.add(mapPanel);
 				if (studyName != null) {
 					mapPanel.setStudy(studyName);
@@ -164,32 +173,6 @@ public class MapDisplay extends Composite implements Display,
 						mapPanel.onResize();
 					}
 				});
-				controlPanel.getFindButton().addClickHandler(
-						new ClickHandler() {
-
-							public void onClick(ClickEvent event) {
-								String findText = controlPanel.getFindTextBox()
-										.getText();
-								if ((findText == null)
-										|| findText.trim().equals("")) {
-									return;
-								}
-								String fields[] = findText.split("\\s");
-								if (fields.length >= 2) {
-									if (fields[0].equalsIgnoreCase("node")) {
-										mapPanel.centerAndZoomOnNode(fields[1]);
-									} else if (fields[0]
-											.equalsIgnoreCase("channel")) {
-										mapPanel
-												.centerAndZoomOnChannel(fields[1]);
-									} else {
-										// FIXME: do other searches
-									}
-								} else {
-									// FIXME: do other searches
-								}
-							}
-						});
 				getSaveEditButton().addClickHandler(new ClickHandler() {
 
 					public void onClick(ClickEvent event) {
@@ -290,28 +273,20 @@ public class MapDisplay extends Composite implements Display,
 		return controlPanel.getSaveEditButton();
 	}
 
-	public void updateLinks() {
-		controlPanel.updateLinks();
+	public HasClickHandlers getMeasureLengthButton() {
+		return controlPanel.getMeasureLengthButton();
 	}
 
-	public HasClickHandlers getAddPolylineButton() {
-		return controlPanel.getAddPolylineButton();
+	public HasClickHandlers getMeasureAreaButton() {
+		return controlPanel.getMeasureAreaButton();
 	}
 
-	public HasClickHandlers getAddPolygonButton() {
-		return controlPanel.getAddPolygonButton();
+	public HasClickHandlers getDisplayElevationButton() {
+		return controlPanel.getDisplayElevationButton();
 	}
 
-	public HasClickHandlers getTextAnnotationButton() {
-		return controlPanel.getAddTextAnnonationButton();
-	}
-
-	public HasClickHandlers getClickForElevationButton() {
-		return controlPanel.getClickForElevationButton();
-	}
-
-	public HasClickHandlers getDrawXSectionButton() {
-		return controlPanel.getDrawXSectionButton();
+	public HasClickHandlers getDisplayElevationProfileButton() {
+		return controlPanel.getDisplayElevationProfileButton();
 	}
 
 	public void startMeasuringDistanceAlongLine() {
@@ -325,7 +300,6 @@ public class MapDisplay extends Composite implements Display,
 	public void stopMeasuringDistanceAlongLine() {
 		if (lengthMeasurer != null) {
 			lengthMeasurer.clearOverlay();
-			controlPanel.getMeasurementLabel().setText("");
 			lengthMeasurer = null;
 		}
 	}
@@ -340,7 +314,6 @@ public class MapDisplay extends Composite implements Display,
 	public void stopMeasuringAreaInPolygon() {
 		if (areaMeasurer != null) {
 			areaMeasurer.clearOverlay();
-			controlPanel.getMeasurementLabel().setText("");
 			areaMeasurer = null;
 		}
 	}
@@ -393,6 +366,7 @@ public class MapDisplay extends Composite implements Display,
 	private ElevationProfileDisplayer elevationProfileDisplayer;
 	private BathymetryDisplayer bathymetryDisplayer;
 	private AddMapElementClickHandler addMapElementHandler;
+	private MapClickHandler deleteMapElementHandler;
 
 	public void addLine(Channel channel) {
 		MapWidget map = mapPanel.getMap();
@@ -442,7 +416,7 @@ public class MapDisplay extends Composite implements Display,
 					.getMap(), infoPanel);
 		}
 		elevationProfileDisplayer
-				.startDrawingLine((ToggleButton) getDrawXSectionButton());
+				.startDrawingLine((ToggleButton) getDisplayElevationProfileButton());
 	}
 
 	public void stopDrawingElevationProfileLine() {
@@ -459,10 +433,6 @@ public class MapDisplay extends Composite implements Display,
 		return controlPanel.getDeleteButton();
 	}
 
-	public HasClickHandlers getShowBathymetryPointsButton() {
-		return controlPanel.getShowBathymetryPointsButton();
-	}
-
 	public void startShowingBathymetryPoints() {
 		if (bathymetryDisplayer == null) {
 			bathymetryDisplayer = new BathymetryDisplayer(mapPanel.getMap());
@@ -477,6 +447,7 @@ public class MapDisplay extends Composite implements Display,
 	}
 
 	public void setAddingMode(boolean down) {
+		clearDeleteingMode();
 		if (!down) {
 			mapPanel.getMap().removeMapClickHandler(addMapElementHandler);
 		} else {
@@ -492,8 +463,46 @@ public class MapDisplay extends Composite implements Display,
 	}
 
 	public void setDeletingMode(boolean down) {
-		// TODO Auto-generated method stub
+		clearAddingMode();
+		((ToggleButton)getAddButton()).setDown(false);
+		if (!down){
+			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
+		} else {
+			if (deleteMapElementHandler == null){
+				deleteMapElementHandler = new DeleteMapElementClickHandler(mapPanel);
+			} 
+			mapPanel.getMap().addMapClickHandler(deleteMapElementHandler);
+		}
+	}
+	
+	private void clearAddingMode(){
+		((ToggleButton)getAddButton()).setDown(false);
+		if (addMapElementHandler != null){
+			mapPanel.getMap().removeMapClickHandler(addMapElementHandler);
+		}
+		
+	}
+	private void clearDeleteingMode(){
+		((ToggleButton)getDeleteButton()).setDown(false);
+		if (deleteMapElementHandler != null){
+			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
+		}
+	}
 
+	public void centerAndZoomOnChannel(String channelId) {
+		mapPanel.centerAndZoomOnChannel(channelId);
+	}
+
+	public void centerAndZoomOnNode(String nodeId) {
+		mapPanel.centerAndZoomOnNode(nodeId);
+	}
+
+	public HasClickHandlers getFindButton() {
+		return controlPanel.getFindButton();
+	}
+
+	public HasText getFindTextBox() {
+		return controlPanel.getFindTextBox();
 	}
 
 }

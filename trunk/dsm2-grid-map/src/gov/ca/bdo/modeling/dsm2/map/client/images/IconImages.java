@@ -59,8 +59,11 @@ public interface IconImages extends ClientBundle {
 	@Source("save.png")
 	public ImageResource saveIcon();
 
-	@Source("save.png")
+	@Source("download.png")
 	public ImageResource downloadIcon();
+	
+	@Source("find.png")
+	public ImageResource findIcon();
 
 	@Source("delete.png")
 	public ImageResource deleteIcon();

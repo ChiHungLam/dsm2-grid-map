@@ -56,7 +56,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			Presenter presenter = null;
 			if (token.startsWith("map_view")) {
 				presenter = new DSM2GridMapPresenter(dsm2InputService,
-						eventBus, new MapDisplay(true), true);
+						eventBus, new MapDisplay(true));
 			} else if (token.startsWith("map")) {
 				presenter = createDSM2GridMapPresenter();
 			} else if (token.equals("studies")) {
@@ -86,7 +86,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 	private DSM2GridMapPresenter createDSM2GridMapPresenter() {
 		return new DSM2GridMapPresenter(dsm2InputService, eventBus,
-				new MapDisplay(false), false);
+				new MapDisplay(false));
 	}
 
 }

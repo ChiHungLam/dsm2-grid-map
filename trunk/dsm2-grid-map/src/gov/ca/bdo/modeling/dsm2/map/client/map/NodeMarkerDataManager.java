@@ -171,12 +171,10 @@ public class NodeMarkerDataManager {
 		options.setIcon(getNodeIcon());
 		// -- edit mode options and only for the marker being
 		// manipulated --
-		if (!mapPanel.isInEditMode()) {
-			options.setDragCrossMove(mapPanel.isInEditMode());
-			options.setDraggable(mapPanel.isInEditMode());
-			options.setClickable(mapPanel.isInEditMode());
-			options.setAutoPan(mapPanel.isInEditMode());
-		}
+		options.setDragCrossMove(mapPanel.isInEditMode());
+		options.setDraggable(mapPanel.isInEditMode());
+		options.setClickable(mapPanel.isInEditMode());
+		options.setAutoPan(mapPanel.isInEditMode());
 		// -- edit mode options
 		Marker marker = null;
 		LatLng point = LatLng.newInstance(mapMarkerData.getLatitude(),
@@ -186,7 +184,7 @@ public class NodeMarkerDataManager {
 		} else {
 			marker = new Marker(point, options);
 		}
-		if (!mapPanel.isInEditMode()) {
+		if (mapPanel.isInEditMode()) {
 			marker.addMarkerDragEndHandler(dragEndHandler);
 		}
 		addMarker(mapMarkerData, marker);
@@ -219,20 +217,19 @@ public class NodeMarkerDataManager {
 	}
 
 	public String getNewNodeId() {
-		return (nodes.calculateMaxNodeId()+1)+"";
+		return (nodes.calculateMaxNodeId() + 1) + "";
 	}
 
 	public Node getNodeForMarker(Overlay overlay) {
-		if (overlay instanceof Marker){
+		if (overlay instanceof Marker) {
 			Marker m = (Marker) overlay;
 			String id = m.getTitle();
 			Marker markerFor = getMarkerFor(id);
-			if (markerFor == m){
+			if (markerFor == m) {
 				nodes.getNode(id);
 			}
 		}
 		return null;
 	}
-
 
 }
