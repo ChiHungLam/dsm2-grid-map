@@ -66,14 +66,12 @@ public class DSM2ModelBasePresenter implements Presenter {
 	protected Display display;
 	protected HandlerManager eventBus;
 	protected DSM2InputServiceAsync dsm2InputService;
-	protected boolean viewOnly;
 
 	public DSM2ModelBasePresenter(DSM2InputServiceAsync dsm2InputService,
-			HandlerManager eventBus, Display display, boolean viewOnly) {
+			HandlerManager eventBus, Display display) {
 		this.display = display;
 		this.eventBus = eventBus;
 		this.dsm2InputService = dsm2InputService;
-		this.viewOnly = viewOnly;
 	}
 
 	public void go(HasWidgets container) {

@@ -56,13 +56,7 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void setEditMode(boolean editMode);
 
-		public void updateLinks();
-
-		public HasClickHandlers getTextAnnotationButton();
-
-		public void turnOnTextAnnotation();
-
-		public HasClickHandlers getAddPolylineButton();
+		public HasClickHandlers getMeasureLengthButton();
 
 		public void stopMeasuringDistanceAlongLine();
 
@@ -72,15 +66,9 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void startMeasuringAreaInPolygon();
 
-		public HasClickHandlers getAddPolygonButton();
+		public HasClickHandlers getMeasureAreaButton();
 
 		public void turnOffTextAnnotation();
-
-		public HasClickHandlers getAddKmlButton();
-
-		public HasText getKmlUrlBox();
-
-		public void addKmlOverlay(String url);
 
 		public HasClickHandlers getFlowLineButton();
 
@@ -88,9 +76,9 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void hideFlowLines();
 
-		public HasClickHandlers getClickForElevationButton();
+		public HasClickHandlers getDisplayElevationButton();
 
-		public HasClickHandlers getDrawXSectionButton();
+		public HasClickHandlers getDisplayElevationProfileButton();
 
 		public void startClickingForElevation();
 
@@ -104,20 +92,26 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public HasClickHandlers getDeleteButton();
 
-		public HasClickHandlers getShowBathymetryPointsButton();
-
 		public void startShowingBathymetryPoints();
 
 		public void stopShowingBathymetryPoints();
 
 		public void setAddingMode(boolean down);
-		
+
 		public void setDeletingMode(boolean down);
+
+		public HasClickHandlers getFindButton();
+
+		public HasText getFindTextBox();
+
+		public void centerAndZoomOnNode(String nodeId);
+
+		public void centerAndZoomOnChannel(String channelId);
 	}
 
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
-			HandlerManager eventBus, Display display, boolean viewOnly) {
-		super(dsm2InputService, eventBus, display, viewOnly);
+			HandlerManager eventBus, Display display) {
+		super(dsm2InputService, eventBus, display);
 	}
 
 	public void go(HasWidgets container) {
@@ -127,22 +121,8 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 	protected void bind() {
 		super.bind();
 		final Display d = (Display) display;
-		d.getTextAnnotationButton().addClickHandler(new ClickHandler() {
 
-			public void onClick(ClickEvent event) {
-				Object source = event.getSource();
-				if (source instanceof ToggleButton) {
-					ToggleButton button = (ToggleButton) source;
-					if (button.isDown()) {
-						d.turnOnTextAnnotation();
-					} else {
-						d.turnOffTextAnnotation();
-					}
-				}
-			}
-		});
-
-		d.getAddPolylineButton().addClickHandler(new ClickHandler() {
+		d.getMeasureLengthButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				Object source = event.getSource();
 				if (source instanceof ToggleButton) {
@@ -155,7 +135,7 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 				}
 			}
 		});
-		d.getAddPolygonButton().addClickHandler(new ClickHandler() {
+		d.getMeasureAreaButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				Object source = event.getSource();
 				if (source instanceof ToggleButton) {
@@ -166,13 +146,6 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 						d.stopMeasuringAreaInPolygon();
 					}
 				}
-			}
-		});
-		d.getAddKmlButton().addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				String url = d.getKmlUrlBox().getText();
-				d.addKmlOverlay(url);
 			}
 		});
 		d.getFlowLineButton().addClickHandler(new ClickHandler() {
@@ -192,10 +165,10 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 			}
 		});
 
-		d.getClickForElevationButton().addClickHandler(new ClickHandler() {
+		d.getDisplayElevationButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				HasClickHandlers button = d.getClickForElevationButton();
+				HasClickHandlers button = d.getDisplayElevationButton();
 				if (button instanceof ToggleButton) {
 					ToggleButton tb = (ToggleButton) button;
 					if (tb.isDown()) {
@@ -206,32 +179,41 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 				}
 			}
 		});
-		d.getDrawXSectionButton().addClickHandler(new ClickHandler() {
+		d.getDisplayElevationProfileButton().addClickHandler(
+				new ClickHandler() {
+
+					public void onClick(ClickEvent event) {
+						HasClickHandlers button = d
+								.getDisplayElevationProfileButton();
+						if (button instanceof ToggleButton) {
+							ToggleButton tb = (ToggleButton) button;
+							if (tb.isDown()) {
+								d.startDrawingElevationProfileLine();
+							} else {
+								d.stopDrawingElevationProfileLine();
+							}
+						}
+					}
+				});
+
+		d.getFindButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				HasClickHandlers button = d.getDrawXSectionButton();
-				if (button instanceof ToggleButton) {
-					ToggleButton tb = (ToggleButton) button;
-					if (tb.isDown()) {
-						d.startDrawingElevationProfileLine();
-					} else {
-						d.stopDrawingElevationProfileLine();
-					}
+				String findText = d.getFindTextBox().getText();
+				if ((findText == null) || findText.trim().equals("")) {
+					return;
 				}
-			}
-		});
-
-		d.getShowBathymetryPointsButton().addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				HasClickHandlers button = d.getShowBathymetryPointsButton();
-				if (button instanceof ToggleButton) {
-					ToggleButton tb = (ToggleButton) button;
-					if (tb.isDown()) {
-						d.startShowingBathymetryPoints();
+				String fields[] = findText.split("\\s");
+				if (fields.length >= 2) {
+					if (fields[0].equalsIgnoreCase("node")) {
+						d.centerAndZoomOnNode(fields[1]);
+					} else if (fields[0].equalsIgnoreCase("channel")) {
+						d.centerAndZoomOnChannel(fields[1]);
 					} else {
-						d.stopShowingBathymetryPoints();
+						// FIXME: do other searches
 					}
+				} else {
+					// FIXME: do other searches
 				}
 			}
 		});
@@ -239,16 +221,16 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		d.getAddButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				d.setAddingMode(((ToggleButton) event.getSource())
-						.isDown());
+				boolean down = ((ToggleButton) event.getSource()).isDown();
+				d.setAddingMode(down);
 			}
 		});
 
 		d.getDeleteButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				d.setDeletingMode(((ToggleButton) event.getSource())
-						.isDown());
+				boolean down = ((ToggleButton) event.getSource()).isDown();
+				d.setDeletingMode(down);
 			}
 		});
 	}
