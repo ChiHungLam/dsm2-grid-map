@@ -48,6 +48,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.DSM2Model;
+import gov.ca.modeling.dsm2.widgets.client.CollapsibleSplitLayoutPanel;
 import gov.ca.modeling.maps.elevation.client.BathymetryDisplayer;
 import gov.ca.modeling.maps.elevation.client.ElevationDisplayer;
 import gov.ca.modeling.maps.elevation.client.ElevationProfileDisplayer;
@@ -104,6 +105,7 @@ public class MapDisplay extends Composite implements Display,
 	private MeasuringAreaInPolygon areaMeasurer;
 	private DSM2Model model;
 	private ElevationDisplayer elevationDisplayer;
+	private CollapsibleSplitLayoutPanel centerPanel;
 
 	public MapDisplay(boolean viewOnly) {
 		mainPanel = new DockLayoutPanel(Unit.EM);
@@ -121,10 +123,9 @@ public class MapDisplay extends Composite implements Display,
 		infoPanelContainer.setHeader(new Label("Selected Element Info"));
 		infoPanelContainer.add(infoPanel);
 		controlPanelContainer.add(infoPanelContainer);
-		mainPanel.addWest(new FlowPanel(), 5);
-		mainPanel.addEast(new FlowPanel(), 5);
 		mainPanel.addNorth(headerPanel, 2);
 		mainPanel.addSouth(new HTML(""), 1);
+		mainPanel.add(centerPanel = new CollapsibleSplitLayoutPanel());
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
 				loadMaps();
@@ -154,8 +155,8 @@ public class MapDisplay extends Composite implements Display,
 			public void run() {
 				mapPanel = new MapPanel();
 				mapPanel.setInfoPanel(infoPanel);
-				mainPanel.addEast(new ScrollPanel(controlPanelContainer), 40);
-				mainPanel.add(mapPanel);
+				centerPanel.addEast(new ScrollPanel(controlPanelContainer), 40);
+				centerPanel.add(mapPanel);
 				if (studyName != null) {
 					mapPanel.setStudy(studyName);
 				}
@@ -464,27 +465,29 @@ public class MapDisplay extends Composite implements Display,
 
 	public void setDeletingMode(boolean down) {
 		clearAddingMode();
-		((ToggleButton)getAddButton()).setDown(false);
-		if (!down){
+		((ToggleButton) getAddButton()).setDown(false);
+		if (!down) {
 			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
 		} else {
-			if (deleteMapElementHandler == null){
-				deleteMapElementHandler = new DeleteMapElementClickHandler(mapPanel);
-			} 
+			if (deleteMapElementHandler == null) {
+				deleteMapElementHandler = new DeleteMapElementClickHandler(
+						mapPanel);
+			}
 			mapPanel.getMap().addMapClickHandler(deleteMapElementHandler);
 		}
 	}
-	
-	private void clearAddingMode(){
-		((ToggleButton)getAddButton()).setDown(false);
-		if (addMapElementHandler != null){
+
+	private void clearAddingMode() {
+		((ToggleButton) getAddButton()).setDown(false);
+		if (addMapElementHandler != null) {
 			mapPanel.getMap().removeMapClickHandler(addMapElementHandler);
 		}
-		
+
 	}
-	private void clearDeleteingMode(){
-		((ToggleButton)getDeleteButton()).setDown(false);
-		if (deleteMapElementHandler != null){
+
+	private void clearDeleteingMode() {
+		((ToggleButton) getDeleteButton()).setDown(false);
+		if (deleteMapElementHandler != null) {
 			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
 		}
 	}
