@@ -95,7 +95,12 @@ public class MapPanel extends Composite {
 		options.setLargeMapControl3d(true);
 		map.setUI(options);
 		//
-		map.addMapType(getTopoMapType());
+		String userAgent = ExportOverlays.getUserAgent();
+		if (userAgent.contains("ie6") || userAgent.contains("unknown")) {
+
+		} else {
+			map.addMapType(getTopoMapType());
+		}
 		map.addMapType(new MapType(new TileLayer[] { ExportOverlays
 				.getNOAATileLayer() }, MapType.getNormalMap().getProjection(),
 				"NOAA"));
