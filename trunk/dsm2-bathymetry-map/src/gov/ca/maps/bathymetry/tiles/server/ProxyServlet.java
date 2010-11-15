@@ -40,6 +40,8 @@ public class ProxyServlet extends HttpServlet {
 				"text/x-gwt-rpc; charset=utf-8"));
 		proxyRequest.addHeader(new HTTPHeader("X-GWT-Module-Base",
 				proxyModuleBase));
+		proxyRequest
+				.addHeader(new HTTPHeader("X-GWT-Permutation", "HostedMode"));
 		byte[] payload = new byte[request.getContentLength()];
 		request.getInputStream().read(payload);
 		String payloadStr = new String(payload);
