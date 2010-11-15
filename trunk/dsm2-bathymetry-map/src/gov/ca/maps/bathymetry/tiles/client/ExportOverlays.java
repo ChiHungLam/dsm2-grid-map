@@ -130,7 +130,7 @@ public class ExportOverlays implements EntryPoint {
 		};
 		return tileLayer;
 	}
-	
+
 	/**
 	 * Generate a sequence of QRST that match the tile requested by the
 	 * parameters. The parameters are in the google maps tile numbering style,
@@ -203,7 +203,8 @@ public class ExportOverlays implements EntryPoint {
 			int gridIndex = legendColors.length - i - 1;
 			legend.setHTML(gridIndex, 0, "&nbsp;");
 			legend.getCellFormatter().setWidth(gridIndex, 0, "15px");
-			legend.getCellFormatter().getElement(gridIndex, 0).getStyle().setBackgroundColor(legendColors[i]);
+			legend.getCellFormatter().getElement(gridIndex, 0).getStyle()
+					.setBackgroundColor(legendColors[i]);
 			legend.setHTML(gridIndex, 1, legendDepth[i]);
 		}
 		FlowPanel legendContainerPanel = new FlowPanel();
@@ -216,4 +217,29 @@ public class ExportOverlays implements EntryPoint {
 		return getLegendPanel().getElement();
 	}
 
+	public static native String getUserAgent() /*-{
+		var ua = navigator.userAgent.toLowerCase();
+
+		if (ua.indexOf("opera") != -1) {
+		return "opera";
+		}
+		if (ua.indexOf("webkit") != -1) {
+		return "safari";
+		}
+		if ((ua.indexOf("msie 6.0") != -1)
+		||  (ua.indexOf("msie 7.0") != -1)) {
+		return "ie6";
+		}
+		if (ua.indexOf("gecko") != -1) {
+		var result = /rv:([0-9]+)\.([0-9]+)/.exec(ua);
+		if (result && result.length == 3) {
+		var version = (parseInt(result[1]) * 10) +
+		parseInt(result[2]);
+		if (version >= 18)
+		return "gecko1_8";
+		}
+		return "gecko";
+		}
+		return "unknown";
+	}-*/;
 }
