@@ -42,7 +42,19 @@ public interface DEMDataService extends RemoteService {
 			throws SerializationException;
 
 	/**
+	 * Bilinear interpolated values for elevation
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @return
+	 * @throws SerializationException
+	 */
+	public double getBilinearInterpolatedElevationAt(double latitude,
+			double longitude) throws SerializationException;
+
+	/**
 	 * Gets the square 10x10 grid for this location
+	 * 
 	 * @param latitude
 	 * @param longitude
 	 * @return
@@ -52,11 +64,12 @@ public interface DEMDataService extends RemoteService {
 			throws SerializationException;
 
 	/**
-	 * Retrieve elevation data points along the line between (x1,y1) and
-	 * (x2,y2) where x variables are latitude and y variables are longitude
+	 * Retrieve elevation data points along the line between (x1,y1) and (x2,y2)
+	 * where x variables are latitude and y variables are longitude
 	 * 
-	 * The data points refer to x,y along the mentioned line in meters and z is the elevation
-	 * in feet
+	 * The data points refer to x,y along the mentioned line in meters and z is
+	 * the elevation in feet
+	 * 
 	 * @param x1
 	 * @param y1
 	 * @param x2
@@ -64,18 +77,22 @@ public interface DEMDataService extends RemoteService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<DataPoint> getElevationAlong(
-			double x1, double y1, double x2, double y2)
-			throws SerializationException;
+	public List<DataPoint> getElevationAlong(double x1, double y1, double x2,
+			double y2) throws SerializationException;
+
+	public List<DataPoint> getBilinearInterpolatedElevationAlong(double x1,
+			double y1, double x2, double y2) throws SerializationException;
 
 	/**
-	 * Retrieves all DEM Grid squares that lie within the grid defined by these diagonally opposite coordinates
-	 * (x1,y1) and (x2,y2)
+	 * Retrieves all DEM Grid squares that lie within the grid defined by these
+	 * diagonally opposite coordinates (x1,y1) and (x2,y2)
+	 * 
 	 * @param x1
 	 * @param y1
 	 * @param x2
 	 * @param y2
 	 * @return
 	 */
-	public List<DEMGridSquare> getGridWithin(double x1, double y1, double x2, double y2);
+	public List<DEMGridSquare> getGridWithin(double x1, double y1, double x2,
+			double y2);
 }

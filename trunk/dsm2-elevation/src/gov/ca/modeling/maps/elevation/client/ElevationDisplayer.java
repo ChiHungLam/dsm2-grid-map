@@ -1,6 +1,5 @@
 package gov.ca.modeling.maps.elevation.client;
 
-
 import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
 import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
@@ -24,38 +23,39 @@ public class ElevationDisplayer {
 	private MapClickHandler handler;
 
 	public ElevationDisplayer(MapWidget map) {
-		this.service = (DEMDataServiceAsync) GWT.create(DEMDataService.class);
+		service = (DEMDataServiceAsync) GWT.create(DEMDataService.class);
 		this.map = map;
 	}
 
 	public void start() {
-	 handler = new MapClickHandler() {
+		handler = new MapClickHandler() {
 
 			public void onClick(MapClickEvent event) {
 				final LatLng point = event.getLatLng();
-				service.getElevationAt(point.getLatitude(), point
-						.getLongitude(), new AsyncCallback<Double>() {
+				service.getBilinearInterpolatedElevationAt(point.getLatitude(),
+						point.getLongitude(), new AsyncCallback<Double>() {
 
-					public void onSuccess(Double result) {
-						if (result.floatValue() <= -9998.9)
-							return;
-						InfoWindowContent content = new InfoWindowContent(
-								"Elevation: " + result.floatValue() + " feet");
-						ElevationDisplayer.this.map.getInfoWindow().open(point,
-								content);
-					}
+							public void onSuccess(Double result) {
+								if (result.floatValue() <= -9998.9) {
+									return;
+								}
+								InfoWindowContent content = new InfoWindowContent(
+										"Elevation: " + result.floatValue()
+												+ " feet");
+								map.getInfoWindow().open(point, content);
+							}
 
-					public void onFailure(Throwable caught) {
-						GWT.log(caught.getMessage());
-					}
-				});
+							public void onFailure(Throwable caught) {
+								GWT.log(caught.getMessage());
+							}
+						});
 			}
 		};
-		this.map.addMapClickHandler(handler);
+		map.addMapClickHandler(handler);
 	}
-	
-	public void stop(){
-		this.map.removeMapClickHandler(handler);
+
+	public void stop() {
+		map.removeMapClickHandler(handler);
 	}
 
 }

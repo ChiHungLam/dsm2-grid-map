@@ -21,4 +21,10 @@ public interface DEMDataServiceAsync {
 	void getGridWithin(double x1, double y1, double x2, double y2,
 			AsyncCallback<List<DEMGridSquare>> callback);
 
+	void getBilinearInterpolatedElevationAt(double latitude, double longitude,
+			AsyncCallback<Double> callback);
+
+	void getBilinearInterpolatedElevationAlong(double x1, double y1, double x2,
+			double y2, AsyncCallback<List<DataPoint>> callback);
+
 }
