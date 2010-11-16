@@ -43,6 +43,8 @@ public class DEMDataAppEngineCSVEncoder {
 		PrintWriter pw_key = null;
 		File dir = new File(args[0]);
 		if (dir.exists() && dir.isDirectory()) {
+			System.out
+					.println("Scanning directory: " + dir + " for .csv files");
 			String[] files = dir.list(new FilenameFilter() {
 
 				public boolean accept(File dir, String name) {
@@ -53,6 +55,8 @@ public class DEMDataAppEngineCSVEncoder {
 				System.out.println("No files ending with .csv");
 				System.exit(0);
 			}
+			System.out.println("Working on " + files.length
+					+ " files from directory: " + dir);
 			PrintWriter pw = null;
 			int i = 0;
 			for (String file : files) {
@@ -64,8 +68,6 @@ public class DEMDataAppEngineCSVEncoder {
 				if (conn != null) {
 					id = getIdFor(x, y);
 					if (id == null) {
-						System.err.println("No key found for y,x:" + y + ","
-								+ x);
 						if (pw_noKey == null) {
 							String noKeyFile = args[1] + "_nokeys.csv";
 							pw_noKey = new PrintWriter(noKeyFile);
@@ -90,7 +92,7 @@ public class DEMDataAppEngineCSVEncoder {
 					pw.print(",");
 					pw.print(id);
 				}
-				if (i % 10000 == 9999) {
+				if (i % 1000 == 999) {
 					pw.flush();
 					System.out.println("Processed " + (i + 1)
 							+ " files out of " + files.length);
@@ -104,8 +106,10 @@ public class DEMDataAppEngineCSVEncoder {
 			if (pw_noKey != null) {
 				pw_noKey.close();
 			}
-			statement.close();
-			conn.close();
+			if (statement != null) {
+				statement.close();
+				conn.close();
+			}
 		}
 	}
 
@@ -130,6 +134,8 @@ public class DEMDataAppEngineCSVEncoder {
 		statement.executeUpdate("drop table if exists demdatafile");
 		statement
 				.executeUpdate("create table demdatafile(x int, y int, id int)");
+		statement
+				.executeUpdate("create index if not exists xy on demdatafile(x,y)");
 		PreparedStatement pstmt = conn
 				.prepareStatement("insert into demdatafile values(?,?,?)");
 
