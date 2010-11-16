@@ -33,7 +33,7 @@ public class ASCIIGridValuesInUTMToTiles {
 		if (!inputDirectory.isDirectory()) {
 			System.err
 					.println(args[0]
-							+ " is not a directory! Please specify an input directory with .xyz files");
+							+ " is not a directory! Please specify an input directory with .asc files");
 			System.exit(3);
 		}
 		final File outputDirectory = new File(args[1]);
@@ -55,7 +55,7 @@ public class ASCIIGridValuesInUTMToTiles {
 			System.out.println("Working on: " + file);
 			String filePath = inputDirectory.getAbsolutePath() + File.separator
 					+ file;
-			for (int i = 16; i > 11; i--) {
+			for (int i = 16; i > 5; i--) {
 				executor.execute(new GenerateTileTask(i, filePath,
 						outputDirectory));
 			}
@@ -130,8 +130,8 @@ public class ASCIIGridValuesInUTMToTiles {
 				if (Math.abs(depth - nodataValue) <= 1e-6) {
 					continue;
 				}
-				// depth value in feet*10
-				values[0] = depth * 0.1 + "";
+				// depth value in meters
+				values[0] = depth / 0.3048 + "";
 				UTM utm = UTM.valueOf(10, 'N', x, y, SI.METER);
 				LatLong latlng = utmToLatLong.convert(utm);
 				double[] coordinates = latlng.getCoordinates();

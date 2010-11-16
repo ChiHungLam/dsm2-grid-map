@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/webdriver-all"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dsm2-grid-map"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
