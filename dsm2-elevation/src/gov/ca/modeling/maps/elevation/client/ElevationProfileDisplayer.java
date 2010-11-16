@@ -82,7 +82,7 @@ public class ElevationProfileDisplayer {
 		panel.clear();
 		LatLng latLng1 = line.getVertex(0);
 		LatLng latLng2 = line.getVertex(1);
-		service.getElevationAlong(latLng1.getLatitude(),
+		service.getBilinearInterpolatedElevationAlong(latLng1.getLatitude(),
 				latLng1.getLongitude(), latLng2.getLatitude(), latLng2
 						.getLongitude(), new AsyncCallback<List<DataPoint>>() {
 
@@ -126,7 +126,7 @@ public class ElevationProfileDisplayer {
 		options.setTitle(title);
 		options.setTitleX("Length (ft)");
 		options.setTitleY("Elevation (ft)");
-		options.setWidth(panel.getParent().getParent().getOffsetWidth());
+		options.setWidth(500);
 		options.setLineSize(1);
 		options.setLegend(LegendPosition.BOTTOM);
 		options.setShowCategories(false);
