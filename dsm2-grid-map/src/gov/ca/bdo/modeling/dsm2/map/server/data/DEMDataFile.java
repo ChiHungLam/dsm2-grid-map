@@ -8,7 +8,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -33,8 +32,7 @@ public class DEMDataFile {
 	 * A unique id for this file
 	 */
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
+	private String name;
 	@Persistent
 	private int x;
 	@Persistent
@@ -51,7 +49,7 @@ public class DEMDataFile {
 	}
 
 	public void setX(int xc) {
-		this.x = xc;
+		x = xc;
 	}
 
 	public int getY() {
@@ -59,11 +57,15 @@ public class DEMDataFile {
 	}
 
 	public void setY(int yc) {
-		this.y = yc;
+		y = yc;
 	}
 
-	public Long getId() {
-		return id;
+	public void setBlob(Blob blob) {
+		contents = blob;
+	}
+
+	public Blob getBlob() {
+		return contents;
 	}
 
 	public void setBlobData(int[] values) {
@@ -71,8 +73,8 @@ public class DEMDataFile {
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				DataOutputStream daos = new DataOutputStream(baos);
-				for (int i = 0; i < values.length; i++) {
-					daos.writeInt(values[i]);
+				for (int value : values) {
+					daos.writeInt(value);
 				}
 				contents = new Blob(baos.toByteArray());
 			} catch (IOException e) {
@@ -101,11 +103,19 @@ public class DEMDataFile {
 	}
 
 	public static int roundOff(double v) {
-		return (int) Math.floor(v/FACTOR)*FACTOR;
+		return (int) Math.floor(v / FACTOR) * FACTOR;
 	}
-	
-	public DEMGridSquare toDEMGrid(){
+
+	public DEMGridSquare toDEMGrid() {
 		DEMGridSquare sq = new DEMGridSquare(x, y, getBlobData());
 		return sq;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
 	}
 }
