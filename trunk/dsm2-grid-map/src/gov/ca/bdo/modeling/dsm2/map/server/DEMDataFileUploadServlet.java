@@ -35,9 +35,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import com.google.appengine.api.datastore.Blob;
 
 @SuppressWarnings("serial")
 public class DEMDataFileUploadServlet extends HttpServlet {
@@ -47,7 +50,7 @@ public class DEMDataFileUploadServlet extends HttpServlet {
 			throws IOException {
 		String xStr = req.getParameter("x");
 		String yStr = req.getParameter("y");
-		if (xStr == null || yStr == null) {
+		if ((xStr == null) || (yStr == null)) {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND,
 					"No DEM Data Available for x=" + xStr + "&y=" + yStr);
 			return;
@@ -60,10 +63,12 @@ public class DEMDataFileUploadServlet extends HttpServlet {
 			DEMDataFileDAO dao = new DEMDataFileDAOImpl(persistenceManager);
 			DEMDataFile DEMDataFile = dao.getFileForLocation(x, y);
 			if (DEMDataFile != null) {
-				resp.setContentType("text/csv");
-				resp.setHeader("Content-Disposition",
-						"attachment; filename=demdata_" + DEMDataFile.getX()
-								+ "_" + DEMDataFile.getY() + ".csv");
+				resp.setContentType("text/plain");
+				/*
+				 * resp.setHeader("Content-Disposition",
+				 * "attachment; filename=demdata_" + DEMDataFile.getX() + "_" +
+				 * DEMDataFile.getY() + ".csv");
+				 */
 				String contents = convertToString(DEMDataFile);
 				resp.setContentLength(contents.length() * 2); // number of bytes
 				// sent
@@ -85,6 +90,7 @@ public class DEMDataFileUploadServlet extends HttpServlet {
 		int[] blobData = dataFile.getBlobData();
 		for (int i = 0; i < blobData.length; i++) {
 			writer.print(blobData[i]);
+			writer.print(",");
 			if (i % 10 == 9) {
 				writer.println();
 			}
@@ -112,16 +118,7 @@ public class DEMDataFileUploadServlet extends HttpServlet {
 					}
 				} else {
 					if (item.getFieldName().equals("demFile")) {
-						String name = item.getName();
-						int x = extractXFromName(name);
-						int y = extractYFromName(name);
-						String parameter = req.getParameter("append");
-						boolean append = false;
-						if (parameter != null
-								&& !parameter.equalsIgnoreCase("n")) {
-							append = true;
-						}
-						saveData(persistenceManager, inputStream, append, x, y);
+						saveData(persistenceManager, inputStream);
 					}
 				}
 			}
@@ -136,42 +133,38 @@ public class DEMDataFileUploadServlet extends HttpServlet {
 		out.close();
 	}
 
-	private int extractYFromName(String name) {
-		int lastIndexOf = name.lastIndexOf("_");
-		String str = name.substring(lastIndexOf + 1, name.lastIndexOf(".csv"));
-		return Integer.parseInt(str);
-	}
-
-	private int extractXFromName(String name) {
-		int lastIndexOf = name.lastIndexOf("_");
-		String str = name.substring(0, lastIndexOf);
-		str = str.substring(str.lastIndexOf("s") + 1);
-		return Integer.parseInt(str);
-	}
-
+	/**
+	 * saves data from a file with lines, the first line is a header and
+	 * following lines are comma separated values for y then x then contents
+	 * (base 64 encoded) s
+	 * 
+	 * @param persistenceManager
+	 * @param fileAsStream
+	 * @throws Exception
+	 */
 	public void saveData(PersistenceManager persistenceManager,
-			InputStream fileAsStream, boolean append, int x, int y)
-			throws Exception {
+			InputStream fileAsStream) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				fileAsStream));
-		String line = null;
-		int[] values = new int[100];
-		int i = 0;
-		while ((line = reader.readLine()) != null) {
-			String[] fields = line.split("\\s");
-			for (int j = 0; j < fields.length; j++) {
-				values[i] = Integer.parseInt(fields[j]);
-				i++;
-			}
-		}
+		String line = reader.readLine();// skip header
 		DEMDataFileDAO dao = new DEMDataFileDAOImpl(persistenceManager);
-		DEMDataFile dataFile = dao.getFileForLocation(x, y);
-		if (dataFile == null) {
-			dataFile = new DEMDataFile();
-			dataFile.setX(x);
-			dataFile.setY(y);
-			dao.createObject(dataFile);
+		while ((line = reader.readLine()) != null) {
+			String[] fields = line.split(",");
+			DEMDataFile dataFile = null;
+			try {
+				dataFile = dao.findObjectById(fields[1] + "_" + fields[0]);
+			} catch (Exception ex) {
+				dataFile = null;
+			}
+			if (dataFile == null) {
+				dataFile = new DEMDataFile();
+				dataFile.setName(fields[1] + "_" + fields[0]);
+				dataFile.setX(Integer.parseInt(fields[1]));
+				dataFile.setY(Integer.parseInt(fields[0]));
+				dao.createObject(dataFile);
+			}
+			dataFile
+					.setBlob(new Blob(Base64.decodeBase64(fields[2].getBytes())));
 		}
-		dataFile.setBlobData(values);
 	}
 }
