@@ -17,7 +17,15 @@ public class XSectionProfile implements Serializable {
 	private int id;
 	private int channelId;
 	private double distance;
+	/*
+	 * End points are the (x,y) coordinates of the beginning and end points
+	 * These coordinates are assumed on a flat projection surface such as UTM
+	 */
 	private List<double[]> endPoints;
+	/*
+	 * Profile points are (x,z) coordinates with x being the distance projected 
+	 * along the line joining the end points and z being the elevation of these points
+	 */
 	private List<double[]> profilePoints;
 
 	public XSectionProfile() {
