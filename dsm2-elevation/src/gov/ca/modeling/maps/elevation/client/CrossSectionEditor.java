@@ -1,7 +1,7 @@
 package gov.ca.modeling.maps.elevation.client;
 
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
-import gov.ca.modeling.maps.elevation.client.model.XSectionProfile;
+import gov.ca.modeling.maps.elevation.client.model.Profile;
 import gov.ca.modeling.maps.elevation.client.model.XYZPoint;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class CrossSectionEditor extends Composite {
 	private JavaScriptObject xpArray;
 	private XYZPoint[] xsectionPoints;
 
-	public CrossSectionEditor(String divId, XSectionProfile xsProfile,
+	public CrossSectionEditor(String divId, Profile xsProfile,
 			List<DataPoint> profile, List<DataPoint> bathymetry) {
 		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
 		XYZPoint[] profilePoints = convertDataToXYZPoints(profile);
