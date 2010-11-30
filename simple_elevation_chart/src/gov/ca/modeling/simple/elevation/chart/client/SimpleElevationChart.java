@@ -2,7 +2,7 @@ package gov.ca.modeling.simple.elevation.chart.client;
 
 import gov.ca.modeling.maps.elevation.client.CrossSectionEditor;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
-import gov.ca.modeling.maps.elevation.client.model.XSectionProfile;
+import gov.ca.modeling.maps.elevation.client.model.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +26,13 @@ public class SimpleElevationChart implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		final XSectionProfile xsProfile = new XSectionProfile();
+		final Profile xsProfile = new Profile();
 		final List<DataPoint> profile = new ArrayList<DataPoint>();
 		profile.add(createDataPoint(0.5, 1.03, 10));
 		profile.add(createDataPoint(0.75, 2.1, -5.3));
 		profile.add(createDataPoint(10.5, 3.1, -5.2));
 		profile.add(createDataPoint(10.3, 4.1, 10.44));
 		xsProfile.points = new ArrayList<DataPoint>(profile);
-		xsProfile.channelId = "451";
 		xsProfile.id = 993884;
 		xsProfile.x1 = 0.2;
 		xsProfile.y1 = 0.5;
@@ -41,7 +40,7 @@ public class SimpleElevationChart implements EntryPoint {
 		xsProfile.y2 = 10.3;
 		final List<DataPoint> bathymetry = new ArrayList<DataPoint>();
 		bathymetry.add(createDataPoint(2.5, 53.4, 10.3));
-		bathymetry.add(createDataPoint(3.1, 152.3, 8.1));
+		bathymetry.add(createDataPoint(3.1, 152.3, -6.1));
 		bathymetry.add(createDataPoint(8.33, 250.4, 6.3));
 		Button sampleButton = new Button("Sample Plot");
 		sampleButton.addClickHandler(new ClickHandler() {
@@ -87,7 +86,7 @@ public class SimpleElevationChart implements EntryPoint {
 		);
 		});
 		var xsection_points = [{x: -400, y: -4.5}, {x:-100, y: -8.0}, {x:-25, y: -9.7}, {x:155, y:-7.6}, {x: 300, y:-4.3}, {x: 355, y: -3.1}];
-		$wnd.plots.xsection_editor('xsect',xsection_points, profile, points);
+		$wnd.plots.xsection_editor('sample_plot',xsection_points, profile, points);
 	}-*/;
 
 	private DataPoint createDataPoint(double x, double y, double z) {
