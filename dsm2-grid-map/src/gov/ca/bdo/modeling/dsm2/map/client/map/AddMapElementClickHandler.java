@@ -84,6 +84,11 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				GateOverlayManager gateManager = mapPanel.getGateManager();
 				Gate g = new Gate();
 				g.setName("GATE_"+(gateManager.getNumberOfGates()+1));
+				g.setLatitude(latLng.getLatitude());
+				g.setLongitude(latLng.getLongitude());
+				//FIXME: how is the gate to be associated with a channel or reservoir?
+				//g.setFromObject(fromObject);
+				//g.setFromIdentifier();
 				gateManager.addGate(g);
 			} else if (type == ElementType.RESERVOIR){
 				ReservoirOverlayManager reservoirManager = mapPanel.getReservoirManager();
