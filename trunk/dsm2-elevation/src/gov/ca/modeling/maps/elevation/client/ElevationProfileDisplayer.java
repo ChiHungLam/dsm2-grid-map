@@ -4,7 +4,7 @@ import gov.ca.modeling.maps.elevation.client.model.CoordinateGeometryUtils;
 import gov.ca.modeling.maps.elevation.client.model.DEMGridSquare;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
-import gov.ca.modeling.maps.elevation.client.model.XSectionProfile;
+import gov.ca.modeling.maps.elevation.client.model.Profile;
 import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
 import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
@@ -94,7 +94,7 @@ public class ElevationProfileDisplayer {
 							panel.add(label);
 						} else {
 							if (editMode) {
-								XSectionProfile xsProfile = new XSectionProfile();
+								Profile xsProfile = new Profile();
 								xsProfile.points = new ArrayList<DataPoint>(
 										result);
 								List<DataPoint> bathymetry = new ArrayList<DataPoint>();
