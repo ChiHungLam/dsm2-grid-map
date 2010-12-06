@@ -23,6 +23,10 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import gov.ca.bdo.modeling.dsm2.map.client.service.UserProfileService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.UserProfileServiceAsync;
+import gov.ca.modeling.maps.elevation.client.service.BathymetryDataService;
+import gov.ca.modeling.maps.elevation.client.service.BathymetryDataServiceAsync;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -35,9 +39,11 @@ public class MainEntryPoint implements EntryPoint {
 		DSM2InputServiceAsync rpcService = GWT.create(DSM2InputService.class);
 		UserProfileServiceAsync userProfileService = GWT
 				.create(UserProfileService.class);
+		BathymetryDataServiceAsync bathymetryService = GWT.create(BathymetryDataService.class);
+		DEMDataServiceAsync demService = GWT.create(DEMDataService.class);
 		HandlerManager eventBus = new HandlerManager(null);
 		AppController appViewer = new AppController(rpcService,
-				userProfileService, eventBus);
+				userProfileService, bathymetryService, demService, eventBus);
 		appViewer.go(RootLayoutPanel.get());
 	}
 

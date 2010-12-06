@@ -55,17 +55,24 @@
 
  *    You should have received a copy of the GNU General Public License
  *    along with DSM2 Grid Map.  If not, see <http://www.gnu.org/licenses>.
- */package gov.ca.bdo.modeling.dsm2.map.client.map;
+ */
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
+import gov.ca.dsm2.input.model.XSection;
+import gov.ca.dsm2.input.model.XSectionLayer;
+import gov.ca.dsm2.input.model.XSectionProfile;
+import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.maps.client.geom.LatLng;
 
 public class ModelUtils {
-	public static LatLng[] getPointsForChannel(Channel channel, Node upNode, Node downNode){
+	public static LatLng[] getPointsForChannel(Channel channel, Node upNode,
+			Node downNode) {
 		LatLng[] points = null;
 		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
 				.getLongitude());
@@ -85,5 +92,102 @@ public class ModelUtils {
 		points[0] = upPoint;
 		points[points.length - 1] = downPoint;
 		return points;
+	}
+
+	public static LatLng[] getChannelOutlinePoints(Channel channel,
+			Node upNode, Node downNode) {
+		LatLng[] points = null;
+		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
+				.getLongitude());
+		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
+				.getLongitude());
+		List<double[]> latLngPoints = channel.getLatLngPoints();
+		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
+			int size = latLngPoints.size();
+			points = new LatLng[size + 2];
+			for (int i = 1; i < points.length - 1; i++) {
+				double[] ds = latLngPoints.get(i - 1);
+				points[i] = LatLng.newInstance(ds[0], ds[1]);
+			}
+		} else {
+			points = new LatLng[2];
+		}
+		points[0] = upPoint;
+		points[points.length - 1] = downPoint;
+		return points;
+	}
+	
+	/**
+	 * Calculates the profile from the xsection characteristics, the flow line of the channel and 
+	 * using the relative distance along channel length to calculate the position of the xsection line end points
+	 * @param xSection
+	 * @param channel
+	 * @param upNode
+	 * @param downNode
+	 * @return
+	 */
+	public static XSectionProfile calculateProfileFrom(XSection xSection,
+			Channel channel, Node upNode, Node downNode) {
+		XSectionProfile profile = new XSectionProfile();
+		profile.setChannelId(Integer.parseInt(xSection.getChannelId()));
+		profile.setDistance(xSection.getDistance());
+		List<double[]> endPoints = new ArrayList<double[]>();
+		profile.setEndPoints(endPoints);
+		LatLng[] endPointLatLngs = calculateEndPoints(xSection, channel,
+				upNode, downNode);
+		for (int i = 0; i < endPointLatLngs.length; i++) {
+			double[] point = new double[2];
+			point[0] = endPointLatLngs[i].getLatitude();
+			point[1] = endPointLatLngs[i].getLongitude();
+			endPoints.add(point);
+		}
+		//
+		List<double[]> profilePoints = new ArrayList<double[]>();
+		profile.setProfilePoints(profilePoints);
+		double maxWidth = getMaxTopWidth(xSection);
+		for (XSectionLayer layer : xSection.getLayers()) {
+			double w = layer.getTopWidth();
+			double[] point1 = new double[2];
+			double[] point2 = new double[2];
+			point1[0] = maxWidth / 2 - w / 2;
+			point1[1] = layer.getElevation();
+			if (w > 0) {
+				point2[0] = maxWidth / 2 + w / 2;
+				point2[0] = layer.getElevation();
+			}
+			profilePoints.add(0, point1);
+			if (w > 0) {
+				profilePoints.add(profilePoints.size() - 1, point2);
+			}
+		}
+		return profile;
+	}
+
+	private static LatLng[] calculateEndPoints(XSection xSection,
+			Channel channel, Node upNode, Node downNode) {
+		LatLng[] channelOutlinePoints = getChannelOutlinePoints(channel,
+				upNode, downNode);
+		double distance = xSection.getDistance();
+		distance = channel.getLength() * distance;
+		int segmentIndex = GeomUtils.findSegmentAtDistance(
+				channelOutlinePoints, distance);
+		LatLng point1 = channelOutlinePoints[segmentIndex];
+		LatLng point2 = channelOutlinePoints[segmentIndex + 1];
+		double segmentDistance = GeomUtils.findDistanceUptoSegment(
+				segmentIndex, channelOutlinePoints);
+		LatLng point0 = GeomUtils.findPointAtDistance(point1, point2, distance
+				- segmentDistance);
+		double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
+		double width = getMaxTopWidth(xSection);
+		return GeomUtils.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
+				width, point0);
+	}
+
+	private static double getMaxTopWidth(XSection xSection) {
+		double width = Double.MIN_VALUE;
+		for (XSectionLayer layer : xSection.getLayers()) {
+			width = Math.max(width, layer.getTopWidth());
+		}
+		return width;
 	}
 }
