@@ -27,6 +27,7 @@ import gov.ca.dsm2.input.model.XSectionProfile;
 import gov.ca.modeling.maps.elevation.client.CrossSectionEditor;
 import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
+import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 import gov.ca.modeling.maps.elevation.client.model.Profile;
 import gov.ca.modeling.maps.elevation.client.service.BathymetryDataService;
 import gov.ca.modeling.maps.elevation.client.service.BathymetryDataServiceAsync;
@@ -171,10 +172,12 @@ public class ChannelInfoPanel extends Composite {
 		final BathymetryDataServiceAsync bathyService = GWT
 				.create(BathymetryDataService.class);
 		XSectionProfile profileFrom = xsection.getProfile();
-		if (profileFrom==null){
+		if (profileFrom == null) {
 			Node upNode = nodeManager.getNodes().getNode(channel.getUpNodeId());
-			Node downNode = nodeManager.getNodes().getNode(channel.getDownNodeId());			
-			profileFrom = ModelUtils.calculateProfileFrom(xsection, channel, upNode, downNode);
+			Node downNode = nodeManager.getNodes().getNode(
+					channel.getDownNodeId());
+			profileFrom = ModelUtils.calculateProfileFrom(xsection, channel,
+					upNode, downNode);
 			xsection.setProfile(profileFrom);
 		}
 		final XSectionProfile profile = profileFrom;
@@ -187,7 +190,8 @@ public class ChannelInfoPanel extends Composite {
 			double[] ds = profilePoints.get(i);
 			DataPoint p = new DataPoint();
 			p.x = ds[0];
-			p.y = ds[1];
+			p.y = 0;
+			p.z = ds[1];
 			xsProfile.points.add(p);
 		}
 		xsProfile.x1 = endPoints.get(0)[0];
@@ -205,9 +209,6 @@ public class ChannelInfoPanel extends Composite {
 								xsProfile.y2,
 								new AsyncCallback<List<BathymetryDataPoint>>() {
 
-									public void onFailure(Throwable caught) {
-									}
-
 									public void onSuccess(
 											List<BathymetryDataPoint> bathymetryPoints) {
 										ArrayList<DataPoint> bathyPoints = new ArrayList<DataPoint>(
@@ -222,32 +223,70 @@ public class ChannelInfoPanel extends Composite {
 											p.z = bp.z;
 											bathyPoints.add(p);
 										}
+										double[] utm1 = GeomUtils.convertToUTM(
+												xsProfile.x1, xsProfile.y1);
+										double[] utm2 = GeomUtils.convertToUTM(
+												xsProfile.x2, xsProfile.y2);
+										DataPoint origin = new DataPoint();
+										origin.x = utm1[0];
+										origin.y = utm1[1];
+										DataPoint secondPointForLine = new DataPoint();
+										secondPointForLine.x = utm2[0];
+										secondPointForLine.y = utm2[1];
+										GeomUtils
+												.moveOriginAndProjectOntoLineAndConvertToFeet(
+														profilePoints, origin,
+														secondPointForLine);
+										GeomUtils
+												.moveOriginAndProjectOntoLineAndConvertToFeet(
+														bathyPoints, origin,
+														secondPointForLine);
 										editor = new CrossSectionEditor(
 												"xsection", xsProfile,
 												profilePoints, bathyPoints);
-										Button setProfileButton = new Button("Set Profile");
-										setProfileButton.addClickHandler(new ClickHandler() {
-											
-											public void onClick(ClickEvent event) {
-												List<DataPoint> xSectionProfilePoints = editor.getXSectionProfilePoints();
-												List<double[]> profilePoints = new ArrayList<double[]>();
-												for(int i=0;i  < xSectionProfilePoints.size(); i++){
-													double[] ppoint = new double[2];
-													DataPoint p = xSectionProfilePoints.get(i);
-													ppoint[0] = p.x;
-													ppoint[1] = p.y;
-													profilePoints.add(ppoint);
-												}
-												profile.setProfilePoints(profilePoints);
-											}
-										});
+										Button setProfileButton = new Button(
+												"Set Profile");
+										setProfileButton
+												.addClickHandler(new ClickHandler() {
+
+													public void onClick(
+															ClickEvent event) {
+														List<DataPoint> xSectionProfilePoints = editor
+																.getXSectionProfilePoints();
+														List<double[]> profilePoints = new ArrayList<double[]>();
+														for (int i = 0; i < xSectionProfilePoints
+																.size(); i++) {
+															double[] ppoint = new double[2];
+															DataPoint p = xSectionProfilePoints
+																	.get(i);
+															ppoint[0] = p.x;
+															ppoint[1] = p.y;
+															profilePoints
+																	.add(ppoint);
+														}
+														profile
+																.setProfilePoints(profilePoints);
+													}
+												});
 										xsectionPanel.clear();
 										xsectionPanel.add(setProfileButton);
 									}
+
+									public void onFailure(Throwable caught) {
+										// TODO: add the xsection line and other
+										// relevant info
+										GWT
+												.log(
+														"Could not load Bathymetry data",
+														caught);
+									}
+
 								});
 					}
 
 					public void onFailure(Throwable caught) {
+						// TODO: add the xsection line and other relevant info
+						GWT.log("Could not load DEM profile data", caught);
 					}
 				});
 	}
