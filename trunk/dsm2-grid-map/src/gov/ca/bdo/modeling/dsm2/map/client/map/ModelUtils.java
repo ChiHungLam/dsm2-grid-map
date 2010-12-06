@@ -116,10 +116,12 @@ public class ModelUtils {
 		points[points.length - 1] = downPoint;
 		return points;
 	}
-	
+
 	/**
-	 * Calculates the profile from the xsection characteristics, the flow line of the channel and 
-	 * using the relative distance along channel length to calculate the position of the xsection line end points
+	 * Calculates the profile from the xsection characteristics, the flow line
+	 * of the channel and using the relative distance along channel length to
+	 * calculate the position of the xsection line end points
+	 * 
 	 * @param xSection
 	 * @param channel
 	 * @param upNode
@@ -135,10 +137,10 @@ public class ModelUtils {
 		profile.setEndPoints(endPoints);
 		LatLng[] endPointLatLngs = calculateEndPoints(xSection, channel,
 				upNode, downNode);
-		for (int i = 0; i < endPointLatLngs.length; i++) {
+		for (LatLng endPointLatLng : endPointLatLngs) {
 			double[] point = new double[2];
-			point[0] = endPointLatLngs[i].getLatitude();
-			point[1] = endPointLatLngs[i].getLongitude();
+			point[0] = endPointLatLng.getLatitude();
+			point[1] = endPointLatLng.getLongitude();
 			endPoints.add(point);
 		}
 		//
@@ -153,11 +155,11 @@ public class ModelUtils {
 			point1[1] = layer.getElevation();
 			if (w > 0) {
 				point2[0] = maxWidth / 2 + w / 2;
-				point2[0] = layer.getElevation();
+				point2[1] = layer.getElevation();
 			}
 			profilePoints.add(0, point1);
 			if (w > 0) {
-				profilePoints.add(profilePoints.size() - 1, point2);
+				profilePoints.add(profilePoints.size(), point2);
 			}
 		}
 		return profile;
@@ -183,11 +185,12 @@ public class ModelUtils {
 				width, point0);
 	}
 
-	private static double getMaxTopWidth(XSection xSection) {
+	public static double getMaxTopWidth(XSection xSection) {
 		double width = Double.MIN_VALUE;
 		for (XSectionLayer layer : xSection.getLayers()) {
 			width = Math.max(width, layer.getTopWidth());
 		}
 		return width;
 	}
+
 }

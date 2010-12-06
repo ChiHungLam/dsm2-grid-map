@@ -7,6 +7,7 @@ import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 import gov.ca.modeling.maps.elevation.client.model.CoordinateGeometryUtils;
 import gov.ca.modeling.maps.elevation.client.model.DEMGridSquare;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
+import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
 
 import java.util.ArrayList;
@@ -24,8 +25,8 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 	public List<DataPoint> getElevationAlong(double x1, double y1, double x2,
 			double y2) throws SerializationException {
 		List<DataPoint> points = new ArrayList<DataPoint>();
-		double[] utm1 = BathymetryDataServiceImpl.convertToUTM(x1, y1);
-		double[] utm2 = BathymetryDataServiceImpl.convertToUTM(x2, y2);
+		double[] utm1 = GeomUtils.convertToUTM(x1, y1);
+		double[] utm2 = GeomUtils.convertToUTM(x2, y2);
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
 		try {
@@ -61,8 +62,8 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 	public List<DataPoint> getBilinearInterpolatedElevationAlong(double x1,
 			double y1, double x2, double y2) throws SerializationException {
 		List<DataPoint> points = new ArrayList<DataPoint>();
-		double[] utm1 = BathymetryDataServiceImpl.convertToUTM(x1, y1);
-		double[] utm2 = BathymetryDataServiceImpl.convertToUTM(x2, y2);
+		double[] utm1 = GeomUtils.convertToUTM(x1, y1);
+		double[] utm2 = GeomUtils.convertToUTM(x2, y2);
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
 		try {
@@ -101,8 +102,7 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 		if (gridAt == null) {
 			return DEMGridSquare.NODATA / 10.0;
 		} else {
-			double[] utm = BathymetryDataServiceImpl.convertToUTM(latitude,
-					longitude);
+			double[] utm = GeomUtils.convertToUTM(latitude, longitude);
 			double x = utm[0];
 			double y = utm[1];
 			return getBilinearInterpolatedElevationAtUTM(gridAt, x, y);
@@ -155,8 +155,7 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 		if (gridAt == null) {
 			return DEMGridSquare.NODATA / 10.0;
 		} else {
-			double[] utm = BathymetryDataServiceImpl.convertToUTM(latitude,
-					longitude);
+			double[] utm = GeomUtils.convertToUTM(latitude, longitude);
 			double x = utm[0];
 			double y = utm[1];
 			return gridAt.getElevationAt(x, y) / 10.0;
@@ -165,8 +164,7 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 
 	public DEMGridSquare getGridAt(double latitude, double longitude)
 			throws SerializationException {
-		double[] utm = BathymetryDataServiceImpl.convertToUTM(latitude,
-				longitude);
+		double[] utm = GeomUtils.convertToUTM(latitude, longitude);
 		double x = utm[0];
 		double y = utm[1];
 		return getGridAtUTM(x, y);

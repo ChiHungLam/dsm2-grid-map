@@ -38,12 +38,12 @@ public class BathymetryDataFileDAOImpl extends
 	public BathymetryDataFile getFileForLocation(double x, double y)
 			throws Exception {
 		try {
-			int x100 = (int) BathymetryDataFile.roundOff(x);
-			int y100 = (int) BathymetryDataFile.roundOff(y);
-			String id = x100+"_"+y100;
+			int x100 = BathymetryDataFile.roundOff(x);
+			int y100 = BathymetryDataFile.roundOff(y);
+			String id = x100 + "_" + y100;
 			return findObjectById(id);
 		} catch (Exception e) {
-			throw e;
+			return null;
 		}
 	}
 
@@ -60,10 +60,14 @@ public class BathymetryDataFileDAOImpl extends
 		double m = (y2 - y1) / (x2 - x1);
 		double b = y2 - m * x2;
 		//
-		double xg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(x1), BathymetryDataFile.roundOff(x2)));
-		double yg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(y1), BathymetryDataFile.roundOff(y2)));
-		double xgf = Math.ceil(Math.max(BathymetryDataFile.roundOff(x1), BathymetryDataFile.roundOff(x2)));
-		double ygf = Math.ceil(Math.max(BathymetryDataFile.roundOff(y1), BathymetryDataFile.roundOff(y2)));
+		double xg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(x1),
+				BathymetryDataFile.roundOff(x2)));
+		double yg0 = Math.floor(Math.min(BathymetryDataFile.roundOff(y1),
+				BathymetryDataFile.roundOff(y2)));
+		double xgf = Math.ceil(Math.max(BathymetryDataFile.roundOff(x1),
+				BathymetryDataFile.roundOff(x2)));
+		double ygf = Math.ceil(Math.max(BathymetryDataFile.roundOff(y1),
+				BathymetryDataFile.roundOff(y2)));
 		double gridSize = BathymetryDataFile.FACTOR;
 
 		double x = xg0;
@@ -74,8 +78,8 @@ public class BathymetryDataFileDAOImpl extends
 			while (y <= ygf) {
 				// distance to line ( mx - y + b ) is Math.abs( mx - y +
 				// b)/Math.sqrt( m*m+1)
-				double[] projections = CoordinateGeometryUtils.projectionOfPointOntoLine(x,
-						y, x1, y1, x2, y2);
+				double[] projections = CoordinateGeometryUtils
+						.projectionOfPointOntoLine(x, y, x1, y1, x2, y2);
 				double distance = projections[1];
 				if (distance <= width * gridSize) {
 					BathymetryDataFile bathymetryDataFile = getFileForLocation(
@@ -91,17 +95,17 @@ public class BathymetryDataFileDAOImpl extends
 	}
 
 	public List<BathymetryDataFile> getFilesWithin(double xtopleft,
-			double ytopleft, double xbottomright, double ybottomright) throws Exception {
+			double ytopleft, double xbottomright, double ybottomright)
+			throws Exception {
 		try {
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(
 					"select from " + BathymetryDataFile.class.getName());
-			query
-					.setFilter("x >= xbr && y <= xtl && y==longitudeParam");
+			query.setFilter("x >= xbr && y <= xtl && y==longitudeParam");
 			query
 					.declareParameters("int northx100, int westLong100, int southx100, int eastLong100");
-			//List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
-			//		.execute(northx100, westLong100, southx100);
+			// List<BathymetryDataFile> files = (List<BathymetryDataFile>) query
+			// .execute(northx100, westLong100, southx100);
 			return null;
 		} catch (Exception e) {
 			throw e;

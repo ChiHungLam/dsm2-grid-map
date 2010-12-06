@@ -23,8 +23,8 @@ import gov.ca.bdo.modeling.dsm2.map.server.persistence.BathymetryDataFileDAO;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.BathymetryDataFileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
 import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
-import gov.ca.modeling.maps.elevation.client.model.CoordinateConversion;
 import gov.ca.modeling.maps.elevation.client.model.CoordinateGeometryUtils;
+import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 import gov.ca.modeling.maps.elevation.client.service.BathymetryDataService;
 
 import java.io.ByteArrayInputStream;
@@ -66,17 +66,8 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 
 	public List<BathymetryDataPoint> getBathymetryDataPoints(double latitude,
 			double longitude) throws SerializationException {
-		double[] utm = convertToUTM(latitude, longitude);
+		double[] utm = GeomUtils.convertToUTM(latitude, longitude);
 		return getBathymetryDataPointsAtXY(utm[0], utm[1]);
-	}
-
-	public static double[] convertToUTM(double latitude, double longitude) {
-		CoordinateConversion cc = new CoordinateConversion();
-		String latLon2UTM = cc.latLon2UTM(latitude, longitude);
-		String[] split = latLon2UTM.split("\\s");
-		double x = Double.parseDouble(split[2]);
-		double y = Double.parseDouble(split[3]);
-		return new double[] { x, y };
 	}
 
 	private void addBathymetryPointsToList(List<BathymetryDataPoint> list,
@@ -114,8 +105,8 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 	public List<BathymetryDataPoint> getBathymetryDataPointsAlongLine(
 			double lat1, double lng1, double lat2, double lng2)
 			throws SerializationException {
-		double[] utm1 = convertToUTM(lat1, lng1);
-		double[] utm2 = convertToUTM(lat2, lng2);
+		double[] utm1 = GeomUtils.convertToUTM(lat1, lng1);
+		double[] utm2 = GeomUtils.convertToUTM(lat2, lng2);
 		double x1 = utm1[0];
 		double y1 = utm1[1];
 		double x2 = utm2[0];
