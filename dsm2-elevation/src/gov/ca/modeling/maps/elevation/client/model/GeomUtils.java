@@ -19,6 +19,8 @@
  */
 package gov.ca.modeling.maps.elevation.client.model;
 
+import java.util.List;
+
 import com.google.gwt.maps.client.geom.LatLng;
 
 public class GeomUtils {
@@ -137,6 +139,34 @@ public class GeomUtils {
 
 	public static double getLengthInFeet(double length) {
 		return Math.round(length * 3.2808399 * 100) / 100;
+	}
+
+	public static void moveOriginAndProjectOntoLineAndConvertToFeet(
+			List<DataPoint> points, DataPoint origin,
+			DataPoint secondPointForLine) {
+		double x0 = origin.x;
+		double y0 = origin.y;
+		double x2 = secondPointForLine.x;
+		double y2 = secondPointForLine.y;
+		double angle0 = CoordinateGeometryUtils.angle(x0, y0, x2, y2);
+		for (DataPoint point : points) {
+			double length = GeomUtils.getLengthInFeet(CoordinateGeometryUtils
+					.distanceBetween(x0, y0, point.x, point.y));
+			double angle = CoordinateGeometryUtils.angle(x0, y0, point.x,
+					point.y)
+					- angle0;
+			point.x = length * Math.cos(angle);
+			point.y = length * Math.sin(angle);
+		}
+	}
+
+	public static double[] convertToUTM(double latitude, double longitude) {
+		CoordinateConversion cc = new CoordinateConversion();
+		String latLon2UTM = cc.latLon2UTM(latitude, longitude);
+		String[] split = latLon2UTM.split("\\s");
+		double x = Double.parseDouble(split[2]);
+		double y = Double.parseDouble(split[3]);
+		return new double[] { x, y };
 	}
 
 }
