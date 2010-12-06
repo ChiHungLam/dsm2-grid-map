@@ -20,19 +20,32 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
-import gov.ca.modeling.maps.elevation.client.images.IconImages;
+import gov.ca.dsm2.input.model.XSectionProfile;
+import gov.ca.modeling.maps.elevation.client.CrossSectionEditor;
+import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
+import gov.ca.modeling.maps.elevation.client.model.DataPoint;
+import gov.ca.modeling.maps.elevation.client.model.Profile;
+import gov.ca.modeling.maps.elevation.client.service.BathymetryDataService;
+import gov.ca.modeling.maps.elevation.client.service.BathymetryDataServiceAsync;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.LegendPosition;
@@ -45,30 +58,28 @@ import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 public class ChannelInfoPanel extends Composite {
 
 	private FlowPanel xsectionPanel;
-	private ToggleButton xSectionButton;
+	private CrossSectionEditor editor;
+	private DisclosurePanel xsectionDisclosure;
+	private NodeMarkerDataManager nodeManager;
+	private FlowPanel xsEditorPanel;
 
 	public ChannelInfoPanel(Channel channel, final MapPanel mapPanel) {
+		FlowPanel xsectionContainerPanel = new FlowPanel();
 		xsectionPanel = new FlowPanel();
-		xsectionPanel.getElement().setId("xsection");
-		if (mapPanel.isInEditMode()) {
-			xSectionButton = new ToggleButton(new Image(IconImages.INSTANCE
-					.elevationProfileIcon()));
-			xSectionButton.addClickHandler(new ClickHandler() {
-
-				public void onClick(ClickEvent event) {
-
-				}
-			});
-		}
+		xsEditorPanel = new FlowPanel();
+		xsEditorPanel.getElement().setId("xsection");
+		xsectionContainerPanel.add(xsectionPanel);
+		xsectionContainerPanel.add(xsEditorPanel);
+		nodeManager = mapPanel.getNodeManager();
 		drawXSection(channel, -1);
 		VerticalPanel vpanel = new VerticalPanel();
 		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");
 		basicDisclosure.setOpen(true);
 		basicDisclosure.add(getBasicInfoPanel(channel));
 		vpanel.add(basicDisclosure);
-		DisclosurePanel xsectionDisclosure = new DisclosurePanel("XSection");
+		xsectionDisclosure = new DisclosurePanel("XSection");
 		xsectionDisclosure.setOpen(true);
-		xsectionDisclosure.add(xsectionPanel);
+		xsectionDisclosure.add(xsectionContainerPanel);
 		vpanel.add(xsectionDisclosure);
 		initWidget(vpanel);
 	}
@@ -153,4 +164,92 @@ public class ChannelInfoPanel extends Composite {
 				+ "</td></tr>" + "<tr><td>Dispersion</td><td>"
 				+ channel.getDispersion() + "</td></tr>" + "</table>");
 	}
+
+	public void drawXSectionEditor(Channel channel, int index) {
+		XSection xsection = channel.getXsections().get(index);
+		DEMDataServiceAsync demService = GWT.create(DEMDataService.class);
+		final BathymetryDataServiceAsync bathyService = GWT
+				.create(BathymetryDataService.class);
+		XSectionProfile profileFrom = xsection.getProfile();
+		if (profileFrom==null){
+			Node upNode = nodeManager.getNodes().getNode(channel.getUpNodeId());
+			Node downNode = nodeManager.getNodes().getNode(channel.getDownNodeId());			
+			profileFrom = ModelUtils.calculateProfileFrom(xsection, channel, upNode, downNode);
+			xsection.setProfile(profileFrom);
+		}
+		final XSectionProfile profile = profileFrom;
+		List<double[]> endPoints = profile.getEndPoints();
+		List<double[]> profilePoints = profile.getProfilePoints();
+
+		final Profile xsProfile = new Profile();
+		xsProfile.points = new ArrayList<DataPoint>();
+		for (int i = 0; i < profilePoints.size(); i++) {
+			double[] ds = profilePoints.get(i);
+			DataPoint p = new DataPoint();
+			p.x = ds[0];
+			p.y = ds[1];
+			xsProfile.points.add(p);
+		}
+		xsProfile.x1 = endPoints.get(0)[0];
+		xsProfile.y1 = endPoints.get(0)[1];
+		xsProfile.x2 = endPoints.get(1)[0];
+		xsProfile.y2 = endPoints.get(1)[1];
+
+		demService.getBilinearInterpolatedElevationAlong(xsProfile.x1,
+				xsProfile.y1, xsProfile.x2, xsProfile.y2,
+				new AsyncCallback<List<DataPoint>>() {
+
+					public void onSuccess(final List<DataPoint> profilePoints) {
+						bathyService.getBathymetryDataPointsAlongLine(
+								xsProfile.x1, xsProfile.y1, xsProfile.x2,
+								xsProfile.y2,
+								new AsyncCallback<List<BathymetryDataPoint>>() {
+
+									public void onFailure(Throwable caught) {
+									}
+
+									public void onSuccess(
+											List<BathymetryDataPoint> bathymetryPoints) {
+										ArrayList<DataPoint> bathyPoints = new ArrayList<DataPoint>(
+												bathymetryPoints);
+										for (int i = 0; i < bathymetryPoints
+												.size(); i++) {
+											BathymetryDataPoint bp = bathymetryPoints
+													.get(i);
+											DataPoint p = new DataPoint();
+											p.x = bp.x;
+											p.y = bp.y;
+											p.z = bp.z;
+											bathyPoints.add(p);
+										}
+										editor = new CrossSectionEditor(
+												"xsection", xsProfile,
+												profilePoints, bathyPoints);
+										Button setProfileButton = new Button("Set Profile");
+										setProfileButton.addClickHandler(new ClickHandler() {
+											
+											public void onClick(ClickEvent event) {
+												List<DataPoint> xSectionProfilePoints = editor.getXSectionProfilePoints();
+												List<double[]> profilePoints = new ArrayList<double[]>();
+												for(int i=0;i  < xSectionProfilePoints.size(); i++){
+													double[] ppoint = new double[2];
+													DataPoint p = xSectionProfilePoints.get(i);
+													ppoint[0] = p.x;
+													ppoint[1] = p.y;
+													profilePoints.add(ppoint);
+												}
+												profile.setProfilePoints(profilePoints);
+											}
+										});
+										xsectionPanel.clear();
+										xsectionPanel.add(setProfileButton);
+									}
+								});
+					}
+
+					public void onFailure(Throwable caught) {
+					}
+				});
+	}
+
 }

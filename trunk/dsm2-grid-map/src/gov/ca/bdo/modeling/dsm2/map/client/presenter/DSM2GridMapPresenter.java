@@ -109,9 +109,16 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		public void centerAndZoomOnChannel(String channelId);
 	}
 
+	/*
+	 * flag to remember state of UI initialization, is true if bind() has
+	 * already been called.
+	 */
+	private boolean bound;
+
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
 			HandlerManager eventBus, Display display) {
 		super(dsm2InputService, eventBus, display);
+		bound = false;
 	}
 
 	public void go(HasWidgets container) {
@@ -119,6 +126,9 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 	}
 
 	protected void bind() {
+		if (bound) {
+			return;
+		}
 		super.bind();
 		final Display d = (Display) display;
 
@@ -233,6 +243,7 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 				d.setDeletingMode(down);
 			}
 		});
+		bound = true;
 	}
 
 }

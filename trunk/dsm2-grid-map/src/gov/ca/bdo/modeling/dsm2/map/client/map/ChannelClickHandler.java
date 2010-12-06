@@ -50,10 +50,12 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			PolylineClickHandler {
 		private final XSection xSection;
 		private int xSectionIndex;
+		private boolean edit;
 
-		private XSectionLineClickHandler(XSection xSection, int index) {
+		public XSectionLineClickHandler(XSection xSection, int index, boolean edit) {
 			this.xSection = xSection;
 			xSectionIndex = index;
+			this.edit = edit;
 		}
 
 		public void onClick(PolylineClickEvent event) {
@@ -68,7 +70,11 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			}
 			Polyline line = xsectionLineMap.get(xSection);
 			line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
-			infoPanel.drawXSection(channel, xSectionIndex);
+			if (!edit){
+				infoPanel.drawXSection(channel, xSectionIndex);
+			}else{
+				infoPanel.drawXSectionEditor(channel, xSectionIndex);
+			}
 		}
 	}
 
@@ -135,7 +141,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		line.setStrokeStyle(style);
 		if (mapPanel.isInEditMode()) {
 
-			// allow up to 10 vertices to exist in the line.
+			// allow up to 25 vertices to exist in the line.
 			line.setEditingEnabled(PolyEditingOptions.newInstance(25));
 			line.addPolylineClickHandler(new PolylineClickHandler() {
 				public void onClick(PolylineClickEvent event) {
@@ -154,6 +160,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 							updateDisplay();
 						}
 					});
+			drawXSectionLines();
 		} else {
 			line.addPolylineClickHandler(new PolylineClickHandler() {
 
@@ -198,8 +205,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
 			final Polyline line = new Polyline(latLngs, "green", 4);
+			
 			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,
-					xSectionIndex));
+					xSectionIndex, mapPanel.isInEditMode()));
 			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
 
 				public void onMouseOver(PolylineMouseOverEvent event) {
@@ -207,9 +215,16 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				}
 
 			});
+			
 
 			xsectionLineMap.put(xSection, line);
 			mapPanel.getMap().addOverlay(line);
+			if (mapPanel.isInEditMode()){
+				//TODO: with some other trigger
+				//line.setEditingEnabled(true);
+				//line.setEditingEnabled(PolyEditingOptions.newInstance(2));
+			}
+
 			xSectionIndex++;
 		}
 	}
