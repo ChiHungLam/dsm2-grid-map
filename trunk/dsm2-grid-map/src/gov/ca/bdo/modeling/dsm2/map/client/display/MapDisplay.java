@@ -86,6 +86,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
@@ -506,6 +507,14 @@ public class MapDisplay extends Composite implements Display,
 
 	public HasText getFindTextBox() {
 		return controlPanel.getFindTextBox();
+	}
+
+	public PushButton getDownloadHydroButton() {
+		return controlPanel.getDownloadHydroButton();
+	}
+
+	public PushButton getDownloadGISButton() {
+		return controlPanel.getDownloadGISButton();
 	}
 
 }
