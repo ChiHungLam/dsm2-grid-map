@@ -41,13 +41,16 @@ package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ToggleButton;
 
 public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
@@ -107,6 +110,10 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		public void centerAndZoomOnNode(String nodeId);
 
 		public void centerAndZoomOnChannel(String channelId);
+
+		public PushButton getDownloadHydroButton();
+
+		public PushButton getDownloadGISButton();
 	}
 
 	/*
@@ -243,7 +250,28 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 				d.setDeletingMode(down);
 			}
 		});
+
+		d.getDownloadHydroButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				String url = GWT.getModuleBaseURL()
+						+ "dsm2_download?studyName="
+						+ URL.encode(d.getCurrentStudy()) + "&inputName="
+						+ URL.encode("hydro_echo_inp");
+				Window.open(url, "_blank", null);
+			}
+		});
+
+		d.getDownloadGISButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				String url = GWT.getModuleBaseURL()
+						+ "dsm2_download?studyName="
+						+ URL.encode(d.getCurrentStudy()) + "&inputName="
+						+ URL.encode("gis_inp");
+				Window.open(url, "_blank", null);
+			}
+		});
 		bound = true;
 	}
-
 }
