@@ -24,12 +24,24 @@ import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
+import gov.ca.dsm2.input.model.XSectionProfile;
+import gov.ca.modeling.maps.elevation.client.CrossSectionEditor;
+import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
+import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
+import gov.ca.modeling.maps.elevation.client.model.Profile;
+import gov.ca.modeling.maps.elevation.client.service.BathymetryDataService;
+import gov.ca.modeling.maps.elevation.client.service.BathymetryDataServiceAsync;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
@@ -37,6 +49,9 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
@@ -52,7 +67,8 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		private int xSectionIndex;
 		private boolean edit;
 
-		public XSectionLineClickHandler(XSection xSection, int index, boolean edit) {
+		public XSectionLineClickHandler(XSection xSection, int index,
+				boolean edit) {
 			this.xSection = xSection;
 			xSectionIndex = index;
 			this.edit = edit;
@@ -70,10 +86,14 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			}
 			Polyline line = xsectionLineMap.get(xSection);
 			line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
-			if (!edit){
+			if (!edit) {
 				infoPanel.drawXSection(channel, xSectionIndex);
-			}else{
-				infoPanel.drawXSectionEditor(channel, xSectionIndex);
+			} else {
+				mapPanel.getInfoPanel().clear();
+				xsEditorPanel = new FlowPanel();
+				xsEditorPanel.getElement().setId("xsection");
+				mapPanel.getInfoPanel().add(xsEditorPanel);
+				drawXSectionEditor(channel, xSectionIndex);
 			}
 		}
 	}
@@ -86,6 +106,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	private Polyline line;
 	private final HashMap<XSection, Polyline> xsectionLineMap;
 	private ChannelInfoPanel infoPanel;
+	private FlowPanel xsEditorPanel;
 
 	public ChannelClickHandler(Channel lineData, MapPanel mapPanel) {
 		channel = lineData;
@@ -205,7 +226,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
 			final Polyline line = new Polyline(latLngs, "green", 4);
-			
+
 			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,
 					xSectionIndex, mapPanel.isInEditMode()));
 			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
@@ -215,14 +236,13 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				}
 
 			});
-			
 
 			xsectionLineMap.put(xSection, line);
 			mapPanel.getMap().addOverlay(line);
-			if (mapPanel.isInEditMode()){
-				//TODO: with some other trigger
-				//line.setEditingEnabled(true);
-				//line.setEditingEnabled(PolyEditingOptions.newInstance(2));
+			if (mapPanel.isInEditMode()) {
+				// TODO: with some other trigger
+				// line.setEditingEnabled(true);
+				// line.setEditingEnabled(PolyEditingOptions.newInstance(2));
 			}
 
 			xSectionIndex++;
@@ -330,6 +350,134 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		for (Polyline xline : xsectionLineMap.values()) {
 			mapPanel.getMap().removeOverlay(xline);
 		}
+	}
+
+	public void drawXSectionEditor(Channel channel, int index) {
+		xsEditorPanel.clear();
+		XSection xsection = channel.getXsections().get(index);
+		DEMDataServiceAsync demService = GWT.create(DEMDataService.class);
+		final BathymetryDataServiceAsync bathyService = GWT
+				.create(BathymetryDataService.class);
+		XSectionProfile profileFrom = xsection.getProfile();
+		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
+		if (profileFrom == null) {
+			Node upNode = nodeManager.getNodes().getNode(channel.getUpNodeId());
+			Node downNode = nodeManager.getNodes().getNode(
+					channel.getDownNodeId());
+			profileFrom = ModelUtils.calculateProfileFrom(xsection, channel,
+					upNode, downNode);
+			xsection.setProfile(profileFrom);
+		}
+		final XSectionProfile profile = profileFrom;
+		List<double[]> endPoints = profile.getEndPoints();
+		List<double[]> profilePoints = profile.getProfilePoints();
+
+		final Profile xsProfile = new Profile();
+		xsProfile.points = new ArrayList<DataPoint>();
+		for (int i = 0; i < profilePoints.size(); i++) {
+			double[] ds = profilePoints.get(i);
+			DataPoint p = new DataPoint();
+			p.x = ds[0];
+			p.y = 0;
+			p.z = ds[1];
+			xsProfile.points.add(p);
+		}
+		xsProfile.x1 = endPoints.get(0)[0];
+		xsProfile.y1 = endPoints.get(0)[1];
+		xsProfile.x2 = endPoints.get(1)[0];
+		xsProfile.y2 = endPoints.get(1)[1];
+
+		demService.getBilinearInterpolatedElevationAlong(xsProfile.x1,
+				xsProfile.y1, xsProfile.x2, xsProfile.y2,
+				new AsyncCallback<List<DataPoint>>() {
+
+					public void onSuccess(final List<DataPoint> profilePoints) {
+						bathyService.getBathymetryDataPointsAlongLine(
+								xsProfile.x1, xsProfile.y1, xsProfile.x2,
+								xsProfile.y2,
+								new AsyncCallback<List<BathymetryDataPoint>>() {
+
+									private CrossSectionEditor editor;
+
+									public void onSuccess(
+											List<BathymetryDataPoint> bathymetryPoints) {
+										ArrayList<DataPoint> bathyPoints = new ArrayList<DataPoint>(
+												bathymetryPoints);
+										for (int i = 0; i < bathymetryPoints
+												.size(); i++) {
+											BathymetryDataPoint bp = bathymetryPoints
+													.get(i);
+											DataPoint p = new DataPoint();
+											p.x = bp.x;
+											p.y = bp.y;
+											p.z = bp.z;
+											bathyPoints.add(p);
+										}
+										double[] utm1 = GeomUtils.convertToUTM(
+												xsProfile.x1, xsProfile.y1);
+										double[] utm2 = GeomUtils.convertToUTM(
+												xsProfile.x2, xsProfile.y2);
+										DataPoint origin = new DataPoint();
+										origin.x = utm1[0];
+										origin.y = utm1[1];
+										DataPoint secondPointForLine = new DataPoint();
+										secondPointForLine.x = utm2[0];
+										secondPointForLine.y = utm2[1];
+										GeomUtils
+												.moveOriginAndProjectOntoLineAndConvertToFeet(
+														profilePoints, origin,
+														secondPointForLine);
+										GeomUtils
+												.moveOriginAndProjectOntoLineAndConvertToFeet(
+														bathyPoints, origin,
+														secondPointForLine);
+										editor = new CrossSectionEditor(
+												"xsection", xsProfile,
+												profilePoints, bathyPoints);
+										Button setProfileButton = new Button(
+												"Set Profile");
+										setProfileButton
+												.addClickHandler(new ClickHandler() {
+
+													public void onClick(
+															ClickEvent event) {
+														List<DataPoint> xSectionProfilePoints = editor
+																.getXSectionProfilePoints();
+														List<double[]> profilePoints = new ArrayList<double[]>();
+														for (int i = 0; i < xSectionProfilePoints
+																.size(); i++) {
+															double[] ppoint = new double[2];
+															DataPoint p = xSectionProfilePoints
+																	.get(i);
+															ppoint[0] = p.x;
+															ppoint[1] = p.y;
+															profilePoints
+																	.add(ppoint);
+														}
+														profile
+																.setProfilePoints(profilePoints);
+													}
+												});
+										xsEditorPanel.add(setProfileButton);
+									}
+
+									public void onFailure(Throwable caught) {
+										// TODO: add the xsection line and other
+										// relevant info
+										GWT
+												.log(
+														"Could not load Bathymetry data",
+														caught);
+									}
+
+								});
+					}
+
+					public void onFailure(Throwable caught) {
+						// TODO: add the xsection line and other relevant info
+						GWT.log("Could not load DEM profile data", caught);
+					}
+				});
 	}
 
 }
