@@ -199,6 +199,7 @@ public class Tables {
 				"LENGTH", "MANNING", "DISPERSION", "UPNODE", "DOWNNODE" }));
 		ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
 		ArrayList<ArrayList<String>> xvalues = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> xpvalues = new ArrayList<ArrayList<String>>();
 		for (Channel channel : channels.getChannels()) {
 			ArrayList<String> rowValues = new ArrayList<String>();
 			rowValues.add(channel.getId());
@@ -218,6 +219,16 @@ public class Tables {
 					xrowValues.add(xsectLayer.getTopWidth() + "");
 					xrowValues.add(xsectLayer.getWettedPerimeter() + "");
 					xvalues.add(xrowValues);
+				}
+				if (xsection.getProfile() != null){
+					XSectionProfile profile = xsection.getProfile();
+					ArrayList<String> pvalues = new ArrayList<String>();
+					pvalues.add(profile.getId()+"");
+					pvalues.add(channel.getId()+"");
+					pvalues.add(profile.getDistance()+"");
+					pvalues.add(TableUtil.fromLatLngPoints(profile.getEndPoints()));
+					pvalues.add(TableUtil.fromProfilePoints(profile.getProfilePoints()));
+					xpvalues.add(pvalues);
 				}
 			}
 		}
@@ -245,6 +256,11 @@ public class Tables {
 		gisTable.setValues(values);
 		list.add(gisTable);
 		//
+		InputTable xsectionProfileTable = new InputTable();
+		xsectionProfileTable.setName("XSECTION_GIS");
+		xsectionProfileTable.setHeaders(Arrays.asList(new String[]{"ID","CHAN_NO","DIST","LATLNG_ENDPOINTS", "PROFILE_POINTS"}));
+		xsectionProfileTable.setValues(xpvalues);
+		list.add(xsectionProfileTable);
 		//
 		return list;
 	}
