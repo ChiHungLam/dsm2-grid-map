@@ -17,13 +17,17 @@ public class CrossSectionEditor extends Composite {
 	private XYZPoint[] profilePoints;
 	private XYZPoint[] points;
 	private String divId;
+	private int width;
+	private int height;
 
 	public CrossSectionEditor(String divId, Profile xsProfile,
-			List<DataPoint> profile, List<DataPoint> bathymetry) {
+			List<DataPoint> profile, List<DataPoint> bathymetry, int width, int height) {
 		this.divId = divId;
 		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
 		profilePoints = convertDataToXYZPoints(profile);
 		points = convertDataToXYZPoints(bathymetry);
+		this.width = width;
+		this.height = height;
 		vis = plot(divId, xpArray = ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
 				.toJsArray(profilePoints), ArrayUtils.toJsArray(points));
 	}
@@ -40,7 +44,9 @@ public class CrossSectionEditor extends Composite {
 
 	public native JavaScriptObject plot(String divId, JavaScriptObject xsectionPoints,
 			JavaScriptObject profilePoints, JavaScriptObject points)/*-{
-		return $wnd.plots.xsection_editor(divId, xsectionPoints, profilePoints, points);
+		var w = this.@gov.ca.modeling.maps.elevation.client.CrossSectionEditor::width;
+		var h = this.@gov.ca.modeling.maps.elevation.client.CrossSectionEditor::height;
+		return $wnd.plots.xsection_editor(divId, xsectionPoints, profilePoints, points, w, h);
 	}-*/;
 	
 	public void setXSectionProfile(Profile profile){

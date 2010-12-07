@@ -24,7 +24,14 @@ function Plots(){
 	this.PLOT_HEIGHT=480;
 	
 }
-Plots.prototype.time_series_plot = function (div_id, data, diff, sdate, edate){
+/**
+ * div_id is the id of the div to place the plot into
+ * data is the time series data structure
+ * diff is the flag to calculate and display difference
+ * sdate and edate are optional date parameters to display a slice of the data
+ * bars is a data structure to draw background bars
+ */
+Plots.prototype.time_series_plot = function (div_id, data, diff, sdate, edate, bars){
     if (sdate==null){
     	sdate = data.values[0].x;
     }
@@ -87,11 +94,19 @@ var vis = new pv.Panel()
     .right(70)
     .top(50);
 
-/*
- * Border around plot vis.add(pv.Area) .data([0,1]) .bottom(0) .height(h)
- * .left(function(d) {return d*w}) .fillStyle(null) .strokeStyle("#000")
- * .lineWidth(0.25);
- */
+if (bars){
+	function truncate(val, range){
+		var min = range[0];
+		var max = range[range.length-1];
+		var rval = Math.max(min, Math.min(max,val));
+		return rval;
+	}
+	vis.add(pv.Bar).data(bars)
+		.bottom(h2).height(h)
+		.left(function(d) {return truncate(x(d.start), x.range());})
+		.width(function(d) {return truncate(x(d.end), x.range())-truncate(x(d.start), x.range());})
+		.fillStyle(function(d){return d.color}).strokeStyle(function(d){return d.color});
+}
 /* X-axis ticks. */
 vis.add(pv.Rule)
     	.data(x.ticks())
@@ -497,9 +512,7 @@ return vis;
  * of the point>, z: <distance perpendicular to the xsection>}
  */
 Plots.prototype.xsection_editor = function(div_id,xsection_points,profile_points,points, w, h){
-	if (!w) { var w = 400; }
-	if (!h) { var h = 275; }
-		
+	
 	var w2 = 50,
 	    h2 = 50,
 	    i = 3,
@@ -508,8 +521,34 @@ Plots.prototype.xsection_editor = function(div_id,xsection_points,profile_points
 			xaxis_name: "Length(ft)",
 			yaxis_name: "Elevation(ft)"
 	};
-	var xvals = pv.map(profile_points,function(d){ return d.x;});
-	var yvals = pv.map(profile_points, function(d){return d.y;});
+	var xvals = pv.map(profile_points,function(d){
+		if (d.x != -999.9){
+			return d.x;
+		}else{
+			return 0;
+		}});
+	var yvals = pv.map(profile_points, function(d){
+		if (d.y != -999.9){
+			return d.y;
+		}else{
+			return 0;
+		}
+	});
+	var xvals2 = pv.map(xsection_points,function(d){
+		if (d.x != -999.9){
+			return d.x;
+		}else{
+			return 0;
+		}});
+	var yvals2 = pv.map(xsection_points, function(d){
+		if (d.y != -999.9){
+			return d.y;
+		}else{
+			return 0;
+		}
+	});
+	xvals=xvals.concat(xvals2)
+	yvals=yvals.concat(yvals2)
 	var x = pv.Scale.linear(pv.min(xvals), pv.max(xvals)).range(w2,w-w2);
 	var y = pv.Scale.linear(pv.min(yvals), pv.max(yvals)).range(h-h2,h2);
 	var xsection = xsection_points.map(function(d){return {x: x(d.x),y: y(d.y)}});
@@ -641,7 +680,7 @@ Plots.prototype.xsection_editor = function(div_id,xsection_points,profile_points
 	  }
 	});
 
-	return vis;
+
 }
 
 var plots = new Plots();
