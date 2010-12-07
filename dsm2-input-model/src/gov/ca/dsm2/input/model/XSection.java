@@ -20,6 +20,7 @@ package gov.ca.dsm2.input.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains the xsection of a {@link Channel} in {@link XSectionLayer} layers.
@@ -62,6 +63,11 @@ public class XSection implements Serializable {
 
 	public void addLayer(XSectionLayer layer) {
 		layers.add(layer);
+	}
+	
+	public void setLayers(List<XSectionLayer> layers){
+		this.layers.clear();
+		this.layers.addAll(layers);
 	}
 
 	public void setProfile(XSectionProfile xsProfile) {
