@@ -52,6 +52,8 @@ import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
@@ -247,16 +249,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 
 			xSectionIndex++;
 		}
-	}
-
-	private double getAverageMaxDepth() {
-		double d = 0;
-		int c = 0;
-		for (XSection xs : channel.getXsections()) {
-			d += getMaxDepth(xs);
-			c++;
-		}
-		return d / c;
 	}
 
 	private double getTopWidthAtDepth(XSection xsection, double depth) {
@@ -458,7 +450,18 @@ public class ChannelClickHandler implements PolylineClickHandler {
 																.setProfilePoints(profilePoints);
 													}
 												});
-										xsEditorPanel.add(setProfileButton);
+										Button snapToElevationProfileButton = new Button("Snap To Elevation Profile");
+										snapToElevationProfileButton.addClickHandler(new ClickHandler() {
+											
+											public void onClick(ClickEvent event) {
+												xsProfile.points = new ArrayList<DataPoint>(profilePoints);
+												editor.redraw();
+											}
+										});
+										HorizontalPanel buttonPanel = new HorizontalPanel();
+										buttonPanel.add(setProfileButton);
+										buttonPanel.add(snapToElevationProfileButton);
+										xsEditorPanel.add(buttonPanel);
 									}
 
 									public void onFailure(Throwable caught) {
