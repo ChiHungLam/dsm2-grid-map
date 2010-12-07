@@ -14,12 +14,16 @@ public class CrossSectionEditor extends Composite {
 	private JavaScriptObject xpArray;
 	private XYZPoint[] xsectionPoints;
 	private JavaScriptObject vis;
+	private XYZPoint[] profilePoints;
+	private XYZPoint[] points;
+	private String divId;
 
 	public CrossSectionEditor(String divId, Profile xsProfile,
 			List<DataPoint> profile, List<DataPoint> bathymetry) {
+		this.divId = divId;
 		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
-		XYZPoint[] profilePoints = convertDataToXYZPoints(profile);
-		XYZPoint[] points = convertDataToXYZPoints(bathymetry);
+		profilePoints = convertDataToXYZPoints(profile);
+		points = convertDataToXYZPoints(bathymetry);
 		vis = plot(divId, xpArray = ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
 				.toJsArray(profilePoints), ArrayUtils.toJsArray(points));
 	}
@@ -38,6 +42,12 @@ public class CrossSectionEditor extends Composite {
 			JavaScriptObject profilePoints, JavaScriptObject points)/*-{
 		return $wnd.plots.xsection_editor(divId, xsectionPoints, profilePoints, points);
 	}-*/;
+	
+	public void setXSectionProfile(Profile profile){
+		xsectionPoints = convertDataToXYZPoints(profile.points);
+		vis = plot(divId, xpArray = ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
+				.toJsArray(profilePoints), ArrayUtils.toJsArray(points));
+	}
 
 	public List<DataPoint> getXSectionProfilePoints() {
 		List<DataPoint> points = new ArrayList<DataPoint>();
