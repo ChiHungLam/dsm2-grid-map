@@ -366,7 +366,7 @@ public class Tables {
 			try {
 				int nvals = xsectGisTable.getValues().size();
 				for (int i = 0; i < nvals; i++) {
-					String id = xsectGisTable.getValue(i, "XSECTION_ID");
+					String id = xsectGisTable.getValue(i, "ID");
 					String channelId = xsectGisTable.getValue(i, "CHAN_NO");
 					Channel channel = channels.getChannel(channelId);
 					if (channel != null) {
