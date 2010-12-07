@@ -641,7 +641,7 @@ Plots.prototype.xsection_editor = function(div_id,xsection_points,profile_points
 	  }
 	});
 
-
+	return vis;
 }
 
 var plots = new Plots();
