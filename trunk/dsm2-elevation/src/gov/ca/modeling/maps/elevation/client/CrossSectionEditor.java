@@ -13,13 +13,14 @@ import com.google.gwt.user.client.ui.Composite;
 public class CrossSectionEditor extends Composite {
 	private JavaScriptObject xpArray;
 	private XYZPoint[] xsectionPoints;
+	private JavaScriptObject vis;
 
 	public CrossSectionEditor(String divId, Profile xsProfile,
 			List<DataPoint> profile, List<DataPoint> bathymetry) {
 		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
 		XYZPoint[] profilePoints = convertDataToXYZPoints(profile);
 		XYZPoint[] points = convertDataToXYZPoints(bathymetry);
-		plot(divId, xpArray = ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
+		vis = plot(divId, xpArray = ArrayUtils.toJsArray(xsectionPoints), ArrayUtils
 				.toJsArray(profilePoints), ArrayUtils.toJsArray(points));
 	}
 
@@ -33,9 +34,9 @@ public class CrossSectionEditor extends Composite {
 		return xyzs;
 	}
 
-	public native void plot(String divId, JavaScriptObject xsectionPoints,
+	public native JavaScriptObject plot(String divId, JavaScriptObject xsectionPoints,
 			JavaScriptObject profilePoints, JavaScriptObject points)/*-{
-		$wnd.plots.xsection_editor(divId, xsectionPoints, profilePoints, points);
+		return $wnd.plots.xsection_editor(divId, xsectionPoints, profilePoints, points);
 	}-*/;
 
 	public List<DataPoint> getXSectionProfilePoints() {
@@ -50,4 +51,8 @@ public class CrossSectionEditor extends Composite {
 		}
 		return points;
 	}
+	
+	public native void redraw()/*-{
+		this.vis.render();
+	}-*/;
 }
