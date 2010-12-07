@@ -32,6 +32,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -105,6 +106,9 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 	public List<BathymetryDataPoint> getBathymetryDataPointsAlongLine(
 			double lat1, double lng1, double lat2, double lng2)
 			throws SerializationException {
+		logger.entering(this.getClass().getName(),
+				"getBathymetryDataPointsAlongLine", new Object[] { lat1, lng1,
+						lat2, lng2 });
 		double[] utm1 = GeomUtils.convertToUTM(lat1, lng1);
 		double[] utm2 = GeomUtils.convertToUTM(lat2, lng2);
 		double x1 = utm1[0];
@@ -123,11 +127,9 @@ public class BathymetryDataServiceImpl extends RemoteServiceServlet implements
 				addBathymetryPointsToList(list, bathymetryDataFile);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
-		// project onto line
-		projectOntoLine(x1, y1, x2, y2, list);
+		logger.exiting(getClass().getName(), "getBathymetryDataPointsAlongLine",list);
 		return list;
 	}
 
