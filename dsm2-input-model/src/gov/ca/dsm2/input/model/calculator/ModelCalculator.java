@@ -3,6 +3,7 @@ package gov.ca.dsm2.input.model.calculator;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
+import gov.ca.dsm2.input.model.XSectionProfile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,5 +111,10 @@ public class ModelCalculator {
 							.getWettedPerimeter()) * elevationSlope);
 		}
 		return layer;
+	}
+	
+	public double getDistanceFromUpNode(Channel channel, XSectionProfile profile){
+		//FIXME: implement this
+		return 0;
 	}
 }
