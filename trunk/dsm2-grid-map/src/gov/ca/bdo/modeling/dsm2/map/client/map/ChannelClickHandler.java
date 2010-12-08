@@ -24,12 +24,14 @@ import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
+import gov.ca.dsm2.input.model.XSectionProfile;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
@@ -69,20 +71,51 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					line.setStrokeStyle(greenLineStyle);
 				}
 			}
-			Polyline line = xsectionLineMap.get(xSection);
+			final Polyline line = xsectionLineMap.get(xSection);
 			line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
 			if (!edit) {
+				line.setEditingEnabled(false);
 				infoPanel.drawXSection(channel, xSectionIndex);
 			} else {
-				if (xsEditorPanel == null){
+				if (xsEditorPanel == null) {
 					xsEditorPanel = new CrossSectionEditorPanel();
 				}
+				line.setEditingEnabled(PolyEditingOptions.newInstance(2));
+				line
+						.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
+
+							public void onUpdate(PolylineLineUpdatedEvent event) {
+								XSectionProfile profile = xSection.getProfile();
+								if (profile == null) {
+									return;
+								}
+								ArrayList<double[]> endPoints = new ArrayList<double[]>();
+								for (int i = 0; i < 2; i++) {
+									double[] points = new double[2];
+									LatLng vertex = line.getVertex(i);
+									points[0] = vertex.getLatitude();
+									points[1] = vertex.getLongitude();
+									endPoints.add(points);
+								}
+								profile.setEndPoints(endPoints);
+								Node upNode = mapPanel.getNodeManager().getNodes().getNode(channel.getUpNodeId());
+								Node downNode = mapPanel.getNodeManager().getNodes().getNode(channel.getDownNodeId());
+								double distance = ModelUtils.getIntersectionDistanceFromUpstream(profile, channel, upNode, downNode);
+								if (distance >= 0 && distance <= channel.getLength()){
+									double dratio = distance/channel.getLength();
+									profile.setDistance(dratio);
+									GWT.log("Changing distance ratio for xsection"+xSection.getChannelId()+" #"+xSectionIndex +" from: "+xSection.getDistance()+" to "+dratio);
+									xSection.setDistance(dratio);
+								}
+							}
+						});
 				mapPanel.getInfoPanel().clear();
 				mapPanel.getInfoPanel().add(xsEditorPanel);
 				mapPanel.getInfoPanel().add(xsEditorPanel);
 				xsEditorPanel.draw(channel, xSectionIndex, mapPanel);
 			}
 		}
+
 	}
 
 	private final Channel channel;
@@ -328,5 +361,13 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			mapPanel.getMap().removeOverlay(xline);
 		}
 	}
+	
+	protected double calculateDistanceOfProfileAlongChannel(
+			XSectionProfile profile, Channel channel) {
+		List<double[]> endPoints = profile.getEndPoints();
+		List<double[]> latLngPoints = channel.getLatLngPoints();
+		return 0;
+	}
+
 
 }
