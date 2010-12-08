@@ -59,7 +59,7 @@ public class SimpleElevationChart implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				if (editor == null) {
 					editor = new CrossSectionEditor("xsect", xsProfile,
-							profile, bathymetry);
+							profile, bathymetry, 600, 450);
 				}
 				List<DataPoint> profilePoints = editor
 						.getXSectionProfilePoints();
