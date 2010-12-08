@@ -64,13 +64,28 @@ import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 import gov.ca.dsm2.input.model.XSectionProfile;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
+import gov.ca.modeling.maps.elevation.client.model.Geometry;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.maps.client.geom.LatLng;
-
+/**
+ * FIXME: figure out how these methods can move back to the model. the only map dependency
+ * seems to LatLng which is easy to break with a convention of a double[] array of length=2
+ * of lat,lng
+ * @author nsandhu
+ *
+ */
 public class ModelUtils {
+	/**
+	 * Return the flowline of the entire channel, combining the internal points with the
+	 * upnode and downode points
+	 * @param channel
+	 * @param upNode
+	 * @param downNode
+	 * @return
+	 */
 	public static LatLng[] getPointsForChannel(Channel channel, Node upNode,
 			Node downNode) {
 		LatLng[] points = null;
@@ -93,28 +108,18 @@ public class ModelUtils {
 		points[points.length - 1] = downPoint;
 		return points;
 	}
-
+	
+	/**
+	 * @param channel
+	 * @param upNode
+	 * @param downNode
+	 * @return
+	 * @deprecated 
+	 * @see #getPointsForChannel(Channel, Node, Node)
+	 */
 	public static LatLng[] getChannelOutlinePoints(Channel channel,
 			Node upNode, Node downNode) {
-		LatLng[] points = null;
-		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
-				.getLongitude());
-		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
-				.getLongitude());
-		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
-			int size = latLngPoints.size();
-			points = new LatLng[size + 2];
-			for (int i = 1; i < points.length - 1; i++) {
-				double[] ds = latLngPoints.get(i - 1);
-				points[i] = LatLng.newInstance(ds[0], ds[1]);
-			}
-		} else {
-			points = new LatLng[2];
-		}
-		points[0] = upPoint;
-		points[points.length - 1] = downPoint;
-		return points;
+		return getPointsForChannel(channel, upNode, downNode);
 	}
 
 	/**
@@ -165,7 +170,21 @@ public class ModelUtils {
 		return profile;
 	}
 
-	private static LatLng[] calculateEndPoints(XSection xSection,
+	/**
+	 * Returns the lat/lng of the endpoints that would defined the xsection.
+	 * <p>
+	 * This method is useful when the profile is not available and the end points
+	 * of a pseudo-profile needs to be generated from the xsection. 
+	 * This can be used to maintain the physical location of the xsections when 
+	 * the flowline is changed.
+	 * </p>
+	 * @param xSection
+	 * @param channel
+	 * @param upNode
+	 * @param downNode
+	 * @return an array of the beginning and ending lat/lng (length=2) of the xsection line on a map
+	 */
+	public static LatLng[] calculateEndPoints(XSection xSection,
 			Channel channel, Node upNode, Node downNode) {
 		LatLng[] channelOutlinePoints = getChannelOutlinePoints(channel,
 				upNode, downNode);
@@ -185,12 +204,51 @@ public class ModelUtils {
 				width, point0);
 	}
 
+	/**
+	 * Calculates the maximum top width in this xsection
+	 * FIXME: needs to move to the model class XSection
+	 * @param xSection
+	 * @return the top width
+	 */
 	public static double getMaxTopWidth(XSection xSection) {
 		double width = Double.MIN_VALUE;
 		for (XSectionLayer layer : xSection.getLayers()) {
 			width = Math.max(width, layer.getTopWidth());
 		}
 		return width;
+	}
+	
+	/**
+	 * Returns the distance from up node of channel to the intersection of the channel
+	 * flowline and the profile endPoints line.
+	 * 
+	 * @param profile
+	 * @param channel
+	 * @param upNode
+	 * @param downNode
+	 * @return distance or -1 if no intersection found
+	 */
+	public static double getIntersectionDistanceFromUpstream(XSectionProfile profile, Channel channel, Node upNode, Node downNode){
+		double distance = -1;
+		LatLng[] pointsForChannel = getPointsForChannel(channel, upNode, downNode);
+		List<double[]> endPoints = profile.getEndPoints();
+		double xp0 = endPoints.get(0)[0];
+		double yp0 = endPoints.get(0)[1];
+		double xp1 = endPoints.get(1)[0];
+		double yp1 = endPoints.get(1)[1];
+		double[] intersection = new double[2];
+		for(int i=1; i < pointsForChannel.length; i++){
+			LatLng p1 = pointsForChannel[i-1];
+			LatLng p2 = pointsForChannel[i];
+			int findLineSegmentIntersection = Geometry.findLineSegmentIntersection(p1.getLatitude(), p1.getLongitude(), p2.getLatitude(), p2.getLongitude(),
+						xp0, yp0, xp1, yp1, intersection);
+			if (findLineSegmentIntersection == 1){
+				LatLng intersectionPoint = LatLng.newInstance(intersection[0], intersection[1]);
+				distance = GeomUtils.findDistanceUptoSegment(i-1, pointsForChannel);
+				distance += p1.distanceFrom(intersectionPoint);
+			}
+		}
+		return distance;
 	}
 
 }
