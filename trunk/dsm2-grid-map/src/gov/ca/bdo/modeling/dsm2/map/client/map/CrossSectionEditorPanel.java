@@ -130,16 +130,17 @@ public class CrossSectionEditorPanel extends Composite {
 
 									public void onSuccess(
 											List<BathymetryDataPoint> bathymetryPoints) {
-										ArrayList<DataPoint> bathyPoints = new ArrayList<DataPoint>(
+										ArrayList<BathymetryDataPoint> bathyPoints = new ArrayList<BathymetryDataPoint>(
 												bathymetryPoints);
 										for (int i = 0; i < bathymetryPoints
 												.size(); i++) {
 											BathymetryDataPoint bp = bathymetryPoints
 													.get(i);
-											DataPoint p = new DataPoint();
+											BathymetryDataPoint p = new BathymetryDataPoint();
 											p.x = bp.x;
 											p.y = bp.y;
 											p.z = bp.z;
+											p.year = bp.year;
 											bathyPoints.add(p);
 										}
 										double[] utm1 = GeomUtils.convertToUTM(

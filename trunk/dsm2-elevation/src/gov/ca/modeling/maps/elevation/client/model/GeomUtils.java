@@ -142,7 +142,7 @@ public class GeomUtils {
 	}
 
 	public static void moveOriginAndProjectOntoLineAndConvertToFeet(
-			List<DataPoint> points, DataPoint origin,
+			List<? extends DataPoint> points, DataPoint origin,
 			DataPoint secondPointForLine) {
 		double x0 = origin.x;
 		double y0 = origin.y;

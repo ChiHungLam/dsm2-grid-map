@@ -22,6 +22,10 @@ public class XYZPoint extends JavaScriptObject {
 	public final native double getZ()/*-{
 		return this.z;
 	}-*/;
+	
+	public final native double getYear()/*-{
+		return this.year;
+	}-*/;	
 
 	public final native void setX(double value)/*-{
 		this.x = value;
@@ -34,4 +38,9 @@ public class XYZPoint extends JavaScriptObject {
 	public final native void setZ(double value)/*-{
 		this.z=value;
 	}-*/;
+	
+	public final native void setYear(double value)/*-{
+		this.year=value;
+	}-*/;
+	
 }
