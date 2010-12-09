@@ -8,6 +8,5 @@
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dsm2-grid-map"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/dev/java/commons-codec-1.4/commons-codec-1.4.jar" sourcepath="D:/dev/java/commons-codec-1.4/commons-codec-1.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

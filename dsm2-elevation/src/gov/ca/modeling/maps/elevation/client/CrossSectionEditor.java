@@ -1,5 +1,6 @@
 package gov.ca.modeling.maps.elevation.client;
 
+import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import gov.ca.modeling.maps.elevation.client.model.Profile;
 import gov.ca.modeling.maps.elevation.client.model.XYZPoint;
@@ -21,7 +22,7 @@ public class CrossSectionEditor extends Composite {
 	private int height;
 
 	public CrossSectionEditor(String divId, Profile xsProfile,
-			List<DataPoint> profile, List<DataPoint> bathymetry, int width, int height) {
+			List<DataPoint> profile, List<BathymetryDataPoint> bathymetry, int width, int height) {
 		this.divId = divId;
 		xsectionPoints = convertDataToXYZPoints(xsProfile.points);
 		profilePoints = convertDataToXYZPoints(profile);
@@ -32,11 +33,14 @@ public class CrossSectionEditor extends Composite {
 				.toJsArray(profilePoints), ArrayUtils.toJsArray(points));
 	}
 
-	private XYZPoint[] convertDataToXYZPoints(List<DataPoint> points) {
+	private XYZPoint[] convertDataToXYZPoints(List<? extends DataPoint> points) {
 		XYZPoint[] xyzs = new XYZPoint[points.size()];
 		int i = 0;
 		for (DataPoint point : points) {
 			XYZPoint xyz = XYZPoint.create(point.x, point.z, point.y);
+			if (point instanceof BathymetryDataPoint){
+				xyz.setYear(((BathymetryDataPoint)point).year);
+			}
 			xyzs[i++] = xyz;
 		}
 		return xyzs;

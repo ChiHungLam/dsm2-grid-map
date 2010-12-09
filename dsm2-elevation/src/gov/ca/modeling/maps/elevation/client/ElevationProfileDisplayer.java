@@ -1,5 +1,6 @@
 package gov.ca.modeling.maps.elevation.client;
 
+import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
 import gov.ca.modeling.maps.elevation.client.model.CoordinateGeometryUtils;
 import gov.ca.modeling.maps.elevation.client.model.DEMGridSquare;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
@@ -97,7 +98,7 @@ public class ElevationProfileDisplayer {
 								Profile xsProfile = new Profile();
 								xsProfile.points = new ArrayList<DataPoint>(
 										result);
-								List<DataPoint> bathymetry = new ArrayList<DataPoint>();
+								List<BathymetryDataPoint> bathymetry = new ArrayList<BathymetryDataPoint>();
 								editor = new CrossSectionEditor("xsect",
 										xsProfile, result, bathymetry, 600, 400);
 
