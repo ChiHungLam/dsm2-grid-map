@@ -1,6 +1,7 @@
 package gov.ca.modeling.simple.elevation.chart.client;
 
 import gov.ca.modeling.maps.elevation.client.CrossSectionEditor;
+import gov.ca.modeling.maps.elevation.client.model.BathymetryDataPoint;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import gov.ca.modeling.maps.elevation.client.model.Profile;
 
@@ -38,10 +39,10 @@ public class SimpleElevationChart implements EntryPoint {
 		xsProfile.y1 = 0.5;
 		xsProfile.x2 = 10.2;
 		xsProfile.y2 = 10.3;
-		final List<DataPoint> bathymetry = new ArrayList<DataPoint>();
-		bathymetry.add(createDataPoint(2.5, 53.4, 10.3));
-		bathymetry.add(createDataPoint(3.1, 152.3, -6.1));
-		bathymetry.add(createDataPoint(8.33, 250.4, 6.3));
+		final List<BathymetryDataPoint> bathymetry = new ArrayList<BathymetryDataPoint>();
+		bathymetry.add(createBathymetryDataPoint(2.5, 53.4, 10.3, 1990));
+		bathymetry.add(createBathymetryDataPoint(3.1, 152.3, -6.1, 2000));
+		bathymetry.add(createBathymetryDataPoint(8.33, 250.4, 6.3, 2010));
 		Button sampleButton = new Button("Sample Plot");
 		sampleButton.addClickHandler(new ClickHandler() {
 
@@ -94,6 +95,15 @@ public class SimpleElevationChart implements EntryPoint {
 		p.x = x;
 		p.y = y;
 		p.z = z;
+		return p;
+	}
+	
+	private BathymetryDataPoint createBathymetryDataPoint(double x, double y, double z, int year){
+		BathymetryDataPoint p = new BathymetryDataPoint();
+		p.x = x;
+		p.y = y;
+		p.z = z;
+		p.year = year;
 		return p;
 	}
 }
