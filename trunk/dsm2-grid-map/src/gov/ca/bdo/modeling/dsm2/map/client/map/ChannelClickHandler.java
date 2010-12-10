@@ -23,7 +23,6 @@ import gov.ca.bdo.modeling.dsm2.map.client.WindowUtils;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
-import gov.ca.dsm2.input.model.XSectionLayer;
 import gov.ca.dsm2.input.model.XSectionProfile;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 
@@ -32,19 +31,24 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
+import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 public class ChannelClickHandler implements PolylineClickHandler {
 	private static final PolyStyleOptions redLineStyle = PolyStyleOptions
 			.newInstance("red");
+	private static final PolyStyleOptions blueLineStyle = PolyStyleOptions
+			.newInstance("blue");
 	private static final PolyStyleOptions greenLineStyle = PolyStyleOptions
 			.newInstance("green");
 
@@ -65,7 +69,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			for (XSection xs : xsectionLineMap.keySet()) {
 				Polyline line = xsectionLineMap.get(xs);
 				if (xs == xSection) {
-					line.setStrokeStyle(redLineStyle);
+					line.setStrokeStyle(blueLineStyle);
 					infoPanel.drawXSection(channel, xSectionIndex);
 				} else {
 					line.setStrokeStyle(greenLineStyle);
@@ -98,13 +102,29 @@ public class ChannelClickHandler implements PolylineClickHandler {
 									endPoints.add(points);
 								}
 								profile.setEndPoints(endPoints);
-								Node upNode = mapPanel.getNodeManager().getNodes().getNode(channel.getUpNodeId());
-								Node downNode = mapPanel.getNodeManager().getNodes().getNode(channel.getDownNodeId());
-								double distance = ModelUtils.getIntersectionDistanceFromUpstream(profile, channel, upNode, downNode);
-								if (distance >= 0 && distance <= channel.getLength()){
-									double dratio = distance/channel.getLength();
+								Node upNode = mapPanel.getNodeManager()
+										.getNodes().getNode(
+												channel.getUpNodeId());
+								Node downNode = mapPanel.getNodeManager()
+										.getNodes().getNode(
+												channel.getDownNodeId());
+								double distance = ModelUtils
+										.getIntersectionDistanceFromUpstream(
+												profile, channel, upNode,
+												downNode);
+								if (distance >= 0
+										&& distance <= channel.getLength()) {
+									double dratio = distance
+											/ channel.getLength();
 									profile.setDistance(dratio);
-									GWT.log("Changing distance ratio for xsection"+xSection.getChannelId()+" #"+xSectionIndex +" from: "+xSection.getDistance()+" to "+dratio);
+									GWT
+											.log("Changing distance ratio for xsection"
+													+ xSection.getChannelId()
+													+ " #"
+													+ xSectionIndex
+													+ " from: "
+													+ xSection.getDistance()
+													+ " to " + dratio);
 									xSection.setDistance(dratio);
 								}
 							}
@@ -168,6 +188,12 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			// indicate up and down node by letters U and D at the nodes
 			//
 			if (mapPanel.isInEditMode()) {
+				mapPanel.getMap().addMapClickHandler(new MapClickHandler() {
+					
+					public void onClick(MapClickEvent event) {
+						Window.setStatus(event.getLatLng()+"");
+					}
+				});
 				line.setEditingEnabled(true);
 			}
 			return;
@@ -222,7 +248,12 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	private void drawXSectionLines() {
-		LatLng[] channelOutlinePoints = getChannelOutlinePoints();
+		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getUpNodeId());
+		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getDownNodeId());
+		LatLng[] channelOutlinePoints = ModelUtils.getPointsForChannel(channel,
+				upNode, downNode);
 		ArrayList<XSection> xsections = channel.getXsections();
 		int xSectionIndex = 0;
 		for (final XSection xSection : xsections) {
@@ -237,11 +268,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			LatLng point0 = GeomUtils.findPointAtDistance(point1, point2,
 					distance - segmentDistance);
 			double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
-			// assumes a channel 2/3rds filled for approx. visualization
-			// @a certain depth option needed getTopWidthAtDepth(xSection,
-			// 0.67*getMaxDepth(xSection))
-			double width = getTopWidthAtElevation(xSection, getTopWidthAtDepth(
-					xSection, 0.67 * getMaxDepth(xSection)));
+			double width = ModelUtils.getMaxTopWidth(xSection);
 			LatLng[] latLngs = GeomUtils
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
@@ -269,71 +296,8 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		}
 	}
 
-	private double getTopWidthAtDepth(XSection xsection, double depth) {
-		ArrayList<XSectionLayer> layers = xsection.getLayers();
-		// assumes sorted layers with index 0 being the bottom
-		double bottomElevation = layers.get(0).getElevation();
-		return bottomElevation + depth;
-	}
-
-	private double getMaxDepth(XSection xsection) {
-		ArrayList<XSectionLayer> layers = xsection.getLayers();
-		double minElevation = layers.get(0).getElevation();
-		double maxElevation = layers.get(layers.size() - 1).getElevation();
-		return maxElevation - minElevation;
-	}
-
-	private double getTopWidthAtElevation(XSection xsection, double elevation) {
-		ArrayList<XSectionLayer> layers = xsection.getLayers();
-		double previousElevation = 0;
-		double previousTopWidth = 0;
-		for (XSectionLayer xSectionLayer : layers) {
-			if (elevation < xSectionLayer.getElevation()) {
-				return interpolateLinearly(elevation, xSectionLayer
-						.getTopWidth(), xSectionLayer.getElevation(),
-						previousElevation, previousTopWidth);
-			}
-			previousElevation = xSectionLayer.getElevation();
-			previousTopWidth = xSectionLayer.getTopWidth();
-		}
-		return 0;
-	}
-
-	private double interpolateLinearly(double elevation, double thisTopWidth,
-			double thisElevation, double previousElevation,
-			double previousTopWidth) {
-		return (elevation - previousElevation)
-				* (thisTopWidth - previousTopWidth)
-				/ (thisElevation - previousElevation) + previousTopWidth;
-	}
-
-	public LatLng[] getChannelOutlinePoints() {
-		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
-		Node upNode = nodeManager.getNodeData(channel.getUpNodeId());
-		Node downNode = nodeManager.getNodeData(channel.getDownNodeId());
-		LatLng[] points = null;
-		LatLng upPoint = LatLng.newInstance(upNode.getLatitude(), upNode
-				.getLongitude());
-		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
-				.getLongitude());
-		List<double[]> latLngPoints = channel.getLatLngPoints();
-		if ((latLngPoints != null) && (latLngPoints.size() > 0)) {
-			int size = latLngPoints.size();
-			points = new LatLng[size + 2];
-			for (int i = 1; i < points.length - 1; i++) {
-				double[] ds = latLngPoints.get(i - 1);
-				points[i] = LatLng.newInstance(ds[0], ds[1]);
-			}
-		} else {
-			points = new LatLng[2];
-		}
-		points[0] = upPoint;
-		points[points.length - 1] = downPoint;
-		return points;
-	}
-
 	public void updateChannelLengthLatLng() {
-		channel.setLength((int) getLengthInFeet());
+		channel.setLength((int) ModelUtils.getLengthInFeet(line.getLength()));
 		int vcount = line.getVertexCount();
 		ArrayList<double[]> points = new ArrayList<double[]>();
 		for (int i = 1; i < vcount - 1; i++) {
@@ -343,6 +307,11 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			points.add(point);
 		}
 		channel.setLatLngPoints(points);
+		Node upNode = mapPanel.getNodeManager().getNodes().getNode(channel.getUpNodeId());
+		Node downNode = mapPanel.getNodeManager().getNodes().getNode(channel.getDownNodeId());
+		LatLng[] pointsForChannel = ModelUtils.getPointsForChannel(channel, upNode, downNode);
+		double findDistanceUptoSegment = GeomUtils.findDistanceUptoSegment(pointsForChannel.length-1, pointsForChannel);
+		System.out.println("Channel length: "+channel.getLength()+" vs segment calc length: "+findDistanceUptoSegment);
 	}
 
 	public void updateDisplay() {
@@ -351,23 +320,18 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		mapPanel.getInfoPanel().add(panel);
 	}
 
-	public double getLengthInFeet() {
-		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
-	}
-
 	public void clearOverlays() {
 		mapPanel.getMap().removeOverlay(line);
 		for (Polyline xline : xsectionLineMap.values()) {
 			mapPanel.getMap().removeOverlay(xline);
 		}
 	}
-	
+
 	protected double calculateDistanceOfProfileAlongChannel(
 			XSectionProfile profile, Channel channel) {
 		List<double[]> endPoints = profile.getEndPoints();
 		List<double[]> latLngPoints = channel.getLatLngPoints();
 		return 0;
 	}
-
 
 }
