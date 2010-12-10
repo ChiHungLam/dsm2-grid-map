@@ -41,16 +41,13 @@ import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 public class ChannelInfoPanel extends Composite {
 
 	private FlowPanel xsectionPanel;
-	private CrossSectionEditor editor;
 	private DisclosurePanel xsectionDisclosure;
-	private NodeMarkerDataManager nodeManager;
 	private FlowPanel xsectionContainerPanel;
 
 	public ChannelInfoPanel(Channel channel, final MapPanel mapPanel) {
 		xsectionContainerPanel = new FlowPanel();
 		xsectionPanel = new FlowPanel();
 		xsectionContainerPanel.add(xsectionPanel);
-		nodeManager = mapPanel.getNodeManager();
 		drawXSection(channel, -1);
 		VerticalPanel vpanel = new VerticalPanel();
 		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");

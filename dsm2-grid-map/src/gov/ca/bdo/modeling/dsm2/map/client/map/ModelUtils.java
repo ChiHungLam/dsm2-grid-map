@@ -242,13 +242,57 @@ public class ModelUtils {
 			LatLng p2 = pointsForChannel[i];
 			int findLineSegmentIntersection = Geometry.findLineSegmentIntersection(p1.getLatitude(), p1.getLongitude(), p2.getLatitude(), p2.getLongitude(),
 						xp0, yp0, xp1, yp1, intersection);
+			LatLng ip = LatLng.newInstance(intersection[0], intersection[1]);
+			System.out.println("Interesection @ "+ip);
 			if (findLineSegmentIntersection == 1){
 				LatLng intersectionPoint = LatLng.newInstance(intersection[0], intersection[1]);
-				distance = GeomUtils.findDistanceUptoSegment(i-1, pointsForChannel);
-				distance += p1.distanceFrom(intersectionPoint);
+				distance = GeomUtils.findDistanceUptoSegment(i, pointsForChannel);
+				distance += p2.distanceFrom(intersectionPoint);
 			}
 		}
 		return distance;
+	}
+	
+	public static double getTopWidthAtDepth(XSection xsection, double depth) {
+		ArrayList<XSectionLayer> layers = xsection.getLayers();
+		// assumes sorted layers with index 0 being the bottom
+		double bottomElevation = layers.get(0).getElevation();
+		return bottomElevation + depth;
+	}
+
+	public static double getMaxDepth(XSection xsection) {
+		ArrayList<XSectionLayer> layers = xsection.getLayers();
+		double minElevation = layers.get(0).getElevation();
+		double maxElevation = layers.get(layers.size() - 1).getElevation();
+		return maxElevation - minElevation;
+	}
+
+	public static double getTopWidthAtElevation(XSection xsection, double elevation) {
+		ArrayList<XSectionLayer> layers = xsection.getLayers();
+		double previousElevation = 0;
+		double previousTopWidth = 0;
+		for (XSectionLayer xSectionLayer : layers) {
+			if (elevation < xSectionLayer.getElevation()) {
+				return interpolateLinearly(elevation, xSectionLayer
+						.getTopWidth(), xSectionLayer.getElevation(),
+						previousElevation, previousTopWidth);
+			}
+			previousElevation = xSectionLayer.getElevation();
+			previousTopWidth = xSectionLayer.getTopWidth();
+		}
+		return 0;
+	}
+
+	public static double interpolateLinearly(double elevation, double thisTopWidth,
+			double thisElevation, double previousElevation,
+			double previousTopWidth) {
+		return (elevation - previousElevation)
+				* (thisTopWidth - previousTopWidth)
+				/ (thisElevation - previousElevation) + previousTopWidth;
+	}
+
+	public static double getLengthInFeet(double length) {
+		return Math.round(length * 3.2808399 * 100) / 100;
 	}
 
 }
