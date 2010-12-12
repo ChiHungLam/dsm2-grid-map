@@ -18,6 +18,7 @@
  */
 package gov.ca.modeling.maps.elevation.client.service;
 
+import gov.ca.modeling.maps.elevation.client.model.CalculationState;
 import gov.ca.modeling.maps.elevation.client.model.DEMGridSquare;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 
@@ -95,4 +96,25 @@ public interface DEMDataService extends RemoteService {
 	 */
 	public List<DEMGridSquare> getGridWithin(double x1, double y1, double x2,
 			double y2);
+	/**
+	 * Calculates the average elevation within this area based on the 10mx10m grid
+	 * @param points
+	 * @return
+	 */
+	public CalculationState startCalculationOfAverageElevationInArea(List<DataPoint> points);
+	
+	/**
+	 * Calculates the volume beneath a line at elevation calculated based on the 10mx10m grid
+	 * @param points
+	 * @param elevation
+	 * @return
+	 */
+	public double startCalculationOfVolumeInAreaForElevation(List<DataPoint> points, double elevation);
+
+	/**
+	 * Checks status of calculation
+	 * @param state
+	 * @return
+	 */
+	public CalculationState checkStatus(CalculationState state);
 }

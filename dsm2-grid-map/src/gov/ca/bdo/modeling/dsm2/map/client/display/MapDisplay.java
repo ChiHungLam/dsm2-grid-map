@@ -187,6 +187,8 @@ public class MapDisplay extends Composite implements Display,
 
 		if (!GoogleMapsUtility.isLoaded(DefaultPackage.MARKER_CLUSTERER,
 				DefaultPackage.LABELED_MARKER, DefaultPackage.MAP_ICON_MAKER)) {
+			//FIXME: change this dependency on loading javascript libraries from another site
+			// when this fails, it causes app to behave as if it had broken.
 			GoogleMapsUtility.loadUtilityApi(mapLoadCallback,
 					DefaultPackage.MARKER_CLUSTERER,
 					DefaultPackage.LABELED_MARKER,

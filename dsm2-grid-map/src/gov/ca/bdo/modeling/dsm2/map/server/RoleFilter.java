@@ -52,7 +52,7 @@ public class RoleFilter implements Filter {
 			.getName());
 	private UserService userService;
 	private static final String[] noLoginNeededURLS = new String[] { "/logout",
-			"/login", "/public", "upload_bathymetry", "/request_access",
+			"/login", "/public", "upload_bathymetry", "/request_access", "/task",
 			"/dsm2_grid_map/dem", 
 			"/dsm2_grid_map/bathymetry",
 			".gwt.rpc"};

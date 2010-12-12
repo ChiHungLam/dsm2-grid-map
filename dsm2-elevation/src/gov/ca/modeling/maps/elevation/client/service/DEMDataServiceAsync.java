@@ -1,5 +1,6 @@
 package gov.ca.modeling.maps.elevation.client.service;
 
+import gov.ca.modeling.maps.elevation.client.model.CalculationState;
 import gov.ca.modeling.maps.elevation.client.model.DEMGridSquare;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 
@@ -26,5 +27,14 @@ public interface DEMDataServiceAsync {
 
 	void getBilinearInterpolatedElevationAlong(double x1, double y1, double x2,
 			double y2, AsyncCallback<List<DataPoint>> callback);
+
+	void startCalculationOfAverageElevationInArea(List<DataPoint> points,
+			AsyncCallback<CalculationState> callback);
+
+	void startCalculationOfVolumeInAreaForElevation(List<DataPoint> points,
+			double elevation, AsyncCallback<Double> callback);
+
+	void checkStatus(CalculationState state,
+			AsyncCallback<CalculationState> callback);
 
 }
