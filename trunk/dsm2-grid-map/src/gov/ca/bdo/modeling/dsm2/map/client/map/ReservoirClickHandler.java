@@ -121,5 +121,6 @@ public class ReservoirClickHandler implements MarkerClickHandler {
 	public double getAreaInSquareFeet() {
 		return Math.round(polygon.getArea() * 3.2808399 * 3.2808399 * 100) / 100;
 	}
+	
 
 }

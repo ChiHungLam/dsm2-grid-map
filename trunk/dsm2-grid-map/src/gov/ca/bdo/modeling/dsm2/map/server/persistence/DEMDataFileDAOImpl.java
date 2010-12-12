@@ -123,9 +123,9 @@ public class DEMDataFileDAOImpl extends GenericDAOImpl<DEMDataFile> implements
 			// look for item first else insert a new one
 			Query query = getPersistenceManager().newQuery(
 					"select from " + DEMDataFile.class.getName());
-			query.setFilter("x >= xbr && y <= xtl && y==longitudeParam");
+			query.setFilter("(x >= xl && x < xr) && y==yn");
 			query
-					.declareParameters("int xl, int xr, int y");
+					.declareParameters("int xl, int xr, int yn");
 			for(int y = yl; y <= yr; y+=DEMDataFile.FACTOR) {
 				files.addAll((List<DEMDataFile>) query.execute(
 						xl,xr,y));

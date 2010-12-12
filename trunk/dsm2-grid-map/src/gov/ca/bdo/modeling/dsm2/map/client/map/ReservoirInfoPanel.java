@@ -21,9 +21,21 @@ package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.dsm2.input.model.Reservoir;
 import gov.ca.dsm2.input.model.ReservoirConnection;
+import gov.ca.modeling.maps.elevation.client.model.CalculationState;
+import gov.ca.modeling.maps.elevation.client.model.DataPoint;
+import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
+import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -32,19 +44,90 @@ import com.google.gwt.user.client.ui.Panel;
 
 public class ReservoirInfoPanel extends Composite {
 
+	private Button bottomElevationButton;
+	private FlexTable table;
+
 	public ReservoirInfoPanel(Reservoir reservoir) {
 		Panel basicInfo = getBasicInfoPanel(reservoir);
 		initWidget(basicInfo);
 	}
 
-	private Panel getBasicInfoPanel(Reservoir reservoir) {
+	private Panel getBasicInfoPanel(final Reservoir reservoir) {
 		FlowPanel panel = new FlowPanel();
 		panel.add(new HTMLPanel("<h3>Reservoir " + reservoir.getName()
 				+ "</h3>"));
-		FlexTable table = new FlexTable();
+		table = new FlexTable();
 		table.setHTML(1, 0, "Area (Million Sq. Feet): " + reservoir.getArea());
-		table.setHTML(2, 0, "Bottom Elevation (Feet): "
+		setBottomElevation("Bottom Elevation (Feet): "
 				+ reservoir.getBottomElevation());
+		bottomElevationButton = new Button("Recalculate Bottom Elevation");
+		table.setWidget(2, 2, bottomElevationButton);
+		bottomElevationButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				final DEMDataServiceAsync service = GWT
+						.create(DEMDataService.class);
+				List<double[]> latLngPoints = reservoir.getLatLngPoints();
+				List<DataPoint> points = new ArrayList<DataPoint>();
+				for (int i = 0; i < latLngPoints.size(); i++) {
+					DataPoint p = new DataPoint();
+					double[] ll = latLngPoints.get(i);
+					double[] utm = GeomUtils.convertToUTM(ll[0], ll[1]);
+					p.x = utm[0];
+					p.y = utm[1];
+					points.add(p);
+				}
+				service.startCalculationOfAverageElevationInArea(points,
+						new AsyncCallback<CalculationState>() {
+							private Timer timer;
+							private CalculationState state;
+
+							public void onSuccess(CalculationState result) {
+								state = result;
+								timer = new Timer() {
+
+									@Override
+									public void run() {
+										if (state.numberOfTasks == state.numberOfCompletedTasks) {
+											timer.cancel();
+											reservoir.setBottomElevation(state.latestValue);
+											setBottomElevation("Bottom Elevation (Feet): "+reservoir.getBottomElevation());
+										} else {
+											service
+													.checkStatus(
+															state,
+															new AsyncCallback<CalculationState>() {
+
+																public void onFailure(
+																		Throwable caught) {
+																	timer
+																			.cancel();
+																}
+
+																public void onSuccess(
+																		CalculationState result) {
+																	state = result;
+																	setBottomElevation("Calculation in progress "
+																			+ (state.numberOfCompletedTasks
+																					/ state.numberOfTasks * 100)
+																			+ "% complete");
+																	timer.schedule(2000);
+																}
+															});
+										}
+
+									}
+								};
+								timer.schedule(2000);
+							}
+
+							public void onFailure(Throwable caught) {
+								timer = null;
+							}
+						});
+
+			}
+		});
 		panel.add(table);
 		FlexTable connectionTable = new FlexTable();
 		connectionTable.setStyleName("bordered-title");
@@ -66,5 +149,9 @@ public class ReservoirInfoPanel extends Composite {
 		}
 		panel.add(connectionTable);
 		return panel;
+	}
+
+	public void setBottomElevation(String msg) {
+		table.setHTML(2, 0, msg);
 	}
 }

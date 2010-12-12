@@ -4,10 +4,12 @@ import gov.ca.bdo.modeling.dsm2.map.server.data.DEMDataFile;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DEMDataFileDAO;
 import gov.ca.bdo.modeling.dsm2.map.server.persistence.DEMDataFileDAOImpl;
 import gov.ca.bdo.modeling.dsm2.map.server.utils.PMF;
+import gov.ca.modeling.maps.elevation.client.model.CalculationState;
 import gov.ca.modeling.maps.elevation.client.model.CoordinateGeometryUtils;
 import gov.ca.modeling.maps.elevation.client.model.DEMGridSquare;
 import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
+import gov.ca.modeling.maps.elevation.client.model.Geometry;
 import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
 
 import java.util.ArrayList;
@@ -15,6 +17,12 @@ import java.util.List;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -195,6 +203,67 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 			double y2) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public CalculationState checkStatus(CalculationState state) {
+		MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();	
+		Long value = (Long) memcacheService.get(state.id+".value");
+		Integer counter = (Integer) memcacheService.get(state.id+".counter");
+		state.latestValue = value.doubleValue()/1000.0;
+		state.numberOfCompletedTasks = state.numberOfTasks - counter.intValue();
+		return state;
+	}
+
+	public CalculationState startCalculationOfAverageElevationInArea(
+			List<DataPoint> points) {
+		int size = points.size();
+		double[] x = new double[size], y = new double[size];
+		int i=0;
+		StringBuffer xcoords =  new StringBuffer();
+		StringBuffer ycoords = new StringBuffer();
+		for(DataPoint p: points){
+			x[i]=p.x;
+			y[i]=p.y;
+			xcoords.append(x[i]).append(",");
+			ycoords.append(y[i]).append(",");
+			i++;
+		}
+		xcoords.deleteCharAt(xcoords.length()-1);
+		ycoords.deleteCharAt(ycoords.length()-1);
+		double[] xExtent = new double[2], yExtent=new double[2];
+		Geometry.findPolygonExtent(x, y, null, xExtent, yExtent, null);
+		Queue queue = QueueFactory.getQueue("area"	);
+		double xmin=CoordinateGeometryUtils.roundDown(xExtent[0], 100), 
+			xmax=CoordinateGeometryUtils.roundDown(xExtent[1], 100)+100;
+		double ymin=yExtent[0], ymax=yExtent[1];
+		double ys = ymin;
+		CalculationState state = new CalculationState();
+		state.latestValue=0;
+		state.startTimeInMillis=System.currentTimeMillis();
+		state.numberOfCompletedTasks=0;
+		state.id = "area-"+state.startTimeInMillis;
+		MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
+		memcacheService.put(state.id, state);
+		ArrayList<TaskOptions> tasks = new ArrayList<TaskOptions>();
+		while(ys <= ymax){	
+			TaskOptions taskOptions = TaskOptions.Builder.url("/task/elevation");
+			taskOptions.param("id", state.id);
+			taskOptions = taskOptions.param("xcs", xcoords.toString()).param("ycs", ycoords.toString());
+			taskOptions = taskOptions.param("xmin", xmin+"").param("xmax", xmax+"").param("ymin", ys+"").param("ymax",(ys+100)+"");
+			ys+=100;
+			tasks.add(taskOptions);
+		}
+		memcacheService.put(state.id+".counter", tasks.size());
+		memcacheService.put(state.id+".value", new Long(0));
+		state.numberOfTasks=tasks.size();
+		queue.add(tasks);
+		return state;
+	}
+
+	public double startCalculationOfVolumeInAreaForElevation(
+			List<DataPoint> points, double elevation) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
