@@ -116,6 +116,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 										&& distance <= channel.getLength()) {
 									double dratio = distance
 											/ channel.getLength();
+									dratio = Math.round(dratio*1000)/1000.0;
 									profile.setDistance(dratio);
 									GWT
 											.log("Changing distance ratio for xsection"

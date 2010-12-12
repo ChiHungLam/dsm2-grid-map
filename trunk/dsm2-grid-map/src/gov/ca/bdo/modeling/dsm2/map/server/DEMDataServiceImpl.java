@@ -14,6 +14,7 @@ import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -29,7 +30,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class DEMDataServiceImpl extends RemoteServiceServlet implements
 		DEMDataService {
-
+	static final Logger logger = Logger.getLogger("DEMDataServiceImpl");
+	private static final long BIG_VALUE = 100000000l;
 	public List<DataPoint> getElevationAlong(double x1, double y1, double x2,
 			double y2) throws SerializationException {
 		List<DataPoint> points = new ArrayList<DataPoint>();
@@ -206,10 +208,17 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public CalculationState checkStatus(CalculationState state) {
-		MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();	
-		Long value = (Long) memcacheService.get(state.id+".value");
-		Integer counter = (Integer) memcacheService.get(state.id+".counter");
-		state.latestValue = value.doubleValue()/1000.0;
+		MemcacheService memcacheService = MemcacheServiceFactory
+				.getMemcacheService();
+		Long value = (Long) memcacheService.get(state.id + ".sum");
+		Long number = (Long) memcacheService.get(state.id + ".number");
+		Integer counter = (Integer) memcacheService.get(state.id + ".counter");
+		logger.info("Sum : "+value);
+		logger.info("Number: "+number);
+		logger.info("Counter: "+counter);
+		state.latestValue = ((value.doubleValue() - BIG_VALUE) / 10.0)
+				/ number.doubleValue();
+		state.latestValue = Math.round(state.latestValue * 1000) / 1000.0;
 		state.numberOfCompletedTasks = state.numberOfTasks - counter.intValue();
 		return state;
 	}
@@ -218,44 +227,54 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 			List<DataPoint> points) {
 		int size = points.size();
 		double[] x = new double[size], y = new double[size];
-		int i=0;
-		StringBuffer xcoords =  new StringBuffer();
+		int i = 0;
+		StringBuffer xcoords = new StringBuffer();
 		StringBuffer ycoords = new StringBuffer();
-		for(DataPoint p: points){
-			x[i]=p.x;
-			y[i]=p.y;
+		for (DataPoint p : points) {
+			x[i] = p.x;
+			y[i] = p.y;
 			xcoords.append(x[i]).append(",");
 			ycoords.append(y[i]).append(",");
 			i++;
 		}
-		xcoords.deleteCharAt(xcoords.length()-1);
-		ycoords.deleteCharAt(ycoords.length()-1);
-		double[] xExtent = new double[2], yExtent=new double[2];
+		xcoords.deleteCharAt(xcoords.length() - 1);
+		ycoords.deleteCharAt(ycoords.length() - 1);
+		double[] xExtent = new double[2], yExtent = new double[2];
 		Geometry.findPolygonExtent(x, y, null, xExtent, yExtent, null);
-		Queue queue = QueueFactory.getQueue("area"	);
-		double xmin=CoordinateGeometryUtils.roundDown(xExtent[0], 100), 
-			xmax=CoordinateGeometryUtils.roundDown(xExtent[1], 100)+100;
-		double ymin=yExtent[0], ymax=yExtent[1];
+		Queue queue = QueueFactory.getQueue("area");
+		double xmin = CoordinateGeometryUtils.roundDown(xExtent[0], 100), xmax = CoordinateGeometryUtils
+				.roundDown(xExtent[1], 100) + 100;
+		double ymin = yExtent[0], ymax = yExtent[1];
 		double ys = ymin;
 		CalculationState state = new CalculationState();
-		state.latestValue=0;
-		state.startTimeInMillis=System.currentTimeMillis();
-		state.numberOfCompletedTasks=0;
-		state.id = "area-"+state.startTimeInMillis;
-		MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
+		state.latestValue = 0;
+		state.startTimeInMillis = System.currentTimeMillis();
+		state.numberOfCompletedTasks = 0;
+		state.id = "area-" + state.startTimeInMillis;
+		MemcacheService memcacheService = MemcacheServiceFactory
+				.getMemcacheService();
 		memcacheService.put(state.id, state);
 		ArrayList<TaskOptions> tasks = new ArrayList<TaskOptions>();
-		while(ys <= ymax){	
-			TaskOptions taskOptions = TaskOptions.Builder.url("/task/elevation");
-			taskOptions.param("id", state.id);
-			taskOptions = taskOptions.param("xcs", xcoords.toString()).param("ycs", ycoords.toString());
-			taskOptions = taskOptions.param("xmin", xmin+"").param("xmax", xmax+"").param("ymin", ys+"").param("ymax",(ys+100)+"");
-			ys+=100;
+		while (ys <= ymax) {
+			TaskOptions taskOptions = TaskOptions.Builder
+					.url("/task/elevation");
+			taskOptions = taskOptions.method(Method.POST);
+			taskOptions = taskOptions.param("id", state.id);
+			taskOptions = taskOptions.param("xcs", xcoords.toString()).param(
+					"ycs", ycoords.toString());
+			taskOptions = taskOptions.param("xmin", xmin + "").param("xmax",
+					xmax + "").param("ymin", ys + "").param("ymax",
+					(ys + 100) + "");
+			ys += 100;
 			tasks.add(taskOptions);
 		}
-		memcacheService.put(state.id+".counter", tasks.size());
-		memcacheService.put(state.id+".value", new Long(0));
-		state.numberOfTasks=tasks.size();
+		logger.info("Inserting counter value: "+tasks.size());
+		memcacheService.put(state.id + ".counter", tasks.size());
+		logger.info("Inserting sum value: "+new Long(BIG_VALUE));
+		memcacheService.put(state.id + ".sum", new Long(BIG_VALUE));
+		logger.info("Inserting number: "+new Long(0));
+		memcacheService.put(state.id + ".number", new Long(0));
+		state.numberOfTasks = tasks.size();
 		queue.add(tasks);
 		return state;
 	}
