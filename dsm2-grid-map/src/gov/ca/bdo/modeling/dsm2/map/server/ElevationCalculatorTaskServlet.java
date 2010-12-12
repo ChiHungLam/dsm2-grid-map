@@ -9,6 +9,7 @@ import gov.ca.modeling.maps.elevation.client.model.Geometry;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
@@ -21,7 +22,7 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 @SuppressWarnings("serial")
 public class ElevationCalculatorTaskServlet extends HttpServlet {
-
+	static final Logger logger = Logger.getLogger("ElevationCalculatorTaskServlet");
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -37,8 +38,6 @@ public class ElevationCalculatorTaskServlet extends HttpServlet {
 			DEMDataFileDAO dao = new DEMDataFileDAOImpl(persistenceManager);
 			List<DEMDataFile> filesWithin = dao.getFilesWithin(xmin, ymin,
 					xmax, ymax);
-			System.out.println("Getting files within those bounds: "
-					+ (filesWithin != null ? filesWithin.size() : 0));
 			for (DEMDataFile demFile : filesWithin) {
 				DEMGridSquare demGrid = demFile.toDEMGrid();
 				// elevations in 10ths of a foot, e.g 1 ft == 10
@@ -56,8 +55,6 @@ public class ElevationCalculatorTaskServlet extends HttpServlet {
 			persistenceManager.close();
 		}
 		double value = sumElevations / nElevations;
-		System.out.println("Sum of elevations: " + sumElevations);
-		System.out.println("No. of elevations: " + nElevations);
 		resp.getWriter().println("Sum of Elevations: "+sumElevations);
 		resp.getWriter().println("No. of elevations: "+nElevations);
 		resp.getWriter().println("Average Elevation: "+value);
@@ -73,14 +70,14 @@ public class ElevationCalculatorTaskServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		double sumElevations = 0;
-		double nElevations = 0;
+		int nElevations = 0;
 		double[] x = parseArray(req.getParameter("xcs"));
 		double[] y = parseArray(req.getParameter("ycs"));
 		double xmin = Double.parseDouble(req.getParameter("xmin"));
 		double xmax = Double.parseDouble(req.getParameter("xmax"));
 		double ymin = Double.parseDouble(req.getParameter("ymin"));
 		double ymax = Double.parseDouble(req.getParameter("ymax"));
-		System.out.println("Start task to average elevation in (" + xmin + ","
+		logger.info("Start task to average elevation in (" + xmin + ","
 				+ ymin + ") to (" + xmax + "," + ymax + ")");
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
@@ -88,8 +85,6 @@ public class ElevationCalculatorTaskServlet extends HttpServlet {
 			DEMDataFileDAO dao = new DEMDataFileDAOImpl(persistenceManager);
 			List<DEMDataFile> filesWithin = dao.getFilesWithin(xmin, ymin,
 					xmax, ymax);
-			System.out.println("Getting files within those bounds: "
-					+ (filesWithin != null ? filesWithin.size() : 0));
 			for (DEMDataFile demFile : filesWithin) {
 				DEMGridSquare demGrid = demFile.toDEMGrid();
 				// elevations in 10ths of a foot, e.g 1 ft == 10
@@ -114,17 +109,14 @@ public class ElevationCalculatorTaskServlet extends HttpServlet {
 		} finally {
 			persistenceManager.close();
 		}
-		double value = sumElevations / nElevations;
-		System.out.println("Sum of elevations: " + sumElevations);
-		System.out.println("No. of elevations: " + nElevations);
+		logger.info("Sum of elevations: " + sumElevations);
+		logger.info("No. of elevations: " + nElevations);
 		String id = req.getParameter("id");
 		MemcacheService memcacheService = MemcacheServiceFactory
 				.getMemcacheService();
-		memcacheService.increment(id + ".value", Math.round(value * 1000));
+		memcacheService.increment(id + ".sum", Math.round(sumElevations * 10));
+		memcacheService.increment(id + ".number", nElevations);
 		memcacheService.increment(id + ".counter", -1);
-		resp.getWriter().println("Sum of Elevations: "+sumElevations);
-		resp.getWriter().println("No. of elevations: "+nElevations);
-		resp.getWriter().println("Average Elevation: "+value);
 	}
 
 	private double[] parseArray(String str) {
