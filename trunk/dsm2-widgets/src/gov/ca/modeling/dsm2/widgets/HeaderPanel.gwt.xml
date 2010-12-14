@@ -2,8 +2,8 @@
 <module rename-to='header_panel'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
-
+  <inherits name='com.google.gwt.resources.Resources'/>
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
-
+  <stylesheet src="cwhf.css"/>
 </module>
