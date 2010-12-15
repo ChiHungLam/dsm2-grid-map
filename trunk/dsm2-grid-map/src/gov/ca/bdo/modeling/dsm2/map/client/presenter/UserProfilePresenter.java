@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -34,7 +35,7 @@ public class UserProfilePresenter implements Presenter {
 	private UserProfileServiceAsync userProfileService;
 
 	public UserProfilePresenter(UserProfileServiceAsync userProfileService,
-			HandlerManager eventBus, Display display) {
+			SimpleEventBus eventBus, Display display) {
 		this.userProfileService = userProfileService;
 		this.display = display;
 	}

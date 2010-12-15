@@ -46,6 +46,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasText;
@@ -123,7 +124,7 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 	private boolean bound;
 
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
-			HandlerManager eventBus, Display display) {
+			SimpleEventBus eventBus, Display display) {
 		super(dsm2InputService, eventBus, display);
 		bound = false;
 	}

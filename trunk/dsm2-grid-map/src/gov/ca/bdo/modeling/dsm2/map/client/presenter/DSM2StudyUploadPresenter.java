@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasText;
@@ -33,11 +34,11 @@ public class DSM2StudyUploadPresenter implements Presenter {
 		public Widget asWidget();
 	}
 
-	private HandlerManager eventBus;
+	private SimpleEventBus eventBus;
 	private Display display;
 
-	public DSM2StudyUploadPresenter(HandlerManager eventBus, Display display) {
-		this.eventBus = eventBus;
+	public DSM2StudyUploadPresenter(SimpleEventBus eventBus2, Display display) {
+		this.eventBus = eventBus2;
 		this.display = display;
 	}
 

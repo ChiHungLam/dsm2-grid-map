@@ -15,6 +15,7 @@ import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -64,13 +65,13 @@ public class DSM2ModelBasePresenter implements Presenter {
 	}
 
 	protected Display display;
-	protected HandlerManager eventBus;
+	protected SimpleEventBus eventBus;
 	protected DSM2InputServiceAsync dsm2InputService;
 
 	public DSM2ModelBasePresenter(DSM2InputServiceAsync dsm2InputService,
-			HandlerManager eventBus, Display display) {
+			SimpleEventBus eventBus2, Display display) {
 		this.display = display;
-		this.eventBus = eventBus;
+		this.eventBus = eventBus2;
 		this.dsm2InputService = dsm2InputService;
 	}
 

@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,13 +43,13 @@ public class DSM2StudyManagerPresenter implements Presenter {
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
-	private HandlerManager eventBus;
+	private SimpleEventBus eventBus;
 	private Display display;
 
 	public DSM2StudyManagerPresenter(DSM2InputServiceAsync dsm2InputService,
-			HandlerManager eventBus, Display display) {
+			SimpleEventBus eventBus2, Display display) {
 		this.dsm2InputService = dsm2InputService;
-		this.eventBus = eventBus;
+		this.eventBus = eventBus2;
 		this.display = display;
 	}
 
