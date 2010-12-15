@@ -189,7 +189,7 @@
 	</servlet-mapping>
 	<!-- Default page to serve -->
 	<welcome-file-list>
-		<welcome-file>dsm2_grid_map.html</welcome-file>
+		<welcome-file>welcome.jsp</welcome-file>
 	</welcome-file-list>
 
 	<!-- secured pages 
@@ -217,7 +217,6 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>public</web-resource-name>
-			<url-pattern>/dsm2_guest.html</url-pattern>
-		</web-resource-collection>
+			<url-pattern>/public/*</url-pattern>			<url-pattern>welcome.jsp</url-pattern>		</web-resource-collection>
 	</security-constraint>
 </web-app>
