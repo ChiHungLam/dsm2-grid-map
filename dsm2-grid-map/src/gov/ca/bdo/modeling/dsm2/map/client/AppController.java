@@ -16,19 +16,17 @@ import gov.ca.bdo.modeling.dsm2.map.client.presenter.UserProfilePresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.XSectionEditorPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import gov.ca.bdo.modeling.dsm2.map.client.service.UserProfileServiceAsync;
-import gov.ca.modeling.maps.elevation.client.service.BathymetryDataService;
 import gov.ca.modeling.maps.elevation.client.service.BathymetryDataServiceAsync;
-import gov.ca.modeling.maps.elevation.client.service.DEMDataService;
 import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 public class AppController implements Presenter, ValueChangeHandler<String> {
-	private final HandlerManager eventBus;
+	private final SimpleEventBus eventBus;
 	private final DSM2InputServiceAsync dsm2InputService;
 	private HasWidgets container;
 	private UserProfileServiceAsync userProfileService;
@@ -39,7 +37,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 	public AppController(DSM2InputServiceAsync dsm2InputService,
 			UserProfileServiceAsync userProfileService,
 			BathymetryDataServiceAsync bathymetryService,
-			DEMDataServiceAsync demService, HandlerManager eventBus) {
+			DEMDataServiceAsync demService, SimpleEventBus eventBus) {
 		this.dsm2InputService = dsm2InputService;
 		this.userProfileService = userProfileService;
 		this.bathymetryService = bathymetryService;

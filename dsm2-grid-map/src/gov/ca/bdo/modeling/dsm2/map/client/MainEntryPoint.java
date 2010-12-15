@@ -30,7 +30,7 @@ import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 public class MainEntryPoint implements EntryPoint {
@@ -41,7 +41,7 @@ public class MainEntryPoint implements EntryPoint {
 				.create(UserProfileService.class);
 		BathymetryDataServiceAsync bathymetryService = GWT.create(BathymetryDataService.class);
 		DEMDataServiceAsync demService = GWT.create(DEMDataService.class);
-		HandlerManager eventBus = new HandlerManager(null);
+		SimpleEventBus eventBus = new SimpleEventBus();
 		AppController appViewer = new AppController(rpcService,
 				userProfileService, bathymetryService, demService, eventBus);
 		appViewer.go(RootLayoutPanel.get());
