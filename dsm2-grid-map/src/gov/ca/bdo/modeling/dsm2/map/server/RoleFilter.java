@@ -52,10 +52,9 @@ public class RoleFilter implements Filter {
 			.getName());
 	private UserService userService;
 	private static final String[] noLoginNeededURLS = new String[] { "/logout",
-			"/login", "/public", "upload_bathymetry", "/request_access", "/task",
-			"/dsm2_grid_map/dem", 
-			"/dsm2_grid_map/bathymetry",
-			".gwt.rpc"};
+			"/login", "welcome.jsp", "/public", "upload_bathymetry",
+			"/request_access", "/task", "/dsm2_grid_map/dem",
+			"/dsm2_grid_map/bathymetry", ".gwt.rpc" };
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -63,9 +62,7 @@ public class RoleFilter implements Filter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String requestURI = httpServletRequest.getRequestURI();
 		if (userService.isUserLoggedIn()) {
-			if (requestURI.contains("/login")
-					|| requestURI.contains("/request_access")
-					|| requestURI.contains("/logout")) {
+			if (noLoginNeeded(requestURI)) {
 				if (requestURI.contains("/logout")) {
 					httpServletRequest.getSession().invalidate();
 				}
@@ -88,9 +85,8 @@ public class RoleFilter implements Filter {
 				}
 				chain.doFilter(request, response);
 			} else {
-				log.info("Login needed to access: "+requestURI);
-				httpServletResponse.sendRedirect(userService
-						.createLoginURL(requestURI));
+				log.info("Login needed to access: " + requestURI);
+				httpServletResponse.sendRedirect("/welcome.jsp");
 			}
 		}
 	}
