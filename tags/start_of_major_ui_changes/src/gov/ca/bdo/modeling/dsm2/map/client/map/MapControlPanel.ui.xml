@@ -1,0 +1,91 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+		
+		.control-panel {
+			width: 600px;
+		}
+	</ui:style>
+	<ui:with type="gov.ca.bdo.modeling.dsm2.map.client.images.IconImages"
+		field="images"></ui:with>
+	<ui:with type="gov.ca.modeling.maps.elevation.client.images.IconImages"
+		field="el_images"></ui:with>
+	<g:VerticalPanel styleName="{style.control-panel}">
+		<g:HorizontalPanel>
+			<g:Label>Study:</g:Label>
+			<g:ListBox ui:field="studyBox"></g:ListBox>
+		</g:HorizontalPanel>
+		<g:DisclosurePanel open="true">
+			<g:header>Edit</g:header>
+			<g:HorizontalPanel>
+				<g:ToggleButton ui:field="saveEditButton">
+					<g:upFace image="{images.editIcon}"></g:upFace>
+					<g:downFace image="{images.saveIcon}"></g:downFace>
+				</g:ToggleButton>
+				<g:CaptionPanel ui:field="elementEditPanel" captionText="Add/Delete Elements">
+					<g:HorizontalPanel>
+						<g:VerticalPanel>
+							<g:ToggleButton ui:field="addButton">
+								<g:upFace image="{images.addIcon}"></g:upFace>
+							</g:ToggleButton>
+							<g:ToggleButton ui:field="deleteButton">
+								<g:upFace image="{images.deleteIcon}"></g:upFace>
+							</g:ToggleButton>
+						</g:VerticalPanel>
+						<g:ListBox ui:field="elementTypeBox">
+						</g:ListBox>
+					</g:HorizontalPanel>
+				</g:CaptionPanel>
+			</g:HorizontalPanel>
+		</g:DisclosurePanel>
+		<g:DisclosurePanel open="false">
+			<g:header>Download</g:header>
+			<g:HorizontalPanel>
+				<g:PushButton ui:field="downloadHydroButton" title="Download Hydro Echo">
+					<g:upFace image="{images.downloadIcon}"></g:upFace>
+				</g:PushButton>
+				<g:PushButton ui:field="downloadGISButton" title="Download GIS">
+					<g:upFace image="{images.downloadIcon}"></g:upFace>
+				</g:PushButton>
+			</g:HorizontalPanel>
+		</g:DisclosurePanel>
+		<g:DisclosurePanel open="false">
+			<g:header>Tools</g:header>
+			<g:VerticalPanel>
+				<g:CaptionPanel captionText="GIS Tools">
+					<g:HorizontalPanel>
+						<g:ToggleButton title="Measure Length" ui:field="measureLengthButton">
+							<g:upFace image="{images.measureLengthIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Measure Area" ui:field="measureAreaButton">
+							<g:upFace image="{images.measureAreaIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Elevation" ui:field="displayElevationButton">
+							<g:upFace image="{el_images.elevationIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Elevation Profile"
+							ui:field="displayElevationProfileButton">
+							<g:upFace image="{el_images.elevationProfileIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Channel Outlines"
+							ui:field="flowlineButton">
+							<g:upFace image="{images.flowLineIcon}"></g:upFace>
+						</g:ToggleButton>
+					</g:HorizontalPanel>
+				</g:CaptionPanel>
+				<g:CaptionPanel captionText="Search">
+					<g:HorizontalPanel>
+						<g:PushButton ui:field="findButton">
+							<g:upFace image="{images.findIcon}"></g:upFace>
+						</g:PushButton>
+						<g:TextBox ui:field="findTextBox"></g:TextBox>
+					</g:HorizontalPanel>
+				</g:CaptionPanel>
+			</g:VerticalPanel>
+		</g:DisclosurePanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

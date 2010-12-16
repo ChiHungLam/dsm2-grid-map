@@ -1,0 +1,303 @@
+ENVVAR
+NAME	VALUE
+BNDRYINPUT	../../../timeseries/hist_19902009.dss
+CLIMATE	../../../timeseries/climate-5years.dss
+DICUFILE	../../../timeseries/dicu_200905.dss
+DICUFILE-ECS	../../../timeseries/dicu.dss
+DICUFILE_ECE	../../../timeseries/dicuwq_200611_expand.dss
+DICUFILE_ECS	../../../timeseries/dicuwq_200611.dss
+DSM2AGENCY	dwr
+DSM2INPUTDIR	../../../common_input
+DSM2MODIFIER	hist_mini_calib
+DSM2OUTPUTDIR	./output
+END_DATE	01OCT2008
+END_TIME	0000
+EVENTSINPUT	../../../timeseries/events.dss
+FINE_OUT	15MIN
+FINE_OUT_DAY	1DAY
+FLOWPATTERN	./output/FLOWPATTERN-hist_mini_calib.dss
+GATEFILE	../../../timeseries/gates_db.dss
+GATEOUTPUTFILE	./output/hist_mini_calib.dss
+HISTFLOWVERSION	DWR-DMS-200905
+HISTQUALVERSION	DWR-DMS-200905
+HISTSTAGEVERSION	DWR-DMS-200905
+HYDROOUTDSSFILE	./output/hist_mini_calib.dss
+HYDROOUTFILE	./output/hist_mini_calib.hof
+HYDRORSTFILE	./output/hist_mini_calib.hrf
+HYDROTIDEFILE	./output/hist_mini_calib.h5
+OUTPUTFILE	hist_mini_calib.dss
+PTMOUTFILE	./output/hist_mini_calib.pof
+PTMOUTPUTFILE	./output/ptmout.dss
+PTM_START_DATE	02OCT2002
+QUALBNDINP	../../../timeseries/hist_19902009.dss
+QUALOUTDSSFILE	./output/hist_mini_calib.dss
+QUALOUTFILE	./output/hist_mini_calib.qof
+QUALRSTFILE	./output/hist_mini_calib.qrf
+QUAL_START_DATE	02OCT2002
+START_DATE	01OCT2002
+START_TIME	0000
+STOCKTON_EFF_FLOW	0.0
+STOCKTON_FLOW_FILE	constant
+STUDYDIR	.
+TEMPDIR	z:/temp
+TSINPUTDIR	../../../timeseries
+VERSIONDATE	200905
+END
+SCALAR
+NAME	VALUE
+binary_output	false
+checkdata	false
+cont_bad	false
+cont_missing	true
+cont_question	true
+cont_unchecked	true
+deltax	5000
+display_intvl	1day
+dss_direct	true
+flush_output	15day
+gravity	32.2
+hydro_time_step	15min
+levee_slope	0.33
+maxiter	20
+printlevel	1
+run_end_date	01OCT2008
+run_start_date	01OCT2002
+run_start_time	0000
+temp_dir	c:/temp
+theta	0.6
+title	"Hydro	simulation:	hist_mini_calib"
+toleranceq	0.001
+tolerancez	0.0008
+warn_missing	true
+warn_question	true
+warn_unchecked	false
+END
+IO_FILE
+MODEL	TYPE	IO	INTERVAL	FILE
+hydro	echo	out	none	./output/hydro_echo_hist_mini_calib.inp
+hydro	hdf5	out	1hour	./output/hist_mini_calib.h5
+hydro	output	out	none	./output/hist_mini_calib.hof
+hydro	restart	out	1mon	./output/hist_mini_calib.hrf
+END
+CHANNEL
+CHAN_NO	LENGTH	MANNING	DISPERSION	UPNODE	DOWNNODE
+1	19500	0.035	0.3	1	2
+2	14000	0.028	0.3	2	3
+3	14525	0.028	0.3	3	4
+4	188005	0.028	0.3	4	5
+17	13150	0.035	0.3	17	1
+END
+XSECT
+CHAN_NO	DIST	FILE
+END
+XSECT_LAYER
+CHAN_NO	DIST	ELEV	AREA	WIDTH	WET_PERIM
+1	0.24	1.85	0.0	0.0	0.0
+1	0.24	3.62	103.6	116.4	116.5
+1	0.24	25.34	10088.4	803.1	805.2
+1	0.24	32.97	16724.9	936.8	939.9
+1	0.24	36.1	19710.7	970.3	973.6
+1	0.953	0.14	0.0	0.0	0.0
+1	0.953	1.83	213.7	253.3	253.5
+1	0.953	16.42	4592.7	346.7	351.5
+1	0.953	22.08	7426.6	655.2	660.8
+1	0.953	33.28	15192.5	731.5	740.3
+1	0.953	34.43	16043.5	735.7	744.6
+2	0.189	-0.649	0.0	0.0	0.0
+2	0.189	9.92	2005.0	378.7	382.5
+2	0.189	30.53	12859.1	674.5	686.2
+2	0.189	34.75	15816.7	729.6	741.5
+2	0.726	-4.779	0.0	0.0	0.0
+2	0.726	-3.089	140.8	166.6	166.9
+2	0.726	19.93	6088.3	349.8	356.7
+2	0.726	20.18	6177.9	350.5	357.4
+3	0.383	-2.699	0.0	0.0	0.0
+3	0.383	6.9	1762.1	366.7	367.7
+3	0.383	18.64	7084.6	539.6	542.3
+3	0.383	33.18	17478.4	890.7	894.7
+3	0.383	33.96	18181.5	902.5	906.5
+3	0.822	-4.209	0.0	0.0	0.0
+3	0.822	9.92	2957.8	418.1	419.4
+3	0.822	20.6	10286.0	954.6	956.7
+3	0.822	39.5	30907.0	1227.4	1232.2
+3	0.822	39.68	31126.4	1228.7	1233.4
+3	1.0	-4.209	0.0	0.0	0.0
+3	1.0	9.92	2957.8	418.1	419.4
+3	1.0	20.6	10286.0	954.6	956.7
+3	1.0	39.5	30907.0	1227.4	1232.2
+3	1.0	39.68	31126.4	1228.7	1233.4
+4	0.0	-6.699	0.0	0.0	0.0
+4	0.0	5.65	2115.1	342.0	343.3
+4	0.0	14.37	5594.8	456.1	458.7
+4	0.0	22.59	10948.1	846.2	849.5
+4	0.0	32.5	19930.1	967.8	972.7
+4	0.0	33.93	21330.7	977.3	982.3
+4	0.234	-6.699	0.0	0.0	0.0
+4	0.234	5.65	2115.1	342.0	343.3
+4	0.234	14.37	5594.8	456.1	458.7
+4	0.234	22.59	10948.1	846.2	849.5
+4	0.234	32.5	19930.1	967.8	972.7
+4	0.234	33.93	21330.7	977.3	982.3
+4	0.48	-7.609	0.0	87.5	87.5
+4	0.48	4.46	2244.7	283.8	286.6
+4	0.48	6.37	2802.7	303.4	306.6
+4	0.48	31.77	14922.7	650.5	657.5
+4	0.48	32.52	15411.8	656.3	663.3
+17	0.068	3.56	0.0	0.0	0.0
+17	0.068	10.2	894.0	269.0	269.5
+17	0.068	13.4	1947.8	388.9	389.6
+17	0.068	22.4	6277.9	573.3	575.0
+17	0.068	26.91	8928.7	604.4	606.4
+17	0.352	-0.279	0.0	0.0	0.0
+17	0.352	1.53	118.3	130.4	130.6
+17	0.352	20.04	6372.3	545.1	547.3
+17	0.352	28.51	11571.4	683.3	685.8
+17	0.888	0.9	0.0	0.0	0.0
+17	0.888	5.45	435.3	191.5	192.3
+17	0.888	26.12	7928.0	533.2	537.9
+17	0.888	26.28	8011.6	533.7	538.4
+END
+RESERVOIR
+NAME	AREA	BOT_ELEV
+clifton_court	568.606263	-8.1
+END
+RESERVOIR_CONNECTION
+RES_NAME	NODE	COEF_IN	COEF_OUT
+clifton_court	3	1500.0	1500.0
+END
+GATE
+NAME	FROM_OBJ	FROM_IDENTIFIER	TO_NODE
+7_mile@3_mile	channel	2	3
+END
+GATE_WEIR_DEVICE
+GATE_NAME	DEVICE	NDUPLICATE	WIDTH	ELEV	HEIGHT	CF_FROM_NODE	CF_TO_NODE	DEFAULT_OP
+7_mile@3_mile	weir	1	237.000	12.500	9999.000	0.7700	0.7700	gate_open
+END
+GATE_PIPE_DEVICE
+GATE_NAME	DEVICE	NDUPLICATE	RADIUS	ELEV	CF_FROM_NODE	CF_TO_NODE	DEFAULT_OP
+7_mile@3_mile	pipes	2	2.000	-7.000	0.5000	0.5000	gate_open
+END
+TRANSFER
+NAME	FROM_OBJ	FROM_IDENTIFIER	TO_OBJ	TO_IDENTIFIER
+transfer1	node	3	reservoir	clifton_court
+transfer2	node	2	node	17
+transfer3	reservoir	clifton_court	node	1
+END
+CHANNEL_IC
+CHAN_NO	DISTANCE	STAGE	FLOW
+1	0	7.0000	2600.0000
+1	length	6.5000	2400.0000
+2	0	6.5000	2400.0000
+2	length	6.0000	2200.0000
+3	0	5.5000	2200.0000
+3	length	5.0000	2000.0000
+4	0	5.0000	2000.0000
+4	length	4.5000	1800.0000
+17	0	8.0000	2800.0000
+17	length	7.0000	2600.0000
+END
+RESERVOIR_IC
+RES_NAME	STAGE
+bethel	2.000
+clifton_court	2.000
+discovery_bay	2.000
+franks_tract	2.000
+liberty	4.500
+mildred	2.000
+END
+BOUNDARY_STAGE
+NAME	NODE	FILLIN	FILE	PATH
+mtz	361	linear	../../../timeseries/hist_19902009.dss	/FILL+CHAN/RSAC054/STAGE//15MIN/DWR-DMS-200905/
+END
+BOUNDARY_FLOW
+NAME	NODE	SIGN	FILLIN	FILE	PATH
+calaveras	21	1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/RCAL009/FLOW//1DAY/DWR-DMS-200905/
+cosumnes	446	1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/RCSM075/FLOW//1DAY/DWR-DMS-200905/
+moke	447	1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/RMKL070/FLOW//1DAY/DWR-DMS-200905/
+north_bay	273	-1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-DMS-200905/
+sac	330	1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/RSAC155/FLOW//1DAY/DWR-DMS-200905/
+vernalis	17	1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/RSAN112/FLOW//1DAY/DWR-DMS-200905/
+yolo	316	1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/BYOLO040/FLOW//1DAY/DWR-DMS-200905/
+END
+SOURCE_FLOW
+NAME	NODE	SIGN	FILLIN	FILE	PATH
+ccc	206	-1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/CHCCC006/FLOW-DIVERSION//1DAY/DWR-DMS-200905/
+cccoldr	80	-1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/ROLD034/FLOW-EXPORT//1DAY/DWR-DMS-200905/
+cvp	181	-1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/CHDMC004/FLOW-EXPORT//1DAY/DWR-DMS-200905/
+dicu_div_1	1	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+NODE/1/DIV-FLOW//1MON/DWR-BDO/
+dicu_div_10	10	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+NODE/10/DIV-FLOW//1MON/DWR-BDO/
+dicu_div_100	100	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+NODE/100/DIV-FLOW//1MON/DWR-BDO/
+dicu_div_104	104	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+NODE/104/DIV-FLOW//1MON/DWR-BDO/
+dicu_seep_93	93	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+NODE/93/SEEP-FLOW//1MON/DWR-BDO/
+dicu_seep_98	98	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+NODE/98/SEEP-FLOW//1MON/DWR-BDO/
+jones_in	118	-1	last	../../../timeseries/events.dss	/HIST+CHAN/JONES-IN/FLOW-DIVERSION//15MIN/DWR-DMS/
+jones_out	118	1	last	../../../timeseries/events.dss	/HIST+CHAN/JONES-OUT/FLOW//15MIN/DWR-DMS/
+jones_pumpout	121	1	last	../../../timeseries/events.dss	/HIST+CHAN/JONES-PUMPOUT/FLOW//15MIN/DWR-DMS/
+stockton	15	-1	last	constant	0.0
+END
+SOURCE_FLOW_RESERVOIR
+NAME	RES_NAME	SIGN	FILLIN	FILE	PATH
+dicu_div_bbid	clifton_court	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+RSVR/BBID/DIV-FLOW//1MON/DWR-BDO/
+dicu_drain_bbid	clifton_court	1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+RSVR/BBID/DRAIN-FLOW//1MON/DWR-BDO/
+dicu_seep_bbid	clifton_court	-1	last	../../../timeseries/dicu_200905.dss	/DICU-HIST+RSVR/BBID/SEEP-FLOW//1MON/DWR-BDO/
+swp	clifton_court	-1	last	../../../timeseries/hist_19902009.dss	/FILL+CHAN/CHSWP003/FLOW-EXPORT//1DAY/DWR-DMS-200905/
+END
+INPUT_GATE
+GATE_NAME	DEVICE	VARIABLE	FILLIN	FILE	PATH
+END
+INPUT_TRANSFER_FLOW
+TRANSFER_NAME	FILLIN	FILE	PATH
+END
+OPERATING_RULE
+NAME	ACTION	TRIGGER
+clfct_gate_op	"SET	gate_op(gate=clifton_court,device=reservoir_gates,direction=from_node)	TO	ts(name=clfct_op)"	TRUE
+dcc_gate_op	"SET	gate_op(gate=delta_cross_channel,device=cross_channel_gates,direction=from_node)	TO	ts(name=dcc_op)/2	WHILE	SET	gate_op(gate=delta_cross_channel,device=cross_channel_gates,direction=to_node)	TO	ts(name=dcc_op)/2"	TRUE
+7_mile@3_mile_123	"SET	gate_width(gate=7_mile@3_mile,	device=barrier)	TO	140.0"	"DATETIME	==	01JUN1999	OR	DATETIME	==	01JUN2000"
+7_mile@3_mile_full	"SET	gate_elev(gate=7_mile@3_mile,	device=barrier)	TO	1.0	WHILE	SET	gate_width(gate=grant_line_barrier,	device=barrier)	TO	125.0"	"ts(name	=	glc_fullpart)	>=	1.0"
+7_mile@3_mile_install_in	"SET	gate_install(gate=7_mile@3_mile)	TO	1.0"	"ts(name=midr_install)	>=	1.0"
+7_mile@3_mile_install_out	"SET	gate_install(gate=7_mile@3_mile)	TO	0.0"	"ts(name=midr_install)	<=	0.0"
+END
+OPRULE_EXPRESSION
+NAME	DEFINITION
+mscs_calc	"ts(name=mscs_op)	<	0"
+mscs_dhopen	"(chan_stage(channel=512,dist=6038)	-	chan_stage(channel=513,dist=0))	>	0.3"
+mscs_velclose	"chan_flow(channel=513,dist=0)	<	0.1"
+END
+OPRULE_TIME_SERIES
+NAME	FILLIN	FILE	PATH
+clfct_op	last	../../../timeseries/gates_db.dss	/HIST+GATE/CHWST000/POS//IR-YEAR/DWR-OM-JOC-DSM2/
+dcc_op	last	../../../timeseries/gates_db.dss	/HIST+GATE/RSAC128/POS//IR-YEAR/DWR-DMS-DSM2/
+glc_fullpart	last	../../../timeseries/gates_db.dss	/HIST+GATE/GL_CN/FULLPART//IR-DECADE/DWR-BDO/
+glc_install	last	../../../timeseries/gates_db.dss	/HIST+GATE/GL_CN/INSTALL//IR-DECADE/DWR-BDO/
+glc_pipeop	last	../../../timeseries/gates_db.dss	/HIST+GATE/GL_CN/PIPE_OP_DOWN//IR-DECADE/DWR-BDO/
+midr_install	last	../../../timeseries/gates_db.dss	/HIST+GATE/MID_R/INSTALL//IR-DECADE/DWR-BDO/
+midr_pipeop	last	../../../timeseries/gates_db.dss	/HIST+GATE/MID_R/PIPE_OP_DOWN//IR-DECADE/DWR-BDO/
+mscs_fract	last	../../../timeseries/gates_db.dss	/HIST+GATE/MTZSL/RADIAL_FRACT//IR-DECADE/DWR-ESO/
+mscs_op	last	../../../timeseries/gates_db.dss	/HIST+GATE/MTZSL/RADIAL_OP//IR-DECADE/DWR-ESO/
+mtzsl_boatlock_op	last	../../../timeseries/gates_db.dss	/HIST+GATE/MTZSL/BOATLOCK_OP//IR-DECADE/DWR-ESO/
+mtzsl_flashboard_op	last	../../../timeseries/gates_db.dss	/HIST+GATE/MTZSL/FLASHBOARD_OP//IR-DECADE/DWR-ESO/
+oldr_install	last	../../../timeseries/gates_db.dss	/HIST+GATE/OLD_R/INSTALL//IR-DECADE/DWR-BDO/
+oldr_pipeop	last	../../../timeseries/gates_db.dss	/HIST+GATE/OLD_R/PIPE_OP_DOWN//IR-DECADE/DWR-BDO/
+orhrb_install	last	../../../timeseries/gates_db.dss	/HIST+GATE/ORHRB/INSTALL//IR-DECADE/DWR-BDO/
+orhrb_pipeelev	last	../../../timeseries/gates_db.dss	/HIST+GATE/ORHRB/PIPEELEV//IR-DECADE/DWR-BDO/
+orhrb_pipeop	last	../../../timeseries/gates_db.dss	/HIST+GATE/ORHRB/PIPE_OP//IR-DECADE/DWR-BDO/
+orhrb_weirop	last	../../../timeseries/gates_db.dss	/HIST+GATE/ORHRB/WEIR_OP//IR-DECADE/DWR-BDO/
+orhrb_weirop_fall	last	../../../timeseries/gates_db.dss	/HIST+GATE/ORHRB_FALL/WEIR_OP//IR-DECADE/DWR-BDO/
+END
+OUTPUT_CHANNEL
+NAME	CHAN_NO	DISTANCE	VARIABLE	INTERVAL	PERIOD_OP	FILE
+14ml_sl	4	11385	flow	15MIN	inst	./output/hist_mini_calib.dss
+14ml_sl	4	11385	stage	15MIN	inst	./output/hist_mini_calib.dss
+vernalis	17	0	flow	15MIN	inst	./output/hist_mini_calib.dss
+vernalis	17	0	stage	15MIN	inst	./output/hist_mini_calib.dss
+yolo	398	0	flow	15MIN	inst	./output/hist_mini_calib.dss
+yolo	398	0	stage	15MIN	inst	./output/hist_mini_calib.dss
+END
+OUTPUT_RESERVOIR
+NAME	RES_NAME	NODE	VARIABLE	INTERVAL	PERIOD_OP	FILE
+clifton_court	clifton_court	72	flow	15MIN	inst	./output/hist_mini_calib.dss
+clifton_court	clifton_court	none	stage	15MIN	inst	./output/hist_mini_calib.dss
+END
+OUTPUT_GATE
+NAME	GATE_NAME	DEVICE	VARIABLE	INTERVAL	PERIOD_OP	FILE
+END
