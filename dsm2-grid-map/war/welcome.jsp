@@ -363,7 +363,7 @@ gt
 						<td bgcolor="#e8eefa" align="center" style="font-size: 83%;">
 						<b>Don't have a Google Account? </b><br>
 						<a
-							href="https://www.google.com/accounts/NewAccount?continue=https%3A%2F%2Fappengine.google.com%2F_ah%2Flogin%3Fcontinue%3Dhttps%3A%2F%2Fappengine.google.com%2F&amp;service=ah&amp;ltmpl=ae&amp;sig=3f70b6b134a4492cb009cb8753a3de3b">
+							href="https://www.google.com/accounts/NewAccount?continue=<%=successRedirectURL%>">
 						<b>Create an account now</b> </a></td>
 					</tr>
 				</tbody>
