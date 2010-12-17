@@ -69,11 +69,6 @@ form {
 	font-size: smaller;
 }
 
-.container {
-	margin: 60px 4px;
-	position: absolute;
-}
-
 .simple-header {
 	
 }
@@ -121,8 +116,8 @@ form {
 	background: none repeat scroll 0 0 #EBEFF9;
 	border-bottom: 1px solid #6B90DA;
 	clear: none;
-	margin: 27px 0;
-	padding: 5px 15px 0;
+	margin: 30px 0;
+	padding: 0px 5px 0;
 	position: absolute;
 	white-space: nowrap;
 	width: 100%;

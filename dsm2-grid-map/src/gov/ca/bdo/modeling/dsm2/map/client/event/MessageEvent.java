@@ -2,9 +2,9 @@ package gov.ca.bdo.modeling.dsm2.map.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class MessageEvent extends GwtEvent<MessageEventHandler>{
+public class MessageEvent extends GwtEvent<MessageEventHandler> {
 	public static Type<MessageEventHandler> TYPE = new Type<MessageEventHandler>();
-	
+
 	public static int WARNING = 100;
 	public static int ERROR = 200;
 
@@ -13,13 +13,16 @@ public class MessageEvent extends GwtEvent<MessageEventHandler>{
 	private int type;
 
 	private int delayInMillis;
-	
-	public MessageEvent(String message, int type){
-		this.message = message;
-		this.type = type;
+
+	public MessageEvent(String message) {
+		this(message, WARNING, 0);
 	}
 
-	public MessageEvent(String message, int type, int delayInMillis){
+	public MessageEvent(String message, int type) {
+		this(message, type, 0);
+	}
+
+	public MessageEvent(String message, int type, int delayInMillis) {
 		this.message = message;
 		this.type = type;
 		this.delayInMillis = delayInMillis;

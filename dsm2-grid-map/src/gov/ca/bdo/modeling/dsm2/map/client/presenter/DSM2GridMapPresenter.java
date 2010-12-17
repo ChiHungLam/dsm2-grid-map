@@ -45,7 +45,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
@@ -124,8 +123,9 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 	private boolean bound;
 
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
-			SimpleEventBus eventBus, Display display) {
-		super(dsm2InputService, eventBus, display);
+			SimpleEventBus eventBus, Display display,
+			ContainerPresenter containerPresenter) {
+		super(dsm2InputService, eventBus, display, containerPresenter);
 		bound = false;
 	}
 
@@ -257,8 +257,8 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 			public void onClick(ClickEvent event) {
 				String url = GWT.getModuleBaseURL()
 						+ "dsm2_download?studyName="
-						+ URL.encode(d.getCurrentStudy()) + "&inputName="
-						+ URL.encode("hydro_echo_inp");
+						+ URL.encode(getContainerPresenter().getCurrentStudy())
+						+ "&inputName=" + URL.encode("hydro_echo_inp");
 				Window.open(url, "_blank", null);
 			}
 		});
@@ -268,8 +268,8 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 			public void onClick(ClickEvent event) {
 				String url = GWT.getModuleBaseURL()
 						+ "dsm2_download?studyName="
-						+ URL.encode(d.getCurrentStudy()) + "&inputName="
-						+ URL.encode("gis_inp");
+						+ URL.encode(getContainerPresenter().getCurrentStudy())
+						+ "&inputName=" + URL.encode("gis_inp");
 				Window.open(url, "_blank", null);
 			}
 		});
