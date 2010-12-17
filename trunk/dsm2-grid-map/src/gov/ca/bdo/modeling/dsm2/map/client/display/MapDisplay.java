@@ -150,8 +150,8 @@ public class MapDisplay extends ResizeComposite implements Display,
 				mapPanel = new MapPanel();
 				mapPanel.setInfoPanel(infoPanel);
 				Widget westWidget = new ScrollPanel(controlPanelContainer);
-				centerPanel.addWest(westWidget, 40);
-				centerPanel.setWidgetSize(westWidget, 40);
+				centerPanel.addWest(westWidget, 550);
+				centerPanel.setWidgetSize(westWidget, 550);
 				centerPanel.add(mapPanel);
 				mapPanel.setStudy(containerDisplay.getCurrentStudy());
 				mapPanel.setModel(containerDisplay.getModel());
@@ -189,7 +189,9 @@ public class MapDisplay extends ResizeComposite implements Display,
 	}
 
 	public void refresh() {
-		mapPanel.populateGrid();
+		if (mapPanel != null) {
+			mapPanel.populateGrid();
+		}
 	}
 
 	public void setModel(DSM2Model result) {

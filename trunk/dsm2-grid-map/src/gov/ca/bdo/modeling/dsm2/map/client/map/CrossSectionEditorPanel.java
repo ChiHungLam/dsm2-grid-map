@@ -155,7 +155,8 @@ public class CrossSectionEditorPanel extends Composite {
 										secondPointForLine.y = utm2[1];
 										GeomUtils
 												.moveOriginAndProjectOntoLineAndConvertToFeet(
-														demProfilePoints, origin,
+														demProfilePoints,
+														origin,
 														secondPointForLine);
 										elevationProfile = demProfilePoints;
 										GeomUtils
@@ -165,7 +166,7 @@ public class CrossSectionEditorPanel extends Composite {
 										editor = new CrossSectionEditor(
 												"xsection", profile,
 												demProfilePoints, bathyPoints,
-												600, 375);
+												450, 300);
 									}
 
 									public void onFailure(Throwable caught) {
