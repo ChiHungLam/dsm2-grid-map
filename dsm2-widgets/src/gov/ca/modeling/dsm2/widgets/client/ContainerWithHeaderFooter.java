@@ -1,11 +1,14 @@
 package gov.ca.modeling.dsm2.widgets.client;
 
+import java.util.Iterator;
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -18,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author nsandhu
  * 
  */
-public class ContainerWithHeaderFooter extends Composite {
+public class ContainerWithHeaderFooter extends Composite implements HasWidgets {
 	private static final String DEFAULT_MESSAGE = "Loading...";
 
 	private SimpleHeaderPanel headerPanel;
@@ -121,5 +124,25 @@ public class ContainerWithHeaderFooter extends Composite {
 
 	public void showErrorFor(String message, int delayInMillis) {
 		showMessageFor(message, "#FFDDDD", delayInMillis);
+	}
+
+	@Override
+	public void add(Widget w) {
+		containerPanel.add(w);
+	}
+
+	@Override
+	public void clear() {
+		containerPanel.clear();
+	}
+
+	@Override
+	public Iterator<Widget> iterator() {
+		return containerPanel.iterator();
+	}
+
+	@Override
+	public boolean remove(Widget w) {
+		return containerPanel.remove(w);
 	}
 }

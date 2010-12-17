@@ -1,5 +1,6 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
+import gov.ca.bdo.modeling.dsm2.map.client.display.ContainerDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.MapDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.StudyManagerDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UnauthorizedUserDisplay;
@@ -7,6 +8,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDataDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UserProfileDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.XSectionEditorDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.presenter.ContainerPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyDataUploadPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter;
@@ -15,6 +17,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.presenter.UnauthorizedUserPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.UserProfilePresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.XSectionEditorPresenter;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
+import gov.ca.bdo.modeling.dsm2.map.client.service.LoginServiceAsync;
 import gov.ca.bdo.modeling.dsm2.map.client.service.UserProfileServiceAsync;
 import gov.ca.modeling.maps.elevation.client.service.BathymetryDataServiceAsync;
 import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
@@ -33,11 +36,16 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 	private BathymetryDataServiceAsync bathymetryService;
 	private DEMDataServiceAsync demService;
 	private DSM2GridMapPresenter mapPresenter;
+	private ContainerPresenter containerPresenter;
+	private ContainerDisplay containerDisplay;
+	private LoginServiceAsync loginService;
 
-	public AppController(DSM2InputServiceAsync dsm2InputService,
+	public AppController(LoginServiceAsync loginService,
+			DSM2InputServiceAsync dsm2InputService,
 			UserProfileServiceAsync userProfileService,
 			BathymetryDataServiceAsync bathymetryService,
 			DEMDataServiceAsync demService, SimpleEventBus eventBus) {
+		this.loginService = loginService;
 		this.dsm2InputService = dsm2InputService;
 		this.userProfileService = userProfileService;
 		this.bathymetryService = bathymetryService;
@@ -50,9 +58,14 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		History.addValueChangeHandler(this);
 	}
 
-	public void go(HasWidgets container) {
-		this.container = container;
+	public void go(HasWidgets rootPanelAsContainer) {
+		containerPresenter = new ContainerPresenter(loginService,
+				dsm2InputService, eventBus,
+				containerDisplay = new ContainerDisplay());
+		container = containerDisplay.asHasWidgets();
 
+		containerPresenter.go(rootPanelAsContainer);
+		// fire history event
 		if ("".equals(History.getToken())) {
 			History.newItem("map");
 		} else {

@@ -20,10 +20,13 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
-import gov.ca.modeling.maps.elevation.client.CrossSectionEditor;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -53,12 +56,34 @@ public class ChannelInfoPanel extends Composite {
 		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");
 		basicDisclosure.setOpen(true);
 		basicDisclosure.add(getBasicInfoPanel(channel));
+		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getUpNodeId());
+		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getDownNodeId());
+		basicDisclosure.add(getXSectionGenerationPanel(channel, upNode,
+				downNode));
 		vpanel.add(basicDisclosure);
 		xsectionDisclosure = new DisclosurePanel("XSection");
 		xsectionDisclosure.setOpen(true);
 		xsectionDisclosure.add(xsectionContainerPanel);
 		vpanel.add(xsectionDisclosure);
 		initWidget(vpanel);
+	}
+
+	private Panel getXSectionGenerationPanel(final Channel channel,
+			final Node upNode, final Node downNode) {
+		Panel panel = new FlowPanel();
+		Button generateXSectionsButton = new Button("Generate XSections");
+		Button clearXSectionsButton = new Button("Clear XSections");
+		panel.add(generateXSectionsButton);
+		panel.add(clearXSectionsButton);
+		generateXSectionsButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				ModelUtils.generateXSections(channel, upNode, downNode);
+			}
+		});
+		return panel;
 	}
 
 	/**

@@ -3,6 +3,7 @@ package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.event.DSM2StudyEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
+import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEventHandler;
 import gov.ca.bdo.modeling.dsm2.map.client.model.LoginInfo;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import gov.ca.bdo.modeling.dsm2.map.client.service.LoginServiceAsync;
@@ -16,6 +17,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ContainerPresenter implements Presenter {
 	public static interface Display {
@@ -24,18 +26,22 @@ public class ContainerPresenter implements Presenter {
 		public void setLoginInfo(LoginInfo result);
 
 		public void setStudies(String[] study);
-		
+
 		public String[] getStudies();
 
 		public void setCurrentStudy(String study);
 
 		public String getCurrentStudy();
-		
+
 		public HasChangeHandlers onStudyChange();
 
 		public HasWidgets asHasWidgets();
 
 		public void setModel(DSM2Model result);
+
+		public void showMessage(String message, int type, int delayInMillis);
+
+		public Widget asWidget();
 	}
 
 	private LoginServiceAsync loginService;
@@ -55,9 +61,19 @@ public class ContainerPresenter implements Presenter {
 	public void go(HasWidgets container) {
 		bind();
 		container.clear();
+		container.add(display.asWidget());
+		display.showMessage("Initializing...", MessageEvent.WARNING, 0);
 	}
 
 	public void bind() {
+		eventBus.addHandler(MessageEvent.TYPE, new MessageEventHandler() {
+
+			public void onMessage(MessageEvent event) {
+				display.showMessage(event.getMessage(), event.getType(), event
+						.getDelayInMillis());
+			}
+		});
+
 		if (!display.isLoggedIn()) {
 			loginService.login(GWT.getHostPageBaseURL(),
 					new AsyncCallback<LoginInfo>() {
@@ -117,15 +133,17 @@ public class ContainerPresenter implements Presenter {
 	public void setCurrentStudy(String study) {
 
 	}
+
 	protected void setStudyToHistory(String study) {
 		History.newItem(URL.encode("map/" + study), false);
-	}	
-	
+	}
+
 	protected void loadStudy(final String study) {
 		if (study == null) {
 			return;
 		}
-		eventBus.fireEvent(new MessageEvent("Loading study " + study + "...", MessageEvent.WARNING, 2000));
+		eventBus.fireEvent(new MessageEvent("Loading study " + study + "...",
+				MessageEvent.WARNING, 2000));
 		dsm2InputService.getInputModel(study, new AsyncCallback<DSM2Model>() {
 
 			public void onSuccess(DSM2Model result) {
@@ -133,13 +151,14 @@ public class ContainerPresenter implements Presenter {
 				display.setCurrentStudy(study);
 				display.setModel(result);
 				if (result != null) {
-					eventBus.fireEvent(new DSM2StudyEvent(study,result));
+					eventBus.fireEvent(new DSM2StudyEvent(study, result));
 				}
 			}
 
 			public void onFailure(Throwable caught) {
 				eventBus.fireEvent(new MessageEvent("Oops, an error occurred: "
-						+ caught.getMessage() + ". Try again", MessageEvent.ERROR, 5000));
+						+ caught.getMessage() + ". Try again",
+						MessageEvent.ERROR, 5000));
 				GWT.log("Error on loading study: " + study, caught);
 			}
 		});
