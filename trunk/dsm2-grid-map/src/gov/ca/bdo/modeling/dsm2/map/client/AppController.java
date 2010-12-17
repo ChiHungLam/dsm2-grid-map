@@ -65,22 +65,25 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		container = containerDisplay.asHasWidgets();
 
 		containerPresenter.go(rootPanelAsContainer);
+
 		// fire history event
 		if ("".equals(History.getToken())) {
 			History.newItem("map");
 		} else {
 			History.fireCurrentHistoryState();
 		}
+
 	}
 
 	public void onValueChange(ValueChangeEvent<String> event) {
 		String token = event.getValue();
-
+		containerDisplay.setLinkBarActive(token);
 		if (token != null) {
 			Presenter presenter = null;
 			if (token.startsWith("map_view")) {
 				presenter = new DSM2GridMapPresenter(dsm2InputService,
-						eventBus, new MapDisplay(true));
+						eventBus, new MapDisplay(containerDisplay, true),
+						containerPresenter);
 			} else if (token.startsWith("map")) {
 				if (mapPresenter == null) {
 					mapPresenter = createDSM2GridMapPresenter();
@@ -117,7 +120,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 	private DSM2GridMapPresenter createDSM2GridMapPresenter() {
 		return new DSM2GridMapPresenter(dsm2InputService, eventBus,
-				new MapDisplay(false));
+				new MapDisplay(containerDisplay, false), containerPresenter);
 	}
 
 }

@@ -93,6 +93,10 @@ public class ContainerDisplay implements Display {
 		model = result;
 	}
 
+	public DSM2Model getModel() {
+		return model;
+	}
+
 	public void setStudies(String[] studies) {
 		this.studies = studies;
 		studyBox.clear();
@@ -124,4 +128,10 @@ public class ContainerDisplay implements Display {
 		return container;
 	}
 
+	public void setLinkBarActive(String token) {
+		if (token.indexOf("/") >= 0) {
+			token = token.substring(token.indexOf("/"));
+		}
+		container.setActiveMainLink(token);
+	}
 }

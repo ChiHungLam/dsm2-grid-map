@@ -5,10 +5,11 @@ import java.util.Iterator;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -21,13 +22,14 @@ import com.google.gwt.user.client.ui.Widget;
  * @author nsandhu
  * 
  */
-public class ContainerWithHeaderFooter extends Composite implements HasWidgets {
+public class ContainerWithHeaderFooter extends ResizeComposite implements
+		HasWidgets {
 	private static final String DEFAULT_MESSAGE = "Loading...";
 
 	private SimpleHeaderPanel headerPanel;
 	private MainBarPanel mainLinkBar;
 	private FlowPanel footerPanel;
-	private FlowPanel containerPanel;
+	private LayoutPanel containerPanel;
 	private FlowPanel loadingPanel;
 
 	public ContainerWithHeaderFooter() {
@@ -41,11 +43,11 @@ public class ContainerWithHeaderFooter extends Composite implements HasWidgets {
 		northPanel.add(loadingPanel);
 		footerPanel = new FlowPanel();
 		footerPanel.setStyleName("footer");
-		containerPanel = new FlowPanel();
+		containerPanel = new LayoutPanel();
 		containerPanel.setStyleName("container");
 		showWarningFor(DEFAULT_MESSAGE, 5000);
 		mainPanel.addNorth(northPanel, 65);
-		mainPanel.addSouth(footerPanel, 25);
+		mainPanel.addSouth(footerPanel, 15);
 		mainPanel.add(containerPanel);
 		initWidget(mainPanel);
 	}
@@ -145,4 +147,5 @@ public class ContainerWithHeaderFooter extends Composite implements HasWidgets {
 	public boolean remove(Widget w) {
 		return containerPanel.remove(w);
 	}
+
 }

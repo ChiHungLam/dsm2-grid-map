@@ -67,10 +67,10 @@ import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ResizeComposite;
 
-public class MapPanel extends Composite {
+public class MapPanel extends ResizeComposite {
 
 	private NodeMarkerDataManager nodeManager;
 	private ChannelLineDataManager channelManager;
@@ -115,6 +115,7 @@ public class MapPanel extends Composite {
 				}
 			}
 		});
+		setStyleName("map-panel");
 	}
 
 	private void setOptions() {
@@ -374,10 +375,6 @@ public class MapPanel extends Composite {
 		if (textAnnotationHandler != null) {
 			textAnnotationHandler.stopAddingText();
 		}
-	}
-
-	public void onResize() {
-		map.checkResizeAndCenter();
 	}
 
 	public DSM2Model getModel() {

@@ -33,11 +33,13 @@ public class ContainerPresenter implements Presenter {
 
 		public String getCurrentStudy();
 
+		public void setModel(DSM2Model result);
+
+		public DSM2Model getModel();
+
 		public HasChangeHandlers onStudyChange();
 
 		public HasWidgets asHasWidgets();
-
-		public void setModel(DSM2Model result);
 
 		public void showMessage(String message, int type, int delayInMillis);
 
@@ -130,8 +132,32 @@ public class ContainerPresenter implements Presenter {
 
 	}
 
-	public void setCurrentStudy(String study) {
+	public String getCurrentStudy() {
+		return display.getCurrentStudy();
+	}
 
+	public void setCurrentStudy(String study) {
+		display.setCurrentStudy(study);
+	}
+
+	public boolean isLoggedIn() {
+		return display.isLoggedIn();
+	}
+
+	public String[] getStudies() {
+		return display.getStudies();
+	}
+
+	public void setStudies(String[] studies) {
+		display.setStudies(studies);
+	}
+
+	public DSM2Model getModel() {
+		return display.getModel();
+	}
+
+	public void setModel(DSM2Model model) {
+		display.setModel(model);
 	}
 
 	protected void setStudyToHistory(String study) {

@@ -39,7 +39,7 @@
  *******************************************************************************/
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
-import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
+import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.map.AddMapElementClickHandler;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapControlPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
@@ -48,16 +48,13 @@ import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.DSM2Model;
-import gov.ca.modeling.dsm2.widgets.client.CollapsibleSplitLayoutPanel;
 import gov.ca.modeling.maps.elevation.client.BathymetryDisplayer;
 import gov.ca.modeling.maps.elevation.client.ElevationDisplayer;
 import gov.ca.modeling.maps.elevation.client.ElevationProfileDisplayer;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasInitializeHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
@@ -76,42 +73,34 @@ import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MapDisplay extends Composite implements Display,
+public class MapDisplay extends ResizeComposite implements Display,
 		HasInitializeHandlers {
-	private HeaderPanel headerPanel;
 	private MapPanel mapPanel;
-	private DockLayoutPanel mainPanel;
-	private String studyName = null;
 	private final MapControlPanel controlPanel;
 	private final FlowPanel infoPanel;
 	private final VerticalPanel controlPanelContainer;
 	private MeasuringDistanceAlongLine lengthMeasurer;
 	private MeasuringAreaInPolygon areaMeasurer;
-	private DSM2Model model;
 	private ElevationDisplayer elevationDisplayer;
-	private CollapsibleSplitLayoutPanel centerPanel;
+	private SplitLayoutPanel centerPanel;
+	private ContainerDisplay containerDisplay;
 
-	public MapDisplay(boolean viewOnly) {
-		mainPanel = new DockLayoutPanel(Unit.EM);
-		headerPanel = new HeaderPanel();
-		headerPanel.showMessage(true, "Loading...");
+	public MapDisplay(ContainerDisplay display, boolean viewOnly) {
+		containerDisplay = display;
 		// layout top level things here
 		controlPanel = new MapControlPanel(viewOnly);
 		infoPanel = new FlowPanel();
@@ -124,15 +113,15 @@ public class MapDisplay extends Composite implements Display,
 		infoPanelContainer.setHeader(new Label("Selected Element Info"));
 		infoPanelContainer.add(infoPanel);
 		controlPanelContainer.add(infoPanelContainer);
-		mainPanel.addNorth(headerPanel, 2);
-		mainPanel.addSouth(new HTML(""), 1);
-		mainPanel.add(centerPanel = new CollapsibleSplitLayoutPanel());
-		DeferredCommand.addCommand(new Command() {
+		centerPanel = new SplitLayoutPanel();
+		centerPanel.setStyleName("map-split-layout-panel");
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
 			public void execute() {
 				loadMaps();
 			}
 		});
-		initWidget(mainPanel);
+		initWidget(centerPanel);
 	}
 
 	public Widget asWidget() {
@@ -141,14 +130,18 @@ public class MapDisplay extends Composite implements Display,
 
 	public void loadMaps() {
 		if (!Maps.isLoaded()) {
-			Window
-					.alert("The Maps API is not installed."
-							+ "  The <script> tag that loads the Maps API may be missing or your Maps key may be wrong.");
+			containerDisplay
+					.showMessage(
+							"The Maps API is not installed."
+									+ "  The <script> tag that loads the Maps API may be missing or your Maps key may be wrong.",
+							MessageEvent.ERROR, 0);
 			return;
 		}
 
 		if (!Maps.isBrowserCompatible()) {
-			Window.alert("The Maps API is not compatible with this browser.");
+			containerDisplay.showMessage(
+					"The Maps API is not compatible with this browser.",
+					MessageEvent.ERROR, 0);
 			return;
 		}
 		Runnable mapLoadCallback = new Runnable() {
@@ -156,17 +149,16 @@ public class MapDisplay extends Composite implements Display,
 			public void run() {
 				mapPanel = new MapPanel();
 				mapPanel.setInfoPanel(infoPanel);
-				centerPanel.addEast(new ScrollPanel(controlPanelContainer), 40);
+				Widget westWidget = new ScrollPanel(controlPanelContainer);
+				centerPanel.addWest(westWidget, 40);
+				centerPanel.setWidgetSize(westWidget, 40);
 				centerPanel.add(mapPanel);
-				if (studyName != null) {
-					mapPanel.setStudy(studyName);
-				}
-				if (model != null) {
-					mapPanel.setModel(model);
-					refresh();
-				}
+				mapPanel.setStudy(containerDisplay.getCurrentStudy());
+				mapPanel.setModel(containerDisplay.getModel());
+				refresh();
 
 				InitializeEvent.fire(MapDisplay.this);
+
 				RootLayoutPanel.get().animate(0, new AnimationCallback() {
 					public void onLayout(Layer layer, double progress) {
 					}
@@ -175,19 +167,13 @@ public class MapDisplay extends Composite implements Display,
 						mapPanel.onResize();
 					}
 				});
-				getSaveEditButton().addClickHandler(new ClickHandler() {
-
-					public void onClick(ClickEvent event) {
-						setEditMode(((ToggleButton) getSaveEditButton())
-								.isDown());
-					}
-				});
 			}
 		};
 
 		if (!GoogleMapsUtility.isLoaded(DefaultPackage.MARKER_CLUSTERER,
 				DefaultPackage.LABELED_MARKER, DefaultPackage.MAP_ICON_MAKER)) {
-			//FIXME: change this dependency on loading javascript libraries from another site
+			// FIXME: change this dependency on loading javascript libraries
+			// from another site
 			// when this fails, it causes app to behave as if it had broken.
 			GoogleMapsUtility.loadUtilityApi(mapLoadCallback,
 					DefaultPackage.MARKER_CLUSTERER,
@@ -196,28 +182,6 @@ public class MapDisplay extends Composite implements Display,
 		} else {
 			mapLoadCallback.run();
 		}
-	}
-
-	public void setCurrentStudy(String studyName) {
-		if (mapPanel != null) {
-			mapPanel.setStudy(studyName);
-			controlPanel.setStudy(studyName);
-			studyName = null;
-		} else {
-			this.studyName = studyName;
-		}
-	}
-
-	public void setStudies(String[] studyNames) {
-		headerPanel.clearMessages();
-		controlPanel.setStudies(studyNames);
-		if (studyNames.length > 0) {
-			setCurrentStudy(studyNames[0]);
-		}
-	}
-
-	public void clearMessages() {
-		headerPanel.clearMessages();
 	}
 
 	public DSM2Model getModel() {
@@ -229,34 +193,9 @@ public class MapDisplay extends Composite implements Display,
 	}
 
 	public void setModel(DSM2Model result) {
-		model = result;
 		if (mapPanel != null) {
 			mapPanel.setModel(result);
 		}
-	}
-
-	public void showError(String message) {
-		headerPanel.showError(true, message);
-	}
-
-	public void showMessage(String message) {
-		headerPanel.showError(true, message);
-	}
-
-	public void showMessageFor(String message, int delayInMillisecs) {
-		headerPanel.showMessageFor(message, delayInMillisecs);
-	}
-
-	public HasChangeHandlers onStudyChange() {
-		return controlPanel.getStudyBox();
-	}
-
-	public String getCurrentStudy() {
-		return controlPanel.getStudyChoice();
-	}
-
-	public String[] getStudies() {
-		return controlPanel.getStudies();
 	}
 
 	public HandlerRegistration addInitializeHandler(

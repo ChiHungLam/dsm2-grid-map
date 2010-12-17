@@ -60,8 +60,8 @@ public class ChannelInfoPanel extends Composite {
 				channel.getUpNodeId());
 		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
 				channel.getDownNodeId());
-		basicDisclosure.add(getXSectionGenerationPanel(channel, upNode,
-				downNode));
+		// basicDisclosure.add(getXSectionGenerationPanel(channel, upNode,
+		// downNode));
 		vpanel.add(basicDisclosure);
 		xsectionDisclosure = new DisclosurePanel("XSection");
 		xsectionDisclosure.setOpen(true);

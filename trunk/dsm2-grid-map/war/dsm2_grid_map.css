@@ -127,4 +127,8 @@
 .small-captions {
 	font-size: x-small;
 }
-/* dsm2 widgets css */
+
+.map-control-panel{
+	width: 250px;
+	height: 100%;
+}
