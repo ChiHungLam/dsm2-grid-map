@@ -130,13 +130,16 @@ public class MapPanel extends ResizeComposite {
 	}
 
 	private final native MapType getTopoMapType()/*-{
-		var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
-		var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
-		return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
-	}-*/;
+													var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
+													var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
+													return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
+													}-*/;
 
 	public void populateGrid() {
 		clearAllMarkers();
+		if (model == null) {
+			return;
+		}
 		setNodeManager(new NodeMarkerDataManager(this, model.getNodes()));
 		setChannelManager(new ChannelLineDataManager(this, model.getChannels()));
 		refreshGrid();
