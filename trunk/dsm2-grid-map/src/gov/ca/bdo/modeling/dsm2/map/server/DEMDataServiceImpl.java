@@ -32,6 +32,7 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 		DEMDataService {
 	static final Logger logger = Logger.getLogger("DEMDataServiceImpl");
 	private static final long BIG_VALUE = 100000000l;
+
 	public List<DataPoint> getElevationAlong(double x1, double y1, double x2,
 			double y2) throws SerializationException {
 		List<DataPoint> points = new ArrayList<DataPoint>();
@@ -124,6 +125,7 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 		if (gridAt == null) {
 			return DEMGridSquare.NODATA / 10.0;
 		} else {
+			// FIXME: need check for NODATA in the calculations below
 			// f=b1+b2*x+b3*x+b4*x*y
 			double f00 = gridAt.getElevationAt(x, y) / 10.0;
 			double f10 = getElevationAtUTMWithBestGuessGrid(gridAt, x + 10, y);
@@ -213,9 +215,9 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 		Long value = (Long) memcacheService.get(state.id + ".sum");
 		Long number = (Long) memcacheService.get(state.id + ".number");
 		Integer counter = (Integer) memcacheService.get(state.id + ".counter");
-		logger.info("Sum : "+value);
-		logger.info("Number: "+number);
-		logger.info("Counter: "+counter);
+		logger.info("Sum : " + value);
+		logger.info("Number: " + number);
+		logger.info("Counter: " + counter);
 		state.latestValue = ((value.doubleValue() - BIG_VALUE) / 10.0)
 				/ number.doubleValue();
 		state.latestValue = Math.round(state.latestValue * 1000) / 1000.0;
@@ -268,11 +270,11 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 			ys += 100;
 			tasks.add(taskOptions);
 		}
-		logger.info("Inserting counter value: "+tasks.size());
+		logger.info("Inserting counter value: " + tasks.size());
 		memcacheService.put(state.id + ".counter", tasks.size());
-		logger.info("Inserting sum value: "+new Long(BIG_VALUE));
+		logger.info("Inserting sum value: " + new Long(BIG_VALUE));
 		memcacheService.put(state.id + ".sum", new Long(BIG_VALUE));
-		logger.info("Inserting number: "+new Long(0));
+		logger.info("Inserting number: " + new Long(0));
 		memcacheService.put(state.id + ".number", new Long(0));
 		state.numberOfTasks = tasks.size();
 		queue.add(tasks);

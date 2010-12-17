@@ -80,6 +80,7 @@ form {
 
 .simple-header-right {
 	float: right;
+	margin-top: 5px;
 }
 
 .simple-header-right>div {

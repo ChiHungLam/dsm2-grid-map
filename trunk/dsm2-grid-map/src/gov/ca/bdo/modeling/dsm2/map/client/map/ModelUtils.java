@@ -70,17 +70,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.maps.client.geom.LatLng;
+
 /**
- * FIXME: figure out how these methods can move back to the model. the only map dependency
- * seems to LatLng which is easy to break with a convention of a double[] array of length=2
- * of lat,lng
+ * FIXME: figure out how these methods can move back to the model. the only map
+ * dependency seems to LatLng which is easy to break with a convention of a
+ * double[] array of length=2 of lat,lng
+ * 
  * @author nsandhu
- *
+ * 
  */
 public class ModelUtils {
 	/**
-	 * Return the flowline of the entire channel, combining the internal points with the
-	 * upnode and downode points
+	 * Return the flowline of the entire channel, combining the internal points
+	 * with the upnode and downode points
+	 * 
 	 * @param channel
 	 * @param upNode
 	 * @param downNode
@@ -108,13 +111,13 @@ public class ModelUtils {
 		points[points.length - 1] = downPoint;
 		return points;
 	}
-	
+
 	/**
 	 * @param channel
 	 * @param upNode
 	 * @param downNode
 	 * @return
-	 * @deprecated 
+	 * @deprecated
 	 * @see #getPointsForChannel(Channel, Node, Node)
 	 */
 	public static LatLng[] getChannelOutlinePoints(Channel channel,
@@ -173,16 +176,18 @@ public class ModelUtils {
 	/**
 	 * Returns the lat/lng of the endpoints that would defined the xsection.
 	 * <p>
-	 * This method is useful when the profile is not available and the end points
-	 * of a pseudo-profile needs to be generated from the xsection. 
-	 * This can be used to maintain the physical location of the xsections when 
-	 * the flowline is changed.
+	 * This method is useful when the profile is not available and the end
+	 * points of a pseudo-profile needs to be generated from the xsection. This
+	 * can be used to maintain the physical location of the xsections when the
+	 * flowline is changed.
 	 * </p>
+	 * 
 	 * @param xSection
 	 * @param channel
 	 * @param upNode
 	 * @param downNode
-	 * @return an array of the beginning and ending lat/lng (length=2) of the xsection line on a map
+	 * @return an array of the beginning and ending lat/lng (length=2) of the
+	 *         xsection line on a map
 	 */
 	public static LatLng[] calculateEndPoints(XSection xSection,
 			Channel channel, Node upNode, Node downNode) {
@@ -205,8 +210,9 @@ public class ModelUtils {
 	}
 
 	/**
-	 * Calculates the maximum top width in this xsection
-	 * FIXME: needs to move to the model class XSection
+	 * Calculates the maximum top width in this xsection FIXME: needs to move to
+	 * the model class XSection
+	 * 
 	 * @param xSection
 	 * @return the top width
 	 */
@@ -217,10 +223,10 @@ public class ModelUtils {
 		}
 		return width;
 	}
-	
+
 	/**
-	 * Returns the distance from up node of channel to the intersection of the channel
-	 * flowline and the profile endPoints line.
+	 * Returns the distance from up node of channel to the intersection of the
+	 * channel flowline and the profile endPoints line.
 	 * 
 	 * @param profile
 	 * @param channel
@@ -228,31 +234,37 @@ public class ModelUtils {
 	 * @param downNode
 	 * @return distance or -1 if no intersection found
 	 */
-	public static double getIntersectionDistanceFromUpstream(XSectionProfile profile, Channel channel, Node upNode, Node downNode){
+	public static double getIntersectionDistanceFromUpstream(
+			XSectionProfile profile, Channel channel, Node upNode, Node downNode) {
 		double distance = -1;
-		LatLng[] pointsForChannel = getPointsForChannel(channel, upNode, downNode);
+		LatLng[] pointsForChannel = getPointsForChannel(channel, upNode,
+				downNode);
 		List<double[]> endPoints = profile.getEndPoints();
 		double xp0 = endPoints.get(0)[0];
 		double yp0 = endPoints.get(0)[1];
 		double xp1 = endPoints.get(1)[0];
 		double yp1 = endPoints.get(1)[1];
 		double[] intersection = new double[2];
-		for(int i=1; i < pointsForChannel.length; i++){
-			LatLng p1 = pointsForChannel[i-1];
+		for (int i = 1; i < pointsForChannel.length; i++) {
+			LatLng p1 = pointsForChannel[i - 1];
 			LatLng p2 = pointsForChannel[i];
-			int findLineSegmentIntersection = Geometry.findLineSegmentIntersection(p1.getLatitude(), p1.getLongitude(), p2.getLatitude(), p2.getLongitude(),
-						xp0, yp0, xp1, yp1, intersection);
+			int findLineSegmentIntersection = Geometry
+					.findLineSegmentIntersection(p1.getLatitude(), p1
+							.getLongitude(), p2.getLatitude(), p2
+							.getLongitude(), xp0, yp0, xp1, yp1, intersection);
 			LatLng ip = LatLng.newInstance(intersection[0], intersection[1]);
-			System.out.println("Interesection @ "+ip);
-			if (findLineSegmentIntersection == 1){
-				LatLng intersectionPoint = LatLng.newInstance(intersection[0], intersection[1]);
-				distance = GeomUtils.findDistanceUptoSegment(i, pointsForChannel);
+			System.out.println("Interesection @ " + ip);
+			if (findLineSegmentIntersection == 1) {
+				LatLng intersectionPoint = LatLng.newInstance(intersection[0],
+						intersection[1]);
+				distance = GeomUtils.findDistanceUptoSegment(i,
+						pointsForChannel);
 				distance += p2.distanceFrom(intersectionPoint);
 			}
 		}
 		return distance;
 	}
-	
+
 	public static double getTopWidthAtDepth(XSection xsection, double depth) {
 		ArrayList<XSectionLayer> layers = xsection.getLayers();
 		// assumes sorted layers with index 0 being the bottom
@@ -267,7 +279,8 @@ public class ModelUtils {
 		return maxElevation - minElevation;
 	}
 
-	public static double getTopWidthAtElevation(XSection xsection, double elevation) {
+	public static double getTopWidthAtElevation(XSection xsection,
+			double elevation) {
 		ArrayList<XSectionLayer> layers = xsection.getLayers();
 		double previousElevation = 0;
 		double previousTopWidth = 0;
@@ -283,9 +296,9 @@ public class ModelUtils {
 		return 0;
 	}
 
-	public static double interpolateLinearly(double elevation, double thisTopWidth,
-			double thisElevation, double previousElevation,
-			double previousTopWidth) {
+	public static double interpolateLinearly(double elevation,
+			double thisTopWidth, double thisElevation,
+			double previousElevation, double previousTopWidth) {
 		return (elevation - previousElevation)
 				* (thisTopWidth - previousTopWidth)
 				/ (thisElevation - previousElevation) + previousTopWidth;
@@ -293,6 +306,10 @@ public class ModelUtils {
 
 	public static double getLengthInFeet(double length) {
 		return Math.round(length * 3.2808399 * 100) / 100;
+	}
+
+	public static void generateXSections(Channel channel, Node upNode,
+			Node downNode) {
 	}
 
 }
