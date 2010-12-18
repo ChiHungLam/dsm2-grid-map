@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class ContainerDisplay implements Display {
 
 	private ContainerWithHeaderFooter container;
-	private String currentStudy;
 	private String[] studies;
 	private DSM2Model model;
 	private ListBox studyBox;
@@ -49,7 +48,7 @@ public class ContainerDisplay implements Display {
 		container.getHeaderPanel().addWidgetToRight(emailLabel);
 		container.getHeaderPanel().addWidgetToRight(
 				new Anchor("Profile", "#profile"));
-		container.getHeaderPanel().addWidgetToRight(new Anchor("Sign out", ""));
+		container.getHeaderPanel().addWidgetToRight(new Anchor("Sign out", result.getLogoutUrl()));
 		// setup link bar
 		container.addLinkToMainBar(new Anchor("Map", "#map"));
 		container.addLinkToMainBar(new Anchor("Studies", "#studies"));
@@ -65,19 +64,25 @@ public class ContainerDisplay implements Display {
 		container.setFooterPanel(new HTML(footer));
 	}
 
-	public void setStudy(String study) {
-		currentStudy = study;
-	}
-
 	public HasWidgets asHasWidgets() {
 		return container;
 	}
 
 	public String getCurrentStudy() {
-		return currentStudy;
+		if (studyBox == null || studyBox.getSelectedIndex()==-1){
+			return null;
+		}
+		return studyBox.getItemText(studyBox.getSelectedIndex());
 	}
 
 	public String[] getStudies() {
+		if (studyBox==null){
+			return null;
+		}
+		String[] studies = new String[studyBox.getItemCount()];
+		for(int i=0; i < studyBox.getItemCount(); i++){
+			studies[i] = studyBox.getItemText(i);
+		}
 		return studies;
 	}
 
@@ -86,7 +91,11 @@ public class ContainerDisplay implements Display {
 	}
 
 	public void setCurrentStudy(String study) {
-		currentStudy = study;
+		for(int i=0; i < studyBox.getItemCount(); i++){
+			if (studyBox.getItemText(i).equals(study)){
+				studyBox.setSelectedIndex(i);
+			}
+		}
 	}
 
 	public void setModel(DSM2Model result) {
@@ -103,8 +112,8 @@ public class ContainerDisplay implements Display {
 		if (studies == null) {
 			return;
 		}
-		for (String studie : studies) {
-			studyBox.addItem(studie);
+		for (String study : studies) {
+			studyBox.addItem(study);
 		}
 	}
 
@@ -130,8 +139,8 @@ public class ContainerDisplay implements Display {
 
 	public void setLinkBarActive(String token) {
 		if (token.indexOf("/") >= 0) {
-			token = token.substring(token.indexOf("/"));
+			token = token.substring(0,token.indexOf("/"));
 		}
-		container.setActiveMainLink(token);
+		container.setActiveMainLink('#'+token);
 	}
 }

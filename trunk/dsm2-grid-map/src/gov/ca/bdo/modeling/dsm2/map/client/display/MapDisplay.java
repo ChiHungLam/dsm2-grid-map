@@ -211,28 +211,12 @@ public class MapDisplay extends ResizeComposite implements Display,
 
 	public void setEditMode(boolean editMode) {
 		mapPanel.setEditMode(editMode);
-		controlPanel.setEditMode(editMode);
 	}
 
 	public HasClickHandlers getSaveEditButton() {
 		return controlPanel.getSaveEditButton();
 	}
 
-	public HasClickHandlers getMeasureLengthButton() {
-		return controlPanel.getMeasureLengthButton();
-	}
-
-	public HasClickHandlers getMeasureAreaButton() {
-		return controlPanel.getMeasureAreaButton();
-	}
-
-	public HasClickHandlers getDisplayElevationButton() {
-		return controlPanel.getDisplayElevationButton();
-	}
-
-	public HasClickHandlers getDisplayElevationProfileButton() {
-		return controlPanel.getDisplayElevationProfileButton();
-	}
 
 	public void startMeasuringDistanceAlongLine() {
 		if (lengthMeasurer == null) {
@@ -293,10 +277,6 @@ public class MapDisplay extends ResizeComposite implements Display,
 				mapPanel.getMap().addOverlay(overlay);
 			}
 		});
-	}
-
-	public HasClickHandlers getFlowLineButton() {
-		return controlPanel.getFlowLineButton();
 	}
 
 	public void hideFlowLines() {
@@ -360,8 +340,10 @@ public class MapDisplay extends ResizeComposite implements Display,
 			elevationProfileDisplayer = new ElevationProfileDisplayer(mapPanel
 					.getMap(), infoPanel);
 		}
+		/*
 		elevationProfileDisplayer
 				.startDrawingLine((ToggleButton) getDisplayElevationProfileButton());
+				*/
 	}
 
 	public void stopDrawingElevationProfileLine() {
@@ -442,22 +424,6 @@ public class MapDisplay extends ResizeComposite implements Display,
 
 	public void centerAndZoomOnNode(String nodeId) {
 		mapPanel.centerAndZoomOnNode(nodeId);
-	}
-
-	public HasClickHandlers getFindButton() {
-		return controlPanel.getFindButton();
-	}
-
-	public HasText getFindTextBox() {
-		return controlPanel.getFindTextBox();
-	}
-
-	public PushButton getDownloadHydroButton() {
-		return controlPanel.getDownloadHydroButton();
-	}
-
-	public PushButton getDownloadGISButton() {
-		return controlPanel.getDownloadGISButton();
 	}
 
 }
