@@ -10,6 +10,8 @@ import gov.ca.bdo.modeling.dsm2.map.client.service.LoginServiceAsync;
 import gov.ca.dsm2.input.model.DSM2Model;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.URL;
@@ -81,11 +83,23 @@ public class ContainerPresenter implements Presenter {
 					new AsyncCallback<LoginInfo>() {
 
 						public void onSuccess(LoginInfo result) {
+							if (!result.isLoggedIn()){
+								Location.replace("/welcome.jsp");
+								return;
+							}
 							display.setLoginInfo(result);
 							eventBus.fireEvent(new MessageEvent(
 									"You are now logged in as: "
 											+ result.getEmailAddress(),
 									MessageEvent.WARNING, 2000));
+							// bind study change events
+							display.onStudyChange().addChangeHandler(new ChangeHandler() {
+								
+								public void onChange(ChangeEvent event) {
+									String currentStudy = display.getCurrentStudy();
+									loadStudy(currentStudy);
+								}
+							});
 							// load studies and set current study.
 							loadStudies();
 						}
@@ -176,6 +190,7 @@ public class ContainerPresenter implements Presenter {
 				setStudyToHistory(study);
 				display.setCurrentStudy(study);
 				display.setModel(result);
+				eventBus.fireEvent(new MessageEvent("Loaded study: "+study,2000));
 				if (result != null) {
 					eventBus.fireEvent(new DSM2StudyEvent(study, result));
 				}
