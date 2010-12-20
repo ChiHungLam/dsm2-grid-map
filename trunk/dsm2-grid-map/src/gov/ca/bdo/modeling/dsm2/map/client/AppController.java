@@ -91,7 +91,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 				presenter = mapPresenter;
 			} else if (token.equals("studies")) {
 				presenter = new DSM2StudyManagerPresenter(dsm2InputService,
-						eventBus, new StudyManagerDisplay());
+						eventBus, new StudyManagerDisplay(containerDisplay),containerPresenter);
 			} else if (token.equals("xsection")) {
 				presenter = new XSectionEditorPresenter(dsm2InputService,
 						bathymetryService, demService, eventBus,

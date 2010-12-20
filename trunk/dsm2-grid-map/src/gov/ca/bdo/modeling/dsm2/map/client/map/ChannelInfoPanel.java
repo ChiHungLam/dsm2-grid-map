@@ -44,7 +44,7 @@ import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 public class ChannelInfoPanel extends Composite {
 
 	private FlowPanel xsectionPanel;
-	private DisclosurePanel xsectionDisclosure;
+	private FlowPanel xsectionDisclosure;
 	private FlowPanel xsectionContainerPanel;
 
 	public ChannelInfoPanel(Channel channel, final MapPanel mapPanel) {
@@ -53,18 +53,16 @@ public class ChannelInfoPanel extends Composite {
 		xsectionContainerPanel.add(xsectionPanel);
 		drawXSection(channel, -1);
 		VerticalPanel vpanel = new VerticalPanel();
-		DisclosurePanel basicDisclosure = new DisclosurePanel("Basic");
-		basicDisclosure.setOpen(true);
-		basicDisclosure.add(getBasicInfoPanel(channel));
+		FlowPanel basicPanel = new FlowPanel();
+		basicPanel.add(getBasicInfoPanel(channel));
 		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
 				channel.getUpNodeId());
 		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
 				channel.getDownNodeId());
 		// basicDisclosure.add(getXSectionGenerationPanel(channel, upNode,
 		// downNode));
-		vpanel.add(basicDisclosure);
-		xsectionDisclosure = new DisclosurePanel("XSection");
-		xsectionDisclosure.setOpen(true);
+		vpanel.add(basicPanel);
+		xsectionDisclosure = new FlowPanel();
 		xsectionDisclosure.add(xsectionContainerPanel);
 		vpanel.add(xsectionDisclosure);
 		initWidget(vpanel);
