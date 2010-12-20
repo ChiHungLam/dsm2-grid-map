@@ -35,20 +35,25 @@
 
 /* Table styling */
 .blue-bordered {
-	margin-bottom: 0.5em;
+	margin: 0.5em;
 	border: 1px solid #C5D7EF;
 	border-collapse: collapse;
 	font-size: 1em;
-	width: 100%;
+	width: 90%;
+}
+
+.blue-bordered td {
+	border: 1px solid #CCCCCC;
+	text-align: center;
 }
 
 .table-header {
-	background: #C5D7EF none repeat scroll 0 0;
-	font-weight: bold;
-	text-align: center;
-	vertical-align: bottom;
-	margin: 0;
-	padding: 0.35em 1em 0.25em 0.35em;
+    background: none repeat scroll 0 0 #EEEEEE;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    padding-right: 1px;
+    text-align: left;
+    border: 1px solid #CCCCCC;
 }
 
 /* Add some space between the blue border and the interior stuff */

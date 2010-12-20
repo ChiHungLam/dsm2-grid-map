@@ -1,6 +1,8 @@
 package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
+import gov.ca.bdo.modeling.dsm2.map.client.event.DSM2StudyEvent;
+import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 
 import java.util.ArrayList;
@@ -9,7 +11,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -22,19 +23,13 @@ public class DSM2StudyManagerPresenter implements Presenter {
 
 		public void clearTable();
 
+		public ArrayList<String> getSelectedStudies();
+
 		public void addRowForStudy(String studyName);
-
-		public void showErrorMessage(String message);
-
-		public void showMessage(String message);
 
 		public HasClickHandlers getDeleteButton();
 
-		public ArrayList<String> getSelectedStudies();
-
 		public void removeStudy(String study);
-
-		public void clearMessages();
 
 		public HasClickHandlers getShareButton();
 
@@ -45,29 +40,30 @@ public class DSM2StudyManagerPresenter implements Presenter {
 	private DSM2InputServiceAsync dsm2InputService;
 	private SimpleEventBus eventBus;
 	private Display display;
+	private ContainerPresenter containerPresenter;
 
 	public DSM2StudyManagerPresenter(DSM2InputServiceAsync dsm2InputService,
-			SimpleEventBus eventBus2, Display display) {
+			SimpleEventBus eventBus2, Display display, ContainerPresenter containerPresenter) {
+		this.containerPresenter = containerPresenter;
 		this.dsm2InputService = dsm2InputService;
 		this.eventBus = eventBus2;
 		this.display = display;
 	}
 
 	public void bind() {
-		display.showMessage("Loading...");
+		eventBus.fireEvent(new MessageEvent("Loading studies.."));
 		dsm2InputService.getStudyNames(new AsyncCallback<String[]>() {
 
 			public void onSuccess(final String[] result) {
 				display.clearTable();
-				display.clearMessages();
+				eventBus.fireEvent(new MessageEvent(""));
 				for (String element : result) {
 					display.addRowForStudy(element);
 				}
 			}
 
 			public void onFailure(Throwable caught) {
-				display
-						.showErrorMessage("Oops! An error occurred. Please try again");
+				eventBus.fireEvent(new MessageEvent("Could not retrieve the study names! "+caught.getMessage(), MessageEvent.ERROR));
 			}
 		});
 
@@ -79,14 +75,12 @@ public class DSM2StudyManagerPresenter implements Presenter {
 							new AsyncCallback<Void>() {
 
 								public void onFailure(Throwable caught) {
-									display.showErrorMessage("Error "
-											+ caught.getMessage()
-											+ " occurred deleting study "
-											+ study);
+									eventBus.fireEvent(new MessageEvent("Error deleting study! "+caught.getMessage(), MessageEvent.ERROR));
 								}
 
 								public void onSuccess(Void result) {
 									display.removeStudy(study);
+									eventBus.fireEvent(new DSM2StudyEvent(study, DSM2StudyEvent.DELETE));
 								}
 							});
 				}
@@ -101,11 +95,7 @@ public class DSM2StudyManagerPresenter implements Presenter {
 							new AsyncCallback<String>() {
 
 								public void onFailure(Throwable caught) {
-									display
-											.showErrorMessage("Error "
-													+ caught.getMessage()
-													+ " generating sharing key for study "
-													+ study);
+									eventBus.fireEvent(new MessageEvent("Error sharing study: "+study+" "+caught.getMessage(), MessageEvent.ERROR));
 								}
 
 								public void onSuccess(String result) {
@@ -117,7 +107,7 @@ public class DSM2StudyManagerPresenter implements Presenter {
 				}
 			}
 		});
-
+		
 	}
 
 	public void go(HasWidgets container) {

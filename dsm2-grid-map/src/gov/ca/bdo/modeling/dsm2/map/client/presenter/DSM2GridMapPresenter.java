@@ -54,15 +54,9 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void setEditMode(boolean editMode);
 
-		public void turnOffTextAnnotation();
-
 		public HasClickHandlers getAddButton();
 
 		public HasClickHandlers getDeleteButton();
-
-		public void startShowingBathymetryPoints();
-
-		public void stopShowingBathymetryPoints();
 
 		public void setAddingMode(boolean down);
 
