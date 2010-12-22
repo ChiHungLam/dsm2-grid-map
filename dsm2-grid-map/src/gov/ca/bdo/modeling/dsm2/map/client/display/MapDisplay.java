@@ -50,6 +50,7 @@ import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -59,13 +60,18 @@ public class MapDisplay extends ResizeComposite implements
 	protected SplitLayoutPanel mainPanel;
 	protected ContainerDisplay containerDisplay;
 	protected MapPanel mapPanel;
-	protected Widget sidePanel;
+	protected Panel sidePanel;
 	protected boolean viewOnly;
-	
-	public MapDisplay(ContainerDisplay display, boolean viewOnly, Widget sidePanel) {
+
+	public MapDisplay(ContainerDisplay display, boolean viewOnly,
+			Panel sidePanel) {
 		this.viewOnly = viewOnly;
 		containerDisplay = display;
 		this.sidePanel = sidePanel;
+		mainPanel = new SplitLayoutPanel();
+		mainPanel.setStyleName("map-split-layout-panel");
+
+		initWidget(mainPanel);
 		// layout top level things here
 		if (!Maps.isLoaded()) {
 			Window
@@ -99,13 +105,11 @@ public class MapDisplay extends ResizeComposite implements
 			mapLoadCallback.run();
 		}
 	}
-	
-	protected void initializeUI(){
-		mainPanel = new SplitLayoutPanel();
-		initWidget(mainPanel);
-		mainPanel.setStyleName("map-split-layout-panel");
+
+	protected void initializeUI() {
+		mainPanel.addWest(sidePanel, 610);
 		mainPanel.add(mapPanel = new MapPanel());
-		mainPanel.add(sidePanel);
+		mapPanel.setInfoPanel(sidePanel);
 	}
 
 	public Widget asWidget() {

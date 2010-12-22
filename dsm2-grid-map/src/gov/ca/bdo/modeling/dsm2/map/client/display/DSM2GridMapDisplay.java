@@ -40,38 +40,101 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.map.AddMapElementClickHandler;
+import gov.ca.bdo.modeling.dsm2.map.client.map.ElementType;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
 
+import java.util.HashMap;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.event.MapClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DSM2GridMapDisplay extends MapDisplay implements Display{
+public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private AddMapElementClickHandler addMapElementHandler;
 	private MapClickHandler deleteMapElementHandler;
-	private MapControlPanel controlPanel;
+	private FlowPanel controlPanel;
 	private FlowPanel infoPanel;
+	private ToggleButton saveEditButton;
+	private Panel addRemovePanel;
+	private Button addButton;
+	private Button deleteButton;
+	private ListBox elementTypeBox;
+	private HashMap<String, Integer> mapTypeToId;
 
 	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly) {
 		super(display, viewOnly, new VerticalPanel());
+		controlPanel = new FlowPanel();
+		controlPanel.setStyleName("control-panel");
+		HorizontalPanel editPanel = new HorizontalPanel();
+		editPanel.setStyleName("edit-panel");
+		controlPanel.add(editPanel);
+		editPanel.add(saveEditButton = new ToggleButton("Edit", "Save"));
+		addRemovePanel = new HorizontalPanel();
+		final CaptionPanel addRemoveCaptionPanel = new CaptionPanel(
+				"Add/Remove");
+		addRemoveCaptionPanel.setVisible(false);
+		addRemoveCaptionPanel.add(addRemovePanel);
+		editPanel.add(addRemoveCaptionPanel);
+		VerticalPanel buttonPanel = new VerticalPanel();
+		buttonPanel.add(addButton = new Button("Add"));
+		buttonPanel.add(deleteButton = new Button("Delete"));
+		addRemovePanel.add(buttonPanel);
+		elementTypeBox = new ListBox();
+		mapTypeToId = new HashMap<String, Integer>();
+		mapTypeToId.put("Node", ElementType.NODE);
+		mapTypeToId.put("Channel", ElementType.CHANNEL);
+		mapTypeToId.put("Reservoir", ElementType.RESERVOIR);
+		mapTypeToId.put("Gate", ElementType.GATE);
+		mapTypeToId.put("XSection", ElementType.XSECTION);
+		mapTypeToId.put("Output", ElementType.OUTPUT);
+		mapTypeToId.put("Text", ElementType.TEXT);
+		mapTypeToId.put("KML", ElementType.KML);
+		String[] elementTypes = new String[] { "Node", "Channel", "Reservoir",
+				"Gate", "XSection", "Output", "Text", "KML" };
+		for (String item : elementTypes) {
+			elementTypeBox.addItem(item);
+		}
+		addRemovePanel.add(elementTypeBox);
+		saveEditButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				if (saveEditButton.isDown()) {
+					addRemoveCaptionPanel.setVisible(true);
+				} else {
+					addRemoveCaptionPanel.setVisible(false);
+				}
+			}
+		});
+		saveEditButton.setEnabled(!viewOnly);
+		infoPanel = new FlowPanel();
+		infoPanel.setStyleName("info-panel");
+		CaptionPanel captionInfoPanel = new CaptionPanel();
+		captionInfoPanel.setCaptionText("Info");
+		captionInfoPanel.add(infoPanel);
+		controlPanel.add(captionInfoPanel);
 	}
-	
+
 	@Override
-	protected void initializeUI(){
+	protected void initializeUI() {
 		super.initializeUI();
 		// layout top level things here
 		VerticalPanel sidePanel = (VerticalPanel) super.getSidePanel();
-		controlPanel = new MapControlPanel(viewOnly);
-		sidePanel.add(controlPanel);
-		infoPanel = new FlowPanel();
-		sidePanel.add(infoPanel);
-		infoPanel.setStyleName("infoPanel");		
+		sidePanel.add(new ScrollPanel(controlPanel));
+		mapPanel.setInfoPanel(infoPanel);
 	}
 
 	public Widget asWidget() {
@@ -84,16 +147,21 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display{
 	}
 
 	public HasClickHandlers getSaveEditButton() {
-		return controlPanel.getSaveEditButton();
+		return saveEditButton;
 	}
 
-
 	public HasClickHandlers getAddButton() {
-		return controlPanel.getAddButton();
+		return addButton;
 	}
 
 	public HasClickHandlers getDeleteButton() {
-		return controlPanel.getDeleteButton();
+		return deleteButton;
+	}
+
+	public int getAddTypeSelected() {
+		return mapTypeToId.get(
+				elementTypeBox.getItemText(elementTypeBox.getSelectedIndex()))
+				.intValue();
 	}
 
 	public void setAddingMode(boolean down) {
@@ -101,7 +169,7 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display{
 		if (!down) {
 			mapPanel.getMap().removeMapClickHandler(addMapElementHandler);
 		} else {
-			int addTypeSelected = controlPanel.getAddTypeSelected();
+			int addTypeSelected = getAddTypeSelected();
 			if (addMapElementHandler == null) {
 				addMapElementHandler = new AddMapElementClickHandler(mapPanel,
 						addTypeSelected);

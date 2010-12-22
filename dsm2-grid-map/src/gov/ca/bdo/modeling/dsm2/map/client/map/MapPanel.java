@@ -55,7 +55,6 @@ import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -66,11 +65,8 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
-import com.google.gwt.maps.utility.client.DefaultPackage;
-import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 
@@ -195,7 +191,9 @@ public class MapPanel extends ResizeComposite {
 	}
 
 	protected void populateNodeMarkers() {
-		getNodeManager().displayNodeMarkers();
+		if (getNodeManager() != null) {
+			getNodeManager().displayNodeMarkers();
+		}
 	}
 
 	protected void populateChannelLines() {

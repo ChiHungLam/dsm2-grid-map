@@ -30,12 +30,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
-import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
@@ -112,14 +110,14 @@ public class ChannelClickHandler implements PolylineClickHandler {
 										.getIntersectionDistanceFromUpstream(
 												profile, channel, upNode,
 												downNode);
-								if (distance >= 0
-										&& distance <= channel.getLength()) {
+								if ((distance >= 0)
+										&& (distance <= channel.getLength())) {
 									double dratio = distance
 											/ channel.getLength();
-									dratio = Math.round(dratio*1000)/1000.0;
+									dratio = Math.round(dratio * 1000) / 1000.0;
 									profile.setDistance(dratio);
-									GWT
-											.log("Changing distance ratio for xsection"
+									System.out
+											.println("Changing distance ratio for xsection"
 													+ xSection.getChannelId()
 													+ " #"
 													+ xSectionIndex
@@ -190,9 +188,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			//
 			if (mapPanel.isInEditMode()) {
 				mapPanel.getMap().addMapClickHandler(new MapClickHandler() {
-					
+
 					public void onClick(MapClickEvent event) {
-						Window.setStatus(event.getLatLng()+"");
+						Window.setStatus(event.getLatLng() + "");
 					}
 				});
 				line.setEditingEnabled(true);
@@ -308,11 +306,16 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			points.add(point);
 		}
 		channel.setLatLngPoints(points);
-		Node upNode = mapPanel.getNodeManager().getNodes().getNode(channel.getUpNodeId());
-		Node downNode = mapPanel.getNodeManager().getNodes().getNode(channel.getDownNodeId());
-		LatLng[] pointsForChannel = ModelUtils.getPointsForChannel(channel, upNode, downNode);
-		double findDistanceUptoSegment = GeomUtils.findDistanceUptoSegment(pointsForChannel.length-1, pointsForChannel);
-		System.out.println("Channel length: "+channel.getLength()+" vs segment calc length: "+findDistanceUptoSegment);
+		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getUpNodeId());
+		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getDownNodeId());
+		LatLng[] pointsForChannel = ModelUtils.getPointsForChannel(channel,
+				upNode, downNode);
+		double findDistanceUptoSegment = GeomUtils.findDistanceUptoSegment(
+				pointsForChannel.length - 1, pointsForChannel);
+		System.out.println("Channel length: " + channel.getLength()
+				+ " vs segment calc length: " + findDistanceUptoSegment);
 	}
 
 	public void updateDisplay() {

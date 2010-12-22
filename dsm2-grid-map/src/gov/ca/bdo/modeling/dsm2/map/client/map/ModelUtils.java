@@ -253,13 +253,12 @@ public class ModelUtils {
 							.getLongitude(), p2.getLatitude(), p2
 							.getLongitude(), xp0, yp0, xp1, yp1, intersection);
 			LatLng ip = LatLng.newInstance(intersection[0], intersection[1]);
-			System.out.println("Interesection @ " + ip);
 			if (findLineSegmentIntersection == 1) {
 				LatLng intersectionPoint = LatLng.newInstance(intersection[0],
 						intersection[1]);
-				distance = GeomUtils.findDistanceUptoSegment(i-1,
+				distance = GeomUtils.findDistanceUptoSegment(i,
 						pointsForChannel);
-				distance += p1.distanceFrom(intersectionPoint);
+				distance = distance - p2.distanceFrom(intersectionPoint);
 			}
 		}
 		return distance;

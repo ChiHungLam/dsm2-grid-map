@@ -137,3 +137,17 @@
 	width: 250px;
 	height: 100%;
 }
+
+.edit-panel{
+	height: 86px;
+	vertical-align: middle;
+	margin: 0px 15px;
+}
+
+.edit-panel td{
+	margin: 0px 5px;
+}
+
+.info-panel {
+	min-width: 550px;
+}
