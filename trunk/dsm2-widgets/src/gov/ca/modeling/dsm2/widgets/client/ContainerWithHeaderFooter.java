@@ -27,16 +27,19 @@ public class ContainerWithHeaderFooter extends ResizeComposite implements
 	private static final String DEFAULT_MESSAGE = "Loading...";
 
 	private SimpleHeaderPanel headerPanel;
-	private MainBarPanel mainLinkBar;
+	private LinkBarPanel mainLinkBar;
 	private FlowPanel footerPanel;
 	private LayoutPanel containerPanel;
 	private FlowPanel loadingPanel;
+
+	private LinkBarPanel subLinkBar;
 
 	public ContainerWithHeaderFooter() {
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.PX);
 		FlowPanel northPanel = new FlowPanel();
 		northPanel.add(headerPanel = new SimpleHeaderPanel());
-		northPanel.add(mainLinkBar = new MainBarPanel());
+		northPanel.add(mainLinkBar = new LinkBarPanel("main-bar"));
+		northPanel.add(subLinkBar = new LinkBarPanel("sub-bar"));
 		loadingPanel = new FlowPanel();
 		loadingPanel.setStylePrimaryName("message-area");
 		loadingPanel.getElement().setId("loading-area");
@@ -58,6 +61,14 @@ public class ContainerWithHeaderFooter extends ResizeComposite implements
 
 	public void setActiveMainLink(String href) {
 		mainLinkBar.setActiveLink(href);
+	}
+	
+	public void addLinkToSubBar(Anchor anchor){
+		subLinkBar.add(anchor);
+	}
+	
+	public void setActiveSubLink(String href){
+		subLinkBar.setActiveLink(href);
 	}
 
 	public void setContentWidget(Widget content) {
