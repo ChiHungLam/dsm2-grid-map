@@ -5,27 +5,34 @@ import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyManagerPresenter.D
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
-public class StudyManagerDisplay extends Composite implements Display {
+public class StudyManagerDisplay extends ResizeComposite implements Display {
 	public FlexTable table;
 	private FlowPanel studyPanel;
 	private Button deleteButton;
 	public Button shareButton;
 	private ContainerDisplay containerDisplay;
+	private UploadStudyDataDisplay uploadStudyData;
+	private UploadStudyDisplay uploadStudy;
 
 	public StudyManagerDisplay(ContainerDisplay containerDisplay) {
 		this.containerDisplay = containerDisplay;
@@ -33,7 +40,12 @@ public class StudyManagerDisplay extends Composite implements Display {
 		clearTable();
 		studyPanel.add(deleteButton = new Button("Delete Selected"));
 		studyPanel.add(shareButton = new Button("Share Selected"));
-		initWidget(studyPanel);
+		TabLayoutPanel mainPanel = new TabLayoutPanel(30, Unit.PX);
+		mainPanel.add(studyPanel, "Manage");
+		mainPanel.add(uploadStudy = new UploadStudyDisplay(), "Upload Study");
+		mainPanel.add(uploadStudyData = new UploadStudyDataDisplay(),
+				"Upload Data");
+		initWidget(mainPanel);
 	}
 
 	public Widget asWidget() {
@@ -151,6 +163,50 @@ public class StudyManagerDisplay extends Composite implements Display {
 				}
 			}
 		}
+	}
+
+	public HasChangeHandlers getDataFile() {
+		return uploadStudyData.getDataFile();
+	}
+
+	public HasText getStudyDataName() {
+		return uploadStudyData.getStudyName();
+	}
+
+	public HasClickHandlers getUploadDataButton() {
+		return uploadStudyData.getUploadButton();
+	}
+
+	public void submitDataForm() {
+		uploadStudyData.submitForm();
+	}
+
+	public void addSubmitDataCompleteHandler(SubmitCompleteHandler handler) {
+		uploadStudyData.addSubmitCompleteHandler(handler);
+	}
+
+	public HasChangeHandlers getEchoFile() {
+		return uploadStudy.getEchoFile();
+	}
+
+	public HasChangeHandlers getGisFile() {
+		return uploadStudy.getGisFile();
+	}
+
+	public HasText getStudyName() {
+		return uploadStudy.getStudyName();
+	}
+
+	public HasClickHandlers getUploadButton() {
+		return uploadStudy.getUploadButton();
+	}
+
+	public void submitForm() {
+		uploadStudy.submitForm();
+	}
+
+	public void addSubmitCompleteHandler(SubmitCompleteHandler handler) {
+		uploadStudy.addSubmitCompleteHandler(handler);
 	}
 
 }

@@ -96,6 +96,7 @@ public class MapPanel extends ResizeComposite {
 	private Timer timer;
 
 	public MapPanel() {
+		// FIXME: the center of the map should be configurable.
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
 		visibilityControl = new GridVisibilityControl(this);
@@ -106,15 +107,16 @@ public class MapPanel extends ResizeComposite {
 		initWidget(getMap());
 		// add zoom handler to hide channels at a certain zoom level
 		map.addMapZoomEndHandler(new MapZoomEndHandler() {
+			static final int ZOOM_LEVEL = 10;
 
 			public void onZoomEnd(MapZoomEndEvent event) {
-				if ((event.getNewZoomLevel() <= 10)
-						&& (event.getOldZoomLevel() > 10)) {
-					hideChannelLines(true);
+				if ((event.getNewZoomLevel() <= ZOOM_LEVEL)
+						&& (event.getOldZoomLevel() > ZOOM_LEVEL)) {
+					hideNodeMarkers(true);
 				}
-				if ((event.getOldZoomLevel() >= 10)
-						&& (event.getNewZoomLevel() > 10)) {
-					hideChannelLines(visibilityControl.getHideChannels());
+				if ((event.getOldZoomLevel() >= ZOOM_LEVEL)
+						&& (event.getNewZoomLevel() > ZOOM_LEVEL)) {
+					hideNodeMarkers(visibilityControl.getHideNodes().getValue());
 				}
 			}
 		});
@@ -166,16 +168,20 @@ public class MapPanel extends ResizeComposite {
 	}
 
 	private void populateOutputMarkers() {
-		outputMarkerDataManager = new OutputMarkerDataManager();
-		outputMarkerDataManager.setModel(model, this);
-		outputMarkerDataManager.addMarkers(map);
+		if (!visibilityControl.getHideOutputs().getValue()) {
+			outputMarkerDataManager = new OutputMarkerDataManager();
+			outputMarkerDataManager.setModel(model, this);
+			outputMarkerDataManager.addMarkers(map);
+		}
 	}
 
 	private void populateBoundaryMarkers() {
-		if (boundaryOverlayManager != null) {
-			boundaryOverlayManager = new BoundaryMarkerDataManager();
-			boundaryOverlayManager.setModel(model, this);
-			boundaryOverlayManager.addMarkers(map);
+		if (!visibilityControl.getHideBoundaries().getValue()) {
+			if (boundaryOverlayManager != null) {
+				boundaryOverlayManager = new BoundaryMarkerDataManager();
+				boundaryOverlayManager.setModel(model, this);
+				boundaryOverlayManager.addMarkers(map);
+			}
 		}
 	}
 
@@ -195,29 +201,40 @@ public class MapPanel extends ResizeComposite {
 
 	protected void populateNodeMarkers() {
 		if (getNodeManager() != null) {
-			getNodeManager().displayNodeMarkers();
+			if (!visibilityControl.getHideNodes().getValue()) {
+				getNodeManager().displayNodeMarkers();
+			}
 		}
 	}
 
 	protected void populateChannelLines() {
 		flowLines = null;
-		getChannelManager().addLines();
+		if (!visibilityControl.getHideChannels().getValue()) {
+			getChannelManager().addLines();
+		}
 	}
 
 	protected void populateGateImages() {
-		Gates gates = model.getGates();
-		gateOverlayManager = new GateOverlayManager(this, gates);
-		gateOverlayManager.addGates();
+		if (!visibilityControl.getHideGates().getValue()) {
+			Gates gates = model.getGates();
+			gateOverlayManager = new GateOverlayManager(this, gates);
+			gateOverlayManager.addGates();
+		}
 	}
 
 	protected void populateReservoirMarkers() {
-		Reservoirs reservoirs = model.getReservoirs();
-		reservoirOverlayManager = new ReservoirOverlayManager(this);
-		reservoirOverlayManager.setReservoirs(reservoirs);
-		reservoirOverlayManager.displayReservoirMarkers();
+		if (!visibilityControl.getHideReservoirs().getValue()) {
+			Reservoirs reservoirs = model.getReservoirs();
+			reservoirOverlayManager = new ReservoirOverlayManager(this);
+			reservoirOverlayManager.setReservoirs(reservoirs);
+			reservoirOverlayManager.displayReservoirMarkers();
+		}
 	}
 
-	public void hideMarkers(boolean hide) {
+	public void hideNodeMarkers(boolean hide) {
+		if (getNodeManager() == null) {
+			return;
+		}
 		if (hide) {
 			getNodeManager().clearNodeMarkers();
 		} else {
