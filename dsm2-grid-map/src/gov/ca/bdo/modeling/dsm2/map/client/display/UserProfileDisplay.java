@@ -19,7 +19,6 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
-import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.UserProfilePresenter.Display;
 
 import java.util.List;
@@ -39,14 +38,10 @@ public class UserProfileDisplay extends Composite implements Display {
 	private final FlexTable table;
 	private TextBox emailBox;
 	private Button addButton;
-	private HeaderPanel headerPanel;
 
 	public UserProfileDisplay() {
 		table = new FlexTable();
 		VerticalPanel vpanel = new VerticalPanel();
-		headerPanel = new HeaderPanel();
-		headerPanel.clearMessages();
-		vpanel.add(headerPanel);
 		vpanel.add(table);
 		HorizontalPanel addUserPanel = new HorizontalPanel();
 		vpanel.add(addUserPanel);

@@ -39,134 +39,50 @@
  *******************************************************************************/
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
-import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
-import gov.ca.bdo.modeling.dsm2.map.client.map.AddMapElementClickHandler;
-import gov.ca.bdo.modeling.dsm2.map.client.map.MapControlPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
-import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
-import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
-import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
-import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.DSM2Model;
-import gov.ca.modeling.maps.elevation.client.BathymetryDisplayer;
-import gov.ca.modeling.maps.elevation.client.ElevationDisplayer;
-import gov.ca.modeling.maps.elevation.client.ElevationProfileDisplayer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasInitializeHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.layout.client.Layout.AnimationCallback;
-import com.google.gwt.layout.client.Layout.Layer;
-import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
-import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
-import com.google.gwt.maps.client.overlay.GeoXmlOverlay;
-import com.google.gwt.maps.client.overlay.PolyStyleOptions;
-import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MapDisplay extends ResizeComposite implements Display,
+public class MapDisplay extends ResizeComposite implements
 		HasInitializeHandlers {
-	private MapPanel mapPanel;
-	private final MapControlPanel controlPanel;
-	private final FlowPanel infoPanel;
-	private final VerticalPanel controlPanelContainer;
-	private MeasuringDistanceAlongLine lengthMeasurer;
-	private MeasuringAreaInPolygon areaMeasurer;
-	private ElevationDisplayer elevationDisplayer;
-	private SplitLayoutPanel centerPanel;
-	private ContainerDisplay containerDisplay;
-
-	public MapDisplay(ContainerDisplay display, boolean viewOnly) {
+	protected SplitLayoutPanel mainPanel;
+	protected ContainerDisplay containerDisplay;
+	protected MapPanel mapPanel;
+	protected Widget sidePanel;
+	protected boolean viewOnly;
+	
+	public MapDisplay(ContainerDisplay display, boolean viewOnly, Widget sidePanel) {
+		this.viewOnly = viewOnly;
 		containerDisplay = display;
+		this.sidePanel = sidePanel;
 		// layout top level things here
-		controlPanel = new MapControlPanel(viewOnly);
-		infoPanel = new FlowPanel();
-		infoPanel.setStyleName("infoPanel");
-
-		controlPanelContainer = new VerticalPanel();
-		controlPanelContainer.add(controlPanel);
-		DisclosurePanel infoPanelContainer = new DisclosurePanel();
-		infoPanelContainer.setOpen(true);
-		infoPanelContainer.setHeader(new Label("Selected Element Info"));
-		infoPanelContainer.add(infoPanel);
-		controlPanelContainer.add(infoPanelContainer);
-		centerPanel = new SplitLayoutPanel();
-		centerPanel.setStyleName("map-split-layout-panel");
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-			public void execute() {
-				loadMaps();
-			}
-		});
-		initWidget(centerPanel);
-	}
-
-	public Widget asWidget() {
-		return this;
-	}
-
-	public void loadMaps() {
 		if (!Maps.isLoaded()) {
-			containerDisplay
-					.showMessage(
-							"The Maps API is not installed."
-									+ "  The <script> tag that loads the Maps API may be missing or your Maps key may be wrong.",
-							MessageEvent.ERROR, 0);
+			Window
+					.alert("The Maps API is not installed."
+							+ "  The <script> tag that loads the Maps API may be missing or your Maps key may be wrong.");
 			return;
 		}
 
 		if (!Maps.isBrowserCompatible()) {
-			containerDisplay.showMessage(
-					"The Maps API is not compatible with this browser.",
-					MessageEvent.ERROR, 0);
+			Window.alert("The Maps API is not compatible with this browser.");
 			return;
 		}
+
 		Runnable mapLoadCallback = new Runnable() {
 
 			public void run() {
-				mapPanel = new MapPanel();
-				mapPanel.setInfoPanel(infoPanel);
-				Widget westWidget = new ScrollPanel(controlPanelContainer);
-				centerPanel.addWest(westWidget, 550);
-				centerPanel.setWidgetSize(westWidget, 550);
-				centerPanel.add(mapPanel);
-				mapPanel.setStudy(containerDisplay.getCurrentStudy());
-				mapPanel.setModel(containerDisplay.getModel());
-				refresh();
-
-				InitializeEvent.fire(MapDisplay.this);
-
-				RootLayoutPanel.get().animate(0, new AnimationCallback() {
-					public void onLayout(Layer layer, double progress) {
-					}
-
-					public void onAnimationComplete() {
-						mapPanel.onResize();
-					}
-				});
+				initializeUI();
 			}
 		};
 
@@ -182,6 +98,26 @@ public class MapDisplay extends ResizeComposite implements Display,
 		} else {
 			mapLoadCallback.run();
 		}
+	}
+	
+	protected void initializeUI(){
+		mainPanel = new SplitLayoutPanel();
+		initWidget(mainPanel);
+		mainPanel.setStyleName("map-split-layout-panel");
+		mainPanel.add(mapPanel = new MapPanel());
+		mainPanel.add(sidePanel);
+	}
+
+	public Widget asWidget() {
+		return this;
+	}
+
+	public MapPanel getMapPanel() {
+		return mapPanel;
+	}
+
+	public Widget getSidePanel() {
+		return sidePanel;
 	}
 
 	public DSM2Model getModel() {
@@ -211,219 +147,6 @@ public class MapDisplay extends ResizeComposite implements Display,
 
 	public void setEditMode(boolean editMode) {
 		mapPanel.setEditMode(editMode);
-	}
-
-	public HasClickHandlers getSaveEditButton() {
-		return controlPanel.getSaveEditButton();
-	}
-
-
-	public void startMeasuringDistanceAlongLine() {
-		if (lengthMeasurer == null) {
-			lengthMeasurer = new MeasuringDistanceAlongLine(mapPanel
-					.getMapWidget());
-			lengthMeasurer.addPolyline();
-		}
-	}
-
-	public void stopMeasuringDistanceAlongLine() {
-		if (lengthMeasurer != null) {
-			lengthMeasurer.clearOverlay();
-			lengthMeasurer = null;
-		}
-	}
-
-	public void startMeasuringAreaInPolygon() {
-		if (areaMeasurer == null) {
-			areaMeasurer = new MeasuringAreaInPolygon(mapPanel.getMap());
-			areaMeasurer.addPolyline();
-		}
-	}
-
-	public void stopMeasuringAreaInPolygon() {
-		if (areaMeasurer != null) {
-			areaMeasurer.clearOverlay();
-			areaMeasurer = null;
-		}
-	}
-
-	public void turnOnTextAnnotation() {
-		mapPanel.turnOnTextAnnotation();
-	}
-
-	public void turnOffTextAnnotation() {
-		mapPanel.turnOffTextAnnotation();
-	}
-
-	public void addKmlOverlay(final String url) {
-		GeoXmlOverlay.load(url, new GeoXmlLoadCallback() {
-
-			@Override
-			public void onFailure(String url, Throwable e) {
-				StringBuffer message = new StringBuffer("KML File " + url
-						+ " failed to load");
-				if (e != null) {
-					message.append(e.toString());
-				}
-				Window.alert(message.toString());
-			}
-
-			@Override
-			public void onSuccess(String url, GeoXmlOverlay overlay) {
-				if (overlay == null) {
-					return;
-				}
-				GWT.log("KML File " + url + " loaded successfully", null);
-				mapPanel.getMap().addOverlay(overlay);
-			}
-		});
-	}
-
-	public void hideFlowLines() {
-		mapPanel.hideFlowLines();
-	}
-
-	public void showFlowLines() {
-		mapPanel.showFlowLines();
-	}
-
-	private Polyline line;
-	private ElevationProfileDisplayer elevationProfileDisplayer;
-	private BathymetryDisplayer bathymetryDisplayer;
-	private AddMapElementClickHandler addMapElementHandler;
-	private MapClickHandler deleteMapElementHandler;
-
-	public void addLine(Channel channel) {
-		MapWidget map = mapPanel.getMap();
-		PolyStyleOptions style = PolyStyleOptions.newInstance("#0000ff", 3, 1);
-		if (line != null) {
-			map.removeOverlay(line);
-		}
-		line = new Polyline(new LatLng[0]);
-		map.addOverlay(line);
-		line.setDrawingEnabled();
-		line.setEditingEnabled(true);
-		line.setStrokeStyle(style);
-		line.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
-
-			public void onUpdate(PolylineLineUpdatedEvent event) {
-				if (line.getVertexCount() == 2) {
-					line.setEditingEnabled(false);
-
-					// drawLineButton.setDown(false);
-					// drawXSection(line.getVertex(0),line.getVertex(1));
-				}
-			}
-		});
-
-	}
-
-	public double getLengthInFeet() {
-		return Math.round(line.getLength() * 3.2808399 * 100) / 100;
-	}
-
-	public void startClickingForElevation() {
-		if (elevationDisplayer == null) {
-			elevationDisplayer = new ElevationDisplayer(mapPanel.getMap());
-		}
-		elevationDisplayer.start();
-	}
-
-	public void stopClickingForElevation() {
-		if (elevationDisplayer != null) {
-			elevationDisplayer.stop();
-		}
-	}
-
-	public void startDrawingElevationProfileLine() {
-		if (elevationProfileDisplayer == null) {
-			elevationProfileDisplayer = new ElevationProfileDisplayer(mapPanel
-					.getMap(), infoPanel);
-		}
-		/*
-		elevationProfileDisplayer
-				.startDrawingLine((ToggleButton) getDisplayElevationProfileButton());
-				*/
-	}
-
-	public void stopDrawingElevationProfileLine() {
-		if (elevationProfileDisplayer != null) {
-			elevationProfileDisplayer.stopDrawingLine();
-		}
-	}
-
-	public HasClickHandlers getAddButton() {
-		return controlPanel.getAddButton();
-	}
-
-	public HasClickHandlers getDeleteButton() {
-		return controlPanel.getDeleteButton();
-	}
-
-	public void startShowingBathymetryPoints() {
-		if (bathymetryDisplayer == null) {
-			bathymetryDisplayer = new BathymetryDisplayer(mapPanel.getMap());
-		}
-		bathymetryDisplayer.activateShowDataHandler(true);
-	}
-
-	public void stopShowingBathymetryPoints() {
-		if (bathymetryDisplayer != null) {
-			bathymetryDisplayer.activateShowDataHandler(false);
-		}
-	}
-
-	public void setAddingMode(boolean down) {
-		clearDeleteingMode();
-		if (!down) {
-			mapPanel.getMap().removeMapClickHandler(addMapElementHandler);
-		} else {
-			int addTypeSelected = controlPanel.getAddTypeSelected();
-			if (addMapElementHandler == null) {
-				addMapElementHandler = new AddMapElementClickHandler(mapPanel,
-						addTypeSelected);
-			} else {
-				addMapElementHandler.setType(addTypeSelected);
-			}
-			mapPanel.getMap().addMapClickHandler(addMapElementHandler);
-		}
-	}
-
-	public void setDeletingMode(boolean down) {
-		clearAddingMode();
-		((ToggleButton) getAddButton()).setDown(false);
-		if (!down) {
-			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
-		} else {
-			if (deleteMapElementHandler == null) {
-				deleteMapElementHandler = new DeleteMapElementClickHandler(
-						mapPanel);
-			}
-			mapPanel.getMap().addMapClickHandler(deleteMapElementHandler);
-		}
-	}
-
-	private void clearAddingMode() {
-		((ToggleButton) getAddButton()).setDown(false);
-		if (addMapElementHandler != null) {
-			mapPanel.getMap().removeMapClickHandler(addMapElementHandler);
-		}
-
-	}
-
-	private void clearDeleteingMode() {
-		((ToggleButton) getDeleteButton()).setDown(false);
-		if (deleteMapElementHandler != null) {
-			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
-		}
-	}
-
-	public void centerAndZoomOnChannel(String channelId) {
-		mapPanel.centerAndZoomOnChannel(channelId);
-	}
-
-	public void centerAndZoomOnNode(String nodeId) {
-		mapPanel.centerAndZoomOnNode(nodeId);
 	}
 
 }

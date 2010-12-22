@@ -1,6 +1,5 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
-import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.UnauthorizedUserPresenter.Display;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -22,12 +21,9 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 	private TextBox emailField;
 	private Button submitButton;
 	private DockLayoutPanel mainPanel;
-	private HeaderPanel headerPanel;
 	private FormPanel formPanel;
 
 	public UnauthorizedUserDisplay() {
-		headerPanel = new HeaderPanel(true);
-		headerPanel.clearMessages();
 
 		emailField = new TextBox();
 		emailField.setName("email");
@@ -43,8 +39,7 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 		formPanel.setMethod("post");
 		FlowPanel elementsPanel = new FlowPanel();
 		formPanel.add(elementsPanel);
-		String email = headerPanel.getEmail() == null ? "" : headerPanel
-				.getEmail();
+		String email = "";//FIXME:?
 		elementsPanel.add(new HTML("<p>Your user id " + email
 				+ " is not authorized to access this application!</p>"));
 		elementsPanel
@@ -66,7 +61,6 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 		mainPanel = new DockLayoutPanel(Unit.EM);
 		mainPanel.addWest(new FlowPanel(), 5);
 		mainPanel.addEast(new FlowPanel(), 5);
-		mainPanel.addNorth(headerPanel, 2);
 		mainPanel.addSouth(new HTML(""), 1);
 		mainPanel.add(containerPanel);
 		initWidget(mainPanel);
@@ -91,9 +85,4 @@ public class UnauthorizedUserDisplay extends Composite implements Display {
 	public void addSubmitCompleteHandler(SubmitCompleteHandler handler) {
 		formPanel.addSubmitCompleteHandler(handler);
 	}
-
-	public void showMessage(String message) {
-		headerPanel.showMessage(true, message);
-	}
-
 }

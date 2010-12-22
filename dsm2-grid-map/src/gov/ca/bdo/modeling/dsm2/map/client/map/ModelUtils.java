@@ -257,9 +257,9 @@ public class ModelUtils {
 			if (findLineSegmentIntersection == 1) {
 				LatLng intersectionPoint = LatLng.newInstance(intersection[0],
 						intersection[1]);
-				distance = GeomUtils.findDistanceUptoSegment(i,
+				distance = GeomUtils.findDistanceUptoSegment(i-1,
 						pointsForChannel);
-				distance += p2.distanceFrom(intersectionPoint);
+				distance += p1.distanceFrom(intersectionPoint);
 			}
 		}
 		return distance;
