@@ -4,13 +4,13 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
-public class MainBarPanel extends Composite{
+public class LinkBarPanel extends Composite{
 
 	private FlowPanel mainPanel;
 
-	public MainBarPanel(){
+	public LinkBarPanel(String stylename){
 		mainPanel = new FlowPanel();
-		mainPanel.setStyleName("main-bar");
+		mainPanel.setStyleName(stylename);
 		initWidget(mainPanel);
 	}
 	
