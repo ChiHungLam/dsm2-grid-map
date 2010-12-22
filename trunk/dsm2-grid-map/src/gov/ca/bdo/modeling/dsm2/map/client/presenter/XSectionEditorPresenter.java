@@ -21,12 +21,6 @@ public class XSectionEditorPresenter implements Presenter {
 	public interface Display {
 		public Widget asWidget();
 
-		public void showErrorMessage(String message);
-
-		public void showMessage(String message);
-
-		public void clearMessages();
-
 		public void setMapCenter();
 
 		public void setXSection(XSection xsection);
@@ -60,7 +54,6 @@ public class XSectionEditorPresenter implements Presenter {
 	}
 	
 	public void bind() {
-		display.showMessage("Loading...");		
 	}
 
 	public void go(HasWidgets container) {

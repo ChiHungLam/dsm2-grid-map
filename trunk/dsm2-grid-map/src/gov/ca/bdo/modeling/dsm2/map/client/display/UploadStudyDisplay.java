@@ -1,6 +1,5 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
-import gov.ca.bdo.modeling.dsm2.map.client.HeaderPanel;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2StudyUploadPresenter.Display;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -26,7 +25,6 @@ public class UploadStudyDisplay extends Composite implements Display {
 	private Button uploadButton;
 	private FileUpload echoFileUpload;
 	private DockLayoutPanel mainPanel;
-	private HeaderPanel headerPanel;
 	private FormPanel formPanel;
 
 	public UploadStudyDisplay() {
@@ -70,11 +68,8 @@ public class UploadStudyDisplay extends Composite implements Display {
 		containerPanel.add(formPanel);
 
 		mainPanel = new DockLayoutPanel(Unit.EM);
-		headerPanel = new HeaderPanel();
-		headerPanel.clearMessages();
 		mainPanel.addWest(new FlowPanel(), 5);
 		mainPanel.addEast(new FlowPanel(), 5);
-		mainPanel.addNorth(headerPanel, 2);
 		mainPanel.addSouth(new HTML(""), 1);
 		mainPanel.add(containerPanel);
 		initWidget(mainPanel);

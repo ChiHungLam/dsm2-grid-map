@@ -1,10 +1,12 @@
 package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
+import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -21,16 +23,17 @@ public class UnauthorizedUserPresenter implements Presenter {
 		public void addSubmitCompleteHandler(
 				FormPanel.SubmitCompleteHandler handler);
 
+		public void submitForm();
+
 		public Widget asWidget();
 
-		public void showMessage(String string);
-
-		public void submitForm();
 	}
 
 	private Display display;
+	private SimpleEventBus eventBus;
 
-	public UnauthorizedUserPresenter(Display display) {
+	public UnauthorizedUserPresenter(SimpleEventBus eventBus, Display display) {
+		this.eventBus = eventBus;
 		this.display = display;
 	}
 
@@ -38,7 +41,7 @@ public class UnauthorizedUserPresenter implements Presenter {
 		display.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				display.showMessage("Thanks! We'll get back to you soon.");
+				eventBus.fireEvent(new MessageEvent("Thanks! We'll get back to you soon."));
 			}
 		});
 

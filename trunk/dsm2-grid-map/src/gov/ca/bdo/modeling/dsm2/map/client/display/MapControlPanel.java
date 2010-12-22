@@ -1,4 +1,6 @@
-package gov.ca.bdo.modeling.dsm2.map.client.map;
+package gov.ca.bdo.modeling.dsm2.map.client.display;
+
+import gov.ca.bdo.modeling.dsm2.map.client.map.ElementType;
 
 import java.util.HashMap;
 

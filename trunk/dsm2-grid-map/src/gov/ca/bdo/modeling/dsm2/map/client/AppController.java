@@ -1,6 +1,7 @@
 package gov.ca.bdo.modeling.dsm2.map.client;
 
 import gov.ca.bdo.modeling.dsm2.map.client.display.ContainerDisplay;
+import gov.ca.bdo.modeling.dsm2.map.client.display.DSM2GridMapDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.MapDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.StudyManagerDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UnauthorizedUserDisplay;
@@ -82,7 +83,8 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			Presenter presenter = null;
 			if (token.startsWith("map_view")) {
 				presenter = new DSM2GridMapPresenter(dsm2InputService,
-						eventBus, new MapDisplay(containerDisplay, true),
+						eventBus,
+						new DSM2GridMapDisplay(containerDisplay, true),
 						containerPresenter);
 			} else if (token.startsWith("map")) {
 				if (mapPresenter == null) {
@@ -91,7 +93,8 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 				presenter = mapPresenter;
 			} else if (token.equals("studies")) {
 				presenter = new DSM2StudyManagerPresenter(dsm2InputService,
-						eventBus, new StudyManagerDisplay(containerDisplay),containerPresenter);
+						eventBus, new StudyManagerDisplay(containerDisplay),
+						containerPresenter);
 			} else if (token.equals("xsection")) {
 				presenter = new XSectionEditorPresenter(dsm2InputService,
 						bathymetryService, demService, eventBus,
@@ -106,7 +109,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 				presenter = new UserProfilePresenter(userProfileService,
 						eventBus, new UserProfileDisplay());
 			} else if (token.equals("request_access")) {
-				presenter = new UnauthorizedUserPresenter(
+				presenter = new UnauthorizedUserPresenter(eventBus,
 						new UnauthorizedUserDisplay());
 			} else {
 				presenter = createDSM2GridMapPresenter();
@@ -120,7 +123,8 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 	private DSM2GridMapPresenter createDSM2GridMapPresenter() {
 		return new DSM2GridMapPresenter(dsm2InputService, eventBus,
-				new MapDisplay(containerDisplay, false), containerPresenter);
+				new DSM2GridMapDisplay(containerDisplay, false),
+				containerPresenter);
 	}
 
 }

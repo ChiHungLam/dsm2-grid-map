@@ -55,6 +55,7 @@ import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -65,8 +66,11 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
+import com.google.gwt.maps.utility.client.DefaultPackage;
+import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 
@@ -86,7 +90,7 @@ public class MapPanel extends ResizeComposite {
 	private GateOverlayManager gateOverlayManager;
 	private ReservoirOverlayManager reservoirOverlayManager;
 	private BoundaryMarkerDataManager boundaryOverlayManager;
-	private final GridVisibilityControl visibilityControl;
+	private GridVisibilityControl visibilityControl;
 	private Panel infoPanel;
 	private TransfersManager transfersManager;
 	private ArrayList<Polyline> flowLines;
@@ -116,6 +120,7 @@ public class MapPanel extends ResizeComposite {
 			}
 		});
 		setStyleName("map-panel");
+
 	}
 
 	private void setOptions() {
@@ -130,10 +135,10 @@ public class MapPanel extends ResizeComposite {
 	}
 
 	private final native MapType getTopoMapType()/*-{
-													var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
-													var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
-													return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
-													}-*/;
+		var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
+		var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
+		return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
+	}-*/;
 
 	public void populateGrid() {
 		clearAllMarkers();
