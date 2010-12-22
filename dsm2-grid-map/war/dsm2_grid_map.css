@@ -1,12 +1,9 @@
 .bordered-title {
-	background: #E5ECF9 none repeat scroll 0 0;
-	border-left: 1px solid #C5D7EF;
-	border-right: 1px solid #C5D7EF;
-	border-top: 1px solid #C5D7EF;
+	background: #EEEEEE none repeat scroll 0 0;
 	color: #000000;
 	font-size: 1em;
 	font-weight: bold;
-	margin: 0;
+	margin: 5px 0;
 	padding: 3px 0 3px 5px;
 }
 

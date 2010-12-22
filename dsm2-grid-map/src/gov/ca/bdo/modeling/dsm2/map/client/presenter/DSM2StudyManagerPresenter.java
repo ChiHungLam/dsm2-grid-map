@@ -10,11 +10,17 @@ import java.util.ArrayList;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 public class DSM2StudyManagerPresenter implements Presenter {
 
@@ -35,6 +41,32 @@ public class DSM2StudyManagerPresenter implements Presenter {
 
 		public void addShareUrl(String study, String url);
 
+		// upload study
+		public HasChangeHandlers getEchoFile();
+
+		public HasChangeHandlers getGisFile();
+
+		public HasText getStudyName();
+
+		public HasClickHandlers getUploadButton();
+
+		public void submitForm();
+
+		public void addSubmitCompleteHandler(
+				FormPanel.SubmitCompleteHandler handler);
+
+		// upload study data
+		public HasChangeHandlers getDataFile();
+
+		public HasText getStudyDataName();
+
+		public HasClickHandlers getUploadDataButton();
+
+		public void submitDataForm();
+
+		public void addSubmitDataCompleteHandler(
+				FormPanel.SubmitCompleteHandler handler);
+
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
@@ -43,10 +75,11 @@ public class DSM2StudyManagerPresenter implements Presenter {
 	private ContainerPresenter containerPresenter;
 
 	public DSM2StudyManagerPresenter(DSM2InputServiceAsync dsm2InputService,
-			SimpleEventBus eventBus2, Display display, ContainerPresenter containerPresenter) {
+			SimpleEventBus eventBus2, Display display,
+			ContainerPresenter containerPresenter) {
 		this.containerPresenter = containerPresenter;
 		this.dsm2InputService = dsm2InputService;
-		this.eventBus = eventBus2;
+		eventBus = eventBus2;
 		this.display = display;
 	}
 
@@ -63,7 +96,9 @@ public class DSM2StudyManagerPresenter implements Presenter {
 			}
 
 			public void onFailure(Throwable caught) {
-				eventBus.fireEvent(new MessageEvent("Could not retrieve the study names! "+caught.getMessage(), MessageEvent.ERROR));
+				eventBus.fireEvent(new MessageEvent(
+						"Could not retrieve the study names! "
+								+ caught.getMessage(), MessageEvent.ERROR));
 			}
 		});
 
@@ -75,12 +110,16 @@ public class DSM2StudyManagerPresenter implements Presenter {
 							new AsyncCallback<Void>() {
 
 								public void onFailure(Throwable caught) {
-									eventBus.fireEvent(new MessageEvent("Error deleting study! "+caught.getMessage(), MessageEvent.ERROR));
+									eventBus.fireEvent(new MessageEvent(
+											"Error deleting study! "
+													+ caught.getMessage(),
+											MessageEvent.ERROR));
 								}
 
 								public void onSuccess(Void result) {
 									display.removeStudy(study);
-									eventBus.fireEvent(new DSM2StudyEvent(study, DSM2StudyEvent.DELETE));
+									eventBus.fireEvent(new DSM2StudyEvent(
+											study, DSM2StudyEvent.DELETE));
 								}
 							});
 				}
@@ -95,7 +134,14 @@ public class DSM2StudyManagerPresenter implements Presenter {
 							new AsyncCallback<String>() {
 
 								public void onFailure(Throwable caught) {
-									eventBus.fireEvent(new MessageEvent("Error sharing study: "+study+" "+caught.getMessage(), MessageEvent.ERROR));
+									eventBus
+											.fireEvent(new MessageEvent(
+													"Error sharing study: "
+															+ study
+															+ " "
+															+ caught
+																	.getMessage(),
+													MessageEvent.ERROR));
 								}
 
 								public void onSuccess(String result) {
@@ -107,7 +153,20 @@ public class DSM2StudyManagerPresenter implements Presenter {
 				}
 			}
 		});
-		
+		display.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				History.newItem("map/" + display.getStudyName().getText());
+			}
+		});
+
+		display.getUploadButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				display.submitForm();
+			}
+		});
+
 	}
 
 	public void go(HasWidgets container) {
