@@ -40,6 +40,7 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.map.AddMapElementClickHandler;
+import gov.ca.bdo.modeling.dsm2.map.client.map.DeleteMapElementClickHandler;
 import gov.ca.bdo.modeling.dsm2.map.client.map.ElementType;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
 
@@ -52,7 +53,6 @@ import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -70,8 +70,8 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private FlowPanel infoPanel;
 	private ToggleButton saveEditButton;
 	private Panel addRemovePanel;
-	private Button addButton;
-	private Button deleteButton;
+	private ToggleButton addButton;
+	private ToggleButton deleteButton;
 	private ListBox elementTypeBox;
 	private HashMap<String, Integer> mapTypeToId;
 
@@ -90,8 +90,9 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 		addRemoveCaptionPanel.add(addRemovePanel);
 		editPanel.add(addRemoveCaptionPanel);
 		VerticalPanel buttonPanel = new VerticalPanel();
-		buttonPanel.add(addButton = new Button("Add"));
-		buttonPanel.add(deleteButton = new Button("Delete"));
+		buttonPanel.add(addButton = new ToggleButton("Add", "Adding..."));
+		buttonPanel
+				.add(deleteButton = new ToggleButton("Delete", "Deleting..."));
 		addRemovePanel.add(buttonPanel);
 		elementTypeBox = new ListBox();
 		mapTypeToId = new HashMap<String, Integer>();

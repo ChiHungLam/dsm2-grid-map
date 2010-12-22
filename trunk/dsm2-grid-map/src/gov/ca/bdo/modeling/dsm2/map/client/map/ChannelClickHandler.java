@@ -27,7 +27,6 @@ import gov.ca.dsm2.input.model.XSectionProfile;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.maps.client.event.MapClickHandler;
@@ -64,8 +63,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		}
 
 		public void onClick(PolylineClickEvent event) {
-			for (XSection xs : xsectionLineMap.keySet()) {
-				Polyline line = xsectionLineMap.get(xs);
+			for (XSection xs : mapPanel.getChannelManager().getXSections()) {
+				Polyline line = mapPanel.getChannelManager()
+						.getXsectionLineFor(xs);
 				if (xs == xSection) {
 					line.setStrokeStyle(blueLineStyle);
 					infoPanel.drawXSection(channel, xSectionIndex);
@@ -73,7 +73,8 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					line.setStrokeStyle(greenLineStyle);
 				}
 			}
-			final Polyline line = xsectionLineMap.get(xSection);
+			final Polyline line = mapPanel.getChannelManager()
+					.getXsectionLineFor(xSection);
 			line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
 			if (!edit) {
 				line.setEditingEnabled(false);
@@ -143,14 +144,12 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	private final int weight = 5;
 	private final double opacity = 0.75;
 	private Polyline line;
-	private final HashMap<XSection, Polyline> xsectionLineMap;
 	private ChannelInfoPanel infoPanel;
 	private CrossSectionEditorPanel xsEditorPanel;
 
 	public ChannelClickHandler(Channel lineData, MapPanel mapPanel) {
 		channel = lineData;
 		this.mapPanel = mapPanel;
-		xsectionLineMap = new HashMap<XSection, Polyline>();
 	}
 
 	public void onClick(final PolylineClickEvent event) {
@@ -181,7 +180,8 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				line.setVisible(true);
 			}
 			mapPanel.getMap().addOverlay(line);
-			for (Polyline xline : xsectionLineMap.values()) {
+			for (Polyline xline : mapPanel.getChannelManager()
+					.getXSectionLines()) {
 				mapPanel.getMap().addOverlay(xline);
 			}
 			// indicate up and down node by letters U and D at the nodes
@@ -283,7 +283,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 
 			});
 
-			xsectionLineMap.put(xSection, line);
+			mapPanel.getChannelManager().addXSectionLine(xSection, line);
 			mapPanel.getMap().addOverlay(line);
 			if (mapPanel.isInEditMode()) {
 				// TODO: with some other trigger
@@ -326,7 +326,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 
 	public void clearOverlays() {
 		mapPanel.getMap().removeOverlay(line);
-		for (Polyline xline : xsectionLineMap.values()) {
+		for (Polyline xline : mapPanel.getChannelManager().getXSectionLines()) {
 			mapPanel.getMap().removeOverlay(xline);
 		}
 	}

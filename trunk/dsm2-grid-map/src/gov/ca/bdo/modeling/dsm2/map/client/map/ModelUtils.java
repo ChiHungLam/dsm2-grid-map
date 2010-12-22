@@ -59,6 +59,7 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
@@ -309,6 +310,28 @@ public class ModelUtils {
 
 	public static void generateXSections(Channel channel, Node upNode,
 			Node downNode) {
+	}
+
+	/**
+	 * Returns a list of comma separated channel ids for the given node. with
+	 * down channels followed by upchannels
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public static String getChannelsConnectedTo(Channels channels, Node node) {
+		String upChannels = channels.getUpChannels(node.getId());
+		String downChannels = channels.getDownChannels(node.getId());
+		if ((upChannels == null) && (downChannels == null)) {
+			return null;
+		}
+		if (upChannels == null) {
+			return downChannels;
+		}
+		if (downChannels == null) {
+			return upChannels;
+		}
+		return downChannels + "," + upChannels;
 	}
 
 }
