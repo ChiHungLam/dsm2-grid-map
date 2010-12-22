@@ -62,6 +62,7 @@ public class MapDisplay extends ResizeComposite implements
 	protected MapPanel mapPanel;
 	protected Panel sidePanel;
 	protected boolean viewOnly;
+	private DSM2Model model;
 
 	public MapDisplay(ContainerDisplay display, boolean viewOnly,
 			Panel sidePanel) {
@@ -110,6 +111,10 @@ public class MapDisplay extends ResizeComposite implements
 		mainPanel.addWest(sidePanel, 610);
 		mainPanel.add(mapPanel = new MapPanel());
 		mapPanel.setInfoPanel(sidePanel);
+		if (model != null) {
+			setModel(model);
+			refresh();
+		}
 	}
 
 	public Widget asWidget() {
@@ -137,6 +142,9 @@ public class MapDisplay extends ResizeComposite implements
 	public void setModel(DSM2Model result) {
 		if (mapPanel != null) {
 			mapPanel.setModel(result);
+			model = null;
+		} else {
+			model = result;
 		}
 	}
 

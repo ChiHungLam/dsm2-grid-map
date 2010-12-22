@@ -75,6 +75,7 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 
 public class MapPanel extends ResizeComposite {
 
+	static final int ZOOM_LEVEL = 10;
 	private NodeMarkerDataManager nodeManager;
 	private ChannelLineDataManager channelManager;
 	private MapWidget map;
@@ -107,14 +108,13 @@ public class MapPanel extends ResizeComposite {
 		initWidget(getMap());
 		// add zoom handler to hide channels at a certain zoom level
 		map.addMapZoomEndHandler(new MapZoomEndHandler() {
-			static final int ZOOM_LEVEL = 10;
 
 			public void onZoomEnd(MapZoomEndEvent event) {
 				if ((event.getNewZoomLevel() <= ZOOM_LEVEL)
 						&& (event.getOldZoomLevel() > ZOOM_LEVEL)) {
 					hideNodeMarkers(true);
 				}
-				if ((event.getOldZoomLevel() >= ZOOM_LEVEL)
+				if ((event.getOldZoomLevel() <= ZOOM_LEVEL)
 						&& (event.getNewZoomLevel() > ZOOM_LEVEL)) {
 					hideNodeMarkers(visibilityControl.getHideNodes().getValue());
 				}
@@ -201,8 +201,10 @@ public class MapPanel extends ResizeComposite {
 
 	protected void populateNodeMarkers() {
 		if (getNodeManager() != null) {
-			if (!visibilityControl.getHideNodes().getValue()) {
-				getNodeManager().displayNodeMarkers();
+			if (map.getZoomLevel() > ZOOM_LEVEL) {
+				if (!visibilityControl.getHideNodes().getValue()) {
+					getNodeManager().displayNodeMarkers();
+				}
 			}
 		}
 	}
@@ -251,6 +253,9 @@ public class MapPanel extends ResizeComposite {
 	}
 
 	public void hideGateMarkers(boolean hide) {
+		if (!hide) {
+			populateGateImages();
+		}
 		gateOverlayManager.hideMarkers(hide);
 	}
 
