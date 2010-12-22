@@ -214,6 +214,7 @@ public class NodeMarkerDataManager {
 		for (Marker marker : markerMap.values()) {
 			mapPanel.getMap().removeOverlay(marker);
 		}
+		markerMap.clear();
 	}
 
 	public String getNewNodeId() {
