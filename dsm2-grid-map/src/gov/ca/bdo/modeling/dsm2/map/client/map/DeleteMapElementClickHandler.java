@@ -1,6 +1,4 @@
-package gov.ca.bdo.modeling.dsm2.map.client.display;
-
-import gov.ca.bdo.modeling.dsm2.map.client.map.MapPanel;
+package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.event.MapClickHandler;
@@ -16,10 +14,11 @@ public class DeleteMapElementClickHandler implements MapClickHandler {
 
 	public void onClick(MapClickEvent event) {
 		Overlay overlay = event.getOverlay();
-		if (overlay == null){
+		if (overlay == null) {
 			return;
 		}
-		GWT.log("Deleting overlay: "+overlay);
+		GWT.log("Deleting overlay: " + overlay);
+		mapPanel.deleteElementForOverlay(overlay);
 	}
 
 }

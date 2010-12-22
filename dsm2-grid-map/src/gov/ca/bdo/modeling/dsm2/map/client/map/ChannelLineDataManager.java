@@ -43,6 +43,7 @@ import gov.ca.bdo.modeling.dsm2.map.client.WindowUtils;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.Node;
+import gov.ca.dsm2.input.model.XSection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,17 +52,20 @@ import java.util.List;
 
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 
 public class ChannelLineDataManager {
 	private Channels channels;
 	private final HashMap<String, Polyline> lineMap = new HashMap<String, Polyline>();
+	private HashMap<Polyline, String> lineToIdMap = null;
 	private final PolylineEncoder encoder;
 	private static final boolean ENCODE_POLYLINES = false;
 	private final int weight = 3;
 	private final double opacity = 0.35;
 	private MapPanel mapPanel;
+	private HashMap<XSection, Polyline> xsectionLineMap;
 
 	public ChannelLineDataManager(MapPanel mapPanel, Channels channels) {
 		this.mapPanel = mapPanel;
@@ -128,6 +132,7 @@ public class ChannelLineDataManager {
 	}
 
 	public void removePolyline(String channelId) {
+		mapPanel.getMap().removeOverlay(getPolyline(channelId));
 		lineMap.remove(channelId);
 	}
 
@@ -144,8 +149,10 @@ public class ChannelLineDataManager {
 
 	public Polyline addPolylineForChannel(Channel channel) {
 
-		Node upNode = mapPanel.getNodeManager().getNodeData(channel.getUpNodeId());
-		Node downNode = mapPanel.getNodeManager().getNodeData(channel.getDownNodeId());
+		Node upNode = mapPanel.getNodeManager().getNodeData(
+				channel.getUpNodeId());
+		Node downNode = mapPanel.getNodeManager().getNodeData(
+				channel.getDownNodeId());
 		if ((upNode == null) || (downNode == null)) {
 			return null;
 		}
@@ -186,7 +193,60 @@ public class ChannelLineDataManager {
 	}
 
 	public String getNewChannelId() {
-		return (channels.getMaxChannelId()+1)+"";
+		return (channels.getMaxChannelId() + 1) + "";
 	}
 
+	public String getChannelId(Overlay overlay) {
+		if (!(overlay instanceof Polyline)) {
+			return null;
+		}
+		if (lineToIdMap == null) {
+			lineToIdMap = new HashMap<Polyline, String>();
+			for (String id : lineMap.keySet()) {
+				lineToIdMap.put(lineMap.get(id), id);
+			}
+		}
+		Polyline line = (Polyline) overlay;
+		return lineToIdMap.get(line);
+	}
+
+	public XSection getXSectionFor(Overlay overlay) {
+		for (XSection xs : xsectionLineMap.keySet()) {
+			Polyline polyline = xsectionLineMap.get(xs);
+			if (polyline == overlay) {
+				return xs;
+			}
+		}
+		return null;
+	}
+
+	public Collection<Polyline> getXSectionLines() {
+		if (xsectionLineMap != null) {
+			return xsectionLineMap.values();
+		} else {
+			return null;
+		}
+	}
+
+	public void addXSectionLine(XSection xSection, Polyline line) {
+		if (xsectionLineMap == null) {
+			xsectionLineMap = new HashMap<XSection, Polyline>();
+		}
+		xsectionLineMap.put(xSection, line);
+	}
+
+	public Collection<XSection> getXSections() {
+		return xsectionLineMap.keySet();
+	}
+
+	public Polyline getXsectionLineFor(XSection xs) {
+		return xsectionLineMap.get(xs);
+	}
+
+	public void removeXSection(XSection xSection) {
+		Polyline polyline = xsectionLineMap.get(xSection);
+		mapPanel.getMap().removeOverlay(polyline);
+		Channel channel = channels.getChannel(xSection.getChannelId());
+		channel.getXsections().remove(xSection);
+	}
 }

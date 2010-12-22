@@ -45,6 +45,7 @@ import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoirs;
+import gov.ca.dsm2.input.model.XSection;
 import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
 
 import java.util.ArrayList;
@@ -62,11 +63,13 @@ import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 
@@ -465,6 +468,37 @@ public class MapPanel extends ResizeComposite {
 
 	public ReservoirOverlayManager getReservoirManager() {
 		return reservoirOverlayManager;
+	}
+
+	public void deleteElementForOverlay(Overlay overlay) {
+		if (overlay instanceof Marker) {
+			if (nodeManager != null) {
+				Node nodeForMarker = nodeManager.getNodeForMarker(overlay);
+				String channelsConnectedTo = ModelUtils.getChannelsConnectedTo(
+						getModel().getChannels(), nodeForMarker);
+				// check for channels connected or reservoir connections and
+				// delete only if not connected
+				if (channelsConnectedTo != null) {
+					Window.alert("Cannot delete node connected to channels: "
+							+ channelsConnectedTo);
+					return;
+				}
+				nodeManager.removeNode(nodeForMarker);
+			}
+		} else if (overlay instanceof Polyline) {
+			if (channelManager != null) {
+				String channelId = channelManager.getChannelId(overlay);
+				if (channelId == null) { // its a cross section, maybe?
+					XSection xSection = channelManager.getXSectionFor(overlay);
+					channelManager.removeXSection(xSection);
+					return;
+				}
+				Channel channel = getModel().getChannels()
+						.getChannel(channelId);
+				getModel().getChannels().removeChannel(channel);
+				channelManager.removePolyline(channelId);
+			}
+		}
 	}
 
 }

@@ -226,10 +226,15 @@ public class NodeMarkerDataManager {
 			String id = m.getTitle();
 			Marker markerFor = getMarkerFor(id);
 			if (markerFor == m) {
-				nodes.getNode(id);
+				return nodes.getNode(id);
 			}
 		}
 		return null;
+	}
+
+	public void removeNode(Node node) {
+		mapPanel.getMap().removeOverlay(getMarkerFor(node.getId()));
+		mapPanel.getModel().getNodes().removeNode(node);
 	}
 
 }
