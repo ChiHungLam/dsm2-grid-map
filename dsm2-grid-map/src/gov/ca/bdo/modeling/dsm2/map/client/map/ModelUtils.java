@@ -259,7 +259,9 @@ public class ModelUtils {
 						intersection[1]);
 				distance = GeomUtils.findDistanceUptoSegment(i,
 						pointsForChannel);
-				distance = distance - p2.distanceFrom(intersectionPoint);
+				distance = distance
+						- getLengthInFeet(p2.distanceFrom(intersectionPoint));
+				break;
 			}
 		}
 		return distance;
