@@ -41,101 +41,48 @@ package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.map.AddMapElementClickHandler;
 import gov.ca.bdo.modeling.dsm2.map.client.map.DeleteMapElementClickHandler;
-import gov.ca.bdo.modeling.dsm2.map.client.map.ElementType;
+import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
+import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
+import gov.ca.modeling.maps.elevation.client.BathymetryDisplayer;
+import gov.ca.modeling.maps.elevation.client.ElevationDisplayer;
+import gov.ca.modeling.maps.elevation.client.ElevationProfileDisplayer;
 
-import java.util.HashMap;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.user.client.ui.CaptionPanel;
+import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
+import com.google.gwt.maps.client.overlay.GeoXmlOverlay;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private AddMapElementClickHandler addMapElementHandler;
 	private MapClickHandler deleteMapElementHandler;
-	private FlowPanel controlPanel;
+	private MapControlPanel controlPanel;
+	private MeasuringDistanceAlongLine lengthMeasurer;
+	private MeasuringAreaInPolygon areaMeasurer;
+	private ElevationDisplayer elevationDisplayer;
 	private FlowPanel infoPanel;
-	private ToggleButton saveEditButton;
-	private Panel addRemovePanel;
-	private ToggleButton addButton;
-	private ToggleButton deleteButton;
-	private ListBox elementTypeBox;
-	private HashMap<String, Integer> mapTypeToId;
+	private ElevationProfileDisplayer elevationProfileDisplayer;
+	private BathymetryDisplayer bathymetryDisplayer;
 
 	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly) {
-		super(display, viewOnly, new VerticalPanel());
-		controlPanel = new FlowPanel();
-		controlPanel.setStyleName("control-panel");
-		HorizontalPanel editPanel = new HorizontalPanel();
-		editPanel.setStyleName("edit-panel");
-		controlPanel.add(editPanel);
-		editPanel.add(saveEditButton = new ToggleButton("Edit", "Save"));
-		addRemovePanel = new HorizontalPanel();
-		final CaptionPanel addRemoveCaptionPanel = new CaptionPanel(
-				"Add/Remove");
-		addRemoveCaptionPanel.setVisible(false);
-		addRemoveCaptionPanel.add(addRemovePanel);
-		editPanel.add(addRemoveCaptionPanel);
-		VerticalPanel buttonPanel = new VerticalPanel();
-		buttonPanel.add(addButton = new ToggleButton("Add", "Adding..."));
-		buttonPanel
-				.add(deleteButton = new ToggleButton("Delete", "Deleting..."));
-		addRemovePanel.add(buttonPanel);
-		elementTypeBox = new ListBox();
-		mapTypeToId = new HashMap<String, Integer>();
-		mapTypeToId.put("Node", ElementType.NODE);
-		mapTypeToId.put("Channel", ElementType.CHANNEL);
-		mapTypeToId.put("Reservoir", ElementType.RESERVOIR);
-		mapTypeToId.put("Gate", ElementType.GATE);
-		mapTypeToId.put("XSection", ElementType.XSECTION);
-		mapTypeToId.put("Output", ElementType.OUTPUT);
-		mapTypeToId.put("Text", ElementType.TEXT);
-		mapTypeToId.put("KML", ElementType.KML);
-		String[] elementTypes = new String[] { "Node", "Channel", "Reservoir",
-				"Gate", "XSection", "Output", "Text", "KML" };
-		for (String item : elementTypes) {
-			elementTypeBox.addItem(item);
-		}
-		addRemovePanel.add(elementTypeBox);
-		saveEditButton.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				if (saveEditButton.isDown()) {
-					addRemoveCaptionPanel.setVisible(true);
-				} else {
-					addRemoveCaptionPanel.setVisible(false);
-				}
-			}
-		});
-		saveEditButton.setEnabled(!viewOnly);
-		infoPanel = new FlowPanel();
-		infoPanel.setStyleName("info-panel");
-		CaptionPanel captionInfoPanel = new CaptionPanel();
-		captionInfoPanel.setCaptionText("Info");
-		captionInfoPanel.add(infoPanel);
-		controlPanel.add(captionInfoPanel);
+		super(display, viewOnly);
+		controlPanel = new MapControlPanel(viewOnly);
 	}
 
 	@Override
 	protected void initializeUI() {
 		super.initializeUI();
 		// layout top level things here
-		VerticalPanel sidePanel = (VerticalPanel) super.getSidePanel();
-		sidePanel.add(new ScrollPanel(controlPanel));
-		mapPanel.setInfoPanel(infoPanel);
+		mapPanel.setInfoPanel(controlPanel.getInfoPanel());
 	}
 
 	public Widget asWidget() {
@@ -148,21 +95,19 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	}
 
 	public HasClickHandlers getSaveEditButton() {
-		return saveEditButton;
+		return controlPanel.getSaveEditButton();
 	}
 
 	public HasClickHandlers getAddButton() {
-		return addButton;
+		return controlPanel.getAddButton();
 	}
 
 	public HasClickHandlers getDeleteButton() {
-		return deleteButton;
+		return controlPanel.getDeleteButton();
 	}
 
 	public int getAddTypeSelected() {
-		return mapTypeToId.get(
-				elementTypeBox.getItemText(elementTypeBox.getSelectedIndex()))
-				.intValue();
+		return controlPanel.getAddTypeSelected();
 	}
 
 	public void setAddingMode(boolean down) {
@@ -210,4 +155,159 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 		}
 	}
 
+	//
+	public void startMeasuringDistanceAlongLine() {
+		if (lengthMeasurer == null) {
+			lengthMeasurer = new MeasuringDistanceAlongLine(mapPanel
+					.getMapWidget());
+			lengthMeasurer.addPolyline();
+		}
+	}
+
+	public void stopMeasuringDistanceAlongLine() {
+		if (lengthMeasurer != null) {
+			lengthMeasurer.clearOverlay();
+			lengthMeasurer = null;
+		}
+	}
+
+	public TextBox getFindTextBox() {
+		return controlPanel.getFindTextBox();
+	}
+
+	public HasClickHandlers getFindButton() {
+		return controlPanel.getFindButton();
+	}
+
+	public HasClickHandlers getShowFlowlinesButton() {
+		return controlPanel.getFlowlineButton();
+	}
+
+	public HasClickHandlers getMeasureLengthButton() {
+		return controlPanel.getMeasureLengthButton();
+	}
+
+	public HasClickHandlers getMeasureAreaButton() {
+		return controlPanel.getMeasureAreaButton();
+	}
+
+	public HasClickHandlers getMeasureVolumeButton() {
+		// FIXME: implement this
+		return null;
+	}
+
+	public HasClickHandlers getMeasureAverageElevationButton() {
+		// FIXME: implement this
+		return null;
+	}
+
+	public HasClickHandlers getDisplayElevationProfileButton() {
+		return controlPanel.getDisplayElevationProfileButton();
+	}
+
+	public HasClickHandlers getDisplayElevationButton() {
+		return controlPanel.getDisplayElevationButton();
+	}
+
+	public void startMeasuringAreaInPolygon() {
+		if (areaMeasurer == null) {
+			areaMeasurer = new MeasuringAreaInPolygon(mapPanel.getMap());
+			areaMeasurer.addPolyline();
+		}
+	}
+
+	public void stopMeasuringAreaInPolygon() {
+		if (areaMeasurer != null) {
+			areaMeasurer.clearOverlay();
+			areaMeasurer = null;
+		}
+	}
+
+	public void addKmlOverlay(final String url) {
+		GeoXmlOverlay.load(url, new GeoXmlLoadCallback() {
+
+			@Override
+			public void onFailure(String url, Throwable e) {
+				StringBuffer message = new StringBuffer("KML File " + url
+						+ " failed to load");
+				if (e != null) {
+					message.append(e.toString());
+				}
+				Window.alert(message.toString());
+			}
+
+			@Override
+			public void onSuccess(String url, GeoXmlOverlay overlay) {
+				if (overlay == null) {
+					return;
+				}
+				GWT.log("KML File " + url + " loaded successfully", null);
+				mapPanel.getMap().addOverlay(overlay);
+			}
+		});
+	}
+
+	public void hideFlowLines() {
+		mapPanel.hideFlowLines();
+	}
+
+	public void showFlowLines() {
+		mapPanel.showFlowLines();
+	}
+
+	public void startClickingForElevation() {
+		if (elevationDisplayer == null) {
+			elevationDisplayer = new ElevationDisplayer(mapPanel.getMap());
+		}
+		elevationDisplayer.start();
+	}
+
+	public void stopClickingForElevation() {
+		if (elevationDisplayer != null) {
+			elevationDisplayer.stop();
+		}
+	}
+
+	public void startDrawingElevationProfileLine() {
+		if (elevationProfileDisplayer == null) {
+			elevationProfileDisplayer = new ElevationProfileDisplayer(mapPanel
+					.getMap(), infoPanel);
+		}
+
+		elevationProfileDisplayer
+				.startDrawingLine((ToggleButton) getDisplayElevationProfileButton());
+
+	}
+
+	public void stopDrawingElevationProfileLine() {
+		if (elevationProfileDisplayer != null) {
+			elevationProfileDisplayer.stopDrawingLine();
+		}
+	}
+
+	public void startShowingBathymetryPoints() {
+		if (bathymetryDisplayer == null) {
+			bathymetryDisplayer = new BathymetryDisplayer(mapPanel.getMap());
+		}
+		bathymetryDisplayer.activateShowDataHandler(true);
+	}
+
+	public void stopShowingBathymetryPoints() {
+		if (bathymetryDisplayer != null) {
+			bathymetryDisplayer.activateShowDataHandler(false);
+		}
+	}
+
+	public void centerAndZoomOnChannel(String channelId) {
+		mapPanel.centerAndZoomOnChannel(channelId);
+	}
+
+	public void centerAndZoomOnNode(String nodeId) {
+		mapPanel.centerAndZoomOnNode(nodeId);
+	}
+
+	@Override
+	public Widget getSidePanel() {
+		return controlPanel;
+	}
 }

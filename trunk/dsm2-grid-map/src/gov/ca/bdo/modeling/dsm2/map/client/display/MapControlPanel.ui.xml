@@ -2,40 +2,80 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
-		.important {
-			font-weight: bold;
-		}
-		
-		.control-panel {
-			width: 600px;
-		}
 	</ui:style>
 	<ui:with type="gov.ca.bdo.modeling.dsm2.map.client.images.IconImages"
 		field="images"></ui:with>
 	<ui:with type="gov.ca.modeling.maps.elevation.client.images.IconImages"
 		field="el_images"></ui:with>
-	<g:VerticalPanel styleName="{style.control-panel}">
-		<g:CaptionPanel captionText="Edit">
-			<g:HorizontalPanel>
-				<g:ToggleButton ui:field="saveEditButton">
-					<g:upFace>Edit</g:upFace>
-					<g:downFace>Save</g:downFace>
-				</g:ToggleButton>
-				<g:CaptionPanel ui:field="elementEditPanel" captionText="Add/Delete Elements">
+	<g:TabLayoutPanel barHeight="25" barUnit="PX">
+		<g:tab>
+			<g:header>Edit</g:header>
+			<g:VerticalPanel>
+				<g:HorizontalPanel styleName="edit-panel">
+					<g:ToggleButton ui:field="saveEditButton">
+						<g:upFace>Edit</g:upFace>
+						<g:downFace>Save</g:downFace>
+					</g:ToggleButton>
+					<g:CaptionPanel ui:field="elementEditPanel"
+						captionText="Add/Delete Elements">
+						<g:HorizontalPanel>
+							<g:VerticalPanel>
+								<g:CaptionPanel captionText="Add">
+									<g:HorizontalPanel>
+										<g:ToggleButton ui:field="addButton">
+											<g:upFace>Add</g:upFace>
+											<g:downFace>Adding...</g:downFace>
+										</g:ToggleButton>
+										<g:ListBox ui:field="elementTypeBox">
+										</g:ListBox>
+									</g:HorizontalPanel>
+								</g:CaptionPanel>
+								<g:ToggleButton ui:field="deleteButton">
+									<g:upFace>Delete</g:upFace>
+									<g:downFace>Deleting...</g:downFace>
+								</g:ToggleButton>
+							</g:VerticalPanel>
+						</g:HorizontalPanel>
+					</g:CaptionPanel>
+				</g:HorizontalPanel>
+				<g:CaptionPanel captionText="Info">
+					<g:FlowPanel ui:field="infoPanel" styleName="info-panel"></g:FlowPanel>
+				</g:CaptionPanel>
+			</g:VerticalPanel>
+		</g:tab>
+		<g:tab>
+			<g:header>Tools</g:header>
+			<g:VerticalPanel>
+				<g:CaptionPanel captionText="GIS Tools">
 					<g:HorizontalPanel>
-						<g:VerticalPanel>
-							<g:ToggleButton ui:field="addButton">
-								Add
-							</g:ToggleButton>
-							<g:ToggleButton ui:field="deleteButton">
-								Delete
-							</g:ToggleButton>
-						</g:VerticalPanel>
-						<g:ListBox ui:field="elementTypeBox">
-						</g:ListBox>
+						<g:ToggleButton title="Measure Length" ui:field="measureLengthButton">
+							<g:upFace image="{images.measureLengthIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Measure Area" ui:field="measureAreaButton">
+							<g:upFace image="{images.measureAreaIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Elevation" ui:field="displayElevationButton">
+							<g:upFace image="{el_images.elevationIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Elevation Profile"
+							ui:field="displayElevationProfileButton">
+							<g:upFace image="{el_images.elevationProfileIcon}"></g:upFace>
+						</g:ToggleButton>
+						<g:ToggleButton title="Display Channel Outlines"
+							ui:field="flowlineButton">
+							<g:upFace image="{images.flowLineIcon}"></g:upFace>
+						</g:ToggleButton>
 					</g:HorizontalPanel>
 				</g:CaptionPanel>
-			</g:HorizontalPanel>
-		</g:CaptionPanel>
-	</g:VerticalPanel>
+				<g:CaptionPanel captionText="Search">
+					<g:HorizontalPanel>
+						<g:PushButton ui:field="findButton">
+							<g:upFace image="{images.findIcon}"></g:upFace>
+						</g:PushButton>
+						<g:TextBox ui:field="findTextBox"></g:TextBox>
+					</g:HorizontalPanel>
+				</g:CaptionPanel>
+			</g:VerticalPanel>
+		</g:tab>
+	</g:TabLayoutPanel>
 </ui:UiBinder> 

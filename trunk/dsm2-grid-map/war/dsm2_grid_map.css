@@ -30,29 +30,6 @@
 	margin-right: -1px;
 }
 
-/* Table styling */
-.blue-bordered {
-	margin: 0.5em;
-	border: 1px solid #C5D7EF;
-	border-collapse: collapse;
-	font-size: 1em;
-	width: 90%;
-}
-
-.blue-bordered td {
-	border: 1px solid #CCCCCC;
-	text-align: center;
-}
-
-.table-header {
-    background: none repeat scroll 0 0 #EEEEEE;
-    border-bottom: 1px solid #CCCCCC;
-    border-top: 1px solid #CCCCCC;
-    padding-right: 1px;
-    text-align: left;
-    border: 1px solid #CCCCCC;
-}
-
 /* Add some space between the blue border and the interior stuff */
 .hm-body {
 	margin: 10px;
