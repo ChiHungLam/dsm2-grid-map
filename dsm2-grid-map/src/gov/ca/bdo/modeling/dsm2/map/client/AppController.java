@@ -66,6 +66,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		container = containerDisplay.asHasWidgets();
 
 		containerPresenter.go(rootPanelAsContainer);
+		containerDisplay.setLinkBarActive(History.getToken());
 
 		// fire history event
 		if ("".equals(History.getToken())) {

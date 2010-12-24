@@ -52,6 +52,7 @@ public class ContainerPresenter implements Presenter {
 	private Display display;
 	private SimpleEventBus eventBus;
 	private DSM2InputServiceAsync dsm2InputService;
+	private boolean modelLoaded;
 
 	public ContainerPresenter(LoginServiceAsync loginService,
 			DSM2InputServiceAsync dsm2InputService, SimpleEventBus eventBus,
@@ -67,6 +68,7 @@ public class ContainerPresenter implements Presenter {
 		container.clear();
 		container.add(display.asWidget());
 		display.showMessage("Initializing...", MessageEvent.WARNING, 0);
+		modelLoaded=false;
 	}
 
 	public void bind() {
@@ -187,6 +189,7 @@ public class ContainerPresenter implements Presenter {
 		dsm2InputService.getInputModel(study, new AsyncCallback<DSM2Model>() {
 
 			public void onSuccess(DSM2Model result) {
+				modelLoaded=true;
 				setStudyToHistory(study);
 				display.setCurrentStudy(study);
 				display.setModel(result);
@@ -197,6 +200,7 @@ public class ContainerPresenter implements Presenter {
 			}
 
 			public void onFailure(Throwable caught) {
+				modelLoaded=false;
 				eventBus.fireEvent(new MessageEvent("Oops, an error occurred: "
 						+ caught.getMessage() + ". Try again",
 						MessageEvent.ERROR, 5000));
@@ -204,6 +208,14 @@ public class ContainerPresenter implements Presenter {
 			}
 		});
 
+	}
+
+	public void fireStudyLoadedEvent() {
+		if (modelLoaded){
+			eventBus.fireEvent(new DSM2StudyEvent(getCurrentStudy(), getModel()));
+		} else{
+			loadStudy(getCurrentStudy());
+		}
 	}
 
 }
