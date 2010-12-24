@@ -1,8 +1,7 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ColorSchemeDisplay extends MapDisplay {
 
@@ -10,8 +9,7 @@ public class ColorSchemeDisplay extends MapDisplay {
 	private FlowPanel infoPanel;
 
 	public ColorSchemeDisplay(ContainerDisplay display) {
-		super(display, true, new FlowPanel());
-		controlPanel = new FlowPanel();
+		super(display, true);
 		infoPanel = new FlowPanel();
 	}
 
@@ -19,9 +17,15 @@ public class ColorSchemeDisplay extends MapDisplay {
 	protected void initializeUI() {
 		super.initializeUI();
 		// layout top level things here
-		VerticalPanel sidePanel = (VerticalPanel) super.getSidePanel();
-		sidePanel.add(new ScrollPanel(controlPanel));
 		mapPanel.setInfoPanel(infoPanel);
+	}
+
+	@Override
+	public Widget getSidePanel() {
+		if (controlPanel == null) {
+			controlPanel = new FlowPanel();
+		}
+		return controlPanel;
 	}
 
 }

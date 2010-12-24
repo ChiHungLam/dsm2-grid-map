@@ -5,12 +5,18 @@ import gov.ca.bdo.modeling.dsm2.map.client.map.ElementType;
 import java.util.HashMap;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,6 +38,23 @@ public class MapControlPanel extends Composite {
 	ToggleButton deleteButton;
 	@UiField
 	ListBox elementTypeBox;
+	@UiField
+	ToggleButton measureLengthButton;
+	@UiField
+	ToggleButton measureAreaButton;
+	@UiField
+	ToggleButton displayElevationButton;
+	@UiField
+	ToggleButton displayElevationProfileButton;
+	@UiField
+	ToggleButton flowlineButton;
+	@UiField
+	PushButton findButton;
+	@UiField
+	TextBox findTextBox;
+	@UiField
+	FlowPanel infoPanel;
+
 	private HashMap<String, Integer> mapTypeToId;
 
 	public MapControlPanel(boolean viewOnly) {
@@ -52,8 +75,13 @@ public class MapControlPanel extends Composite {
 		}
 		elementEditPanel.setVisible(false);
 		saveEditButton.setEnabled(!viewOnly);
-	}
+		saveEditButton.addClickHandler(new ClickHandler() {
 
+			public void onClick(ClickEvent event) {
+				elementEditPanel.setVisible(saveEditButton.isDown());
+			}
+		});
+	}
 
 	public HasClickHandlers getAddButton() {
 		return addButton;
@@ -72,9 +100,52 @@ public class MapControlPanel extends Composite {
 				.intValue();
 	}
 
-
 	public HasClickHandlers getSaveEditButton() {
 		return saveEditButton;
+	}
+
+	public Panel getInfoPanel() {
+		return infoPanel;
+	}
+
+	public TextBox getFindTextBox() {
+		return findTextBox;
+	}
+
+	public HasClickHandlers getFindButton() {
+		return findButton;
+	}
+
+	public CaptionPanel getElementEditPanel() {
+		return elementEditPanel;
+	}
+
+	public ListBox getElementTypeBox() {
+		return elementTypeBox;
+	}
+
+	public ToggleButton getMeasureLengthButton() {
+		return measureLengthButton;
+	}
+
+	public ToggleButton getMeasureAreaButton() {
+		return measureAreaButton;
+	}
+
+	public ToggleButton getDisplayElevationButton() {
+		return displayElevationButton;
+	}
+
+	public ToggleButton getDisplayElevationProfileButton() {
+		return displayElevationProfileButton;
+	}
+
+	public ToggleButton getFlowlineButton() {
+		return flowlineButton;
+	}
+
+	public HashMap<String, Integer> getMapTypeToId() {
+		return mapTypeToId;
 	}
 
 }

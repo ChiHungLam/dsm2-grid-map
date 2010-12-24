@@ -50,25 +50,21 @@ import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MapDisplay extends ResizeComposite implements
+public abstract class MapDisplay extends ResizeComposite implements
 		HasInitializeHandlers {
 	protected SplitLayoutPanel mainPanel;
 	protected ContainerDisplay containerDisplay;
 	protected MapPanel mapPanel;
-	protected Panel sidePanel;
 	protected boolean viewOnly;
 	private DSM2Model model;
 
-	public MapDisplay(ContainerDisplay display, boolean viewOnly,
-			Panel sidePanel) {
+	public MapDisplay(ContainerDisplay display, boolean viewOnly) {
 		this.viewOnly = viewOnly;
 		containerDisplay = display;
-		this.sidePanel = sidePanel;
 		mainPanel = new SplitLayoutPanel();
 		mainPanel.setStyleName("map-split-layout-panel");
 
@@ -108,9 +104,8 @@ public class MapDisplay extends ResizeComposite implements
 	}
 
 	protected void initializeUI() {
-		mainPanel.addWest(sidePanel, 610);
+		mainPanel.addWest(getSidePanel(), 610);
 		mainPanel.add(mapPanel = new MapPanel());
-		mapPanel.setInfoPanel(sidePanel);
 		if (model != null) {
 			setModel(model);
 			refresh();
@@ -125,9 +120,7 @@ public class MapDisplay extends ResizeComposite implements
 		return mapPanel;
 	}
 
-	public Widget getSidePanel() {
-		return sidePanel;
-	}
+	public abstract Widget getSidePanel();
 
 	public DSM2Model getModel() {
 		return mapPanel.getModel();
