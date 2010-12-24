@@ -8,6 +8,7 @@ import gov.ca.modeling.dsm2.widgets.client.ContainerWithHeaderFooter;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -53,6 +54,7 @@ public class ContainerDisplay implements Display {
 		container.addLinkToMainBar(new Anchor("Map", "#map"));
 		container.addLinkToMainBar(new Anchor("Studies", "#studies"));
 		container.addLinkToMainBar(new Anchor("Tables", "#tables"));
+		this.setLinkBarActive(History.getToken());
 		// setup footer
 		String footer = "<div align=\"center\" class=\"footer\"><font color=\"#666666\">"
 				+ "&copy;2010 California Department of Water Resources (DWR) </font>"

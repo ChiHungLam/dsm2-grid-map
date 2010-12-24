@@ -42,15 +42,13 @@
 <module rename-to='dsm2_grid_map'>
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name='com.google.gwt.user.User' />
-	<inherits name="com.google.gwt.http.HTTP" />
+    <inherits name="com.google.gwt.user.theme.chrome.Chrome"/>		<inherits name="com.google.gwt.http.HTTP" />
 	<inherits name='com.google.gwt.json.JSON' />
 	<inherits name="com.google.gwt.resources.Resources" />
 	<!-- Google Visualization, Maps, Maps Utility and Incubator modules  -->
 	<inherits name='com.google.gwt.visualization.Visualization' />
 	<inherits name="com.google.gwt.maps.GoogleMaps" />
 	<inherits name='com.google.gwt.maps.utility.GoogleMapsUtility' />
-	<inherits name='com.google.gwt.user.theme.standard.Standard' />
-	
 	<inherits name='gov.ca.modeling.maps.elevation.elevation'/>
 	<inherits name='gov.ca.dsm2.input.dsm2input' />
 	<inherits name='gov.ca.modeling.dsm2.widgets.HeaderPanel' />

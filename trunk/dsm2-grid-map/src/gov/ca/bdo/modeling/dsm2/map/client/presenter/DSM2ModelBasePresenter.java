@@ -110,7 +110,8 @@ public class DSM2ModelBasePresenter implements Presenter {
 						});
 			}
 		});
-
+		
+		containerPresenter.fireStudyLoadedEvent();
 	}
 
 	public ContainerPresenter getContainerPresenter() {

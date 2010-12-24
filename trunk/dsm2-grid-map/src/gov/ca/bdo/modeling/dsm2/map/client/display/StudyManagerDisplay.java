@@ -40,7 +40,7 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 		clearTable();
 		studyPanel.add(deleteButton = new Button("Delete Selected"));
 		studyPanel.add(shareButton = new Button("Share Selected"));
-		TabLayoutPanel mainPanel = new TabLayoutPanel(30, Unit.PX);
+		TabLayoutPanel mainPanel = new TabLayoutPanel(22, Unit.PX);
 		mainPanel.add(studyPanel, "Manage");
 		mainPanel.add(uploadStudy = new UploadStudyDisplay(), "Upload Study");
 		mainPanel.add(uploadStudyData = new UploadStudyDataDisplay(),
