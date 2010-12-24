@@ -1194,6 +1194,11 @@ td.datePickerMonth {
 	margin: 0px 15px;
 }
 
+.hm-marker-label {
+	font-size: 9px;
+}
+
+
 .edit-panel td{
 	margin: 0px 5px;
 }
