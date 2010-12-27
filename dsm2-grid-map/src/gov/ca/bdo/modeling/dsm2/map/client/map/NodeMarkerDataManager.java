@@ -39,11 +39,13 @@
  *******************************************************************************/
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Nodes;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Point;
@@ -242,7 +244,23 @@ public class NodeMarkerDataManager {
 	}
 
 	public void renameNodeId(String newValue, String previousValue) {
-		this.nodes.renameNodeId(newValue, previousValue);
+		nodes.renameNodeId(newValue, previousValue);
+		mapPanel.getMap().removeOverlay(getMarkerFor(previousValue));
+		addMarkerForNode(nodes.getNode(newValue));
+		List<String> channelsForNodeId = mapPanel.getChannelManager()
+				.getChannelsForNodeId(previousValue);
+		for (String channelId : channelsForNodeId) {
+			Channel channel = mapPanel.getChannelManager().getChannels()
+					.getChannel(channelId);
+			String upNodeId = channel.getUpNodeId();
+			if (upNodeId.equals(previousValue)) {
+				channel.setUpNodeId(newValue);
+			}
+			String downNodeId = channel.getDownNodeId();
+			if (downNodeId.equals(previousValue)) {
+				channel.setDownNodeId(newValue);
+			}
+		}
 	}
 
 }

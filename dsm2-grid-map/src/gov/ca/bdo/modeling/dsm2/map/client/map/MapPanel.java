@@ -466,6 +466,11 @@ public class MapPanel extends ResizeComposite {
 		if (overlay instanceof Marker) {
 			if (nodeManager != null) {
 				Node nodeForMarker = nodeManager.getNodeForMarker(overlay);
+				if (nodeForMarker == null) {
+					eventBus.fireEvent(new MessageEvent(
+							"Marker clicked on was not a node!"));
+					return;
+				}
 				String channelsConnectedTo = ModelUtils.getChannelsConnectedTo(
 						getModel().getChannels(), nodeForMarker);
 				// check for channels connected or reservoir connections and
@@ -483,6 +488,11 @@ public class MapPanel extends ResizeComposite {
 				String channelId = channelManager.getChannelId(overlay);
 				if (channelId == null) { // its a cross section, maybe?
 					XSection xSection = channelManager.getXSectionFor(overlay);
+					if (xSection == null) {
+						eventBus
+								.fireEvent(new MessageEvent(
+										"Click on a channel or xsection to remove it. you clicked on some other line?"));
+					}
 					eventBus.fireEvent(new MessageEvent("Removing xsection: "
 							+ xSection.getChannelId() + "@"
 							+ xSection.getDistance()));
