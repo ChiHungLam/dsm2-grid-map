@@ -45,12 +45,12 @@ public class CrossSectionEditorPanel extends Composite {
 
 	public CrossSectionEditorPanel() {
 		FlowPanel mainPanel = new FlowPanel();
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		mainPanel.add(buttonPanel);
 		xsEditorPanel = new FlowPanel();
 		mainPanel.add(xsEditorPanel);
 		xsEditorPanel.getElement().setId("xsection");
 		xsEditorPanel.clear();
-		HorizontalPanel buttonPanel = new HorizontalPanel();
-		mainPanel.add(buttonPanel);
 		Button setProfileButton = new Button("Set Profile");
 		setProfileButton.addClickHandler(new ClickHandler() {
 

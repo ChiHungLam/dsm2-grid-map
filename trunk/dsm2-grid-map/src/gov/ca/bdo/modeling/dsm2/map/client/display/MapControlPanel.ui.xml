@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
+		
 	</ui:style>
 	<ui:with type="gov.ca.bdo.modeling.dsm2.map.client.images.IconImages"
 		field="images"></ui:with>
@@ -12,10 +13,13 @@
 			<g:header>Edit</g:header>
 			<g:VerticalPanel>
 				<g:HorizontalPanel styleName="edit-panel">
-					<g:ToggleButton ui:field="saveEditButton">
-						<g:upFace>Edit</g:upFace>
-						<g:downFace>Save</g:downFace>
-					</g:ToggleButton>
+					<g:VerticalPanel>
+						<g:ToggleButton ui:field="saveEditButton">
+							<g:upFace>Edit</g:upFace>
+							<g:downFace>Save</g:downFace>
+						</g:ToggleButton>
+						<g:Button ui:field="cancelEditButton">Cancel</g:Button>
+					</g:VerticalPanel>
 					<g:CaptionPanel ui:field="elementEditPanel"
 						captionText="Add/Delete Elements">
 						<g:HorizontalPanel>
