@@ -98,7 +98,9 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void stopDrawingElevationProfileLine();
 
-		public HasClickHandlers getFindButton();
+		public HasClickHandlers getFindNodeButton();
+
+		public HasClickHandlers getFindChannelButton();
 
 		public TextBox getFindTextBox();
 
@@ -234,14 +236,22 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 			public void onKeyPress(KeyPressEvent event) {
 				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					zoomAndCenterOnElement();
+					zoomAndCenterOnElement("node");
 				}
 			}
 		});
-		d.getFindButton().addClickHandler(new ClickHandler() {
+		d.getFindNodeButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				zoomAndCenterOnElement();
+				zoomAndCenterOnElement("node");
+			}
+
+		});
+
+		d.getFindChannelButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				zoomAndCenterOnElement("channel");
 			}
 
 		});
@@ -249,22 +259,17 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		bound = true;
 	}
 
-	private void zoomAndCenterOnElement() {
+	private void zoomAndCenterOnElement(String type) {
 		Display d = (Display) display;
 		String findText = d.getFindTextBox().getText();
 		if ((findText == null) || findText.trim().equals("")) {
 			flashHelpMessage();
 			return;
 		}
-		String fields[] = findText.split("\\s");
-		if (fields.length >= 2) {
-			if (fields[0].equalsIgnoreCase("node")) {
-				d.centerAndZoomOnNode(fields[1]);
-			} else if (fields[0].equalsIgnoreCase("channel")) {
-				d.centerAndZoomOnChannel(fields[1]);
-			} else {
-				flashHelpMessage();
-			}
+		if (type.equalsIgnoreCase("node")) {
+			d.centerAndZoomOnNode(findText);
+		} else if (type.equalsIgnoreCase("channel")) {
+			d.centerAndZoomOnChannel(findText);
 		} else {
 			flashHelpMessage();
 		}
@@ -272,8 +277,7 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 	}
 
 	private void flashHelpMessage() {
-		eventBus
-				.fireEvent(new MessageEvent(
-						"Enter the word node (node 23) or channel (channel 123) followed by its numeric id to zoom onto it!"));
+		eventBus.fireEvent(new MessageEvent(
+				"Enter the id for node or channel to zoom onto it!"));
 	}
 }

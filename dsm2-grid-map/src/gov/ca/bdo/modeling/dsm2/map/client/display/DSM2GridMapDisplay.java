@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private AddMapElementClickHandler addMapElementHandler;
 	private MapClickHandler deleteMapElementHandler;
-	private MapControlPanel controlPanel;
+	public MapControlPanel controlPanel;
 	private MeasuringDistanceAlongLine lengthMeasurer;
 	private MeasuringAreaInPolygon areaMeasurer;
 	private ElevationDisplayer elevationDisplayer;
@@ -181,8 +181,12 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 		return controlPanel.getFindTextBox();
 	}
 
-	public HasClickHandlers getFindButton() {
-		return controlPanel.getFindButton();
+	public HasClickHandlers getFindNodeButton() {
+		return controlPanel.getFindNodeButton();
+	}
+
+	public HasClickHandlers getFindChannelButton() {
+		return controlPanel.getFindChannelButton();
 	}
 
 	public HasClickHandlers getShowFlowlinesButton() {

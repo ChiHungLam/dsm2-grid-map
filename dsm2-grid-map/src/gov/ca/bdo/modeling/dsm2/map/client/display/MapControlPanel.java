@@ -50,7 +50,9 @@ public class MapControlPanel extends Composite {
 	@UiField
 	ToggleButton flowlineButton;
 	@UiField
-	PushButton findButton;
+	PushButton findNodeButton;
+	@UiField
+	PushButton findChannelButton;
 	@UiField
 	TextBox findTextBox;
 	@UiField
@@ -130,8 +132,12 @@ public class MapControlPanel extends Composite {
 		return findTextBox;
 	}
 
-	public HasClickHandlers getFindButton() {
-		return findButton;
+	public HasClickHandlers getFindNodeButton() {
+		return findNodeButton;
+	}
+
+	public HasClickHandlers getFindChannelButton() {
+		return findChannelButton;
 	}
 
 	public CaptionPanel getElementEditPanel() {
