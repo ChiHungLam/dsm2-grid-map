@@ -249,4 +249,9 @@ public class ChannelLineDataManager {
 		Channel channel = channels.getChannel(xSection.getChannelId());
 		channel.getXsections().remove(xSection);
 	}
+
+	public String getChannelIdForFlowline(Polyline line) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

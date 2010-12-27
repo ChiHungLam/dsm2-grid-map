@@ -117,14 +117,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 											/ channel.getLength();
 									dratio = Math.round(dratio * 1000) / 1000.0;
 									profile.setDistance(dratio);
-									System.out
-											.println("Changing distance ratio for xsection"
-													+ xSection.getChannelId()
-													+ " #"
-													+ xSectionIndex
-													+ " from: "
-													+ xSection.getDistance()
-													+ " to " + dratio);
 									xSection.setDistance(dratio);
 								}
 							}
@@ -258,19 +250,29 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		for (final XSection xSection : xsections) {
 			double distance = xSection.getDistance();
 			distance = channel.getLength() * distance;
+			LatLng[] latLngs = null;
+			if (xSection.getProfile() == null){
 			int segmentIndex = GeomUtils.findSegmentAtDistance(
 					channelOutlinePoints, distance);
 			LatLng point1 = channelOutlinePoints[segmentIndex];
 			LatLng point2 = channelOutlinePoints[segmentIndex + 1];
 			double segmentDistance = GeomUtils.findDistanceUptoSegment(
 					segmentIndex, channelOutlinePoints);
+			
 			LatLng point0 = GeomUtils.findPointAtDistance(point1, point2,
 					distance - segmentDistance);
 			double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
 			double width = ModelUtils.getMaxTopWidth(xSection);
-			LatLng[] latLngs = GeomUtils
+			latLngs = GeomUtils
 					.getLineWithSlopeOfLengthAndCenteredOnPoint(-1 / slope,
 							width, point0);
+			}else {
+				 List<double[]> endPoints = xSection.getProfile().getEndPoints();
+				 latLngs = new LatLng[]{ 
+						 LatLng.newInstance(endPoints.get(0)[0], endPoints.get(0)[1])
+						 ,LatLng.newInstance(endPoints.get(1)[0], endPoints.get(1)[1])
+						 };
+			}
 			final Polyline line = new Polyline(latLngs, "green", 4);
 
 			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,
