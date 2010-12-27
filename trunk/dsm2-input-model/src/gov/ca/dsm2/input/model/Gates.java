@@ -33,8 +33,8 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Gates implements Serializable {
-	private  ArrayList<Gate> gates;
-	private  HashMap<String, Gate> gatesMap;
+	private ArrayList<Gate> gates;
+	private HashMap<String, Gate> gatesMap;
 
 	public Gates() {
 		gates = new ArrayList<Gate>();
@@ -44,6 +44,14 @@ public class Gates implements Serializable {
 	public void addGate(Gate gate) {
 		gates.add(gate);
 		gatesMap.put(gate.getName(), gate);
+	}
+
+	public void removeGate(String gateId) {
+		Gate gate = gatesMap.get(gateId);
+		if (gate != null) {
+			gatesMap.remove(gateId);
+			gates.remove(gate);
+		}
 	}
 
 	public List<Gate> getGates() {
@@ -67,5 +75,5 @@ public class Gates implements Serializable {
 		buf.append("END\n");
 		return buf.toString();
 	}
-	
+
 }
