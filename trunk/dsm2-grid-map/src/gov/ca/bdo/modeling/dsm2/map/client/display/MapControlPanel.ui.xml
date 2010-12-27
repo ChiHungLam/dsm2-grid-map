@@ -73,9 +73,14 @@
 				</g:CaptionPanel>
 				<g:CaptionPanel captionText="Search">
 					<g:HorizontalPanel>
-						<g:PushButton ui:field="findButton">
-							<g:upFace image="{images.findIcon}"></g:upFace>
-						</g:PushButton>
+						<g:VerticalPanel>
+							<g:PushButton ui:field="findNodeButton">
+								<g:upFace>Find Node</g:upFace>
+							</g:PushButton>
+							<g:PushButton ui:field="findChannelButton">
+								<g:upFace>Find Channel</g:upFace>
+							</g:PushButton>
+						</g:VerticalPanel>
 						<g:TextBox ui:field="findTextBox"></g:TextBox>
 					</g:HorizontalPanel>
 				</g:CaptionPanel>
