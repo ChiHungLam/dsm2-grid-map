@@ -172,9 +172,11 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				line.setVisible(true);
 			}
 			mapPanel.getMap().addOverlay(line);
-			for (Polyline xline : mapPanel.getChannelManager()
-					.getXSectionLines()) {
-				mapPanel.getMap().addOverlay(xline);
+			if (mapPanel.getChannelManager().getXSectionLines() != null) {
+				for (Polyline xline : mapPanel.getChannelManager()
+						.getXSectionLines()) {
+					mapPanel.getMap().addOverlay(xline);
+				}
 			}
 			// indicate up and down node by letters U and D at the nodes
 			//
@@ -239,6 +241,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	private void drawXSectionLines() {
+		mapPanel.getChannelManager().clearXSectionLines();
 		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
 				channel.getUpNodeId());
 		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
@@ -284,7 +287,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				}
 
 			});
-
 			mapPanel.getChannelManager().addXSectionLine(xSection, line);
 			mapPanel.getMap().addOverlay(line);
 			if (mapPanel.isInEditMode()) {
@@ -326,6 +328,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 
 	public void clearOverlays() {
 		mapPanel.getMap().removeOverlay(line);
+		if (mapPanel.getChannelManager().getXSectionLines() == null) {
+			return;
+		}
 		for (Polyline xline : mapPanel.getChannelManager().getXSectionLines()) {
 			mapPanel.getMap().removeOverlay(xline);
 		}

@@ -1111,6 +1111,7 @@ td.datePickerMonth {
 .gwt-TabLayoutPanel {
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs {
+	background: none repeat scroll 0 0 #EBEFF9;
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
   border-color: #bcbcbc;
@@ -1122,18 +1123,20 @@ td.datePickerMonth {
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
   margin-left: 6px;
-  padding: 3px 6px 3px 6px;
-  cursor: pointer;
+  padding: 1px 6px;
   cursor: hand;
   color: black;
   font-weight: bold;
   text-align: center;
-  background: #e3e3e3;
+  background: #C9D7F1;
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
   cursor: default;
-  background: #bcbcbc;
-}
+  background: none repeat scroll 0 0 #FFFFFF;
+  border-color: #6B90DA #6B90DA -moz-use-text-color;
+  border-style: solid solid none;
+  border-width: 1px 1px 0;
+ }
 
 .gwt-SplitLayoutPanel-HDragger {
   background: white url(images/splitPanelThumb.png) center center no-repeat;
