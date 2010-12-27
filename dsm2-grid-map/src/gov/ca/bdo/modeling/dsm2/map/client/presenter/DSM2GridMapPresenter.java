@@ -106,6 +106,8 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public void centerAndZoomOnChannel(String string);
 
+		public HasClickHandlers getCancelEditButton();
+
 	}
 
 	/*
@@ -131,6 +133,14 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		}
 		super.bind();
 		final Display d = (Display) display;
+
+		d.getCancelEditButton().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				display.setEditMode(false);
+				display.refresh();
+			}
+		});
 		d.getAddButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {

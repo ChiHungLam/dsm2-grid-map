@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -54,6 +55,8 @@ public class MapControlPanel extends Composite {
 	TextBox findTextBox;
 	@UiField
 	FlowPanel infoPanel;
+	@UiField
+	Button cancelEditButton;
 
 	private HashMap<String, Integer> mapTypeToId;
 
@@ -74,11 +77,22 @@ public class MapControlPanel extends Composite {
 			elementTypeBox.addItem(item);
 		}
 		elementEditPanel.setVisible(false);
+		cancelEditButton.setVisible(false);
 		saveEditButton.setEnabled(!viewOnly);
 		saveEditButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
+				cancelEditButton.setVisible(saveEditButton.isDown());
 				elementEditPanel.setVisible(saveEditButton.isDown());
+			}
+		});
+		cancelEditButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				saveEditButton.setDown(false);
+				cancelEditButton.setVisible(false);
+				elementEditPanel.setVisible(false);
+				infoPanel.clear();
 			}
 		});
 	}
@@ -102,6 +116,10 @@ public class MapControlPanel extends Composite {
 
 	public HasClickHandlers getSaveEditButton() {
 		return saveEditButton;
+	}
+
+	public HasClickHandlers getCancelEditButton() {
+		return cancelEditButton;
 	}
 
 	public Panel getInfoPanel() {
