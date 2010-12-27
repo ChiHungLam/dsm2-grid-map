@@ -64,7 +64,8 @@ public abstract class MapDisplay extends ResizeComposite implements
 	protected DSM2Model model;
 	protected EventBus eventBus;
 
-	public MapDisplay(ContainerDisplay display, boolean viewOnly, EventBus eventBus) {
+	public MapDisplay(ContainerDisplay display, boolean viewOnly,
+			EventBus eventBus) {
 		this.viewOnly = viewOnly;
 		this.eventBus = eventBus;
 		containerDisplay = display;
@@ -107,7 +108,7 @@ public abstract class MapDisplay extends ResizeComposite implements
 
 	protected void initializeUI() {
 		mainPanel.addWest(getSidePanel(), 610);
-		mainPanel.add(mapPanel = new MapPanel());
+		mainPanel.add(mapPanel = new MapPanel(eventBus));
 		if (model != null) {
 			setModel(model);
 			refresh();
