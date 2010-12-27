@@ -46,10 +46,12 @@ import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoirs;
 import gov.ca.dsm2.input.model.XSection;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
 
 import java.util.ArrayList;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.maps.client.Copyright;
 import com.google.gwt.maps.client.CopyrightCollection;
 import com.google.gwt.maps.client.MapType;
@@ -66,7 +68,6 @@ import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 
@@ -91,8 +92,10 @@ public class MapPanel extends ResizeComposite {
 	private Panel infoPanel;
 	private TransfersManager transfersManager;
 	private ArrayList<Polyline> flowLines;
+	private EventBus eventBus;
 
-	public MapPanel() {
+	public MapPanel(EventBus eventBus) {
+		this.eventBus = eventBus;
 		// FIXME: the center of the map should be configurable.
 		setMap(new MapWidget(LatLng.newInstance(38.15, -121.70), 10));
 		setOptions();
@@ -468,8 +471,9 @@ public class MapPanel extends ResizeComposite {
 				// check for channels connected or reservoir connections and
 				// delete only if not connected
 				if (channelsConnectedTo != null) {
-					Window.alert("Cannot delete node connected to channels: "
-							+ channelsConnectedTo);
+					eventBus.fireEvent(new MessageEvent(
+							"Cannot delete node connected to channels: "
+									+ channelsConnectedTo));
 					return;
 				}
 				nodeManager.removeNode(nodeForMarker);
@@ -479,12 +483,23 @@ public class MapPanel extends ResizeComposite {
 				String channelId = channelManager.getChannelId(overlay);
 				if (channelId == null) { // its a cross section, maybe?
 					XSection xSection = channelManager.getXSectionFor(overlay);
+					eventBus.fireEvent(new MessageEvent("Removing xsection: "
+							+ xSection.getChannelId() + "@"
+							+ xSection.getDistance()));
 					channelManager.removeXSection(xSection);
 					return;
 				}
 				Channel channel = getModel().getChannels()
 						.getChannel(channelId);
+				if (channel == null) {
+					eventBus
+							.fireEvent(new MessageEvent(
+									"Click on a channel or xsection to remove it. you clicked on some other line?"));
+					return;
+				}
 				getModel().getChannels().removeChannel(channel);
+				eventBus.fireEvent(new MessageEvent("Removing channel: "
+						+ channel.getId()));
 				channelManager.removePolyline(channelId);
 			}
 		}

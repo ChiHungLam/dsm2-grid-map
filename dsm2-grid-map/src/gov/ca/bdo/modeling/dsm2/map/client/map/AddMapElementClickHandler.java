@@ -40,6 +40,7 @@
 
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.bdo.modeling.dsm2.map.client.display.MapControlPanel;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Node;
@@ -66,8 +67,8 @@ public class AddMapElementClickHandler implements MapClickHandler {
 		public ChannelLineMouseMoveHandler() {
 			channelLine = null;
 		}
-		
-		public void startLine(){
+
+		public void startLine() {
 			mapPanel.getMap().addMapMouseMoveHandler(this);
 		}
 
@@ -76,7 +77,7 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				LatLng p1 = LatLng.newInstance(previousNode.getLatitude(),
 						previousNode.getLongitude());
 				LatLng p2 = event.getLatLng();
-				channelLine = new Polyline(new LatLng[] { p1, p2 },"blue");
+				channelLine = new Polyline(new LatLng[] { p1, p2 }, "blue");
 				mapPanel.getMap().addOverlay(channelLine);
 			}
 			channelLine.deleteVertex(1);
@@ -89,25 +90,26 @@ public class AddMapElementClickHandler implements MapClickHandler {
 			}
 			mapPanel.getMap().removeMapMouseMoveHandler(this);
 			mapPanel.getMap().removeOverlay(channelLine);
-			
-			channelLine=null;
+
+			channelLine = null;
 		}
 	}
 
-	private int type;
 	private MapPanel mapPanel;
 	private Node previousNode;
 	private EventBus eventBus;
 	private ChannelLineMouseMoveHandler channelLineHandler;
+	private MapControlPanel controlPanel;
 
-	public AddMapElementClickHandler(MapPanel mapPanel, int type,
-			EventBus eventBus) {
+	public AddMapElementClickHandler(MapPanel mapPanel,
+			MapControlPanel controlPanel, EventBus eventBus) {
 		this.mapPanel = mapPanel;
-		this.type = type;
+		this.controlPanel = controlPanel;
 		this.eventBus = eventBus;
 	}
 
 	public void onClick(MapClickEvent event) {
+		int type = controlPanel.getAddTypeSelected();
 		if (type != ElementType.CHANNEL) {
 			LatLng latLng = event.getLatLng();
 			if (latLng == null) {
@@ -144,29 +146,32 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				reservoirManager.addReservoir(r);
 			} else if (type == ElementType.OUTPUT) {
 
-			} else if (type == ElementType.XSECTION){
+			} else if (type == ElementType.XSECTION) {
 				Overlay overlay = event.getOverlay();
-				if (overlay == null){
+				if (overlay == null) {
 					String msg = "To add a xsection, first click on a channel line to select it";
 					eventBus.fireEvent(new MessageEvent(msg));
 					return;
 				}
-				if (!(overlay instanceof Polyline)){
+				if (!(overlay instanceof Polyline)) {
 					String msg = "To add a xsection, first click on a channel line to select it. You clicked on a marker?";
 					eventBus.fireEvent(new MessageEvent(msg));
 					return;
 				}
 				Polyline line = (Polyline) overlay;
-				String channelId = mapPanel.getChannelManager().getChannelId(line);
-				if (channelId == null){
-					String channelIdForFlowline = mapPanel.getChannelManager().getChannelIdForFlowline(line);
-					if (channelIdForFlowline == null){
+				String channelId = mapPanel.getChannelManager().getChannelId(
+						line);
+				if (channelId == null) {
+					String channelIdForFlowline = mapPanel.getChannelManager()
+							.getChannelIdForFlowline(line);
+					if (channelIdForFlowline == null) {
 						String msg = "To add a xsection, you must click on a spot on the channel's flowline. You clicked on some other line?";
 						eventBus.fireEvent(new MessageEvent(msg));
 						return;
 					}
 				}
-				//FIXME: find the distance at which the xsection is to be added and draw a line of 
+				// FIXME: find the distance at which the xsection is to be added
+				// and draw a line of
 				// a certain width (say 1000ft) perpendicular to the flowline.
 			}
 		} else {
@@ -187,7 +192,7 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				String msg = "Adding a channel with upnode (" + node.getId()
 						+ "). Now click on downnode.";
 				eventBus.fireEvent(new MessageEvent(msg));
-				if (channelLineHandler == null){
+				if (channelLineHandler == null) {
 					channelLineHandler = new ChannelLineMouseMoveHandler();
 				}
 				channelLineHandler.startLine();
@@ -208,10 +213,6 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				previousNode = null;
 			}
 		}
-	}
-
-	public void setType(int type) {
-		this.type = type;
 	}
 
 }

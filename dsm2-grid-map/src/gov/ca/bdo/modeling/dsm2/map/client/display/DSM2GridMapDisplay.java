@@ -74,7 +74,8 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private ElevationProfileDisplayer elevationProfileDisplayer;
 	private BathymetryDisplayer bathymetryDisplayer;
 
-	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly, EventBus eventBus) {
+	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly,
+			EventBus eventBus) {
 		super(display, viewOnly, eventBus);
 		controlPanel = new MapControlPanel(viewOnly);
 	}
@@ -94,7 +95,7 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 			InitializeHandler initializeHandler) {
 		return this.addHandler(initializeHandler, InitializeEvent.getType());
 	}
-	
+
 	@Override
 	public void setEditMode(boolean editMode) {
 		super.setEditMode(editMode);
@@ -123,12 +124,9 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 		if (!down) {
 			mapPanel.getMap().removeMapClickHandler(addMapElementHandler);
 		} else {
-			int addTypeSelected = getAddTypeSelected();
 			if (addMapElementHandler == null) {
 				addMapElementHandler = new AddMapElementClickHandler(mapPanel,
-						addTypeSelected, eventBus);
-			} else {
-				addMapElementHandler.setType(addTypeSelected);
+						controlPanel, eventBus);
 			}
 			mapPanel.getMap().addMapClickHandler(addMapElementHandler);
 		}
