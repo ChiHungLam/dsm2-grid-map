@@ -48,22 +48,60 @@ import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.maps.client.event.MapClickHandler;
+import com.google.gwt.maps.client.event.MapMouseMoveHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.maps.client.overlay.Polyline;
 
 /**
  * @author nsandhu
- *
+ * 
  */
 public class AddMapElementClickHandler implements MapClickHandler {
+
+	private final class ChannelLineMouseMoveHandler implements
+			MapMouseMoveHandler {
+		private Polyline channelLine;
+
+		public ChannelLineMouseMoveHandler() {
+			channelLine = null;
+		}
+		
+		public void startLine(){
+			mapPanel.getMap().addMapMouseMoveHandler(this);
+		}
+
+		public void onMouseMove(MapMouseMoveEvent event) {
+			if (channelLine == null) {
+				LatLng p1 = LatLng.newInstance(previousNode.getLatitude(),
+						previousNode.getLongitude());
+				LatLng p2 = event.getLatLng();
+				channelLine = new Polyline(new LatLng[] { p1, p2 },"blue");
+				mapPanel.getMap().addOverlay(channelLine);
+			}
+			channelLine.deleteVertex(1);
+			channelLine.insertVertex(1, event.getLatLng());
+		}
+
+		public void clearLine() {
+			if (channelLine == null) {
+				return;
+			}
+			mapPanel.getMap().removeMapMouseMoveHandler(this);
+			mapPanel.getMap().removeOverlay(channelLine);
+			
+			channelLine=null;
+		}
+	}
 
 	private int type;
 	private MapPanel mapPanel;
 	private Node previousNode;
 	private EventBus eventBus;
+	private ChannelLineMouseMoveHandler channelLineHandler;
 
-	public AddMapElementClickHandler(MapPanel mapPanel, int type, EventBus eventBus) {
+	public AddMapElementClickHandler(MapPanel mapPanel, int type,
+			EventBus eventBus) {
 		this.mapPanel = mapPanel;
 		this.type = type;
 		this.eventBus = eventBus;
@@ -84,42 +122,81 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				n.setLatitude(latLng.getLatitude());
 				n.setLongitude(latLng.getLongitude());
 				mapPanel.getNodeManager().addNode(n);
-			} else if (type==ElementType.GATE){
+			} else if (type == ElementType.GATE) {
 				GateOverlayManager gateManager = mapPanel.getGateManager();
 				Gate g = new Gate();
-				g.setName("GATE_"+(gateManager.getNumberOfGates()+1));
+				g.setName("GATE_" + (gateManager.getNumberOfGates() + 1));
 				g.setLatitude(latLng.getLatitude());
 				g.setLongitude(latLng.getLongitude());
-				//FIXME: how is the gate to be associated with a channel or reservoir?
-				//g.setFromObject(fromObject);
-				//g.setFromIdentifier();
+				// FIXME: how is the gate to be associated with a channel or
+				// reservoir?
+				// g.setFromObject(fromObject);
+				// g.setFromIdentifier();
 				gateManager.addGate(g);
-			} else if (type == ElementType.RESERVOIR){
-				ReservoirOverlayManager reservoirManager = mapPanel.getReservoirManager();
+			} else if (type == ElementType.RESERVOIR) {
+				ReservoirOverlayManager reservoirManager = mapPanel
+						.getReservoirManager();
 				Reservoir r = new Reservoir();
 				r.setLatitude(latLng.getLatitude());
 				r.setLongitude(latLng.getLongitude());
-				r.setName("RESERVOIR_"+(reservoirManager.getNumberOfReservoirs()+1));
+				r.setName("RESERVOIR_"
+						+ (reservoirManager.getNumberOfReservoirs() + 1));
 				reservoirManager.addReservoir(r);
-			} else if (type == ElementType.OUTPUT){
-				
+			} else if (type == ElementType.OUTPUT) {
+
+			} else if (type == ElementType.XSECTION){
+				Overlay overlay = event.getOverlay();
+				if (overlay == null){
+					String msg = "To add a xsection, first click on a channel line to select it";
+					eventBus.fireEvent(new MessageEvent(msg));
+					return;
+				}
+				if (!(overlay instanceof Polyline)){
+					String msg = "To add a xsection, first click on a channel line to select it. You clicked on a marker?";
+					eventBus.fireEvent(new MessageEvent(msg));
+					return;
+				}
+				Polyline line = (Polyline) overlay;
+				String channelId = mapPanel.getChannelManager().getChannelId(line);
+				if (channelId == null){
+					String channelIdForFlowline = mapPanel.getChannelManager().getChannelIdForFlowline(line);
+					if (channelIdForFlowline == null){
+						String msg = "To add a xsection, you must click on a spot on the channel's flowline. You clicked on some other line?";
+						eventBus.fireEvent(new MessageEvent(msg));
+						return;
+					}
+				}
+				//FIXME: find the distance at which the xsection is to be added and draw a line of 
+				// a certain width (say 1000ft) perpendicular to the flowline.
 			}
 		} else {
 			Overlay overlay = event.getOverlay();
 			if (overlay == null) {
 				String msg = "You have selected adding a channel and did not click on a node marker";
-				Window.alert(msg);
+				eventBus.fireEvent(new MessageEvent(msg));
 				return;
 			}
 			NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
 			Node node = nodeManager.getNodeForMarker(overlay);
 			if (node == null) {
 				String msg = "You have selected adding a channel and clicked on a marker that is not a node!";
-				Window.alert(msg);
+				eventBus.fireEvent(new MessageEvent(msg));
+				return;
 			}
 			if (previousNode == null) {
+				String msg = "Adding a channel with upnode (" + node.getId()
+						+ "). Now click on downnode.";
+				eventBus.fireEvent(new MessageEvent(msg));
+				if (channelLineHandler == null){
+					channelLineHandler = new ChannelLineMouseMoveHandler();
+				}
+				channelLineHandler.startLine();
 				previousNode = node;
 			} else {
+				String msg = "Adding channel with upnode ("
+						+ previousNode.getId() + ") and downnode ("
+						+ node.getId() + ")";
+				eventBus.fireEvent(new MessageEvent(msg));
 				ChannelLineDataManager channelManager = mapPanel
 						.getChannelManager();
 				Channel channel = new Channel();
@@ -127,6 +204,7 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				channel.setDownNodeId(node.getId());
 				channel.setId(channelManager.getNewChannelId());
 				channelManager.addChannel(channel);
+				channelLineHandler.clearLine();
 				previousNode = null;
 			}
 		}
