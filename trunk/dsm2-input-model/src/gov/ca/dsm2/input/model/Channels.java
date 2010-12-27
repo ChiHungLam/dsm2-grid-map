@@ -36,10 +36,10 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Channels implements Serializable {
-	private  ArrayList<Channel> channels;
-	private  HashMap<String, Channel> channelIdMap;
-	private  HashMap<String, String> upNodeMap = new HashMap<String, String>();
-	private  HashMap<String, String> downNodeMap = new HashMap<String, String>();
+	private ArrayList<Channel> channels;
+	private HashMap<String, Channel> channelIdMap;
+	private HashMap<String, String> upNodeMap = new HashMap<String, String>();
+	private HashMap<String, String> downNodeMap = new HashMap<String, String>();
 
 	public Channels() {
 		channels = new ArrayList<Channel>();
@@ -88,7 +88,57 @@ public class Channels implements Serializable {
 	public void removeChannel(Channel channel) {
 		channels.remove(channel);
 		channelIdMap.remove(channel.getId());
-		// FIXME: remove from up/down nodes as well
+		String upChannels = upNodeMap.get(channel.getUpNodeId());
+		if (upChannels != null) {
+			String value = filterIdFromList(channel.getId(), upChannels);
+			if (value.equals("")) {
+				upNodeMap.remove(channel.getUpNodeId());
+			} else {
+				upNodeMap.put(channel.getUpNodeId(), value);
+			}
+		}
+		String downChannels = downNodeMap.get(channel.getDownNodeId());
+		if (downChannels != null) {
+			String value = filterIdFromList(channel.getId(), upChannels);
+			if (value.equals("")) {
+				downNodeMap.remove(channel.getDownNodeId());
+			} else {
+				downNodeMap.put(channel.getDownNodeId(), value);
+			}
+		}
+	}
+
+	public void updateNodeId(String previousValue, String newValue) {
+		String upChannels = getUpChannels(previousValue);
+		if (upChannels != null) {
+			String[] fields = upChannels.split(",");
+			for (String f : fields) {
+				getChannel(f).setUpNodeId(newValue);
+			}
+			upNodeMap.remove(previousValue);
+			upNodeMap.put(newValue, upChannels);
+		}
+		String downChannels = getDownChannels(previousValue);
+		if (downChannels != null) {
+			String[] fields = downChannels.split(",");
+			for (String f : fields) {
+				getChannel(f).setDownNodeId(newValue);
+			}
+			downNodeMap.remove(previousValue);
+			downNodeMap.put(newValue, downChannels);
+		}
+	}
+
+	private String filterIdFromList(String channelId, String upChannels) {
+		String[] split = upChannels.split(",");
+		String value = "";
+		for (String f : split) {
+			if (f.equals(channelId)) {
+				continue;
+			}
+			value = f + ",";
+		}
+		return value;
 	}
 
 	/**
@@ -122,15 +172,16 @@ public class Channels implements Serializable {
 	public String getDownChannels(String nodeId) {
 		return downNodeMap.get(nodeId);
 	}
-	
+
 	/**
 	 * assuming that all channel ids are integers, return the maximum of all
+	 * 
 	 * @return
 	 */
-	public int getMaxChannelId(){
-		int max=0;
-		for(Channel channel: channels){
-			max=Math.max(max,Integer.parseInt(channel.getId()));
+	public int getMaxChannelId() {
+		int max = 0;
+		for (Channel channel : channels) {
+			max = Math.max(max, Integer.parseInt(channel.getId()));
 		}
 		return max;
 	}
