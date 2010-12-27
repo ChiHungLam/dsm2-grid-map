@@ -45,6 +45,8 @@ import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoir;
+import gov.ca.dsm2.input.model.XSection;
+import gov.ca.dsm2.input.model.XSectionLayer;
 import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import com.google.gwt.event.shared.EventBus;
@@ -110,7 +112,7 @@ public class AddMapElementClickHandler implements MapClickHandler {
 
 	public void onClick(MapClickEvent event) {
 		int type = controlPanel.getAddTypeSelected();
-		if (type != ElementType.CHANNEL) {
+		if ((type != ElementType.CHANNEL) && (type != ElementType.XSECTION)) {
 			LatLng latLng = event.getLatLng();
 			if (latLng == null) {
 				String msg = "You clicked on a marker. If you'd like to add a node, click on the map instead. You can move it overlap later.";
@@ -174,7 +176,7 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				// and draw a line of
 				// a certain width (say 1000ft) perpendicular to the flowline.
 			}
-		} else {
+		} else if (type == ElementType.CHANNEL) {
 			Overlay overlay = event.getOverlay();
 			if (overlay == null) {
 				String msg = "You have selected adding a channel and did not click on a node marker";
@@ -212,7 +214,46 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				channelLineHandler.clearLine();
 				previousNode = null;
 			}
+		} else if (type == ElementType.XSECTION) {
+			Overlay overlay = event.getOverlay();
+			if (overlay == null) {
+				String msg = "You have selected adding a xsection and did not click on a channel connection line";
+				eventBus.fireEvent(new MessageEvent(msg));
+				return;
+			}
+			if (!(overlay instanceof Polyline)) {
+				String msg = "When adding a xsection click on a channel connection line. You clicked on a marker?";
+				eventBus.fireEvent(new MessageEvent(msg));
+				return;
+			}
+			String channelId = mapPanel.getChannelManager().getChannelId(
+					overlay);
+			if (channelId == null) {
+				String msg = "When adding a xsection click on a channel connection line. You clicked on some other line?";
+				eventBus.fireEvent(new MessageEvent(msg));
+				return;
+			}
+			// FIXME: add rectangular xsection of 1000 width and -10 to 10 ft
+			// elevations. Make this better by adding xsection based on actual
+			// width and profile of the
+			// dem
+			XSection xsection = new XSection();
+			xsection.setChannelId(channelId);
+			XSectionLayer layer1 = new XSectionLayer();
+			layer1.setArea(0);
+			layer1.setElevation(-10);
+			layer1.setTopWidth(1000);
+			layer1.setWettedPerimeter(1000);
+			XSectionLayer layer2 = new XSectionLayer();
+			layer2.setArea(20000.0);
+			layer2.setElevation(10);
+			layer2.setTopWidth(1000);
+			layer2.setWettedPerimeter(1040);
+			xsection.addLayer(layer1);
+			xsection.addLayer(layer2);
+			xsection.setDistance(0.5);
+			mapPanel.getChannelManager().getChannels().getChannel(channelId)
+					.addXSection(xsection);
 		}
 	}
-
 }

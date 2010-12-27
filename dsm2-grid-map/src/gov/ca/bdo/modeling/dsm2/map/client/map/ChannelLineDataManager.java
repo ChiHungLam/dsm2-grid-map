@@ -83,6 +83,9 @@ public class ChannelLineDataManager {
 
 	public void addPolyline(String channelId, Polyline line) {
 		lineMap.put(channelId, line);
+		if (lineToIdMap != null) {
+			lineToIdMap.put(line, channelId);
+		}
 	}
 
 	public Polyline getPolyline(String channelId) {
@@ -132,8 +135,12 @@ public class ChannelLineDataManager {
 	}
 
 	public void removePolyline(String channelId) {
-		mapPanel.getMap().removeOverlay(getPolyline(channelId));
+		Polyline polyline = getPolyline(channelId);
+		mapPanel.getMap().removeOverlay(polyline);
 		lineMap.remove(channelId);
+		if (lineToIdMap != null) {
+			lineToIdMap.remove(polyline);
+		}
 	}
 
 	public void addLines() {
@@ -248,10 +255,20 @@ public class ChannelLineDataManager {
 		mapPanel.getMap().removeOverlay(polyline);
 		Channel channel = channels.getChannel(xSection.getChannelId());
 		channel.getXsections().remove(xSection);
+		xsectionLineMap.remove(xSection);
 	}
 
 	public String getChannelIdForFlowline(Polyline line) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void clearXSectionLines() {
+		if (xsectionLineMap != null) {
+			for (Polyline line : xsectionLineMap.values()) {
+				mapPanel.getMap().removeOverlay(line);
+			}
+			xsectionLineMap.clear();
+		}
 	}
 }
