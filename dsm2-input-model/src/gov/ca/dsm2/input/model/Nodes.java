@@ -50,16 +50,33 @@ public class Nodes implements Serializable {
 	public List<Node> getNodes() {
 		return nodes;
 	}
-	
+
+	public void renameNodeId(String newValue, String previousValue) {
+		Node node = getNode(previousValue);
+		if (node == null) {
+			throw new RuntimeException("No existing node for id:"
+					+ previousValue);
+		}
+		Node node2 = getNode(newValue);
+		if (node2 != null) {
+			throw new RuntimeException("There already exists a node with id: "
+					+ newValue);
+		}
+		node.setId(newValue);
+		nodeMap.remove(previousValue);
+		nodeMap.put(newValue, node);
+	}
+
 	/**
-	 * Assuming that all nodes are integers, find the maximum
-	 * node id amongst all nodes
+	 * Assuming that all nodes are integers, find the maximum node id amongst
+	 * all nodes
+	 * 
 	 * @return
 	 */
-	public int calculateMaxNodeId(){
-		int max=0;
-		for(Node n: nodes){
-			max=Math.max(max,Integer.parseInt(n.getId()));
+	public int calculateMaxNodeId() {
+		int max = 0;
+		for (Node n : nodes) {
+			max = Math.max(max, Integer.parseInt(n.getId()));
 		}
 		return max;
 	}
