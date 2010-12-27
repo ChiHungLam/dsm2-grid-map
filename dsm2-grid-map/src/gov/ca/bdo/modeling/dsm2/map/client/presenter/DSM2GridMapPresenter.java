@@ -39,8 +39,8 @@
  *******************************************************************************/
 package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 
-import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -131,7 +131,6 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 		}
 		super.bind();
 		final Display d = (Display) display;
-
 		d.getAddButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {

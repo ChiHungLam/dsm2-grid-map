@@ -1,10 +1,10 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
-import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.model.LoginInfo;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.ContainerPresenter.Display;
 import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.modeling.dsm2.widgets.client.ContainerWithHeaderFooter;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.dom.client.HasChangeHandlers;

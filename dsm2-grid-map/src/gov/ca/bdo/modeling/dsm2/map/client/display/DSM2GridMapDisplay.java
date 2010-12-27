@@ -52,6 +52,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
@@ -73,8 +74,8 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private ElevationProfileDisplayer elevationProfileDisplayer;
 	private BathymetryDisplayer bathymetryDisplayer;
 
-	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly) {
-		super(display, viewOnly);
+	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly, EventBus eventBus) {
+		super(display, viewOnly, eventBus);
 		controlPanel = new MapControlPanel(viewOnly);
 	}
 
@@ -92,6 +93,13 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	public HandlerRegistration addInitializeHandler(
 			InitializeHandler initializeHandler) {
 		return this.addHandler(initializeHandler, InitializeEvent.getType());
+	}
+	
+	@Override
+	public void setEditMode(boolean editMode) {
+		super.setEditMode(editMode);
+		clearAddingMode();
+		clearDeleteingMode();
 	}
 
 	public HasClickHandlers getSaveEditButton() {
@@ -118,7 +126,7 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 			int addTypeSelected = getAddTypeSelected();
 			if (addMapElementHandler == null) {
 				addMapElementHandler = new AddMapElementClickHandler(mapPanel,
-						addTypeSelected);
+						addTypeSelected, eventBus);
 			} else {
 				addMapElementHandler.setType(addTypeSelected);
 			}

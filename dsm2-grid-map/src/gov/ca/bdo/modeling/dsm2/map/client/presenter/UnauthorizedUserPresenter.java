@@ -1,7 +1,7 @@
 package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
-import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

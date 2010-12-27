@@ -65,11 +65,13 @@ public class NodeMarkerDataManager {
 	private MarkNewNodePosition dragEndHandler;
 	private Icon labelIcon;
 	private Icon editModeIcon;
+	private NodeClickHandler nodeClickHandler;
 
 	public NodeMarkerDataManager(MapPanel mapPanel, Nodes nodes) {
 		this.nodes = nodes;
 		this.mapPanel = mapPanel;
 		dragEndHandler = new MarkNewNodePosition(this.mapPanel);
+		nodeClickHandler = new NodeClickHandler(this.mapPanel);
 		markerMap = new HashMap<String, Marker>();
 		labelIcon = Icon.newInstance("images/greencirclemarker.png");
 		labelIcon.setIconSize(Size.newInstance(22, 22));
@@ -186,6 +188,7 @@ public class NodeMarkerDataManager {
 		}
 		if (mapPanel.isInEditMode()) {
 			marker.addMarkerDragEndHandler(dragEndHandler);
+			marker.addMarkerClickHandler(nodeClickHandler);
 		}
 		addMarker(mapMarkerData, marker);
 		if (mapPanel.isInEditMode()) {
@@ -236,6 +239,10 @@ public class NodeMarkerDataManager {
 	public void removeNode(Node node) {
 		mapPanel.getMap().removeOverlay(getMarkerFor(node.getId()));
 		mapPanel.getModel().getNodes().removeNode(node);
+	}
+
+	public void renameNodeId(String newValue, String previousValue) {
+		this.nodes.renameNodeId(newValue, previousValue);
 	}
 
 }

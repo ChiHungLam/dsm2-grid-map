@@ -11,7 +11,6 @@ import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;

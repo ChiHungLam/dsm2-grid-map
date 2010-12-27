@@ -2,7 +2,6 @@ package gov.ca.bdo.modeling.dsm2.map.client;
 
 import gov.ca.bdo.modeling.dsm2.map.client.display.ContainerDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.DSM2GridMapDisplay;
-import gov.ca.bdo.modeling.dsm2.map.client.display.MapDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.StudyManagerDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UnauthorizedUserDisplay;
 import gov.ca.bdo.modeling.dsm2.map.client.display.UploadStudyDataDisplay;
@@ -85,7 +84,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			if (token.startsWith("map_view")) {
 				presenter = new DSM2GridMapPresenter(dsm2InputService,
 						eventBus,
-						new DSM2GridMapDisplay(containerDisplay, true),
+						new DSM2GridMapDisplay(containerDisplay, true, eventBus),
 						containerPresenter);
 			} else if (token.startsWith("map")) {
 				if (mapPresenter == null) {
@@ -124,7 +123,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 	private DSM2GridMapPresenter createDSM2GridMapPresenter() {
 		return new DSM2GridMapPresenter(dsm2InputService, eventBus,
-				new DSM2GridMapDisplay(containerDisplay, false),
+				new DSM2GridMapDisplay(containerDisplay, false, eventBus),
 				containerPresenter);
 	}
 
