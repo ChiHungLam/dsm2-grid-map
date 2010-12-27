@@ -1,5 +1,8 @@
 package gov.ca.modeling.dsm2.widgets.client;
 
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEventHandler;
+
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -49,9 +52,16 @@ public class ContainerWithHeaderFooter extends ResizeComposite implements
 		containerPanel = new LayoutPanel();
 		containerPanel.setStyleName("container");
 		showWarningFor(DEFAULT_MESSAGE, 5000);
-		mainPanel.addNorth(northPanel, 65);
-		mainPanel.addSouth(footerPanel, 15);
+		mainPanel.addNorth(northPanel, 69);
+		mainPanel.addSouth(footerPanel, 20);
 		mainPanel.add(containerPanel);
+		this.addHandler(new MessageEventHandler() {
+
+			public void onMessage(MessageEvent event) {
+				showMessage(event.getMessage(), event.getType(), event
+						.getDelayInMillis());
+			}
+		}, MessageEvent.TYPE);
 		initWidget(mainPanel);
 	}
 
@@ -139,6 +149,21 @@ public class ContainerWithHeaderFooter extends ResizeComposite implements
 		showMessageFor(message, "#FFDDDD", delayInMillis);
 	}
 
+	public void showMessage(String message, int type, int delayInMillis) {
+		if (type == MessageEvent.ERROR) {
+			if (delayInMillis > 0) {
+				showErrorFor(message, delayInMillis);
+			} else {
+				showError(true, message);
+			}
+		} else {
+			if (delayInMillis > 0) {
+				showWarningFor(message, delayInMillis);
+			} else {
+				showWarning(true, message);
+			}
+		}
+	}
 	@Override
 	public void add(Widget w) {
 		containerPanel.add(w);
