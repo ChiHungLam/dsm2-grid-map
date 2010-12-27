@@ -3,9 +3,9 @@ package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.event.DSM2StudyEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.event.DSM2StudyEventHandler;
-import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import gov.ca.dsm2.input.model.DSM2Model;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

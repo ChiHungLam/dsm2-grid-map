@@ -2,8 +2,8 @@ package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.event.DSM2StudyEvent;
-import gov.ca.bdo.modeling.dsm2.map.client.event.MessageEvent;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import java.util.ArrayList;
 

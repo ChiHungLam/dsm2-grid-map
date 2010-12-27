@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/json_simple-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.1.jar" sourcepath="/Users/nsandhu/dev/commons-fileupload-1.2.1/lib/commons-fileupload-1.2.1-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-1.3.2.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dsm2-widgets"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-maps-utility-1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-maps-no-redist-1.1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-visualization-no-redist-1.1.0"/>
@@ -19,5 +18,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/appengine-local-stubs-1.3.8"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dsm2-widgets"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

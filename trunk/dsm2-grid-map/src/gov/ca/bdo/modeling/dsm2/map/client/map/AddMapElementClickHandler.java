@@ -44,7 +44,9 @@ import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoir;
+import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Overlay;
@@ -59,10 +61,12 @@ public class AddMapElementClickHandler implements MapClickHandler {
 	private int type;
 	private MapPanel mapPanel;
 	private Node previousNode;
+	private EventBus eventBus;
 
-	public AddMapElementClickHandler(MapPanel mapPanel, int type) {
+	public AddMapElementClickHandler(MapPanel mapPanel, int type, EventBus eventBus) {
 		this.mapPanel = mapPanel;
 		this.type = type;
+		this.eventBus = eventBus;
 	}
 
 	public void onClick(MapClickEvent event) {
@@ -70,7 +74,7 @@ public class AddMapElementClickHandler implements MapClickHandler {
 			LatLng latLng = event.getLatLng();
 			if (latLng == null) {
 				String msg = "You clicked on a marker. If you'd like to add a node, click on the map instead. You can move it overlap later.";
-				Window.alert(msg);
+				eventBus.fireEvent(new MessageEvent(msg));
 				return;
 			}
 			if (type == ElementType.NODE) {

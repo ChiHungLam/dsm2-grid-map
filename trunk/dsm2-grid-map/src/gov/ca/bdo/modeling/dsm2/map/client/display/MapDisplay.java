@@ -45,6 +45,7 @@ import gov.ca.dsm2.input.model.DSM2Model;
 import com.google.gwt.event.logical.shared.HasInitializeHandlers;
 import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.utility.client.DefaultPackage;
@@ -60,14 +61,15 @@ public abstract class MapDisplay extends ResizeComposite implements
 	protected ContainerDisplay containerDisplay;
 	protected MapPanel mapPanel;
 	protected boolean viewOnly;
-	private DSM2Model model;
+	protected DSM2Model model;
+	protected EventBus eventBus;
 
-	public MapDisplay(ContainerDisplay display, boolean viewOnly) {
+	public MapDisplay(ContainerDisplay display, boolean viewOnly, EventBus eventBus) {
 		this.viewOnly = viewOnly;
+		this.eventBus = eventBus;
 		containerDisplay = display;
 		mainPanel = new SplitLayoutPanel();
 		mainPanel.setStyleName("map-split-layout-panel");
-
 		initWidget(mainPanel);
 		// layout top level things here
 		if (!Maps.isLoaded()) {
