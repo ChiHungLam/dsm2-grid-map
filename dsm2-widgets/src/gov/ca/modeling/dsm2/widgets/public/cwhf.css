@@ -70,7 +70,7 @@ form {
 }
 
 .simple-header {
-	
+	height: 25px;
 }
 
 .simple-header-right {
@@ -116,7 +116,7 @@ form {
 	background: none repeat scroll 0 0 #EBEFF9;
 	border-bottom: 1px solid #6B90DA;
 	clear: none;
-	margin: 30px 0;
+	margin: 7px 0;
 	padding: 0px 5px 0;
 	position: absolute;
 	white-space: nowrap;
@@ -184,7 +184,8 @@ form {
 .message-area {
 	font-family: Arial;
 	font-size: 18px;
-	left: 40%;
+	left: 30%;
+	top: 31px;
 	overflow: hidden;
 	position: absolute;
 	z-index: 10000;
@@ -192,4 +193,11 @@ form {
 
 .hidden {
 	display: none !important;
+}
+
+.visibilityPanel {
+	background: wheat;
+}
+.header {
+	background: white;
 }

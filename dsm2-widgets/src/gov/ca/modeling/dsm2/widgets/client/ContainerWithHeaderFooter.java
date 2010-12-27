@@ -52,7 +52,7 @@ public class ContainerWithHeaderFooter extends ResizeComposite implements
 		containerPanel = new LayoutPanel();
 		containerPanel.setStyleName("container");
 		showWarningFor(DEFAULT_MESSAGE, 5000);
-		mainPanel.addNorth(northPanel, 69);
+		mainPanel.addNorth(northPanel, 63);
 		mainPanel.addSouth(footerPanel, 20);
 		mainPanel.add(containerPanel);
 		this.addHandler(new MessageEventHandler() {
@@ -72,12 +72,12 @@ public class ContainerWithHeaderFooter extends ResizeComposite implements
 	public void setActiveMainLink(String href) {
 		mainLinkBar.setActiveLink(href);
 	}
-	
-	public void addLinkToSubBar(Anchor anchor){
+
+	public void addLinkToSubBar(Anchor anchor) {
 		subLinkBar.add(anchor);
 	}
-	
-	public void setActiveSubLink(String href){
+
+	public void setActiveSubLink(String href) {
 		subLinkBar.setActiveLink(href);
 	}
 
@@ -164,6 +164,7 @@ public class ContainerWithHeaderFooter extends ResizeComposite implements
 			}
 		}
 	}
+
 	@Override
 	public void add(Widget w) {
 		containerPanel.add(w);
