@@ -65,6 +65,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		public void onClick(PolylineClickEvent event) {
 			if (mapPanel.isInEditMode() && mapPanel.isInEditMode()) {
 				mapPanel.getChannelManager().removeXSection(xSection);
+				return;
 			}
 			for (XSection xs : mapPanel.getChannelManager().getXSections()) {
 				Polyline line = mapPanel.getChannelManager()
@@ -322,14 +323,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			points.add(point);
 		}
 		channel.setLatLngPoints(points);
-		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
-				channel.getUpNodeId());
-		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
-				channel.getDownNodeId());
-		LatLng[] pointsForChannel = ModelUtils.getPointsForChannel(channel,
-				upNode, downNode);
-		double findDistanceUptoSegment = GeomUtils.findDistanceUptoSegment(
-				pointsForChannel.length - 1, pointsForChannel);
 	}
 
 	public void updateDisplay() {

@@ -44,6 +44,7 @@ public class ReservoirClickHandler implements MarkerClickHandler {
 		mapPanel.getInfoPanel().clear();
 		if (mapPanel.isInEditMode() && mapPanel.isInDeletingMode()) {
 			mapPanel.getReservoirManager().removeReservoir(reservoir);
+			return;
 		}
 		ReservoirInfoPanel panel = new ReservoirInfoPanel(reservoir);
 		mapPanel.getInfoPanel().add(panel);

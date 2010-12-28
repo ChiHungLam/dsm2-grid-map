@@ -84,7 +84,10 @@ public class ReservoirOverlayManager {
 	}
 
 	public void removeReservoirMarker(String reservoirId) {
-		reservoirMarkerMap.remove(reservoirId);
+		Marker marker = reservoirMarkerMap.remove(reservoirId);
+		if (marker != null) {
+			mapPanel.getMap().removeOverlay(marker);
+		}
 		removeReserviorConnectionLines(reservoirId);
 	}
 
@@ -165,6 +168,7 @@ public class ReservoirOverlayManager {
 						reservoirConnnectionLineMap.get(key));
 			}
 		}
+		reservoirConnnectionLineMap.clear();
 	}
 
 	public int getNumberOfReservoirs() {

@@ -79,7 +79,10 @@ public class GateOverlayManager {
 	}
 
 	public void removeGate(String gateId) {
-		gateMarkerMap.remove(gateId);
+		Marker marker = gateMarkerMap.remove(gateId);
+		if (marker != null) {
+			mapPanel.getMap().removeOverlay(marker);
+		}
 		gates.removeGate(gateId);
 	}
 
