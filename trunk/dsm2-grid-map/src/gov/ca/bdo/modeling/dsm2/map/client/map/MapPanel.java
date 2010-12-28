@@ -343,8 +343,7 @@ public class MapPanel extends ResizeComposite {
 		while (!getMap().getBounds().containsBounds(bounds)) {
 			getMap().setZoomLevel(getMap().getZoomLevel() - 1);
 		}
-		new ChannelClickHandler(getChannelManager().getChannels().getChannel(
-				channelId), this).onClick(null);
+		new ChannelClickHandler(this).onClick(null);
 	}
 
 	public MapWidget getMapWidget() {
@@ -447,9 +446,9 @@ public class MapPanel extends ResizeComposite {
 				line.setStrokeStyle(style);
 				flowLines.add(line);
 			}
-			for (Polyline line : flowLines) {
-				map.addOverlay(line);
-			}
+		}
+		for (Polyline line : flowLines) {
+			map.addOverlay(line);
 		}
 	}
 

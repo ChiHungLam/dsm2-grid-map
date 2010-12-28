@@ -61,6 +61,7 @@ package gov.ca.bdo.modeling.dsm2.map.client.map;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.Node;
+import gov.ca.dsm2.input.model.Nodes;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 import gov.ca.dsm2.input.model.XSectionProfile;
@@ -334,6 +335,21 @@ public class ModelUtils {
 			return upChannels;
 		}
 		return downChannels + "," + upChannels;
+	}
+
+	public static void updateXSectionPosition(Channel channel, Nodes nodes,
+			XSection xSection) {
+		XSectionProfile profile = xSection.getProfile();
+		Node upNode = nodes.getNode(channel.getUpNodeId());
+		Node downNode = nodes.getNode(channel.getDownNodeId());
+		double distance = ModelUtils.getIntersectionDistanceFromUpstream(
+				profile, channel, upNode, downNode);
+		if ((distance >= 0) && (distance <= channel.getLength())) {
+			double dratio = distance / channel.getLength();
+			dratio = Math.round(dratio * 1000) / 1000.0;
+			profile.setDistance(dratio);
+			xSection.setDistance(dratio);
+		}
 	}
 
 }
