@@ -99,7 +99,7 @@ public class Channels implements Serializable {
 		}
 		String downChannels = downNodeMap.get(channel.getDownNodeId());
 		if (downChannels != null) {
-			String value = filterIdFromList(channel.getId(), upChannels);
+			String value = filterIdFromList(channel.getId(), downChannels);
 			if (value.equals("")) {
 				downNodeMap.remove(channel.getDownNodeId());
 			} else {
@@ -131,14 +131,17 @@ public class Channels implements Serializable {
 
 	private String filterIdFromList(String channelId, String upChannels) {
 		String[] split = upChannels.split(",");
-		String value = "";
+		StringBuffer value = new StringBuffer();
 		for (String f : split) {
 			if (f.equals(channelId)) {
 				continue;
 			}
-			value = f + ",";
+			value.append(f).append(",");
 		}
-		return value;
+		if (value.length() > 0) {
+			value.setLength(value.length() - 1);
+		}
+		return value.toString();
 	}
 
 	/**
