@@ -40,7 +40,6 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.map.AddMapElementClickHandler;
-import gov.ca.bdo.modeling.dsm2.map.client.map.DeleteMapElementClickHandler;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringAreaInPolygon;
 import gov.ca.bdo.modeling.dsm2.map.client.map.MeasuringDistanceAlongLine;
 import gov.ca.bdo.modeling.dsm2.map.client.presenter.DSM2GridMapPresenter.Display;
@@ -54,7 +53,6 @@ import com.google.gwt.event.logical.shared.InitializeEvent;
 import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
 import com.google.gwt.maps.client.overlay.GeoXmlOverlay;
 import com.google.gwt.user.client.Window;
@@ -65,7 +63,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private AddMapElementClickHandler addMapElementHandler;
-	private MapClickHandler deleteMapElementHandler;
 	public MapControlPanel controlPanel;
 	private MeasuringDistanceAlongLine lengthMeasurer;
 	private MeasuringAreaInPolygon areaMeasurer;
@@ -134,16 +131,8 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 
 	public void setDeletingMode(boolean down) {
 		clearAddingMode();
+		mapPanel.setDeletingMode(down);
 		((ToggleButton) getAddButton()).setDown(false);
-		if (!down) {
-			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
-		} else {
-			if (deleteMapElementHandler == null) {
-				deleteMapElementHandler = new DeleteMapElementClickHandler(
-						mapPanel);
-			}
-			mapPanel.getMap().addMapClickHandler(deleteMapElementHandler);
-		}
 	}
 
 	private void clearAddingMode() {
@@ -156,9 +145,6 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 
 	private void clearDeleteingMode() {
 		((ToggleButton) getDeleteButton()).setDown(false);
-		if (deleteMapElementHandler != null) {
-			mapPanel.getMap().removeMapClickHandler(deleteMapElementHandler);
-		}
 	}
 
 	//

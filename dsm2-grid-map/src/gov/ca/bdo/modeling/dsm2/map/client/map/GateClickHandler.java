@@ -54,6 +54,11 @@ public class GateClickHandler implements MarkerClickHandler {
 	}
 
 	public void onClick(MarkerClickEvent event) {
+		if (mapPanel.isInEditMode() && mapPanel.isInDeletingMode()) {
+			mapPanel.getGateManager().removeGate(gate.getName());
+			mapPanel.getInfoPanel().clear();
+			return;
+		}
 		GateInfoPanel panel = new GateInfoPanel(gate);
 		mapPanel.getInfoPanel().clear();
 		mapPanel.getInfoPanel().add(panel);

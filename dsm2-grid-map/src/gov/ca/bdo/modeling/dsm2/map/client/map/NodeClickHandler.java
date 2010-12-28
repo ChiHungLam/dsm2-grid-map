@@ -8,24 +8,34 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class NodeClickHandler implements MarkerClickHandler{
-	
+public class NodeClickHandler implements MarkerClickHandler {
+
 	private MapPanel mapPanel;
 	private HorizontalPanel nodeEditPanel;
 	private TextBox nodeEditBox;
 	private NodeIdChangeHandler handler;
 
-	public NodeClickHandler(MapPanel mapPanel){
+	public NodeClickHandler(MapPanel mapPanel) {
 		this.mapPanel = mapPanel;
-		this.nodeEditPanel = new HorizontalPanel();
+		nodeEditPanel = new HorizontalPanel();
 		nodeEditPanel.add(new Label("Edit Node Id:"));
-		nodeEditPanel.add(this.nodeEditBox = new TextBox());
+		nodeEditPanel.add(nodeEditBox = new TextBox());
 		handler = new NodeIdChangeHandler(mapPanel);
 	}
-	
+
 	public void onClick(MarkerClickEvent event) {
 		Marker m = event.getSender();
 		String id = m.getTitle();
+		if (mapPanel.isInDeletingMode()) {
+			try {
+				mapPanel.getInfoPanel().clear();
+				mapPanel.getNodeManager().removeNode(id,
+						mapPanel.getChannelManager().getChannels());
+			} catch (Exception ex) {
+				mapPanel.showMessage(ex.getMessage());
+			}
+			return;
+		}
 		handler.setPreviousValue(id);
 		nodeEditBox.setText(id);
 		nodeEditBox.addValueChangeHandler(handler);
@@ -33,36 +43,36 @@ public class NodeClickHandler implements MarkerClickHandler{
 		mapPanel.getInfoPanel().add(nodeEditPanel);
 	}
 
-	
-	public static final class NodeIdChangeHandler implements ValueChangeHandler<String>{
+	public static final class NodeIdChangeHandler implements
+			ValueChangeHandler<String> {
 		private String previousValue = null;
 		private MapPanel mapPanel;
-		
-		public NodeIdChangeHandler(MapPanel mapPanel){
-			this.mapPanel= mapPanel;
+
+		public NodeIdChangeHandler(MapPanel mapPanel) {
+			this.mapPanel = mapPanel;
 		}
-		
+
 		public void onValueChange(ValueChangeEvent<String> event) {
-			if (!mapPanel.isInEditMode()){
+			if (!mapPanel.isInEditMode()) {
 				return;
 			}
 			String newValue = event.getValue();
-			try{
+			try {
 				mapPanel.getNodeManager().renameNodeId(newValue, previousValue);
 				setPreviousValue(newValue);
-			}catch(Exception ex){
+			} catch (Exception ex) {
 				Object source = event.getSource();
 				if (!(source instanceof TextBox)) {
 					return;
 				}
 				TextBox box = (TextBox) source;
-				box.setValue(previousValue, false);				
+				box.setValue(previousValue, false);
 			}
 		}
-		
-		public void setPreviousValue(String val){
-			this.previousValue = val;
+
+		public void setPreviousValue(String val) {
+			previousValue = val;
 		}
-		
+
 	}
 }
