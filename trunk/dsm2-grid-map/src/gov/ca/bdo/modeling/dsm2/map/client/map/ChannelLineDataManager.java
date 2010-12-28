@@ -271,4 +271,10 @@ public class ChannelLineDataManager {
 			xsectionLineMap.clear();
 		}
 	}
+
+	public void removeChannel(Channel channel) {
+		removePolyline(channel.getId());
+		clearXSectionLines();
+		channels.removeChannel(channel);
+	}
 }

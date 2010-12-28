@@ -106,15 +106,15 @@ public class ReservoirOverlayManager {
 			addReservoirMarker(reservoir);
 		}
 	}
-	
-	public void addReservoirMarker(Reservoir reservoir){
+
+	public void addReservoirMarker(Reservoir reservoir) {
 		Marker reservoirMarker = createReservoirMarker(reservoir);
 		addReservoirMarker(reservoir.getName(), reservoirMarker);
 		mapPanel.getMap().addOverlay(reservoirMarker);
-		addReservoirConnectionLines(reservoir);		
+		addReservoirConnectionLines(reservoir);
 	}
 
-	 private Marker createReservoirMarker(Reservoir reservoir) {
+	private Marker createReservoirMarker(Reservoir reservoir) {
 		// Create our "tiny" marker icon
 		Icon icon = Icon.newInstance("images/lake.png");
 		icon.setShadowURL("images/water.shadow.png");
@@ -179,5 +179,12 @@ public class ReservoirOverlayManager {
 	public void refresh(Reservoir reservoir) {
 		removeReserviorConnectionLines(reservoir.getName());
 		addReservoirConnectionLines(reservoir);
+	}
+
+	public void removeReservoir(Reservoir reservoir) {
+		String reservoirId = reservoir.getName();
+		removeReservoirMarker(reservoirId);
+		removeReserviorConnectionLines(reservoirId);
+		reservoirs.removeReservoir(reservoir);
 	}
 }

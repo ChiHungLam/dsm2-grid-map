@@ -45,7 +45,6 @@ import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.model.Gates;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoirs;
-import gov.ca.dsm2.input.model.XSection;
 import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 import gov.ca.modeling.maps.widgets.client.ExpandContractMapControl;
 
@@ -64,7 +63,6 @@ import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.maps.client.overlay.TileLayerOverlay;
@@ -93,6 +91,7 @@ public class MapPanel extends ResizeComposite {
 	private TransfersManager transfersManager;
 	private ArrayList<Polyline> flowLines;
 	private EventBus eventBus;
+	private boolean deleteMode;
 
 	public MapPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -120,7 +119,7 @@ public class MapPanel extends ResizeComposite {
 			}
 		});
 		setStyleName("map-panel");
-
+		deleteMode = false;
 	}
 
 	private void setOptions() {
@@ -393,6 +392,14 @@ public class MapPanel extends ResizeComposite {
 		refreshGrid();
 	}
 
+	public void setDeletingMode(boolean deleteMode) {
+		this.deleteMode = deleteMode;
+	}
+
+	public boolean isInDeletingMode() {
+		return deleteMode;
+	}
+
 	public String[] getStudyNames() {
 		return studyNames;
 	}
@@ -462,57 +469,8 @@ public class MapPanel extends ResizeComposite {
 		return reservoirOverlayManager;
 	}
 
-	public void deleteElementForOverlay(Overlay overlay) {
-		if (overlay instanceof Marker) {
-			if (nodeManager != null) {
-				Node nodeForMarker = nodeManager.getNodeForMarker(overlay);
-				if (nodeForMarker == null) {
-					eventBus.fireEvent(new MessageEvent(
-							"Marker clicked on was not a node!"));
-					return;
-				}
-				String channelsConnectedTo = ModelUtils.getChannelsConnectedTo(
-						getModel().getChannels(), nodeForMarker);
-				// check for channels connected or reservoir connections and
-				// delete only if not connected
-				if (channelsConnectedTo != null) {
-					eventBus.fireEvent(new MessageEvent(
-							"Cannot delete node connected to channels: "
-									+ channelsConnectedTo));
-					return;
-				}
-				nodeManager.removeNode(nodeForMarker);
-			}
-		} else if (overlay instanceof Polyline) {
-			if (channelManager != null) {
-				String channelId = channelManager.getChannelId(overlay);
-				if (channelId == null) { // its a cross section, maybe?
-					XSection xSection = channelManager.getXSectionFor(overlay);
-					if (xSection == null) {
-						eventBus
-								.fireEvent(new MessageEvent(
-										"Click on a channel or xsection to remove it. you clicked on some other line?"));
-					}
-					eventBus.fireEvent(new MessageEvent("Removing xsection: "
-							+ xSection.getChannelId() + "@"
-							+ xSection.getDistance()));
-					channelManager.removeXSection(xSection);
-					return;
-				}
-				Channel channel = getModel().getChannels()
-						.getChannel(channelId);
-				if (channel == null) {
-					eventBus
-							.fireEvent(new MessageEvent(
-									"Click on a channel or xsection to remove it. you clicked on some other line?"));
-					return;
-				}
-				getModel().getChannels().removeChannel(channel);
-				eventBus.fireEvent(new MessageEvent("Removing channel: "
-						+ channel.getId()));
-				channelManager.removePolyline(channelId);
-			}
-		}
+	public void showMessage(String message) {
+		eventBus.fireEvent(new MessageEvent(message));
 	}
 
 }

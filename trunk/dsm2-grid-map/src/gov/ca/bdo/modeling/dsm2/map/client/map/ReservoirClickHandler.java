@@ -41,8 +41,11 @@ public class ReservoirClickHandler implements MarkerClickHandler {
 	}
 
 	public void onClick(MarkerClickEvent event) {
-		ReservoirInfoPanel panel = new ReservoirInfoPanel(reservoir);
 		mapPanel.getInfoPanel().clear();
+		if (mapPanel.isInEditMode() && mapPanel.isInDeletingMode()) {
+			mapPanel.getReservoirManager().removeReservoir(reservoir);
+		}
+		ReservoirInfoPanel panel = new ReservoirInfoPanel(reservoir);
 		mapPanel.getInfoPanel().add(panel);
 		List<double[]> latLngPoints = reservoir.getLatLngPoints();
 		if (polygon == null) {
@@ -121,6 +124,5 @@ public class ReservoirClickHandler implements MarkerClickHandler {
 	public double getAreaInSquareFeet() {
 		return Math.round(polygon.getArea() * 3.2808399 * 3.2808399 * 100) / 100;
 	}
-	
 
 }

@@ -63,6 +63,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		}
 
 		public void onClick(PolylineClickEvent event) {
+			if (mapPanel.isInEditMode() && mapPanel.isInEditMode()) {
+				mapPanel.getChannelManager().removeXSection(xSection);
+			}
 			for (XSection xs : mapPanel.getChannelManager().getXSections()) {
 				Polyline line = mapPanel.getChannelManager()
 						.getXsectionLineFor(xs);
@@ -159,6 +162,15 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	public void doOnClick(PolylineClickEvent event) {
 		infoPanel = new ChannelInfoPanel(channel, mapPanel);
 		mapPanel.getInfoPanel().clear();
+		if (mapPanel.isInEditMode() && mapPanel.isInDeletingMode()) {
+			mapPanel.getChannelManager().removeChannel(channel);
+			if (line != null) {
+				mapPanel.getMap().removeOverlay(line);
+				line = null;
+				xsEditorPanel = null;
+			}
+			return;
+		}
 		mapPanel.getInfoPanel().add(infoPanel);
 		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
 		Node upNode = nodeManager.getNodeData(channel.getUpNodeId());

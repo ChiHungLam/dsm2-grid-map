@@ -78,8 +78,9 @@ public class GateOverlayManager {
 		return gateMarkerMap.get(gateId);
 	}
 
-	public void removeGateMarker(String gateId) {
+	public void removeGate(String gateId) {
 		gateMarkerMap.remove(gateId);
+		gates.removeGate(gateId);
 	}
 
 	public void hideMarkers(boolean hide) {
