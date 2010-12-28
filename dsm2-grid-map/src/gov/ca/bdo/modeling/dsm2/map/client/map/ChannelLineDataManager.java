@@ -188,9 +188,7 @@ public class ChannelLineDataManager {
 			}
 
 		});
-		line
-				.addPolylineClickHandler(new ChannelClickHandler(channel,
-						mapPanel));
+		line.addPolylineClickHandler(new ChannelClickHandler(mapPanel));
 		mapPanel.getMap().addOverlay(line);
 		return line;
 	}
@@ -269,6 +267,7 @@ public class ChannelLineDataManager {
 				mapPanel.getMap().removeOverlay(line);
 			}
 			xsectionLineMap.clear();
+			xsectionLineMap = null;
 		}
 	}
 

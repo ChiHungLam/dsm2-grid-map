@@ -22,14 +22,14 @@ package gov.ca.bdo.modeling.dsm2.map.client.map;
 import gov.ca.bdo.modeling.dsm2.map.client.WindowUtils;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
+import gov.ca.dsm2.input.model.Nodes;
 import gov.ca.dsm2.input.model.XSection;
-import gov.ca.dsm2.input.model.XSectionProfile;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
@@ -37,114 +37,19 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 
 public class ChannelClickHandler implements PolylineClickHandler {
-	private static final PolyStyleOptions redLineStyle = PolyStyleOptions
-			.newInstance("red");
-	private static final PolyStyleOptions blueLineStyle = PolyStyleOptions
-			.newInstance("blue");
-	private static final PolyStyleOptions greenLineStyle = PolyStyleOptions
-			.newInstance("green");
-
-	private final class XSectionLineClickHandler implements
-			PolylineClickHandler {
-		private final XSection xSection;
-		private int xSectionIndex;
-		private boolean edit;
-
-		public XSectionLineClickHandler(XSection xSection, int index,
-				boolean edit) {
-			this.xSection = xSection;
-			xSectionIndex = index;
-			this.edit = edit;
-		}
-
-		public void onClick(PolylineClickEvent event) {
-			if (mapPanel.isInEditMode() && mapPanel.isInEditMode()) {
-				mapPanel.getChannelManager().removeXSection(xSection);
-				return;
-			}
-			for (XSection xs : mapPanel.getChannelManager().getXSections()) {
-				Polyline line = mapPanel.getChannelManager()
-						.getXsectionLineFor(xs);
-				if (xs == xSection) {
-					line.setStrokeStyle(blueLineStyle);
-					infoPanel.drawXSection(channel, xSectionIndex);
-				} else {
-					line.setStrokeStyle(greenLineStyle);
-				}
-			}
-			final Polyline line = mapPanel.getChannelManager()
-					.getXsectionLineFor(xSection);
-			line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
-			if (!edit) {
-				line.setEditingEnabled(false);
-				infoPanel.drawXSection(channel, xSectionIndex);
-			} else {
-				if (xsEditorPanel == null) {
-					xsEditorPanel = new CrossSectionEditorPanel();
-				}
-				line.setEditingEnabled(PolyEditingOptions.newInstance(2));
-				line
-						.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
-
-							public void onUpdate(PolylineLineUpdatedEvent event) {
-								XSectionProfile profile = xSection.getProfile();
-								if (profile == null) {
-									return;
-								}
-								ArrayList<double[]> endPoints = new ArrayList<double[]>();
-								for (int i = 0; i < 2; i++) {
-									double[] points = new double[2];
-									LatLng vertex = line.getVertex(i);
-									points[0] = vertex.getLatitude();
-									points[1] = vertex.getLongitude();
-									endPoints.add(points);
-								}
-								profile.setEndPoints(endPoints);
-								Node upNode = mapPanel.getNodeManager()
-										.getNodes().getNode(
-												channel.getUpNodeId());
-								Node downNode = mapPanel.getNodeManager()
-										.getNodes().getNode(
-												channel.getDownNodeId());
-								double distance = ModelUtils
-										.getIntersectionDistanceFromUpstream(
-												profile, channel, upNode,
-												downNode);
-								if ((distance >= 0)
-										&& (distance <= channel.getLength())) {
-									double dratio = distance
-											/ channel.getLength();
-									dratio = Math.round(dratio * 1000) / 1000.0;
-									profile.setDistance(dratio);
-									xSection.setDistance(dratio);
-								}
-							}
-						});
-				mapPanel.getInfoPanel().clear();
-				mapPanel.getInfoPanel().add(xsEditorPanel);
-				mapPanel.getInfoPanel().add(xsEditorPanel);
-				xsEditorPanel.draw(channel, xSectionIndex, mapPanel);
-			}
-		}
-
-	}
-
-	private final Channel channel;
 	private final MapPanel mapPanel;
 	private final String color = "#FF0000";
 	private final int weight = 5;
 	private final double opacity = 0.75;
 	private Polyline line;
 	private ChannelInfoPanel infoPanel;
-	private CrossSectionEditorPanel xsEditorPanel;
+	public static final int MAX_VERTEX_FLOWLINE = 50;
 
-	public ChannelClickHandler(Channel lineData, MapPanel mapPanel) {
-		channel = lineData;
+	public ChannelClickHandler(MapPanel mapPanel) {
 		this.mapPanel = mapPanel;
 	}
 
@@ -161,6 +66,18 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void doOnClick(PolylineClickEvent event) {
+		Polyline channelLine = event.getSender();
+		String channelId = mapPanel.getChannelManager().getChannelId(
+				channelLine);
+		if (channelId == null) {
+			return;
+		}
+		final Channel channel = mapPanel.getChannelManager().getChannels()
+				.getChannel(channelId);
+		if (channel == null) {
+			mapPanel.showMessage("No channel found for " + channelId);
+			return;
+		}
 		infoPanel = new ChannelInfoPanel(channel, mapPanel);
 		mapPanel.getInfoPanel().clear();
 		if (mapPanel.isInEditMode() && mapPanel.isInDeletingMode()) {
@@ -168,7 +85,6 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			if (line != null) {
 				mapPanel.getMap().removeOverlay(line);
 				line = null;
-				xsEditorPanel = null;
 			}
 			return;
 		}
@@ -176,35 +92,11 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		NodeMarkerDataManager nodeManager = mapPanel.getNodeManager();
 		Node upNode = nodeManager.getNodeData(channel.getUpNodeId());
 		Node downNode = nodeManager.getNodeData(channel.getDownNodeId());
+		// clear previous line
 		if (line != null) {
-			if (line.isVisible()) {
-				line.setVisible(false);
-				clearOverlays();
-				return;
-			} else {
-				line.setVisible(true);
-			}
-			mapPanel.getMap().addOverlay(line);
-			if (mapPanel.getChannelManager().getXSectionLines() != null) {
-				for (Polyline xline : mapPanel.getChannelManager()
-						.getXSectionLines()) {
-					mapPanel.getMap().addOverlay(xline);
-				}
-			}
-			// indicate up and down node by letters U and D at the nodes
-			//
-			if (mapPanel.isInEditMode()) {
-				mapPanel.getMap().addMapClickHandler(new MapClickHandler() {
-
-					public void onClick(MapClickEvent event) {
-						Window.setStatus(event.getLatLng() + "");
-					}
-				});
-				line.setEditingEnabled(true);
-			}
-			return;
+			clearOverlays();
 		}
-
+		// add new line
 		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
 				opacity);
 		LatLng[] points = ModelUtils.getPointsForChannel(channel, upNode,
@@ -213,15 +105,15 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		mapPanel.getMap().addOverlay(line);
 		line.setStrokeStyle(style);
 		if (mapPanel.isInEditMode()) {
-
-			// allow up to 25 vertices to exist in the line.
-			line.setEditingEnabled(PolyEditingOptions.newInstance(25));
+			// allow up to MAX_VERTEX_FLOWLINE vertices to exist in the line.
+			line.setEditingEnabled(PolyEditingOptions
+					.newInstance(MAX_VERTEX_FLOWLINE));
 			line.addPolylineClickHandler(new PolylineClickHandler() {
 				public void onClick(PolylineClickEvent event) {
-					updateChannelLengthLatLng();
+					updateChannelLengthLatLng(channel);
 					line.setEditingEnabled(false);
 					clearOverlays();
-					updateDisplay();
+					updateDisplay(channel);
 				}
 
 			});
@@ -229,17 +121,17 @@ public class ChannelClickHandler implements PolylineClickHandler {
 					.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
 
 						public void onUpdate(PolylineLineUpdatedEvent event) {
-							updateChannelLengthLatLng();
-							updateDisplay();
+							updateChannelLengthLatLng(channel);
+							updateDisplay(channel);
 						}
 					});
-			drawXSectionLines();
+			drawXSectionLines(channel);
 		} else {
 			line.addPolylineClickHandler(new PolylineClickHandler() {
 
 				public void onClick(PolylineClickEvent event) {
 					clearOverlays();
-					updateDisplay();
+					updateDisplay(channel);
 				}
 			});
 			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
@@ -249,11 +141,11 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				}
 
 			});
-			drawXSectionLines();
+			drawXSectionLines(channel);
 		}
 	}
 
-	private void drawXSectionLines() {
+	public void drawXSectionLines(Channel channel) {
 		mapPanel.getChannelManager().clearXSectionLines();
 		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
 				channel.getUpNodeId());
@@ -291,8 +183,9 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			}
 			final Polyline line = new Polyline(latLngs, "green", 4);
 
-			line.addPolylineClickHandler(new XSectionLineClickHandler(xSection,
-					xSectionIndex, mapPanel.isInEditMode()));
+			line.addPolylineClickHandler(new XSectionLineClickHandler(mapPanel,
+					infoPanel, channel, xSection, xSectionIndex, mapPanel
+							.isInEditMode()));
 			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
 
 				public void onMouseOver(PolylineMouseOverEvent event) {
@@ -302,17 +195,12 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			});
 			mapPanel.getChannelManager().addXSectionLine(xSection, line);
 			mapPanel.getMap().addOverlay(line);
-			if (mapPanel.isInEditMode()) {
-				// TODO: with some other trigger
-				// line.setEditingEnabled(true);
-				// line.setEditingEnabled(PolyEditingOptions.newInstance(2));
-			}
 
 			xSectionIndex++;
 		}
 	}
 
-	public void updateChannelLengthLatLng() {
+	public void updateChannelLengthLatLng(Channel channel) {
 		channel.setLength((int) ModelUtils.getLengthInFeet(line.getLength()));
 		int vcount = line.getVertexCount();
 		ArrayList<double[]> points = new ArrayList<double[]>();
@@ -323,21 +211,34 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			points.add(point);
 		}
 		channel.setLatLngPoints(points);
+		for (XSection xSection : channel.getXsections()) {
+			updateXSectionPosition(channel, xSection);
+		}
 	}
 
-	public void updateDisplay() {
+	public void updateXSectionPosition(Channel channel, XSection xSection) {
+		Nodes nodes = mapPanel.getNodeManager().getNodes();
+		ModelUtils.updateXSectionPosition(channel, nodes, xSection);
+	}
+
+	public void updateDisplay(Channel channel) {
 		ChannelInfoPanel panel = new ChannelInfoPanel(channel, mapPanel);
 		mapPanel.getInfoPanel().clear();
 		mapPanel.getInfoPanel().add(panel);
 	}
 
 	public void clearOverlays() {
-		mapPanel.getMap().removeOverlay(line);
-		if (mapPanel.getChannelManager().getXSectionLines() == null) {
-			return;
+		if (line != null) {
+			line.setVisible(false);
+			mapPanel.getMap().removeOverlay(line);
+			line = null;
 		}
-		for (Polyline xline : mapPanel.getChannelManager().getXSectionLines()) {
-			mapPanel.getMap().removeOverlay(xline);
+		Collection<Polyline> xSectionLines = mapPanel.getChannelManager()
+				.getXSectionLines();
+		if (xSectionLines != null) {
+			for (Polyline line : xSectionLines) {
+				mapPanel.getMap().removeOverlay(line);
+			}
 		}
 	}
 
