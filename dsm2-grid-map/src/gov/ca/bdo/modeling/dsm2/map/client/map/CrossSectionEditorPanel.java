@@ -78,7 +78,8 @@ public class CrossSectionEditorPanel extends Composite {
 		snapToElevationProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				mapPanel.showMessage("Snapped to elevation profile. Click 'Set Profile' if you want to save it.");
+				mapPanel
+						.showMessage("Snapped to elevation profile. Click 'Set Profile' if you want to save it.");
 				profile.points = new ArrayList<DataPoint>(elevationProfile);
 				editor.setXSectionProfile(profile);
 				editor.redraw();
@@ -122,7 +123,8 @@ public class CrossSectionEditorPanel extends Composite {
 		profile.y1 = endPoints.get(0)[1];
 		profile.x2 = endPoints.get(1)[0];
 		profile.y2 = endPoints.get(1)[1];
-		mapPanel.showMessage("Fetching elevation profile and bathymetry points...");
+		mapPanel
+				.showMessage("Fetching elevation profile and bathymetry points...");
 		demService.getBilinearInterpolatedElevationAlong(profile.x1,
 				profile.y1, profile.x2, profile.y2,
 				new AsyncCallback<List<DataPoint>>() {
@@ -134,7 +136,8 @@ public class CrossSectionEditorPanel extends Composite {
 
 									public void onSuccess(
 											List<BathymetryDataPoint> bathymetryPoints) {
-										mapPanel.showMessage("Drawing profile and points");
+										mapPanel
+												.showMessage("Drawing profile and points");
 										ArrayList<BathymetryDataPoint> bathyPoints = new ArrayList<BathymetryDataPoint>(
 												bathymetryPoints);
 										for (int i = 0; i < bathymetryPoints
@@ -171,12 +174,14 @@ public class CrossSectionEditorPanel extends Composite {
 										editor = new CrossSectionEditor(
 												"xsection", profile,
 												demProfilePoints, bathyPoints,
-												450, 300);
+												600, 450);
 										mapPanel.showMessage("");
 									}
 
 									public void onFailure(Throwable caught) {
-										mapPanel.showErrorMessage("Could not load Bathymetry data: "+caught.getMessage());
+										mapPanel
+												.showErrorMessage("Could not load Bathymetry data: "
+														+ caught.getMessage());
 									}
 
 								});
