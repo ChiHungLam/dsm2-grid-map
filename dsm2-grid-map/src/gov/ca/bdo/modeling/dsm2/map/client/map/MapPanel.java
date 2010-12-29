@@ -476,4 +476,8 @@ public class MapPanel extends ResizeComposite {
 		eventBus.fireEvent(new MessageEvent(message));
 	}
 
+	public void showErrorMessage(String message) {
+		eventBus.fireEvent(new MessageEvent(message, MessageEvent.ERROR));
+	}
+
 }

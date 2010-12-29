@@ -60,7 +60,7 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 			channelInfoPanel.drawXSection(channel, xSectionIndex);
 		} else {
 			if (xsEditorPanel == null) {
-				xsEditorPanel = new CrossSectionEditorPanel();
+				xsEditorPanel = new CrossSectionEditorPanel(mapPanel);
 			}
 			line.setEditingEnabled(PolyEditingOptions.newInstance(2));
 			line
@@ -87,7 +87,6 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 						}
 					});
 			mapPanel.getInfoPanel().clear();
-			mapPanel.getInfoPanel().add(xsEditorPanel);
 			mapPanel.getInfoPanel().add(xsEditorPanel);
 			xsEditorPanel.draw(channel, xSectionIndex, mapPanel);
 		}

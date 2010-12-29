@@ -42,8 +42,10 @@ public class CrossSectionEditorPanel extends Composite {
 	private Profile profile;
 	private XSectionProfile xsProfile;
 	private XSection xsection;
+	private MapPanel mapPanel;
 
-	public CrossSectionEditorPanel() {
+	public CrossSectionEditorPanel(final MapPanel mapPanel) {
+		this.mapPanel = mapPanel;
 		FlowPanel mainPanel = new FlowPanel();
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		mainPanel.add(buttonPanel);
@@ -55,6 +57,7 @@ public class CrossSectionEditorPanel extends Composite {
 		setProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
+				mapPanel.showMessage("Profile set as shown");
 				List<DataPoint> xSectionProfilePoints = editor
 						.getXSectionProfilePoints();
 				List<double[]> profilePoints = new ArrayList<double[]>();
@@ -75,6 +78,7 @@ public class CrossSectionEditorPanel extends Composite {
 		snapToElevationProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
+				mapPanel.showMessage("Snapped to elevation profile. Click 'Set Profile' if you want to save it.");
 				profile.points = new ArrayList<DataPoint>(elevationProfile);
 				editor.setXSectionProfile(profile);
 				editor.redraw();
@@ -85,7 +89,7 @@ public class CrossSectionEditorPanel extends Composite {
 		initWidget(mainPanel);
 	}
 
-	public void draw(Channel channel, int index, MapPanel mapPanel) {
+	public void draw(Channel channel, int index, final MapPanel mapPanel) {
 		xsection = channel.getXsections().get(index);
 		DEMDataServiceAsync demService = GWT.create(DEMDataService.class);
 		final BathymetryDataServiceAsync bathyService = GWT
@@ -118,7 +122,7 @@ public class CrossSectionEditorPanel extends Composite {
 		profile.y1 = endPoints.get(0)[1];
 		profile.x2 = endPoints.get(1)[0];
 		profile.y2 = endPoints.get(1)[1];
-
+		mapPanel.showMessage("Fetching elevation profile and bathymetry points...");
 		demService.getBilinearInterpolatedElevationAlong(profile.x1,
 				profile.y1, profile.x2, profile.y2,
 				new AsyncCallback<List<DataPoint>>() {
@@ -130,6 +134,7 @@ public class CrossSectionEditorPanel extends Composite {
 
 									public void onSuccess(
 											List<BathymetryDataPoint> bathymetryPoints) {
+										mapPanel.showMessage("Drawing profile and points");
 										ArrayList<BathymetryDataPoint> bathyPoints = new ArrayList<BathymetryDataPoint>(
 												bathymetryPoints);
 										for (int i = 0; i < bathymetryPoints
@@ -167,15 +172,11 @@ public class CrossSectionEditorPanel extends Composite {
 												"xsection", profile,
 												demProfilePoints, bathyPoints,
 												450, 300);
+										mapPanel.showMessage("");
 									}
 
 									public void onFailure(Throwable caught) {
-										// TODO: add the xsection line and other
-										// relevant info
-										GWT
-												.log(
-														"Could not load Bathymetry data",
-														caught);
+										mapPanel.showErrorMessage("Could not load Bathymetry data: "+caught.getMessage());
 									}
 
 								});
