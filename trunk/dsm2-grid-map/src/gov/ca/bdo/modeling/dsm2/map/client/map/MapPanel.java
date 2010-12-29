@@ -366,6 +366,10 @@ public class MapPanel extends ResizeComposite {
 		return channelManager;
 	}
 
+	public BoundaryMarkerDataManager getBoundaryManager() {
+		return boundaryOverlayManager;
+	}
+
 	public void setMap(MapWidget map) {
 		this.map = map;
 	}

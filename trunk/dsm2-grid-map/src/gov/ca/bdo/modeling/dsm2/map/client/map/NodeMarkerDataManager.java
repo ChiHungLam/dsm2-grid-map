@@ -259,8 +259,16 @@ public class NodeMarkerDataManager {
 		nodes.renameNodeId(newValue, previousValue);
 		mapPanel.getMap().removeOverlay(getMarkerFor(previousValue));
 		addMarkerForNode(nodes.getNode(newValue));
-		mapPanel.getChannelManager().getChannels().updateNodeId(previousValue,
-				newValue);
+		mapPanel.getChannelManager().getChannels().updateNodeId(newValue,
+				previousValue);
+		mapPanel.getReservoirManager().getReservoirs().updateNodeId(newValue,
+				previousValue);
+		mapPanel.getGateManager().getGates().updateNodeId(newValue,
+				previousValue);
+		mapPanel.getBoundaryManager().getBoundaryInputs().updateNodeId(
+				newValue, previousValue);
+		// FIXME: transfers also might need this
+		// FIXME: this really should be fixed by having a proper network model
 	}
 
 }

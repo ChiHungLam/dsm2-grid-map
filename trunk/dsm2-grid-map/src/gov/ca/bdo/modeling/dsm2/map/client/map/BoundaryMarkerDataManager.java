@@ -39,6 +39,7 @@ public class BoundaryMarkerDataManager {
 	private final HashMap<String, Marker> markerMap;
 	private final HashMap<String, String> nameMap;
 	private MapPanel mapPanel;
+	private BoundaryInputs boundaryInputs;
 
 	public BoundaryMarkerDataManager() {
 		nameMap = new HashMap<String, String>();
@@ -51,7 +52,7 @@ public class BoundaryMarkerDataManager {
 	}
 
 	public void addMarkers(MapWidget map) {
-		BoundaryInputs boundaryInputs = model.getInputs();
+		boundaryInputs = model.getInputs();
 		// FIXME: add a type field to boundary input to avoid the three loops
 		// below
 		for (BoundaryInput flowInput : boundaryInputs.getFlowInputs()) {
@@ -149,6 +150,10 @@ public class BoundaryMarkerDataManager {
 				mapPanel.getMap().addOverlay(markerMap.get(name));
 			}
 		}
+	}
+
+	public BoundaryInputs getBoundaryInputs() {
+		return boundaryInputs;
 	}
 
 }
