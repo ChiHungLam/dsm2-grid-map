@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -56,7 +57,7 @@ public class MapControlPanel extends Composite {
 	@UiField
 	TextBox findTextBox;
 	@UiField
-	FlowPanel infoPanel;
+	ScrollPanel infoPanel;
 	@UiField
 	Button cancelEditButton;
 

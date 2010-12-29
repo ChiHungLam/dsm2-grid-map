@@ -57,6 +57,7 @@ import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
 import com.google.gwt.maps.client.overlay.GeoXmlOverlay;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -67,7 +68,7 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	private MeasuringDistanceAlongLine lengthMeasurer;
 	private MeasuringAreaInPolygon areaMeasurer;
 	private ElevationDisplayer elevationDisplayer;
-	private FlowPanel infoPanel;
+	private ScrollPanel infoPanel;
 	private ElevationProfileDisplayer elevationProfileDisplayer;
 	private BathymetryDisplayer bathymetryDisplayer;
 
