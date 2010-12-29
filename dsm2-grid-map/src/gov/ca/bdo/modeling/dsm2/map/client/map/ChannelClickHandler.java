@@ -150,10 +150,10 @@ public class ChannelClickHandler implements PolylineClickHandler {
 				channel.getUpNodeId());
 		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
 				channel.getDownNodeId());
-		LatLng[] channelOutlinePoints = ModelUtils.getPointsForChannel(channel,
-				upNode, downNode);
 		ArrayList<XSection> xsections = channel.getXsections();
 		int xSectionIndex = 0;
+		XSectionLineClickHandler xSectionLineClickHandler = new XSectionLineClickHandler(
+				mapPanel, infoPanel);
 		for (final XSection xSection : xsections) {
 			double distance = xSection.getDistance();
 			distance = channel.getLength() * distance;
@@ -171,9 +171,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			}
 			final Polyline line = new Polyline(latLngs, "green", 4);
 
-			line.addPolylineClickHandler(new XSectionLineClickHandler(mapPanel,
-					infoPanel, channel, xSection, xSectionIndex, mapPanel
-							.isInEditMode()));
+			line.addPolylineClickHandler(xSectionLineClickHandler);
 			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
 
 				public void onMouseOver(PolylineMouseOverEvent event) {

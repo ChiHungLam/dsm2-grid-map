@@ -14,49 +14,58 @@ import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 
 public class XSectionLineClickHandler implements PolylineClickHandler {
+	private static final PolyStyleOptions redLineStyle = PolyStyleOptions
+			.newInstance("red");
 	private static final PolyStyleOptions blueLineStyle = PolyStyleOptions
 			.newInstance("blue");
 	private static final PolyStyleOptions greenLineStyle = PolyStyleOptions
 			.newInstance("green");
 
 	private CrossSectionEditorPanel xsEditorPanel;
-	private final XSection xSection;
-	private int xSectionIndex;
-	private boolean edit;
-	private Channel channel;
 	private MapPanel mapPanel;
 	private ChannelInfoPanel channelInfoPanel;
 
 	public XSectionLineClickHandler(MapPanel mapPanel,
-			ChannelInfoPanel infoPanel, Channel channel, XSection xSection,
-			int index, boolean edit) {
+			ChannelInfoPanel infoPanel) {
 		this.mapPanel = mapPanel;
 		channelInfoPanel = infoPanel;
-		this.channel = channel;
-		this.xSection = xSection;
-		xSectionIndex = index;
-		this.edit = edit;
 	}
 
 	public void onClick(PolylineClickEvent event) {
+		final Polyline line = event.getSender();
+		final XSection xSection = mapPanel.getChannelManager().getXSectionFor(
+				line);
+		if (xSection == null) {
+			mapPanel
+					.showErrorMessage("The line clicked was not a xsection ? Try again.");
+			return;
+		}
 		if (mapPanel.isInEditMode() && mapPanel.isInDeletingMode()) {
 			mapPanel.getChannelManager().removeXSection(xSection);
 			return;
 		}
-		for (XSection xs : mapPanel.getChannelManager().getXSections()) {
-			Polyline line = mapPanel.getChannelManager().getXsectionLineFor(xs);
+		final Channel channel = ModelUtils.getChannelForXSection(xSection,
+				mapPanel.getChannelManager().getChannels());
+		int index = 0;
+		int xSectionIndex = 0;
+		for (XSection xs : channel.getXsections()) {
+			Polyline xsline = mapPanel.getChannelManager().getXsectionLineFor(
+					xs);
 			if (xs == xSection) {
-				line.setStrokeStyle(blueLineStyle);
-				channelInfoPanel.drawXSection(channel, xSectionIndex);
+				if (mapPanel.isInEditMode()) {
+					xsline.setEditingEnabled(true);
+				}
+				xsline.setStrokeStyle(redLineStyle);
+				xSectionIndex = index;
 			} else {
-				line.setStrokeStyle(greenLineStyle);
+				if (mapPanel.isInEditMode()) {
+					xsline.setEditingEnabled(false);
+				}
+				xsline.setStrokeStyle(greenLineStyle);
 			}
+			index++;
 		}
-		final Polyline line = mapPanel.getChannelManager().getXsectionLineFor(
-				xSection);
-		line.setStrokeStyle(PolyStyleOptions.newInstance("red"));
-		if (!edit) {
-			line.setEditingEnabled(false);
+		if (!mapPanel.isInEditMode()) {
 			channelInfoPanel.drawXSection(channel, xSectionIndex);
 		} else {
 			if (xsEditorPanel == null) {
@@ -84,8 +93,6 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 							ModelUtils.updateXSectionPosition(channel, mapPanel
 									.getNodeManager().getNodes(), xSection,
 									channel.getLength());
-							xsEditorPanel
-									.draw(channel, xSectionIndex, mapPanel);
 						}
 					});
 			mapPanel.getInfoPanel().clear();
