@@ -84,6 +84,8 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 							ModelUtils.updateXSectionPosition(channel, mapPanel
 									.getNodeManager().getNodes(), xSection,
 									channel.getLength());
+							xsEditorPanel
+									.draw(channel, xSectionIndex, mapPanel);
 						}
 					});
 			mapPanel.getInfoPanel().clear();
