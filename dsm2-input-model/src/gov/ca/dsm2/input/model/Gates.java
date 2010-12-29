@@ -35,23 +35,54 @@ import java.util.List;
 public class Gates implements Serializable {
 	private ArrayList<Gate> gates;
 	private HashMap<String, Gate> gatesMap;
+	private HashMap<String, ArrayList<Gate>> gatesNodeMap;
 
 	public Gates() {
 		gates = new ArrayList<Gate>();
 		gatesMap = new HashMap<String, Gate>();
+		gatesNodeMap = new HashMap<String, ArrayList<Gate>>();
 	}
 
 	public void addGate(Gate gate) {
 		gates.add(gate);
 		gatesMap.put(gate.getName(), gate);
+		if (gatesNodeMap.containsKey(gate.getToNode())) {
+			ArrayList<Gate> gates = gatesNodeMap.get(gate.getToNode());
+			gates.add(gate);
+		} else {
+			ArrayList<Gate> gatesOnNode = new ArrayList<Gate>();
+			gatesOnNode.add(gate);
+			gatesNodeMap.put(gate.getToNode(), gatesOnNode);
+		}
+
 	}
 
 	public void removeGate(String gateId) {
 		Gate gate = gatesMap.get(gateId);
-		if (gate != null) {
-			gatesMap.remove(gateId);
-			gates.remove(gate);
+		if (gate == null) {
+			return;
 		}
+		gatesMap.remove(gateId);
+		gates.remove(gate);
+		ArrayList<Gate> gatesOnNode = gatesNodeMap.get(gate.getToNode());
+		if (gatesOnNode != null) {
+			gatesOnNode.remove(gate);
+			if (gatesOnNode.size() == 0) {
+				gatesNodeMap.remove(gate.getToNode());
+			}
+		}
+	}
+
+	public void updateNodeId(String newValue, String previousValue) {
+		ArrayList<Gate> gatesOnNode = gatesNodeMap.get(previousValue);
+		if (gatesOnNode == null) {
+			return;
+		}
+		for (Gate g : gatesOnNode) {
+			g.setToNode(newValue);
+		}
+		gatesNodeMap.remove(previousValue);
+		gatesNodeMap.put(newValue, gatesOnNode);
 	}
 
 	public List<Gate> getGates() {
