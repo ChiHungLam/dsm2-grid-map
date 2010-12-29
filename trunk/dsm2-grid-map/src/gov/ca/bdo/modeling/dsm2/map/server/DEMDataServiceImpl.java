@@ -125,13 +125,22 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 		if (gridAt == null) {
 			return DEMGridSquare.NODATA / 10.0;
 		} else {
-			// FIXME: need check for NODATA in the calculations below
 			// f=b1+b2*x+b3*x+b4*x*y
 			double f00 = gridAt.getElevationAt(x, y) / 10.0;
+			// fill in with the above elevation value if no data available
 			double f10 = getElevationAtUTMWithBestGuessGrid(gridAt, x + 10, y);
+			if (f10 == DEMGridSquare.NODATA) {
+				f10 = f00;
+			}
 			double f01 = getElevationAtUTMWithBestGuessGrid(gridAt, x, y + 10);
+			if (f01 == DEMGridSquare.NODATA) {
+				f01 = f00;
+			}
 			double f11 = getElevationAtUTMWithBestGuessGrid(gridAt, x + 10,
 					y + 10);
+			if (f11 == DEMGridSquare.NODATA) {
+				f11 = f00;
+			}
 			double b1 = f00;
 			double b2 = f10 - f00;
 			double b3 = f01 - f00;
@@ -158,7 +167,12 @@ public class DEMDataServiceImpl extends RemoteServiceServlet implements
 				grid = gridAt;
 			}
 		}
-		return grid.getElevationAt(x, y) / 10.0;
+		int elevationAt = grid.getElevationAt(x, y);
+		if (elevationAt == DEMGridSquare.NODATA) {
+			return DEMGridSquare.NODATA;
+		} else {
+			return elevationAt / 10.0;
+		}
 	}
 
 	public double getElevationAt(double latitude, double longitude)
