@@ -19,9 +19,8 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.DataTable;
@@ -40,13 +39,13 @@ import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
  */
 public class ElevationProfileDisplayer {
 	private MapWidget map;
-	private Panel panel;
+	private ScrollPanel panel;
 	private Polyline line;
 	private DEMDataServiceAsync service;
 	private boolean editMode = false;
 	private CrossSectionEditor editor;
 
-	public ElevationProfileDisplayer(MapWidget map, Panel panel) {
+	public ElevationProfileDisplayer(MapWidget map, ScrollPanel panel) {
 		service = (DEMDataServiceAsync) GWT.create(DEMDataService.class);
 		this.map = map;
 		this.panel = panel;
