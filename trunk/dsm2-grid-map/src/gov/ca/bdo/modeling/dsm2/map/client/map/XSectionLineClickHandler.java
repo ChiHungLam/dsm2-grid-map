@@ -39,7 +39,7 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 	}
 
 	public void onClick(PolylineClickEvent event) {
-		if (mapPanel.isInEditMode() && mapPanel.isInEditMode()) {
+		if (mapPanel.isInEditMode() && mapPanel.isInDeletingMode()) {
 			mapPanel.getChannelManager().removeXSection(xSection);
 			return;
 		}
@@ -82,7 +82,8 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 							profile.setEndPoints(endPoints);
 
 							ModelUtils.updateXSectionPosition(channel, mapPanel
-									.getNodeManager().getNodes(), xSection);
+									.getNodeManager().getNodes(), xSection,
+									channel.getLength());
 						}
 					});
 			mapPanel.getInfoPanel().clear();

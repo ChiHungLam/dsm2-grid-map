@@ -24,7 +24,6 @@ import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Nodes;
 import gov.ca.dsm2.input.model.XSection;
-import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -160,19 +159,8 @@ public class ChannelClickHandler implements PolylineClickHandler {
 			distance = channel.getLength() * distance;
 			LatLng[] latLngs = null;
 			if (xSection.getProfile() == null) {
-				int segmentIndex = GeomUtils.findSegmentAtDistance(
-						channelOutlinePoints, distance);
-				LatLng point1 = channelOutlinePoints[segmentIndex];
-				LatLng point2 = channelOutlinePoints[segmentIndex + 1];
-				double segmentDistance = GeomUtils.findDistanceUptoSegment(
-						segmentIndex, channelOutlinePoints);
-
-				LatLng point0 = GeomUtils.findPointAtDistance(point1, point2,
-						distance - segmentDistance);
-				double slope = GeomUtils.getSlopeBetweenPoints(point1, point2);
-				double width = ModelUtils.getMaxTopWidth(xSection);
-				latLngs = GeomUtils.getLineWithSlopeOfLengthAndCenteredOnPoint(
-						-1 / slope, width, point0);
+				latLngs = ModelUtils.calculateEndPoints(xSection, channel,
+						upNode, downNode);
 			} else {
 				List<double[]> endPoints = xSection.getProfile().getEndPoints();
 				latLngs = new LatLng[] {
@@ -201,6 +189,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void updateChannelLengthLatLng(Channel channel) {
+		double oldLength = channel.getLength();
 		channel.setLength((int) ModelUtils.getLengthInFeet(line.getLength()));
 		int vcount = line.getVertexCount();
 		ArrayList<double[]> points = new ArrayList<double[]>();
@@ -212,13 +201,14 @@ public class ChannelClickHandler implements PolylineClickHandler {
 		}
 		channel.setLatLngPoints(points);
 		for (XSection xSection : channel.getXsections()) {
-			updateXSectionPosition(channel, xSection);
+			updateXSectionPosition(channel, xSection, oldLength);
 		}
 	}
 
-	public void updateXSectionPosition(Channel channel, XSection xSection) {
+	public void updateXSectionPosition(Channel channel, XSection xSection,
+			double oldLength) {
 		Nodes nodes = mapPanel.getNodeManager().getNodes();
-		ModelUtils.updateXSectionPosition(channel, nodes, xSection);
+		ModelUtils.updateXSectionPosition(channel, nodes, xSection, oldLength);
 	}
 
 	public void updateDisplay(Channel channel) {

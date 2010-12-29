@@ -66,9 +66,11 @@ public class ChannelLineDataManager {
 	private final double opacity = 0.35;
 	private MapPanel mapPanel;
 	private HashMap<XSection, Polyline> xsectionLineMap;
+	private ChannelClickHandler channelClickHandler;
 
 	public ChannelLineDataManager(MapPanel mapPanel, Channels channels) {
 		this.mapPanel = mapPanel;
+		channelClickHandler = new ChannelClickHandler(mapPanel);
 		this.channels = channels;
 		encoder = PolylineEncoder.newInstance(4, 12, 0.00001, false);
 	}
@@ -188,7 +190,7 @@ public class ChannelLineDataManager {
 			}
 
 		});
-		line.addPolylineClickHandler(new ChannelClickHandler(mapPanel));
+		line.addPolylineClickHandler(channelClickHandler);
 		mapPanel.getMap().addOverlay(line);
 		return line;
 	}
