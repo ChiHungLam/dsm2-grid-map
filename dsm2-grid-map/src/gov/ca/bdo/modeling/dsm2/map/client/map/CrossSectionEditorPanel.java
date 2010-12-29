@@ -108,7 +108,6 @@ public class CrossSectionEditorPanel extends Composite {
 		xsProfile = profileFrom;
 		List<double[]> endPoints = xsProfile.getEndPoints();
 		List<double[]> profilePoints = xsProfile.getProfilePoints();
-
 		profile = new Profile();
 		profile.points = new ArrayList<DataPoint>();
 		for (int i = 0; i < profilePoints.size(); i++) {
@@ -123,6 +122,27 @@ public class CrossSectionEditorPanel extends Composite {
 		profile.y1 = endPoints.get(0)[1];
 		profile.x2 = endPoints.get(1)[0];
 		profile.y2 = endPoints.get(1)[1];
+		// get calculated profile based on dsm2 xsection information
+		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getUpNodeId());
+		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
+				channel.getDownNodeId());
+		XSectionProfile calculatedProfile = ModelUtils.calculateProfileFrom(
+				xsection, channel, upNode, downNode);
+		final Profile dsm2xs = new Profile();
+		dsm2xs.points = new ArrayList<DataPoint>();
+		for (int i = 0; i < calculatedProfile.getProfilePoints().size(); i++) {
+			double[] ds = calculatedProfile.getProfilePoints().get(i);
+			DataPoint p = new DataPoint();
+			p.x = ds[0];
+			p.y = 0;
+			p.z = ds[1];
+			dsm2xs.points.add(p);
+		}
+		dsm2xs.x1 = endPoints.get(0)[0];
+		dsm2xs.y1 = endPoints.get(0)[1];
+		dsm2xs.x2 = endPoints.get(1)[0];
+		dsm2xs.y2 = endPoints.get(1)[1];
 		mapPanel
 				.showMessage("Fetching elevation profile and bathymetry points...");
 		demService.getBilinearInterpolatedElevationAlong(profile.x1,
@@ -172,7 +192,7 @@ public class CrossSectionEditorPanel extends Composite {
 														bathyPoints, origin,
 														secondPointForLine);
 										editor = new CrossSectionEditor(
-												"xsection", profile,
+												"xsection", profile, dsm2xs,
 												demProfilePoints, bathyPoints,
 												600, 450);
 										mapPanel.showMessage("");

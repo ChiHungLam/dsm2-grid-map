@@ -100,7 +100,8 @@ public class ElevationProfileDisplayer {
 										result);
 								List<BathymetryDataPoint> bathymetry = new ArrayList<BathymetryDataPoint>();
 								editor = new CrossSectionEditor("xsect",
-										xsProfile, result, bathymetry, 600, 400);
+										xsProfile, null, result, bathymetry,
+										600, 400);
 
 							} else {
 								VisualizationUtils.loadVisualizationApi(
