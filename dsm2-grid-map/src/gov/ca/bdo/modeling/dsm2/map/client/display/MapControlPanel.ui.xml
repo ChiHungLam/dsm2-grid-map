@@ -43,7 +43,7 @@
 					</g:CaptionPanel>
 				</g:HorizontalPanel>
 				<g:CaptionPanel captionText="Info">
-					<g:FlowPanel ui:field="infoPanel" styleName="info-panel"></g:FlowPanel>
+					<g:ScrollPanel ui:field="infoPanel" styleName="info-panel"></g:ScrollPanel>
 				</g:CaptionPanel>
 			</g:VerticalPanel>
 		</g:tab>
