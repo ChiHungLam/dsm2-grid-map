@@ -191,4 +191,8 @@ public class ReservoirOverlayManager {
 		removeReserviorConnectionLines(reservoirId);
 		reservoirs.removeReservoir(reservoir);
 	}
+
+	public Reservoirs getReservoirs() {
+		return reservoirs;
+	}
 }

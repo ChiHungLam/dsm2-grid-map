@@ -154,4 +154,8 @@ public class GateOverlayManager {
 	public int getNumberOfGates() {
 		return gates.getGates().size();
 	}
+
+	public Gates getGates() {
+		return gates;
+	}
 }
