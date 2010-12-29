@@ -108,7 +108,7 @@ public class Channels implements Serializable {
 		}
 	}
 
-	public void updateNodeId(String previousValue, String newValue) {
+	public void updateNodeId(String newValue, String previousValue) {
 		String upChannels = getUpChannels(previousValue);
 		if (upChannels != null) {
 			String[] fields = upChannels.split(",");

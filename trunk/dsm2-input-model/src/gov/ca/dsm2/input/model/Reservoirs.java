@@ -32,17 +32,32 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class Reservoirs implements Serializable {
-	private  ArrayList<Reservoir> reservoirs;
-	private  HashMap<String, Reservoir> reservoirIdMap;
+	private ArrayList<Reservoir> reservoirs;
+	private HashMap<String, Reservoir> reservoirIdMap;
+	private HashMap<String, ArrayList<Reservoir>> reservoirNodeMap;
 
 	public Reservoirs() {
 		reservoirs = new ArrayList<Reservoir>();
 		reservoirIdMap = new HashMap<String, Reservoir>();
+		reservoirNodeMap = new HashMap<String, ArrayList<Reservoir>>();
 	}
 
 	public void addReservoir(Reservoir reservoir) {
 		reservoirs.add(reservoir);
 		reservoirIdMap.put(reservoir.getName(), reservoir);
+		List<ReservoirConnection> reservoirConnections = reservoir
+				.getReservoirConnections();
+		for (ReservoirConnection c : reservoirConnections) {
+			String nodeId = c.nodeId;
+			if (reservoirNodeMap.containsKey(nodeId)) {
+				ArrayList<Reservoir> reservoirs = reservoirNodeMap.get(nodeId);
+				reservoirs.add(reservoir);
+			} else {
+				ArrayList<Reservoir> reservoirs = new ArrayList<Reservoir>();
+				reservoirs.add(reservoir);
+				reservoirNodeMap.put(nodeId, reservoirs);
+			}
+		}
 	}
 
 	public Reservoir getReservoir(String reservoirId) {
@@ -52,6 +67,34 @@ public class Reservoirs implements Serializable {
 	public void removeReservoir(Reservoir reservoir) {
 		reservoirs.remove(reservoir);
 		reservoirIdMap.remove(reservoir.getName());
+		List<ReservoirConnection> reservoirConnections = reservoir
+				.getReservoirConnections();
+		for (ReservoirConnection c : reservoirConnections) {
+			String nodeId = c.nodeId;
+			ArrayList<Reservoir> reservoirs = reservoirNodeMap.get(nodeId);
+			if (reservoirs != null) {
+				reservoirs.remove(reservoir);
+				if (reservoirs.size() == 0) {
+					reservoirNodeMap.remove(nodeId);
+				}
+			}
+		}
+	}
+
+	public void updateNodeId(String newValue, String previousValue) {
+		ArrayList<Reservoir> reservoirs = reservoirNodeMap.get(previousValue);
+		if (reservoirs == null) {
+			return;
+		}
+		for (Reservoir reservoir : reservoirs) {
+			for (ReservoirConnection c : reservoir.getReservoirConnections()) {
+				if (c.nodeId.equals(previousValue)) {
+					c.nodeId = newValue;
+				}
+			}
+		}
+		reservoirNodeMap.remove(previousValue);
+		reservoirNodeMap.put(newValue, reservoirs);
 	}
 
 	public List<Reservoir> getReservoirs() {
