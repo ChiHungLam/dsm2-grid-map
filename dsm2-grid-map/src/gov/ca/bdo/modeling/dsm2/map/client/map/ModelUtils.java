@@ -338,10 +338,18 @@ public class ModelUtils {
 	}
 
 	public static void updateXSectionPosition(Channel channel, Nodes nodes,
-			XSection xSection) {
+			XSection xSection, double oldLength) {
 		XSectionProfile profile = xSection.getProfile();
 		Node upNode = nodes.getNode(channel.getUpNodeId());
 		Node downNode = nodes.getNode(channel.getDownNodeId());
+		if (profile == null) {
+			// need to calculate absolute profile latlngs from relative distance
+			// using previous length
+			int newLength = channel.getLength();
+			channel.setLength((int) oldLength);
+			profile = calculateProfileFrom(xSection, channel, upNode, downNode);
+			channel.setLength(newLength);
+		}
 		double distance = ModelUtils.getIntersectionDistanceFromUpstream(
 				profile, channel, upNode, downNode);
 		if ((distance >= 0) && (distance <= channel.getLength())) {
