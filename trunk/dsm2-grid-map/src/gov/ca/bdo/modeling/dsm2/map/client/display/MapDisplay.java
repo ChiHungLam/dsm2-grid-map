@@ -48,7 +48,6 @@ import com.google.gwt.event.logical.shared.InitializeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.Maps;
-import com.google.gwt.maps.utility.client.DefaultPackage;
 import com.google.gwt.maps.utility.client.GoogleMapsUtility;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ResizeComposite;
@@ -92,15 +91,17 @@ public abstract class MapDisplay extends ResizeComposite implements
 			}
 		};
 
-		if (!GoogleMapsUtility.isLoaded(DefaultPackage.MARKER_CLUSTERER,
-				DefaultPackage.LABELED_MARKER, DefaultPackage.MAP_ICON_MAKER)) {
+		if (!GoogleMapsUtility.isLoaded(
+				MapsUtilityLocalPackage.MARKER_CLUSTERER,
+				MapsUtilityLocalPackage.LABELED_MARKER,
+				MapsUtilityLocalPackage.MAP_ICON_MAKER)) {
 			// FIXME: change this dependency on loading javascript libraries
 			// from another site
 			// when this fails, it causes app to behave as if it had broken.
 			GoogleMapsUtility.loadUtilityApi(mapLoadCallback,
-					DefaultPackage.MARKER_CLUSTERER,
-					DefaultPackage.LABELED_MARKER,
-					DefaultPackage.MAP_ICON_MAKER);
+					MapsUtilityLocalPackage.MARKER_CLUSTERER,
+					MapsUtilityLocalPackage.LABELED_MARKER,
+					MapsUtilityLocalPackage.MAP_ICON_MAKER);
 		} else {
 			mapLoadCallback.run();
 		}
