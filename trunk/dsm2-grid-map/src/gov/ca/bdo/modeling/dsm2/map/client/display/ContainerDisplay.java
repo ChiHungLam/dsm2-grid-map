@@ -49,12 +49,12 @@ public class ContainerDisplay implements Display {
 		container.getHeaderPanel().addWidgetToRight(emailLabel);
 		container.getHeaderPanel().addWidgetToRight(
 				new Anchor("Profile", "#profile"));
-		container.getHeaderPanel().addWidgetToRight(new Anchor("Sign out", result.getLogoutUrl()));
+		container.getHeaderPanel().addWidgetToRight(
+				new Anchor("Sign out", result.getLogoutUrl()));
 		// setup link bar
 		container.addLinkToMainBar(new Anchor("Map", "#map"));
 		container.addLinkToMainBar(new Anchor("Studies", "#studies"));
-		container.addLinkToMainBar(new Anchor("Tables", "#tables"));
-		this.setLinkBarActive(History.getToken());
+		setLinkBarActive(History.getToken());
 		// setup footer
 		String footer = "<div align=\"center\" class=\"footer\"><font color=\"#666666\">"
 				+ "&copy;2010 California Department of Water Resources (DWR) </font>"
@@ -71,18 +71,18 @@ public class ContainerDisplay implements Display {
 	}
 
 	public String getCurrentStudy() {
-		if (studyBox == null || studyBox.getSelectedIndex()==-1){
+		if ((studyBox == null) || (studyBox.getSelectedIndex() == -1)) {
 			return null;
 		}
 		return studyBox.getItemText(studyBox.getSelectedIndex());
 	}
 
 	public String[] getStudies() {
-		if (studyBox==null){
+		if (studyBox == null) {
 			return null;
 		}
 		String[] studies = new String[studyBox.getItemCount()];
-		for(int i=0; i < studyBox.getItemCount(); i++){
+		for (int i = 0; i < studyBox.getItemCount(); i++) {
 			studies[i] = studyBox.getItemText(i);
 		}
 		return studies;
@@ -93,8 +93,8 @@ public class ContainerDisplay implements Display {
 	}
 
 	public void setCurrentStudy(String study) {
-		for(int i=0; i < studyBox.getItemCount(); i++){
-			if (studyBox.getItemText(i).equals(study)){
+		for (int i = 0; i < studyBox.getItemCount(); i++) {
+			if (studyBox.getItemText(i).equals(study)) {
 				studyBox.setSelectedIndex(i);
 			}
 		}
@@ -141,8 +141,8 @@ public class ContainerDisplay implements Display {
 
 	public void setLinkBarActive(String token) {
 		if (token.indexOf("/") >= 0) {
-			token = token.substring(0,token.indexOf("/"));
+			token = token.substring(0, token.indexOf("/"));
 		}
-		container.setActiveMainLink('#'+token);
+		container.setActiveMainLink('#' + token);
 	}
 }
