@@ -1,6 +1,8 @@
 package gov.ca.bdo.modeling.dsm2.map.client.display;
 
 import gov.ca.bdo.modeling.dsm2.map.client.map.ChannelLineDataManager;
+import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.Channels;
 
 import java.util.HashMap;
 
@@ -14,7 +16,7 @@ public class ColorSchemeDisplay extends MapDisplay {
 	public static interface ColorMapper {
 		public String convertValueToColor(double value);
 	}
-	
+
 	private FlowPanel controlPanel;
 	private FlowPanel infoPanel;
 
@@ -51,4 +53,21 @@ public class ColorSchemeDisplay extends MapDisplay {
 		}
 	}
 
+	public HashMap<String, Double> getManningsMap() {
+		Channels channels = mapPanel.getChannelManager().getChannels();
+		HashMap<String, Double> map = new HashMap<String, Double>();
+		for (Channel c : channels.getChannels()) {
+			map.put(c.getId(), c.getMannings());
+		}
+		return map;
+	}
+
+	public HashMap<String, Double> getDispersionMap() {
+		Channels channels = mapPanel.getChannelManager().getChannels();
+		HashMap<String, Double> map = new HashMap<String, Double>();
+		for (Channel c : channels.getChannels()) {
+			map.put(c.getId(), c.getDispersion());
+		}
+		return map;
+	}
 }
