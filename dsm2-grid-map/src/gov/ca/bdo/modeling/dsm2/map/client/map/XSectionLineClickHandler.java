@@ -16,8 +16,6 @@ import com.google.gwt.maps.client.overlay.Polyline;
 public class XSectionLineClickHandler implements PolylineClickHandler {
 	private static final PolyStyleOptions redLineStyle = PolyStyleOptions
 			.newInstance("red");
-	private static final PolyStyleOptions blueLineStyle = PolyStyleOptions
-			.newInstance("blue");
 	private static final PolyStyleOptions greenLineStyle = PolyStyleOptions
 			.newInstance("green");
 

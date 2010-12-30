@@ -82,6 +82,8 @@ import com.google.gwt.maps.client.geom.LatLng;
  * 
  */
 public class ModelUtils {
+	private static int length;
+
 	/**
 	 * Return the flowline of the entire channel, combining the internal points
 	 * with the upnode and downode points
@@ -311,10 +313,6 @@ public class ModelUtils {
 		return Math.round(length * 3.2808399 * 100) / 100;
 	}
 
-	public static void generateXSections(Channel channel, Node upNode,
-			Node downNode) {
-	}
-
 	/**
 	 * Returns a list of comma separated channel ids for the given node. with
 	 * down channels followed by upchannels
@@ -364,6 +362,67 @@ public class ModelUtils {
 			Channels channels) {
 		String channelId = xSection.getChannelId();
 		return channels.getChannel(channelId);
+	}
+
+	/**
+	 * Generates a list of xsections arranged from upnode to down of the
+	 * channel. <br/>
+	 * 
+	 * The xsections returned are rectangular 1000 ft channels from -10 ft
+	 * bottom elevation to 10 ft elevation layer (only 2 layers).<br/>
+	 * 
+	 * Each channel has a xsection at upnode (0.05 normalized distance) and
+	 * downnode (0.95 normalized distance) and atleast one xsection in the
+	 * middle. The strategy is to have xsections in the middle (other than the
+	 * two at each end ) which are less than 5000 ft apart and are equally
+	 * spaced. This is based on the DSM2 computation distance and is
+	 * configurable.
+	 * 
+	 * @param channel
+	 * @param upNode
+	 * @param downNode
+	 * @return
+	 */
+	public static List<XSection> generateCrossSections(Channel channel,
+			Node upNode, Node downNode, double minDistance, double maxWidth) {
+		double length = channel.getLength();
+		double numberInterior = length / minDistance + 1;
+		double xsectionSpacing = length / (numberInterior + 1);
+		ArrayList<XSection> xsections = new ArrayList<XSection>();
+		xsections.add(createXSection(channel.getId(), 0.05, maxWidth));
+		double distance = 0.0;
+		for (int i = 0; i < numberInterior; i++) {
+			distance += xsectionSpacing;
+			double distanceRatio = Math.round(distance / length * 1000) / 1000.0;
+			xsections.add(createXSection(channel.getId(), distanceRatio,
+					maxWidth));
+		}
+		xsections.add(createXSection(channel.getId(), 0.95, maxWidth));
+		return xsections;
+	}
+
+	public static XSection createXSection(String channelId,
+			double normalizedDistance, double maxWidth) {
+		// FIXME: add rectangular xsection of 1000 width and -10 to 10 ft
+		// elevations. Make this better by adding xsection based on actual
+		// width and profile of the
+		// dem
+		XSection xsection = new XSection();
+		xsection.setChannelId(channelId);
+		XSectionLayer layer1 = new XSectionLayer();
+		layer1.setArea(0);
+		layer1.setElevation(-10);
+		layer1.setTopWidth(maxWidth);
+		layer1.setWettedPerimeter(maxWidth);
+		XSectionLayer layer2 = new XSectionLayer();
+		layer2.setArea(20 * maxWidth);
+		layer2.setElevation(10);
+		layer2.setTopWidth(maxWidth);
+		layer2.setWettedPerimeter(maxWidth + 40);
+		xsection.addLayer(layer1);
+		xsection.addLayer(layer2);
+		xsection.setDistance(normalizedDistance);
+		return xsection;
 	}
 
 }

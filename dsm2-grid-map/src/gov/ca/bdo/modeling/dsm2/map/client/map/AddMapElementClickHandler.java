@@ -46,7 +46,6 @@ import gov.ca.dsm2.input.model.Gate;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.Reservoir;
 import gov.ca.dsm2.input.model.XSection;
-import gov.ca.dsm2.input.model.XSectionLayer;
 import gov.ca.modeling.dsm2.widgets.client.events.MessageEvent;
 
 import com.google.gwt.event.shared.EventBus;
@@ -148,32 +147,6 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				reservoirManager.addReservoir(r);
 			} else if (type == ElementType.OUTPUT) {
 
-			} else if (type == ElementType.XSECTION) {
-				Overlay overlay = event.getOverlay();
-				if (overlay == null) {
-					String msg = "To add a xsection, first click on a channel line to select it";
-					eventBus.fireEvent(new MessageEvent(msg));
-					return;
-				}
-				if (!(overlay instanceof Polyline)) {
-					String msg = "To add a xsection, first click on a channel line to select it. You clicked on a marker?";
-					eventBus.fireEvent(new MessageEvent(msg));
-					return;
-				}
-				Polyline line = (Polyline) overlay;
-				String channelId = mapPanel.getChannelManager().getChannelId(
-						line);
-				if (channelId == null) {
-					String channelLine = mapPanel.getChannelManager().getChannelId(line);
-					if (channelLine == null) {
-						String msg = "To add a xsection, you must click on a spot on the channel's flowline. You clicked on some other line?";
-						eventBus.fireEvent(new MessageEvent(msg));
-						return;
-					}
-				}
-				// FIXME: find the distance at which the xsection is to be added
-				// and draw a line of
-				// a certain width (say 1000ft) perpendicular to the flowline.
 			}
 		} else if (type == ElementType.CHANNEL) {
 			Overlay overlay = event.getOverlay();
@@ -232,27 +205,11 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				eventBus.fireEvent(new MessageEvent(msg));
 				return;
 			}
-			// FIXME: add rectangular xsection of 1000 width and -10 to 10 ft
-			// elevations. Make this better by adding xsection based on actual
-			// width and profile of the
-			// dem
-			XSection xsection = new XSection();
-			xsection.setChannelId(channelId);
-			XSectionLayer layer1 = new XSectionLayer();
-			layer1.setArea(0);
-			layer1.setElevation(-10);
-			layer1.setTopWidth(1000);
-			layer1.setWettedPerimeter(1000);
-			XSectionLayer layer2 = new XSectionLayer();
-			layer2.setArea(20000.0);
-			layer2.setElevation(10);
-			layer2.setTopWidth(1000);
-			layer2.setWettedPerimeter(1040);
-			xsection.addLayer(layer1);
-			xsection.addLayer(layer2);
-			xsection.setDistance(0.5);
+			XSection xsection = ModelUtils.createXSection(channelId, 0.5,
+					1000.0);
 			mapPanel.getChannelManager().getChannels().getChannel(channelId)
 					.addXSection(xsection);
 		}
 	}
+
 }

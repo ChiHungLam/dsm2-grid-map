@@ -24,6 +24,8 @@ import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -200,15 +202,24 @@ public class ChannelInfoPanel extends Composite {
 		generateXSectionsButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				ModelUtils.generateXSections(channel, upNode, downNode);
+				List<XSection> generated = ModelUtils.generateCrossSections(
+						channel, upNode, downNode, 5000.0, 3000.0);
+				for (XSection x : generated) {
+					channel.addXSection(x);
+				}
+				mapPanel.getChannelManager().drawXSectionLines(channel,
+						ChannelInfoPanel.this);
+				mapPanel
+						.showMessage("Generated xsections with minimum spacing of 5000ft for channel");
 			}
 		});
+
 		clearXSectionsButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				for (XSection xsection : channel.getXsections()) {
-					mapPanel.getChannelManager().removeXSection(xsection);
-				}
+				mapPanel.getChannelManager().clearXSections();
+				mapPanel
+						.showMessage("Removed all xsections for selected channel");
 			}
 		});
 		return panel;
