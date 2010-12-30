@@ -426,8 +426,7 @@ public class ModelUtils {
 		return xsection;
 	}
 
-	public static List<DataPoint> getTrimmedPoints(
-			List<DataPoint> xsProfile) {
+	public static List<DataPoint> getTrimmedPoints(List<DataPoint> xsProfile) {
 		int trimBeginIndex = extractInflectionIndex(xsProfile, true);
 		int trimEndIndex = extractInflectionIndex(xsProfile, false);
 		ArrayList<DataPoint> profile = new ArrayList<DataPoint>();
@@ -460,7 +459,7 @@ public class ModelUtils {
 			DataPoint p = profile.get(index);
 			diff = p.z - lastVal;
 			// should be atleast a 1 feet change of elevation between points
-			if (Math.abs(diff) > diffThreshold) {
+			if (Math.abs(diff - lastDiff) > diffThreshold) {
 				// change in slope identifies a high point from left
 				if ((diff < 0) && (lastDiff >= 0)) {
 					if (forwards) {
