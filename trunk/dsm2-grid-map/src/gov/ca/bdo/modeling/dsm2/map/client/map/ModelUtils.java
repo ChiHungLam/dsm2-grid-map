@@ -65,6 +65,7 @@ import gov.ca.dsm2.input.model.Nodes;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 import gov.ca.dsm2.input.model.XSectionProfile;
+import gov.ca.modeling.maps.elevation.client.model.DataPoint;
 import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 import gov.ca.modeling.maps.elevation.client.model.Geometry;
 
@@ -386,7 +387,7 @@ public class ModelUtils {
 	public static List<XSection> generateCrossSections(Channel channel,
 			Node upNode, Node downNode, double minDistance, double maxWidth) {
 		double length = channel.getLength();
-		double numberInterior = length / minDistance + 1;
+		int numberInterior = (int) Math.floor(length / minDistance) + 1;
 		double xsectionSpacing = length / (numberInterior + 1);
 		ArrayList<XSection> xsections = new ArrayList<XSection>();
 		xsections.add(createXSection(channel.getId(), 0.05, maxWidth));
@@ -425,4 +426,59 @@ public class ModelUtils {
 		return xsection;
 	}
 
+	public static List<DataPoint> getTrimmedPoints(
+			List<DataPoint> xsProfile) {
+		int trimBeginIndex = extractInflectionIndex(xsProfile, true);
+		int trimEndIndex = extractInflectionIndex(xsProfile, false);
+		ArrayList<DataPoint> profile = new ArrayList<DataPoint>();
+		for (int i = trimBeginIndex; i <= trimEndIndex; i++) {
+			DataPoint p = xsProfile.get(i);
+			DataPoint np = new DataPoint();
+			np.x = p.x;
+			np.y = p.y;
+			np.z = p.z;
+			profile.add(np);
+		}
+		return profile;
+	}
+
+	public static int extractInflectionIndex(List<DataPoint> profile,
+			boolean forwards) {
+		int inflectionIndex = 0;
+		if (!forwards) {
+			inflectionIndex = profile.size() - 1;
+		}
+		double diffThreshold = 1;
+		double diff = 0.0;
+		double lastVal = profile.get(inflectionIndex).z;
+		double lastDiff = 0.0;
+		int index = 1;
+		if (!forwards) {
+			index = profile.size() - 1;
+		}
+		while ((index >= 0) && (index < profile.size())) {
+			DataPoint p = profile.get(index);
+			diff = p.z - lastVal;
+			// should be atleast a 1 feet change of elevation between points
+			if (Math.abs(diff) > diffThreshold) {
+				// change in slope identifies a high point from left
+				if ((diff < 0) && (lastDiff >= 0)) {
+					if (forwards) {
+						inflectionIndex = index - 1;
+					} else {
+						inflectionIndex = index + 1;
+					}
+					break;
+				}
+			}
+			lastDiff = diff;
+			lastVal = p.z;
+			if (forwards) {
+				index++;
+			} else {
+				index--;
+			}
+		}
+		return inflectionIndex;
+	}
 }
