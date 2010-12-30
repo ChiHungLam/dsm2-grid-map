@@ -258,11 +258,6 @@ public class ChannelLineDataManager {
 		xsectionLineMap.remove(xSection);
 	}
 
-	public String getChannelIdForFlowline(Polyline line) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void clearXSectionLines() {
 		if (xsectionLineMap != null) {
 			for (Polyline line : xsectionLineMap.values()) {
@@ -277,5 +272,15 @@ public class ChannelLineDataManager {
 		removePolyline(channel.getId());
 		clearXSectionLines();
 		channels.removeChannel(channel);
+	}
+
+	public void setLinesColor(String color) {
+		if (lineMap==null){
+			return;
+		}
+		PolyStyleOptions style = PolyStyleOptions.newInstance(color);
+		for(Polyline line: lineMap.values()){
+			line.setStrokeStyle(style);
+		}
 	}
 }

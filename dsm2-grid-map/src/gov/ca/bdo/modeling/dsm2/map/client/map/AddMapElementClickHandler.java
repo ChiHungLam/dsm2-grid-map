@@ -164,9 +164,8 @@ public class AddMapElementClickHandler implements MapClickHandler {
 				String channelId = mapPanel.getChannelManager().getChannelId(
 						line);
 				if (channelId == null) {
-					String channelIdForFlowline = mapPanel.getChannelManager()
-							.getChannelIdForFlowline(line);
-					if (channelIdForFlowline == null) {
+					String channelLine = mapPanel.getChannelManager().getChannelId(line);
+					if (channelLine == null) {
 						String msg = "To add a xsection, you must click on a spot on the channel's flowline. You clicked on some other line?";
 						eventBus.fireEvent(new MessageEvent(msg));
 						return;

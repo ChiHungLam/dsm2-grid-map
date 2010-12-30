@@ -480,4 +480,8 @@ public class MapPanel extends ResizeComposite {
 		eventBus.fireEvent(new MessageEvent(message, MessageEvent.ERROR));
 	}
 
+	public GridVisibilityControl getGridVisibility() {
+		return visibilityControl;
+	}
+
 }
