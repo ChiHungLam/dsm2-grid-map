@@ -85,8 +85,20 @@ public class CrossSectionEditorPanel extends Composite {
 				editor.redraw();
 			}
 		});
+		Button trimProfileButton = new Button("Trim Profile To Highest Points");
+		trimProfileButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				mapPanel
+						.showMessage("Trimmed profile. Click 'Set Profile' if you want to save it.");
+				profile.points = ModelUtils.getTrimmedPoints(profile.points);
+				editor.setXSectionProfile(profile);
+				editor.redraw();
+			}
+		});
 		buttonPanel.add(setProfileButton);
 		buttonPanel.add(snapToElevationProfileButton);
+		buttonPanel.add(trimProfileButton);
 		initWidget(mainPanel);
 	}
 
