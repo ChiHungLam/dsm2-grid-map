@@ -92,6 +92,12 @@ public class CrossSectionEditorPanel extends Composite {
 				mapPanel
 						.showMessage("Trimmed profile. Click 'Set Profile' if you want to save it.");
 				profile.points = ModelUtils.getTrimmedPoints(profile.points);
+				DataPoint p1 = profile.points.get(0);
+				DataPoint p2 = profile.points.get(profile.points.size() - 1);
+				profile.x1 = p1.x;
+				profile.y1 = p1.y;
+				profile.x2 = p2.x;
+				profile.y2 = p2.y;
 				editor.setXSectionProfile(profile);
 				editor.redraw();
 			}
