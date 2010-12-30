@@ -27,7 +27,6 @@ import gov.ca.dsm2.input.model.XSection;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
@@ -145,45 +144,7 @@ public class ChannelClickHandler implements PolylineClickHandler {
 	}
 
 	public void drawXSectionLines(Channel channel) {
-		mapPanel.getChannelManager().clearXSectionLines();
-		Node upNode = mapPanel.getNodeManager().getNodes().getNode(
-				channel.getUpNodeId());
-		Node downNode = mapPanel.getNodeManager().getNodes().getNode(
-				channel.getDownNodeId());
-		ArrayList<XSection> xsections = channel.getXsections();
-		int xSectionIndex = 0;
-		XSectionLineClickHandler xSectionLineClickHandler = new XSectionLineClickHandler(
-				mapPanel, infoPanel);
-		for (final XSection xSection : xsections) {
-			double distance = xSection.getDistance();
-			distance = channel.getLength() * distance;
-			LatLng[] latLngs = null;
-			if (xSection.getProfile() == null) {
-				latLngs = ModelUtils.calculateEndPoints(xSection, channel,
-						upNode, downNode);
-			} else {
-				List<double[]> endPoints = xSection.getProfile().getEndPoints();
-				latLngs = new LatLng[] {
-						LatLng.newInstance(endPoints.get(0)[0], endPoints
-								.get(0)[1]),
-						LatLng.newInstance(endPoints.get(1)[0], endPoints
-								.get(1)[1]) };
-			}
-			final Polyline line = new Polyline(latLngs, "green", 4);
-
-			line.addPolylineClickHandler(xSectionLineClickHandler);
-			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
-
-				public void onMouseOver(PolylineMouseOverEvent event) {
-					WindowUtils.changeCursor("pointer");
-				}
-
-			});
-			mapPanel.getChannelManager().addXSectionLine(xSection, line);
-			mapPanel.getMap().addOverlay(line);
-
-			xSectionIndex++;
-		}
+		mapPanel.getChannelManager().drawXSectionLines(channel, infoPanel);
 	}
 
 	public void updateChannelLengthLatLng(Channel channel) {
