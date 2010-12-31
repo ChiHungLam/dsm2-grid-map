@@ -69,25 +69,6 @@ public class CrossSectionEditorPanel extends Composite {
 					profilePoints.add(ppoint);
 				}
 				xsProfile.setProfilePoints(profilePoints);
-				if (origin != null) {
-					DataPoint p1 = xSectionProfilePoints.get(0);
-					DataPoint p2 = xSectionProfilePoints
-							.get(xSectionProfilePoints.size() - 1);
-					double[] ep1 = new double[] { p1.x, p1.z };
-					double[] ep2 = new double[] { p2.z, p2.z };
-					ep1 = GeomUtils
-							.calculateUTMFromPointAtFeetDistanceAlongLine(ep1,
-									origin, secondPointForLine);
-					ep1 = GeomUtils.convertToLatLng(ep1[0], ep1[1]);
-					ep2 = GeomUtils
-							.calculateUTMFromPointAtFeetDistanceAlongLine(ep2,
-									origin, secondPointForLine);
-					ep2 = GeomUtils.convertToLatLng(ep2[0], ep2[1]);
-					List<double[]> endPoints = new ArrayList<double[]>();
-					endPoints.add(ep1);
-					endPoints.add(ep2);
-					xsProfile.setEndPoints(endPoints);
-				}
 				List<XSectionLayer> layers = xsProfile.calculateLayers();
 				xsection.setLayers(layers);
 			}
@@ -118,6 +99,27 @@ public class CrossSectionEditorPanel extends Composite {
 				profile.x2 = p2.x;
 				profile.y2 = p2.y;
 				editor.setXSectionProfile(profile);
+				if (origin != null) {
+					List<DataPoint> xSectionProfilePoints = editor
+					.getXSectionProfilePoints();
+					DataPoint xp1 = xSectionProfilePoints.get(0);
+					DataPoint xp2 = xSectionProfilePoints
+							.get(xSectionProfilePoints.size() - 1);
+					double[] ep1 = new double[] { xp1.x, xp1.z };
+					double[] ep2 = new double[] { xp2.x, xp2.z };
+					ep1 = GeomUtils
+							.calculateUTMFromPointAtFeetDistanceAlongLine(ep1,
+									origin, secondPointForLine);
+					ep1 = GeomUtils.convertToLatLng(ep1[0], ep1[1]);
+					ep2 = GeomUtils
+							.calculateUTMFromPointAtFeetDistanceAlongLine(ep2,
+									origin, secondPointForLine);
+					ep2 = GeomUtils.convertToLatLng(ep2[0], ep2[1]);
+					List<double[]> endPoints = new ArrayList<double[]>();
+					endPoints.add(ep1);
+					endPoints.add(ep2);
+					xsProfile.setEndPoints(endPoints);
+				}
 				editor.redraw();
 			}
 		});
