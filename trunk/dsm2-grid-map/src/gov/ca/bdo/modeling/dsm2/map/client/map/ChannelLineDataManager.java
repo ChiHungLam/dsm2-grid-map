@@ -69,6 +69,10 @@ public class ChannelLineDataManager {
 	private ChannelClickHandler channelClickHandler;
 	private XSectionLineClickHandler xSectionLineClickHandler;
 
+	public XSectionLineClickHandler getxSectionLineClickHandler() {
+		return xSectionLineClickHandler;
+	}
+
 	public ChannelLineDataManager(MapPanel mapPanel, Channels channels) {
 		this.mapPanel = mapPanel;
 		channelClickHandler = new ChannelClickHandler(mapPanel);
@@ -307,35 +311,50 @@ public class ChannelLineDataManager {
 		xSectionLineClickHandler = new XSectionLineClickHandler(mapPanel,
 				infoPanel);
 		for (final XSection xSection : xsections) {
-			double distance = xSection.getDistance();
-			distance = channel.getLength() * distance;
-			LatLng[] latLngs = null;
-			if (xSection.getProfile() == null) {
-				latLngs = ModelUtils.calculateEndPoints(xSection, channel,
-						upNode, downNode);
-			} else {
-				List<double[]> endPoints = xSection.getProfile().getEndPoints();
-				latLngs = new LatLng[] {
-						LatLng.newInstance(endPoints.get(0)[0], endPoints
-								.get(0)[1]),
-						LatLng.newInstance(endPoints.get(1)[0], endPoints
-								.get(1)[1]) };
-			}
-			final Polyline line = new Polyline(latLngs, "green", 4);
-
-			line.addPolylineClickHandler(xSectionLineClickHandler);
-			line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
-
-				public void onMouseOver(PolylineMouseOverEvent event) {
-					WindowUtils.changeCursor("pointer");
-				}
-
-			});
-			addXSectionLine(xSection, line);
-			mapPanel.getMap().addOverlay(line);
-
+			createLineAndAddForXSection(xSection, channel, upNode, downNode);
 			xSectionIndex++;
 		}
+	}
+
+	private void createLineAndAddForXSection(final XSection xSection,
+			Channel channel, Node upNode, Node downNode) {
+		double distance = xSection.getDistance();
+		distance = channel.getLength() * distance;
+		LatLng[] latLngs = null;
+		if (xSection.getProfile() == null) {
+			latLngs = ModelUtils.calculateEndPoints(xSection, channel, upNode,
+					downNode);
+		} else {
+			List<double[]> endPoints = xSection.getProfile().getEndPoints();
+			latLngs = new LatLng[] {
+					LatLng
+							.newInstance(endPoints.get(0)[0],
+									endPoints.get(0)[1]),
+					LatLng
+							.newInstance(endPoints.get(1)[0],
+									endPoints.get(1)[1]) };
+		}
+		final Polyline line = new Polyline(latLngs, "green", 4);
+
+		line.addPolylineClickHandler(xSectionLineClickHandler);
+		line.addPolylineMouseOverHandler(new PolylineMouseOverHandler() {
+
+			public void onMouseOver(PolylineMouseOverEvent event) {
+				WindowUtils.changeCursor("pointer");
+			}
+
+		});
+		addXSectionLine(xSection, line);
+		mapPanel.getMap().addOverlay(line);
+	}
+
+	public void removeAndAddPolylineForXSection(XSection xs, Channel channel,
+			Node upNode, Node downNode) {
+		Polyline polyline = xsectionLineMap.get(xs);
+		mapPanel.getMap().removeOverlay(polyline);
+		xsectionLineMap.remove(xs);
+		//
+		createLineAndAddForXSection(xs, channel, upNode, downNode);
 	}
 
 }

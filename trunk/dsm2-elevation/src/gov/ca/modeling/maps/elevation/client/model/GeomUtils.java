@@ -165,16 +165,16 @@ public class GeomUtils {
 	}
 
 	public static double[] calculateUTMFromPointAtFeetDistanceAlongLine(
-			double[] point, DataPoint origin, DataPoint endPoint) {
+			double distance, DataPoint origin, DataPoint endPoint) {
 		double x0 = origin.x;
 		double y0 = origin.y;
 		double x2 = endPoint.x;
 		double y2 = endPoint.y;
-		double totalLength = CoordinateGeometryUtils.distanceBetween(x0, y0, x2, y2);
-		double distanceBetween = CoordinateGeometryUtils.distanceBetween(0.0,
-				0.0, point[0], point[1]);
-		double lengthInMeters = GeomUtils.getLengthInMeters(distanceBetween);
-		return Geometry.computePointOnLine(x0, y0, x2, y2, lengthInMeters/totalLength);
+		double totalLength = CoordinateGeometryUtils.distanceBetween(x0, y0,
+				x2, y2);
+		double lengthInMeters = GeomUtils.getLengthInMeters(distance);
+		return Geometry.computePointOnLine(x0, y0, x2, y2, lengthInMeters
+				/ totalLength);
 	}
 
 	public static double[] convertToUTM(double latitude, double longitude) {
@@ -188,7 +188,7 @@ public class GeomUtils {
 
 	public static double[] convertToLatLng(double utmx, double utmy) {
 		CoordinateConversion cc = new CoordinateConversion();
-		double[] utm2LatLon = cc.utm2LatLon("10 N "+utmx + " " + utmy);
+		double[] utm2LatLon = cc.utm2LatLon("10 N " + utmx + " " + utmy);
 		return utm2LatLon;
 	}
 

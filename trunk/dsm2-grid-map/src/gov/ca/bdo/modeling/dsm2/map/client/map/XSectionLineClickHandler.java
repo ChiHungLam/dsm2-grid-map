@@ -1,11 +1,11 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
 import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionProfile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
@@ -35,24 +35,22 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 	public void updateXSLine() {
 		if (currentlySelectedLine != null) {
 			if (currentlySelectedXSection != null) {
-				List<double[]> endPoints = currentlySelectedXSection
-						.getProfile().getEndPoints();
-				LatLng[] latLngs = new LatLng[] {
-						LatLng.newInstance(endPoints.get(0)[0], endPoints
-								.get(0)[1]),
-						LatLng.newInstance(endPoints.get(1)[0], endPoints
-								.get(1)[1]) };
-				currentlySelectedLine.deleteVertex(0);
-				currentlySelectedLine.insertVertex(0, latLngs[0]);
-				currentlySelectedLine.deleteVertex(1);
-				currentlySelectedLine.insertVertex(1, latLngs[1]);
+				Channel channel = ModelUtils.getChannelForXSection(
+						currentlySelectedXSection, mapPanel.getChannelManager()
+								.getChannels());
+				Node upNode = mapPanel.getNodeManager().getNodes().getNode(
+						channel.getUpNodeId());
+				Node downNode = mapPanel.getNodeManager().getNodes().getNode(
+						channel.getDownNodeId());
+				mapPanel.getChannelManager().removeAndAddPolylineForXSection(
+						currentlySelectedXSection, channel, upNode, downNode);
 			}
 		}
 	}
 
 	public void onClick(PolylineClickEvent event) {
 		final Polyline line = event.getSender();
-		currentlySelectedLine = null;
+		currentlySelectedLine = line;
 		final XSection xSection = mapPanel.getChannelManager().getXSectionFor(
 				line);
 		currentlySelectedXSection = xSection;
@@ -77,7 +75,6 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 					xsline.setEditingEnabled(true);
 				}
 				xsline.setStrokeStyle(redLineStyle);
-				currentlySelectedLine = xsline;
 				xSectionIndex = index;
 			} else {
 				if (mapPanel.isInEditMode()) {
@@ -93,33 +90,37 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 			if (xsEditorPanel == null) {
 				xsEditorPanel = new CrossSectionEditorPanel(mapPanel);
 			}
-			line.setEditingEnabled(PolyEditingOptions.newInstance(2));
-			line
-					.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
-
-						public void onUpdate(PolylineLineUpdatedEvent event) {
-							XSectionProfile profile = xSection.getProfile();
-							if (profile == null) {
-								return;
-							}
-							ArrayList<double[]> endPoints = new ArrayList<double[]>();
-							for (int i = 0; i < 2; i++) {
-								double[] points = new double[2];
-								LatLng vertex = line.getVertex(i);
-								points[0] = vertex.getLatitude();
-								points[1] = vertex.getLongitude();
-								endPoints.add(points);
-							}
-							profile.setEndPoints(endPoints);
-
-							ModelUtils.updateXSectionPosition(channel, mapPanel
-									.getNodeManager().getNodes(), xSection,
-									channel.getLength());
-						}
-					});
+			setPolylineInEditMode(line, xSection, channel);
 			mapPanel.getInfoPanel().clear();
 			mapPanel.getInfoPanel().add(xsEditorPanel);
 			xsEditorPanel.draw(channel, xSectionIndex, mapPanel);
 		}
+	}
+
+	private void setPolylineInEditMode(final Polyline line,
+			final XSection xSection, final Channel channel) {
+		line.setEditingEnabled(PolyEditingOptions.newInstance(2));
+		line.addPolylineLineUpdatedHandler(new PolylineLineUpdatedHandler() {
+
+			public void onUpdate(PolylineLineUpdatedEvent event) {
+				XSectionProfile profile = xSection.getProfile();
+				if (profile == null) {
+					return;
+				}
+				ArrayList<double[]> endPoints = new ArrayList<double[]>();
+				for (int i = 0; i < 2; i++) {
+					double[] points = new double[2];
+					LatLng vertex = line.getVertex(i);
+					points[0] = vertex.getLatitude();
+					points[1] = vertex.getLongitude();
+					endPoints.add(points);
+				}
+				profile.setEndPoints(endPoints);
+
+				ModelUtils.updateXSectionPosition(channel, mapPanel
+						.getNodeManager().getNodes(), xSection, channel
+						.getLength());
+			}
+		});
 	}
 }
