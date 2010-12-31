@@ -141,13 +141,17 @@ public class GeomUtils {
 		return Math.round(length * 3.2808399 * 100) / 100;
 	}
 
+	public static double getLengthInMeters(double lengthInFeet) {
+		return Math.round(lengthInFeet * 0.3048);
+	}
+
 	public static void moveOriginAndProjectOntoLineAndConvertToFeet(
 			List<? extends DataPoint> points, DataPoint origin,
-			DataPoint secondPointForLine) {
+			DataPoint endPoint) {
 		double x0 = origin.x;
 		double y0 = origin.y;
-		double x2 = secondPointForLine.x;
-		double y2 = secondPointForLine.y;
+		double x2 = endPoint.x;
+		double y2 = endPoint.y;
 		double angle0 = CoordinateGeometryUtils.angle(x0, y0, x2, y2);
 		for (DataPoint point : points) {
 			double length = GeomUtils.getLengthInFeet(CoordinateGeometryUtils
@@ -160,6 +164,20 @@ public class GeomUtils {
 		}
 	}
 
+	public static double[] calculateUTMFromPointAtFeetDistanceAlongLine(
+			double[] point, DataPoint origin, DataPoint endPoint) {
+		double x0 = origin.x;
+		double y0 = origin.y;
+		double x2 = endPoint.x;
+		double y2 = endPoint.y;
+		double angle0 = CoordinateGeometryUtils.angle(x0, y0, x2, y2);
+		double distanceBetween = CoordinateGeometryUtils.distanceBetween(0.0,
+				0.0, point[0], point[1]);
+		double lengthInMeters = GeomUtils.getLengthInMeters(distanceBetween);
+		return new double[] { lengthInMeters * Math.sin(angle0) + x0,
+				lengthInMeters * Math.cos(angle0) + y0 };
+	}
+
 	public static double[] convertToUTM(double latitude, double longitude) {
 		CoordinateConversion cc = new CoordinateConversion();
 		String latLon2UTM = cc.latLon2UTM(latitude, longitude);
@@ -167,6 +185,12 @@ public class GeomUtils {
 		double x = Double.parseDouble(split[2]);
 		double y = Double.parseDouble(split[3]);
 		return new double[] { x, y };
+	}
+
+	public static double[] convertToLatLng(double utmx, double utmy) {
+		CoordinateConversion cc = new CoordinateConversion();
+		double[] utm2LatLon = cc.utm2LatLon(utmx + " " + utmy);
+		return utm2LatLon;
 	}
 
 }
