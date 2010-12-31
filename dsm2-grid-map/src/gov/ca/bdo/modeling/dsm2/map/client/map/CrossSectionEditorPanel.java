@@ -42,10 +42,10 @@ public class CrossSectionEditorPanel extends Composite {
 	private Profile profile;
 	private XSectionProfile xsProfile;
 	private XSection xsection;
-	private MapPanel mapPanel;
+	private DataPoint origin;
+	private DataPoint secondPointForLine;
 
 	public CrossSectionEditorPanel(final MapPanel mapPanel) {
-		this.mapPanel = mapPanel;
 		FlowPanel mainPanel = new FlowPanel();
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		mainPanel.add(buttonPanel);
@@ -69,6 +69,25 @@ public class CrossSectionEditorPanel extends Composite {
 					profilePoints.add(ppoint);
 				}
 				xsProfile.setProfilePoints(profilePoints);
+				if (origin != null) {
+					DataPoint p1 = xSectionProfilePoints.get(0);
+					DataPoint p2 = xSectionProfilePoints
+							.get(xSectionProfilePoints.size() - 1);
+					double[] ep1 = new double[] { p1.x, p1.z };
+					double[] ep2 = new double[] { p2.z, p2.z };
+					ep1 = GeomUtils
+							.calculateUTMFromPointAtFeetDistanceAlongLine(ep1,
+									origin, secondPointForLine);
+					ep1 = GeomUtils.convertToLatLng(ep1[0], ep1[1]);
+					ep2 = GeomUtils
+							.calculateUTMFromPointAtFeetDistanceAlongLine(ep2,
+									origin, secondPointForLine);
+					ep2 = GeomUtils.convertToLatLng(ep2[0], ep2[1]);
+					List<double[]> endPoints = new ArrayList<double[]>();
+					endPoints.add(ep1);
+					endPoints.add(ep2);
+					xsProfile.setEndPoints(endPoints);
+				}
 				List<XSectionLayer> layers = xsProfile.calculateLayers();
 				xsection.setLayers(layers);
 			}
@@ -193,10 +212,10 @@ public class CrossSectionEditorPanel extends Composite {
 												profile.x1, profile.y1);
 										double[] utm2 = GeomUtils.convertToUTM(
 												profile.x2, profile.y2);
-										DataPoint origin = new DataPoint();
+										origin = new DataPoint();
 										origin.x = utm1[0];
 										origin.y = utm1[1];
-										DataPoint secondPointForLine = new DataPoint();
+										secondPointForLine = new DataPoint();
 										secondPointForLine.x = utm2[0];
 										secondPointForLine.y = utm2[1];
 										GeomUtils
@@ -226,8 +245,9 @@ public class CrossSectionEditorPanel extends Composite {
 					}
 
 					public void onFailure(Throwable caught) {
-						// TODO: add the xsection line and other relevant info
-						GWT.log("Could not load DEM profile data", caught);
+						mapPanel
+								.showErrorMessage("Could not load DEM profile data: "
+										+ caught.getMessage());
 					}
 				});
 

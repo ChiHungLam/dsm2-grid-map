@@ -67,6 +67,7 @@ public class ChannelLineDataManager {
 	private MapPanel mapPanel;
 	private HashMap<XSection, Polyline> xsectionLineMap;
 	private ChannelClickHandler channelClickHandler;
+	private XSectionLineClickHandler xSectionLineClickHandler;
 
 	public ChannelLineDataManager(MapPanel mapPanel, Channels channels) {
 		this.mapPanel = mapPanel;
@@ -303,8 +304,8 @@ public class ChannelLineDataManager {
 				channel.getDownNodeId());
 		ArrayList<XSection> xsections = channel.getXsections();
 		int xSectionIndex = 0;
-		XSectionLineClickHandler xSectionLineClickHandler = new XSectionLineClickHandler(
-				mapPanel, infoPanel);
+		xSectionLineClickHandler = new XSectionLineClickHandler(mapPanel,
+				infoPanel);
 		for (final XSection xSection : xsections) {
 			double distance = xSection.getDistance();
 			distance = channel.getLength() * distance;

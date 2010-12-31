@@ -5,6 +5,7 @@ import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionProfile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.maps.client.event.PolylineClickHandler;
 import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
@@ -22,6 +23,8 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 	private CrossSectionEditorPanel xsEditorPanel;
 	private MapPanel mapPanel;
 	private ChannelInfoPanel channelInfoPanel;
+	private Polyline currentlySelectedLine;
+	private XSection currentlySelectedXSection;
 
 	public XSectionLineClickHandler(MapPanel mapPanel,
 			ChannelInfoPanel infoPanel) {
@@ -29,10 +32,30 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 		channelInfoPanel = infoPanel;
 	}
 
+	public void updateXSLine() {
+		if (currentlySelectedLine != null) {
+			if (currentlySelectedXSection != null) {
+				List<double[]> endPoints = currentlySelectedXSection
+						.getProfile().getEndPoints();
+				LatLng[] latLngs = new LatLng[] {
+						LatLng.newInstance(endPoints.get(0)[0], endPoints
+								.get(0)[1]),
+						LatLng.newInstance(endPoints.get(1)[0], endPoints
+								.get(1)[1]) };
+				currentlySelectedLine.deleteVertex(0);
+				currentlySelectedLine.insertVertex(0, latLngs[0]);
+				currentlySelectedLine.deleteVertex(1);
+				currentlySelectedLine.insertVertex(1, latLngs[1]);
+			}
+		}
+	}
+
 	public void onClick(PolylineClickEvent event) {
 		final Polyline line = event.getSender();
+		currentlySelectedLine = null;
 		final XSection xSection = mapPanel.getChannelManager().getXSectionFor(
 				line);
+		currentlySelectedXSection = xSection;
 		if (xSection == null) {
 			mapPanel
 					.showErrorMessage("The line clicked was not a xsection ? Try again.");
@@ -54,6 +77,7 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 					xsline.setEditingEnabled(true);
 				}
 				xsline.setStrokeStyle(redLineStyle);
+				currentlySelectedLine = xsline;
 				xSectionIndex = index;
 			} else {
 				if (mapPanel.isInEditMode()) {
@@ -98,5 +122,4 @@ public class XSectionLineClickHandler implements PolylineClickHandler {
 			xsEditorPanel.draw(channel, xSectionIndex, mapPanel);
 		}
 	}
-
 }
