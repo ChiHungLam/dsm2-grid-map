@@ -82,7 +82,7 @@ public class CrossSectionEditor extends Composite {
 		return points;
 	}
 
-	public native void redraw()/*-{
+	private native void redraw()/*-{
 		this.vis.render();
 	}-*/;
 }

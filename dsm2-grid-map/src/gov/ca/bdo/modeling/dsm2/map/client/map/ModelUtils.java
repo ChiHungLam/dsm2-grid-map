@@ -447,7 +447,7 @@ public class ModelUtils {
 		if (!forwards) {
 			inflectionIndex = profile.size() - 1;
 		}
-		double diffThreshold = 1;
+		double diffThreshold = 3;
 		double diff = 0.0;
 		double lastVal = profile.get(inflectionIndex).z;
 		double lastDiff = 0.0;
@@ -480,4 +480,18 @@ public class ModelUtils {
 		}
 		return inflectionIndex;
 	}
+
+	public static XSectionProfile getOrCalculateXSectionalProfile(
+			XSection xsection, Channel channel, Nodes nodes) {
+		XSectionProfile profileFrom = xsection.getProfile();
+		if (profileFrom == null) {
+			Node upNode = nodes.getNode(channel.getUpNodeId());
+			Node downNode = nodes.getNode(channel.getDownNodeId());
+			profileFrom = ModelUtils.calculateProfileFrom(xsection, channel,
+					upNode, downNode);
+			xsection.setProfile(profileFrom);
+		}
+		return profileFrom;
+	}
+
 }
