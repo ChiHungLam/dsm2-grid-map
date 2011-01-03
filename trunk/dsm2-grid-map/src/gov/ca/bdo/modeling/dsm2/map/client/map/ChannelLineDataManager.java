@@ -69,10 +69,6 @@ public class ChannelLineDataManager {
 	private ChannelClickHandler channelClickHandler;
 	private XSectionLineClickHandler xSectionLineClickHandler;
 
-	public XSectionLineClickHandler getxSectionLineClickHandler() {
-		return xSectionLineClickHandler;
-	}
-
 	public ChannelLineDataManager(MapPanel mapPanel, Channels channels) {
 		this.mapPanel = mapPanel;
 		channelClickHandler = new ChannelClickHandler(mapPanel);
@@ -355,6 +351,14 @@ public class ChannelLineDataManager {
 		xsectionLineMap.remove(xs);
 		//
 		createLineAndAddForXSection(xs, channel, upNode, downNode);
+	}
+
+	public ChannelClickHandler getChannelClickHandler() {
+		return channelClickHandler;
+	}
+
+	public XSectionLineClickHandler getXSectionLineClickHandler() {
+		return xSectionLineClickHandler;
 	}
 
 }

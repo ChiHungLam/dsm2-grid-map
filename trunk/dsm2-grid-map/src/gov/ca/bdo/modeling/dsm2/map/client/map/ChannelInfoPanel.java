@@ -223,7 +223,7 @@ public class ChannelInfoPanel extends Composite {
 				// then trim profile
 				// and finally set profile
 				final CrossSectionEditorPanel xsEditorPanel = mapPanel
-						.getChannelManager().getxSectionLineClickHandler()
+						.getChannelManager().getXSectionLineClickHandler()
 						.getXsEditorPanel();
 				new GenerateProfileForXSection(xsEditorPanel, mapPanel, channel).generateNextProfile();
 			}
