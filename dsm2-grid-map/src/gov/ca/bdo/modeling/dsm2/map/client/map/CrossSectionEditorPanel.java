@@ -288,7 +288,7 @@ public class CrossSectionEditorPanel extends Composite {
 		xsProfile.setProfilePoints(profilePoints);
 		List<XSectionLayer> layers = xsProfile.calculateLayers();
 		xsection.setLayers(layers);
-		mapPanel.getChannelManager().getxSectionLineClickHandler()
+		mapPanel.getChannelManager().getXSectionLineClickHandler()
 				.updateXSLine();
 	}
 
