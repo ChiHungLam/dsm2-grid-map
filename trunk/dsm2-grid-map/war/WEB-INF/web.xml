@@ -117,14 +117,14 @@
 		<url-pattern>/dsm2_grid_map/admin/userProfile</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>loginServlet</servlet-name>
-		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.LoginServiceImpl</servlet-class>
+		<servlet-name>updateUserProfileServlet</servlet-name>
+		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.UpdateCreateUserProfile</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>loginServlet</servlet-name>
-		<url-pattern>/dsm2_grid_map/login</url-pattern>
+		<servlet-name>updateUserProfileServlet</servlet-name>
+		<url-pattern>/update_user_profile</url-pattern>
 	</servlet-mapping>
-
+	<servlet>		<servlet-name>loginServlet</servlet-name>		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.LoginServiceImpl</servlet-class>	</servlet>	<servlet-mapping>		<servlet-name>loginServlet</servlet-name>		<url-pattern>/dsm2_grid_map/login</url-pattern>	</servlet-mapping>
 	<servlet>
 		<servlet-name>bathymetryServlet</servlet-name>
 		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.BathymetryDataServiceImpl</servlet-class>

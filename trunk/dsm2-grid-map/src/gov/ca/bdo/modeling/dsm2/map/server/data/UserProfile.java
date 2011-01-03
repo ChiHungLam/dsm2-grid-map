@@ -46,6 +46,16 @@ public class UserProfile implements Serializable {
 	private String accessLevel;
 	@Persistent
 	private String group;
+	@Persistent
+	private String nickname;
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
 
 	public UserProfile() {
 

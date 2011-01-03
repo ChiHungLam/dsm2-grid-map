@@ -35,6 +35,22 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class UserProfileServiceImpl extends RemoteServiceServlet implements
 		UserProfileService {
+	public UserProfile getUserProfile(String email) {
+		PersistenceManager persistenceManager = PMF.get()
+				.getPersistenceManager();
+		try {
+			UserProfileDAO dao = new UserProfileDAOImpl(persistenceManager);
+			UserProfile userForEmail = dao.getUserForEmail(email);
+			return userForEmail;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			persistenceManager.close();
+		}
+
+	}
+
 	public void createUserProfile(String email) {
 		PersistenceManager persistenceManager = PMF.get()
 				.getPersistenceManager();
@@ -45,6 +61,25 @@ public class UserProfileServiceImpl extends RemoteServiceServlet implements
 			userProfile.setGroup("default");
 			userProfile.setAccessLevel("default");
 			dao.createObject(userProfile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			persistenceManager.close();
+		}
+	}
+
+	public void updateUserProfile(UserProfile profile) {
+		if ((profile == null) || (profile.getEmail() == null)) {
+			return;
+		}
+		PersistenceManager persistenceManager = PMF.get()
+				.getPersistenceManager();
+		try {
+			UserProfileDAO dao = new UserProfileDAOImpl(persistenceManager);
+			UserProfile userForEmail = dao.getUserForEmail(profile.getEmail());
+			userForEmail.setAccessLevel(profile.getAccessLevel());
+			userForEmail.setGroup(profile.getGroup());
+			userForEmail.setNickname(profile.getNickname());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

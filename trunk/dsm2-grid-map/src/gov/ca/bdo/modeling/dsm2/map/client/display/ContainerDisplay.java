@@ -48,7 +48,7 @@ public class ContainerDisplay implements Display {
 		HTML emailLabel = new HTML("<b>" + result.getEmailAddress() + "</b>");
 		container.getHeaderPanel().addWidgetToRight(emailLabel);
 		container.getHeaderPanel().addWidgetToRight(
-				new Anchor("Profile", "#profile"));
+				new Anchor("Profile", "/user_profile.jsp"));
 		container.getHeaderPanel().addWidgetToRight(
 				new Anchor("Sign out", result.getLogoutUrl()));
 		// setup link bar

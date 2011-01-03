@@ -3,7 +3,9 @@
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
 <%@ page import="java.net.URLEncoder"%>
-<html>
+
+<%@page import="gov.ca.bdo.modeling.dsm2.map.server.data.UserProfile"%>
+<%@page import="gov.ca.bdo.modeling.dsm2.map.server.UserProfileServiceImpl"%><html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -205,9 +207,16 @@ hr {
 <%
 	UserService userService = UserServiceFactory.getUserService();
 	User user = userService.getCurrentUser();
-	if (user != null) {
-		response.sendRedirect("dsm2_grid_map.html");
-	} else {
+	if (user != null && userService.isUserLoggedIn()) {
+		UserProfileServiceImpl profileService = new UserProfileServiceImpl();
+		String email = user.getEmail();
+		UserProfile profile = profileService.getUserProfile(email);
+		if (profile != null){
+			response.sendRedirect("dsm2_grid_map.html");
+		} else {
+			response.sendRedirect("user_profile.jsp");
+		}
+	}else {
 		String successRedirectURL=userService.createLoginURL(request.getRequestURL()
 				.toString());
 %>
