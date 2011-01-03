@@ -17,14 +17,17 @@ import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
@@ -35,7 +38,12 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  * 
  */
 public class CrossSectionEditorPanel extends Composite {
-
+	
+	public static interface ElevationDataLoaded{
+		public void elevationDataLoaded();
+	}
+	
+	private static final Logger logger = Logger.getLogger("xsection");
 	private DEMDataServiceAsync demService;
 	private BathymetryDataServiceAsync bathyService;
 	private FlowPanel xsEditorPanel;
@@ -48,6 +56,9 @@ public class CrossSectionEditorPanel extends Composite {
 	private XSection xsection;
 	private DataPoint origin;
 	private DataPoint secondPointForLine;
+	private Button setProfileButton;
+	private Button snapToElevationProfileButton;
+	private Button trimProfileButton;
 
 	public CrossSectionEditorPanel(final MapPanel mapPanel) {
 		demService = GWT.create(DEMDataService.class);
@@ -59,70 +70,26 @@ public class CrossSectionEditorPanel extends Composite {
 		mainPanel.add(xsEditorPanel);
 		xsEditorPanel.getElement().setId("xsection");
 		xsEditorPanel.clear();
-		Button setProfileButton = new Button("Set Profile");
+	    setProfileButton = new Button("Set Profile");
 		setProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				mapPanel.showMessage("Profile set as shown");
-				List<DataPoint> xSectionProfilePoints = editor
-						.getXSectionProfilePoints();
-				if (origin != null) {
-					DataPoint xp1 = xSectionProfilePoints.get(0);
-					DataPoint xp2 = xSectionProfilePoints
-							.get(xSectionProfilePoints.size() - 1);
-					double[] ep1 = new double[] { xp1.x, xp1.z };
-					double[] ep2 = new double[] { xp2.x, xp2.z };
-
-					ep1 = GeomUtils
-							.calculateUTMFromPointAtFeetDistanceAlongLine(
-									xp1.x, origin, secondPointForLine);
-					ep1 = GeomUtils.convertToLatLng(ep1[0], ep1[1]);
-					ep2 = GeomUtils
-							.calculateUTMFromPointAtFeetDistanceAlongLine(
-									xp2.x, origin, secondPointForLine);
-					ep2 = GeomUtils.convertToLatLng(ep2[0], ep2[1]);
-
-					List<double[]> endPoints = new ArrayList<double[]>();
-					endPoints.add(ep1);
-					endPoints.add(ep2);
-					xsProfile.setEndPoints(endPoints);
-				}
-				List<double[]> profilePoints = new ArrayList<double[]>();
-				double shift = xSectionProfilePoints.get(0).x;
-				for (int i = 0; i < xSectionProfilePoints.size(); i++) {
-					double[] ppoint = new double[2];
-					DataPoint p = xSectionProfilePoints.get(i);
-					ppoint[0] = p.x - shift;
-					ppoint[1] = p.z;
-					profilePoints.add(ppoint);
-				}
-				xsProfile.setProfilePoints(profilePoints);
-				List<XSectionLayer> layers = xsProfile.calculateLayers();
-				xsection.setLayers(layers);
-				mapPanel.getChannelManager().getxSectionLineClickHandler()
-						.updateXSLine();
+				updateProfile(mapPanel);
 			}
 		});
-		Button snapToElevationProfileButton = new Button(
+		snapToElevationProfileButton = new Button(
 				"Snap To Elevation Profile");
 		snapToElevationProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				mapPanel
-						.showMessage("Snapped to elevation profile. Click 'Set Profile' if you want to save it.");
-				profile.points = new ArrayList<DataPoint>(demProfilePoints);
-				editor.setXSectionProfile(profile);
+				snapToElevationProfile(mapPanel);
 			}
 		});
-		Button trimProfileButton = new Button("Trim Profile To Highest Points");
+		trimProfileButton = new Button("Trim Profile To Highest Points");
 		trimProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				mapPanel
-						.showMessage("Trimmed profile. Click 'Set Profile' if you want to save it.");
-				profile.points = new ArrayList<DataPoint>(ModelUtils
-						.getTrimmedPoints(profile.points));
-				editor.setXSectionProfile(profile);
+				trimProfile(mapPanel);
 			}
 		});
 		buttonPanel.add(setProfileButton);
@@ -131,7 +98,20 @@ public class CrossSectionEditorPanel extends Composite {
 		initWidget(mainPanel);
 	}
 
+	private final double TOL = 0.0001;
+	protected boolean isWithinPrecisionDifference(double[] cep1, double[] ep1) {
+		if (Math.abs(cep1[0]-ep1[0]) < TOL && Math.abs(cep1[1]-ep1[1]) < TOL){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void draw(Channel channel, int index, final MapPanel mapPanel) {
+		this.draw(channel,index,mapPanel,null);		
+	}
+	
+	public void draw(Channel channel, int index, final MapPanel mapPanel, final ElevationDataLoaded loadedCallback) {
 		xsection = channel.getXsections().get(index);
 		xsProfile = ModelUtils.getOrCalculateXSectionalProfile(xsection,
 				channel, mapPanel.getNodeManager().getNodes());
@@ -147,6 +127,7 @@ public class CrossSectionEditorPanel extends Composite {
 
 		mapPanel
 				.showMessage("Fetching elevation profile and bathymetry points...");
+		logger.info("Fetching elevations along: ("+profile.x1+","+profile.y1+") -> ("+profile.x2+","+profile.y2+")");
 		demService.getBilinearInterpolatedElevationAlong(profile.x1,
 				profile.y1, profile.x2, profile.y2,
 				new AsyncCallback<List<DataPoint>>() {
@@ -164,10 +145,13 @@ public class CrossSectionEditorPanel extends Composite {
 												profile.y1);
 										secondPointForLine = createUTMDataPoint(
 												profile.x2, profile.y2);
+										logger.fine("origin: "+origin.x+","+origin.y+","+origin.z);
+										logger.fine("secondPointForLine: "+secondPointForLine.x+","+secondPointForLine.y+","+secondPointForLine.z);
 										GeomUtils
 												.moveOriginAndProjectOntoLineAndConvertToFeet(
 														bathyPoints, origin,
 														secondPointForLine);
+										
 										GeomUtils
 												.moveOriginAndProjectOntoLineAndConvertToFeet(
 														demPoints, origin,
@@ -179,6 +163,9 @@ public class CrossSectionEditorPanel extends Composite {
 												dsm2Profile, demPoints,
 												bathyPoints, 600, 450);
 										mapPanel.showMessage("");
+										if (loadedCallback != null){
+											loadedCallback.elevationDataLoaded();
+										}
 									}
 
 									public void onFailure(Throwable caught) {
@@ -198,6 +185,7 @@ public class CrossSectionEditorPanel extends Composite {
 				});
 
 	}
+	
 
 	private void shiftOrigin(double rightShift) {
 		for (DataPoint p : profile.points) {
@@ -240,5 +228,82 @@ public class CrossSectionEditorPanel extends Composite {
 		p.x = utml[0];
 		p.y = utml[1];
 		return p;
+	}
+
+	public void updateProfile(final MapPanel mapPanel) {
+		mapPanel.showMessage("Profile set as shown");
+		List<DataPoint> xSectionProfilePoints = editor
+				.getXSectionProfilePoints();
+		if (origin != null) {
+			logger.fine("origin is not null");
+
+			DataPoint xp1 = xSectionProfilePoints.get(0);
+			DataPoint xp2 = xSectionProfilePoints
+					.get(xSectionProfilePoints.size() - 1);
+			double[] ep1 = new double[] { xp1.x, xp1.z };
+			double[] ep2 = new double[] { xp2.x, xp2.z };
+			List<double[]> currentEndPoints = xsProfile.getEndPoints();
+			double[] cep1 = currentEndPoints.get(0);
+			double[] cep2 = currentEndPoints.get(1);
+			if (LogConfiguration.loggingIsEnabled()){
+				logger.fine("current ep1: "+cep1[0]+","+cep1[0]);
+				logger.fine("current ep2: "+cep2[0]+","+cep2[0]);
+			}
+			logger.fine("ep1: "+ep1[0]+","+ep1[0]);
+			logger.fine("ep2: "+ep2[0]+","+ep2[0]);
+			ep1 = GeomUtils
+					.calculateUTMFromPointAtFeetDistanceAlongLine(
+							xp1.x, origin, secondPointForLine);
+			logger.fine("in utm coordinates ep1: "+ep1[0]+","+ep1[0]);
+			ep1 = GeomUtils.convertToLatLng(ep1[0], ep1[1]);
+			logger.fine("in latlng coordinates ep1: "+ep1[0]+","+ep1[0]);
+			ep2 = GeomUtils
+					.calculateUTMFromPointAtFeetDistanceAlongLine(
+							xp2.x, origin, secondPointForLine);
+			logger.fine("in utm coordinates ep2: "+ep2[0]+","+ep2[0]);
+			ep2 = GeomUtils.convertToLatLng(ep2[0], ep2[1]);
+			logger.fine("in latlng coordinates ep2: "+ep2[0]+","+ep2[0]);
+
+			List<double[]> endPoints = new ArrayList<double[]>();
+			if (isWithinPrecisionDifference(cep1,ep1)){ // needs this as UTM is only accurate to within 1 m
+				ep1=cep1;
+			}
+			if (isWithinPrecisionDifference(cep2,ep2)){ // needs this as UTM is only accurate to within 1 m
+				ep2=cep2;
+			}
+			endPoints.add(ep1);
+			endPoints.add(ep2);
+			xsProfile.setEndPoints(endPoints);
+			logger.fine("end points set to ep1 and ep2");
+		}
+		List<double[]> profilePoints = new ArrayList<double[]>();
+		double shift = xSectionProfilePoints.get(0).x;
+		for (int i = 0; i < xSectionProfilePoints.size(); i++) {
+			double[] ppoint = new double[2];
+			DataPoint p = xSectionProfilePoints.get(i);
+			ppoint[0] = p.x - shift;
+			ppoint[1] = p.z;
+			profilePoints.add(ppoint);
+		}
+		xsProfile.setProfilePoints(profilePoints);
+		List<XSectionLayer> layers = xsProfile.calculateLayers();
+		xsection.setLayers(layers);
+		mapPanel.getChannelManager().getxSectionLineClickHandler()
+				.updateXSLine();
+	}
+
+	public void snapToElevationProfile(final MapPanel mapPanel) {
+		mapPanel
+				.showMessage("Snapped to elevation profile. Click 'Set Profile' if you want to save it.");
+		profile.points = new ArrayList<DataPoint>(demProfilePoints);
+		editor.setXSectionProfile(profile);
+	}
+
+	public void trimProfile(final MapPanel mapPanel) {
+		mapPanel
+				.showMessage("Trimmed profile. Click 'Set Profile' if you want to save it.");
+		profile.points = new ArrayList<DataPoint>(ModelUtils
+				.getTrimmedPoints(profile.points));
+		editor.setXSectionProfile(profile);
 	}
 }
