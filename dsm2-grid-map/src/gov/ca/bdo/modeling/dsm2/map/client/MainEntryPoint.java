@@ -19,6 +19,10 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputService;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import gov.ca.bdo.modeling.dsm2.map.client.service.LoginService;
@@ -33,11 +37,22 @@ import gov.ca.modeling.maps.elevation.client.service.DEMDataServiceAsync;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.logging.client.FirebugLogHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 public class MainEntryPoint implements EntryPoint {
 
 	public void onModuleLoad() {
+		Logger logger = Logger.getLogger("");
+		Handler[] handlers = logger.getHandlers();
+		if (handlers != null){
+			for(Handler h: handlers){
+				logger.removeHandler(h);
+			}
+		}
+		logger.addHandler(new FirebugLogHandler());
+		logger.setLevel(Level.FINE);
+		logger.fine("onModuleLoad");
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
 		DSM2InputServiceAsync rpcService = GWT.create(DSM2InputService.class);
 		UserProfileServiceAsync userProfileService = GWT
@@ -51,6 +66,7 @@ public class MainEntryPoint implements EntryPoint {
 				eventBus);
 		//
 		appViewer.go(RootLayoutPanel.get());
+		logger.fine("onModuleLoad end");
 	}
 
 }

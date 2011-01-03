@@ -19,17 +19,25 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
+import gov.ca.bdo.modeling.dsm2.map.client.map.CrossSectionEditorPanel.ElevationDataLoaded;
 import gov.ca.dsm2.input.model.Channel;
 import gov.ca.dsm2.input.model.Node;
 import gov.ca.dsm2.input.model.XSection;
 import gov.ca.dsm2.input.model.XSectionLayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tools.ant.taskdefs.Sleep;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -211,6 +219,13 @@ public class ChannelInfoPanel extends Composite {
 						ChannelInfoPanel.this);
 				mapPanel
 						.showMessage("Generated xsections with minimum spacing of 5000ft for channel");
+				// for each xsection, select its line, click on snap to profile
+				// then trim profile
+				// and finally set profile
+				final CrossSectionEditorPanel xsEditorPanel = mapPanel
+						.getChannelManager().getxSectionLineClickHandler()
+						.getXsEditorPanel();
+				new GenerateProfileForXSection(xsEditorPanel, mapPanel, channel).generateNextProfile();
 			}
 		});
 
