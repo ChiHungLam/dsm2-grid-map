@@ -429,6 +429,10 @@ public class ModelUtils {
 	public static List<DataPoint> getTrimmedPoints(List<DataPoint> xsProfile) {
 		int trimBeginIndex = extractInflectionIndex(xsProfile, true);
 		int trimEndIndex = extractInflectionIndex(xsProfile, false);
+		if (trimBeginIndex==trimEndIndex){
+			trimBeginIndex=0;
+			trimEndIndex = xsProfile.size()-1;
+		}
 		ArrayList<DataPoint> profile = new ArrayList<DataPoint>();
 		for (int i = trimBeginIndex; i <= trimEndIndex; i++) {
 			DataPoint p = xsProfile.get(i);
