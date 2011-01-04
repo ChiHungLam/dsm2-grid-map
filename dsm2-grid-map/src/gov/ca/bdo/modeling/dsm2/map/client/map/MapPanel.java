@@ -262,7 +262,12 @@ public class MapPanel extends ResizeComposite {
 	}
 
 	public void hideOutputMarkers(boolean hide) {
-		outputMarkerDataManager.hideMarkers(hide);
+		if (!hide && outputMarkerDataManager == null) {
+			populateBoundaryMarkers();
+		}
+		if (outputMarkerDataManager != null) {
+			outputMarkerDataManager.hideMarkers(hide);
+		}
 	}
 
 	public void hideTransfers(boolean hide) {
@@ -292,11 +297,11 @@ public class MapPanel extends ResizeComposite {
 
 	private void createBathymetryOverlay() {
 		CopyrightCollection myCopyright = new CopyrightCollection(
-				"@ California DWR 2009");
+				"@ California DWR 2010");
 		LatLng southWest = LatLng.newInstance(36.5, -123.0);
 		LatLng northEast = LatLng.newInstance(39.5, -120.5);
 		myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
-				southWest, northEast), 10, "@ Copyright California DWR"));
+				southWest, northEast), 10, "DWR"));
 		TileLayer tileLayer = new TileLayer(myCopyright, 10, 17) {
 
 			public double getOpacity() {
@@ -310,7 +315,7 @@ public class MapPanel extends ResizeComposite {
 				int hashCode = uniqueValue.hashCode();
 				return "http://" + version
 						+ ".latest.dsm2bathymetry.appspot.com/tiles/"
-						+ hashCode + "_itile" + tile.getX() + "_" + tile.getY()
+						+ hashCode + "_tile" + tile.getX() + "_" + tile.getY()
 						+ "_" + zoomLevel + ".png";
 			}
 
