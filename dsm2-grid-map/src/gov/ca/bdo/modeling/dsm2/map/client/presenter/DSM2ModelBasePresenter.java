@@ -45,6 +45,11 @@ public class DSM2ModelBasePresenter implements Presenter {
 	protected SimpleEventBus eventBus;
 	protected DSM2InputServiceAsync dsm2InputService;
 	private ContainerPresenter containerPresenter;
+	/*
+	 * flag to remember state of UI initialization, is true if bind() has
+	 * already been called.
+	 */
+	protected boolean bound;
 
 	public DSM2ModelBasePresenter(DSM2InputServiceAsync dsm2InputService,
 			SimpleEventBus eventBus2, Display display,
@@ -53,6 +58,7 @@ public class DSM2ModelBasePresenter implements Presenter {
 		this.containerPresenter = containerPresenter;
 		eventBus = eventBus2;
 		this.dsm2InputService = dsm2InputService;
+		bound = false;
 	}
 
 	public void go(HasWidgets container) {
@@ -64,7 +70,9 @@ public class DSM2ModelBasePresenter implements Presenter {
 	}
 
 	protected void bind() {
-
+		if (bound) {
+			containerPresenter.fireStudyLoadedEvent();
+		}
 		eventBus.addHandler(DSM2StudyEvent.TYPE, new DSM2StudyEventHandler() {
 
 			public void onStudyNameChange(DSM2StudyEvent event) {
@@ -110,8 +118,9 @@ public class DSM2ModelBasePresenter implements Presenter {
 						});
 			}
 		});
-		
+
 		containerPresenter.fireStudyLoadedEvent();
+
 	}
 
 	public ContainerPresenter getContainerPresenter() {

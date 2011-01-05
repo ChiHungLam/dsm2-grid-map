@@ -112,17 +112,10 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 	}
 
-	/*
-	 * flag to remember state of UI initialization, is true if bind() has
-	 * already been called.
-	 */
-	private boolean bound;
-
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
 			SimpleEventBus eventBus, Display display,
 			ContainerPresenter containerPresenter) {
 		super(dsm2InputService, eventBus, display, containerPresenter);
-		bound = false;
 	}
 
 	public void go(HasWidgets container) {
@@ -130,10 +123,10 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 	}
 
 	protected void bind() {
+		super.bind();
 		if (bound) {
 			return;
 		}
-		super.bind();
 		final Display d = (Display) display;
 
 		d.getCancelEditButton().addClickHandler(new ClickHandler() {
