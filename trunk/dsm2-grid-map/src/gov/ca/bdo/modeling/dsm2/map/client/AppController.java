@@ -83,9 +83,8 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			Presenter presenter = null;
 			if (token.startsWith("map_view")) {
 				presenter = new DSM2GridMapPresenter(dsm2InputService,
-						eventBus,
-						new DSM2GridMapDisplay(containerDisplay, true, eventBus),
-						containerPresenter);
+						eventBus, new DSM2GridMapDisplay(containerDisplay,
+								true, eventBus), containerPresenter);
 			} else if (token.startsWith("map")) {
 				if (mapPresenter == null) {
 					mapPresenter = createDSM2GridMapPresenter();

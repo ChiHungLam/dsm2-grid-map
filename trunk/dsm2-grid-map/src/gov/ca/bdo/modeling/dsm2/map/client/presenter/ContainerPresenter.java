@@ -2,6 +2,7 @@ package gov.ca.bdo.modeling.dsm2.map.client.presenter;
 
 import gov.ca.bdo.modeling.dsm2.map.client.Presenter;
 import gov.ca.bdo.modeling.dsm2.map.client.event.DSM2StudyEvent;
+import gov.ca.bdo.modeling.dsm2.map.client.event.DSM2StudyEventHandler;
 import gov.ca.bdo.modeling.dsm2.map.client.model.LoginInfo;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputServiceAsync;
 import gov.ca.bdo.modeling.dsm2.map.client.service.LoginServiceAsync;
@@ -68,10 +69,21 @@ public class ContainerPresenter implements Presenter {
 		container.clear();
 		container.add(display.asWidget());
 		display.showMessage("Initializing...", MessageEvent.WARNING, 0);
-		modelLoaded=false;
+		modelLoaded = false;
 	}
 
 	public void bind() {
+		eventBus.addHandler(DSM2StudyEvent.TYPE, new DSM2StudyEventHandler() {
+
+			public void onStudyNameChange(DSM2StudyEvent event) {
+			}
+
+			public void onChange(DSM2StudyEvent event) {
+				if (event.getOperationType() == DSM2StudyEvent.DELETE) {
+					loadStudies();
+				}
+			}
+		});
 		eventBus.addHandler(MessageEvent.TYPE, new MessageEventHandler() {
 
 			public void onMessage(MessageEvent event) {
@@ -85,7 +97,7 @@ public class ContainerPresenter implements Presenter {
 					new AsyncCallback<LoginInfo>() {
 
 						public void onSuccess(LoginInfo result) {
-							if (!result.isLoggedIn()){
+							if (!result.isLoggedIn()) {
 								Location.replace("/welcome.jsp");
 								return;
 							}
@@ -95,13 +107,15 @@ public class ContainerPresenter implements Presenter {
 											+ result.getEmailAddress(),
 									MessageEvent.WARNING, 2000));
 							// bind study change events
-							display.onStudyChange().addChangeHandler(new ChangeHandler() {
-								
-								public void onChange(ChangeEvent event) {
-									String currentStudy = display.getCurrentStudy();
-									loadStudy(currentStudy);
-								}
-							});
+							display.onStudyChange().addChangeHandler(
+									new ChangeHandler() {
+
+										public void onChange(ChangeEvent event) {
+											String currentStudy = display
+													.getCurrentStudy();
+											loadStudy(currentStudy, false);
+										}
+									});
 							// load studies and set current study.
 							loadStudies();
 						}
@@ -137,13 +151,19 @@ public class ContainerPresenter implements Presenter {
 			if ((token.indexOf("/") >= 0)) {
 				String studyName = token.substring(token.indexOf("/") + 1);
 				currentStudy = studyName;
+				String[] studies = display.getStudies();
+				if ((studies != null) && (studies.length > 0)) {
+					if (studyNotIn(currentStudy, studies)) {
+						currentStudy = studies[0];
+					}
+				}
 			} else {
 				String[] studies = display.getStudies();
 				if ((studies != null) && (studies.length > 0)) {
 					currentStudy = studies[0];
 				}
 			}
-			loadStudy(currentStudy);
+			loadStudy(currentStudy, true);
 		}
 
 	}
@@ -180,8 +200,12 @@ public class ContainerPresenter implements Presenter {
 		History.newItem(URL.encode("map/" + study), false);
 	}
 
-	protected void loadStudy(final String study) {
+	protected void loadStudy(final String study, final boolean fromHistory) {
 		if (study == null) {
+			return;
+		}
+		if (studyNotIn(study, display.getStudies()) && !fromHistory) {
+			loadStudies();
 			return;
 		}
 		eventBus.fireEvent(new MessageEvent("Loading study " + study + "...",
@@ -189,18 +213,19 @@ public class ContainerPresenter implements Presenter {
 		dsm2InputService.getInputModel(study, new AsyncCallback<DSM2Model>() {
 
 			public void onSuccess(DSM2Model result) {
-				modelLoaded=true;
+				modelLoaded = true;
 				setStudyToHistory(study);
 				display.setCurrentStudy(study);
 				display.setModel(result);
-				eventBus.fireEvent(new MessageEvent("Loaded study: "+study,2000));
-				if (result != null) {
+				eventBus.fireEvent(new MessageEvent("Loaded study: " + study,
+						2000));
+				if ((result != null) && !fromHistory) {
 					eventBus.fireEvent(new DSM2StudyEvent(study, result));
 				}
 			}
 
 			public void onFailure(Throwable caught) {
-				modelLoaded=false;
+				modelLoaded = false;
 				eventBus.fireEvent(new MessageEvent("Oops, an error occurred: "
 						+ caught.getMessage() + ". Try again",
 						MessageEvent.ERROR, 5000));
@@ -210,12 +235,17 @@ public class ContainerPresenter implements Presenter {
 
 	}
 
-	public void fireStudyLoadedEvent() {
-		if (modelLoaded){
-			eventBus.fireEvent(new DSM2StudyEvent(getCurrentStudy(), getModel()));
-		} else{
-			loadStudy(getCurrentStudy());
+	private boolean studyNotIn(String study, String[] studies) {
+		for (String s : studies) {
+			if (study.equals(s)) {
+				return false;
+			}
 		}
+		return true;
+	}
+
+	public void fireStudyLoadedEvent() {
+		loadStudy(getCurrentStudy(), false);
 	}
 
 }

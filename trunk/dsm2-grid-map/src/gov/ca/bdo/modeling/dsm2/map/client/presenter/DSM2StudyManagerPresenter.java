@@ -156,7 +156,9 @@ public class DSM2StudyManagerPresenter implements Presenter {
 		display.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				History.newItem("map/" + display.getStudyName().getText());
+				History.newItem("map/" + display.getStudyName().getText(),
+						false);
+				containerPresenter.loadStudies();
 			}
 		});
 
