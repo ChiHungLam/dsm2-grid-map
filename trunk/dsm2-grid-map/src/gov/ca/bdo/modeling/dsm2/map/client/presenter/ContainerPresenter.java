@@ -163,7 +163,7 @@ public class ContainerPresenter implements Presenter {
 					currentStudy = studies[0];
 				}
 			}
-			loadStudy(currentStudy, true);
+			loadStudy(currentStudy, false);
 		}
 
 	}
