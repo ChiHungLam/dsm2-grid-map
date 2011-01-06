@@ -72,7 +72,7 @@ public class DSM2ModelBasePresenter implements Presenter {
 	protected void bind() {
 		if (bound) {
 			containerPresenter.fireStudyLoadedEvent();
-		}
+		} 
 		eventBus.addHandler(DSM2StudyEvent.TYPE, new DSM2StudyEventHandler() {
 
 			public void onStudyNameChange(DSM2StudyEvent event) {
