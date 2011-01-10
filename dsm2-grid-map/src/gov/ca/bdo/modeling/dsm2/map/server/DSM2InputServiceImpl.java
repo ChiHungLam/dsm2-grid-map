@@ -82,10 +82,10 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 				}
 				for (DSM2ModelFile dsm2ModelFile : filesForStudy) {
 					if (dsm2ModelFile.getName().equals("hydro_echo_inp")) {
-						hydro_echo_inp = dsm2ModelFile.getContents().getValue();
+						hydro_echo_inp = dsm2ModelFile.getContents();
 					}
 					if (dsm2ModelFile.getName().equals("gis_inp")) {
-						gis_inp = dsm2ModelFile.getContents().getValue();
+						gis_inp = dsm2ModelFile.getContents();
 					}
 				}
 			} finally {
@@ -119,10 +119,10 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			}
 			for (DSM2ModelFile dsm2ModelFile : filesForStudy) {
 				if (dsm2ModelFile.getName().equals("hydro_echo_inp")) {
-					hydro_echo_inp = dsm2ModelFile.getContents().getValue();
+					hydro_echo_inp = dsm2ModelFile.getContents();
 				}
 				if (dsm2ModelFile.getName().equals("gis_inp")) {
-					gis_inp = dsm2ModelFile.getContents().getValue();
+					gis_inp = dsm2ModelFile.getContents();
 				}
 			}
 			InputStream inputStream = new StringInputStream(hydro_echo_inp);
@@ -143,12 +143,12 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			}
 			for (DSM2ModelFile dsm2ModelFile : filesForStudy) {
 				if (dsm2ModelFile.getName().equals("hydro_echo_inp")) {
-					dsm2ModelFile.setContents(new Text(hydro_echo_inp_builder
-							.toString()));
+					dsm2ModelFile.setContents(hydro_echo_inp_builder
+							.toString());
 				}
 				if (dsm2ModelFile.getName().equals("gis_inp")) {
-					dsm2ModelFile.setContents(new Text(gis_inp_builder
-							.toString()));
+					dsm2ModelFile.setContents(gis_inp_builder
+							.toString());
 				}
 			}
 		} catch (Exception ex) {
@@ -213,7 +213,7 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			}
 			for (DSM2ModelFile dsm2ModelFile : filesForStudy) {
 				if (dsm2ModelFile.getName().equals(inputName)) {
-					return dsm2ModelFile.getContents().getValue();
+					return dsm2ModelFile.getContents();
 				}
 			}
 			return "";

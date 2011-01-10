@@ -80,7 +80,7 @@ public class DSM2ModelFileDAOImpl extends GenericDAOImpl<DSM2ModelFile>
 	}
 
 	public String getContents(DSM2ModelFile file) throws Exception {
-		return file.getContents().getValue();
+		return file.getContents();
 	}
 
 }
