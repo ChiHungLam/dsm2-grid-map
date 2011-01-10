@@ -19,16 +19,33 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server.data;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.google.appengine.api.datastore.Text;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class DSM2ModelFile {
+	static final Logger logger = Logger.getLogger("DSM2ModelFile");
 	/**
 	 * A unique id for this file
 	 */
@@ -56,6 +73,18 @@ public class DSM2ModelFile {
 	@Persistent
 	private Text contents;
 
+	// FIXME: remove once all entities have been migrated.
+	@Persistent
+	private String zipped;
+
+	public boolean isZipped() {
+		return zipped != null && zipped.equals("zipped");
+	}
+
+	public void setZipped(boolean zipped) {
+		this.zipped = "zipped";
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -80,12 +109,49 @@ public class DSM2ModelFile {
 		this.owner = owner;
 	}
 
-	public Text getContents() {
-		return contents;
+	public String getContents() {
+		if (isZipped()) {
+			StringBuffer buffer = new StringBuffer();
+			try {
+				byte[] decoded = Base64.decodeBase64(contents.getValue().getBytes());
+				GZIPInputStream zipis = new GZIPInputStream(
+						new ByteArrayInputStream(decoded));
+				LineNumberReader reader = new LineNumberReader(
+						new InputStreamReader(zipis));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					buffer.append(line).append("\n");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				buffer.append(e.getMessage());
+			} finally {
+			}
+			String str = buffer.toString();
+			return str;
+		} else {
+			return contents.getValue();
+		}
 	}
 
-	public void setContents(Text contents) {
-		this.contents = contents;
+	public void setContents(String str) {
+		// FIXME: remove this once all entities have been migrated to zipped
+		setZipped(true);
+		if (isZipped()) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(str.length());
+			try {
+				GZIPOutputStream zipOutputStream = new GZIPOutputStream(baos);
+				zipOutputStream.write(str.getBytes());
+				zipOutputStream.flush();
+				zipOutputStream.close();
+			} catch (IOException e) {
+				logger.severe(e.getMessage());
+			}
+			byte[] encodeBase64 = Base64.encodeBase64(baos.toByteArray());
+			this.contents = new Text(new String(encodeBase64));
+		} else {
+			this.contents = new Text(str);
+		}
 	}
 
 	public void setStudyName(String studyName) {

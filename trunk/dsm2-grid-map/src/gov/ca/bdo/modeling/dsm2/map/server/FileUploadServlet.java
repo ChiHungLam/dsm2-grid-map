@@ -112,8 +112,8 @@ public class FileUploadServlet extends HttpServlet {
 			gis_info_file.setStudyName(studyName);
 			hydro_echo_file.setOwner(Utils.getCurrentUserEmail());
 			gis_info_file.setOwner(Utils.getCurrentUserEmail());
-			hydro_echo_file.setContents(new Text(hydro_echo));
-			gis_info_file.setContents(new Text(gis));
+			hydro_echo_file.setContents(hydro_echo);
+			gis_info_file.setContents(gis);
 			if (filesForStudy.size() == 0) {
 				dao.createObject(hydro_echo_file);
 				dao.createObject(gis_info_file);

@@ -164,7 +164,7 @@
 		<servlet-name>demDataUploadServlet</servlet-name>
 		<url-pattern>/upload_dem</url-pattern>
 	</servlet-mapping>
-		<!-- Task servlets -->
+	<!-- Task servlets -->
 	<servlet>		<servlet-name>elevationCalculatorTask</servlet-name>		<servlet-class>gov.ca.bdo.modeling.dsm2.map.server.ElevationCalculatorTaskServlet</servlet-class>	</servlet>	<servlet-mapping>		<servlet-name>elevationCalculatorTask</servlet-name>		<url-pattern>/task/elevation</url-pattern>	</servlet-mapping>	<filter>
 		<filter-name>authFilter</filter-name>
 		<filter-class>gov.ca.bdo.modeling.dsm2.map.server.RoleFilter</filter-class>
