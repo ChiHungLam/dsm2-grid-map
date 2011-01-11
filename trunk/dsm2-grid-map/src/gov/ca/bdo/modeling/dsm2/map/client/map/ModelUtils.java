@@ -70,6 +70,7 @@ import gov.ca.modeling.maps.elevation.client.model.GeomUtils;
 import gov.ca.modeling.maps.elevation.client.model.Geometry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.maps.client.geom.LatLng;
@@ -335,7 +336,32 @@ public class ModelUtils {
 		}
 		return downChannels + "," + upChannels;
 	}
-
+	
+	/**
+	 * Get channels that have the given nodes as their end points
+	 * 
+	 * @param channel
+	 * @param nodes
+	 * @param xSection
+	 * @param oldLength
+	 */
+	public static ArrayList<String> getChannelsWithNodes(Node node1, Node node2, Channels channels){
+		ArrayList<String> list = new ArrayList<String>();
+		String channels1 = getChannelsConnectedTo(channels, node1);
+		String[] list1 = channels1.split(",");
+		String channels2 = getChannelsConnectedTo(channels, node2);
+		String[] list2 = channels2.split(",");
+		HashMap<String, String> commonList = new HashMap<String, String>();
+		for(int i=0; i < list1.length; i++){
+			commonList.put(list1[i],list1[i]);
+		}
+		for(int i=0; i < list2.length; i++){
+			if (commonList.containsKey(list2[i])){
+				list.add(list2[i]);
+			}
+		}
+		return list;
+	}
 	public static void updateXSectionPosition(Channel channel, Nodes nodes,
 			XSection xSection, double oldLength) {
 		XSectionProfile profile = xSection.getProfile();

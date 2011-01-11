@@ -47,8 +47,10 @@ import gov.ca.dsm2.input.model.XSection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -147,6 +149,7 @@ public class ChannelLineDataManager {
 	}
 
 	public void addLines() {
+		Logger.getLogger("map").info("adding lines for channels");
 		for (Channel data : getChannels().getChannels()) {
 			addPolylineForChannel(data);
 		}
@@ -170,7 +173,24 @@ public class ChannelLineDataManager {
 				.getLongitude());
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
-		LatLng[] points = new LatLng[] { upPoint, downPoint };
+		LatLng[] points = null;
+		ArrayList<String> channelsWithNodes = ModelUtils.getChannelsWithNodes(upNode, downNode, this.getChannels());
+		if (channelsWithNodes.size()>1){
+			Collections.sort(channelsWithNodes);
+			int n=channelsWithNodes.size();
+			int i=0;
+			for(i=0; i < channelsWithNodes.size(); i++){
+				if (channelsWithNodes.get(i).equals(channel.getId())){
+					break;
+				}
+			}
+			double lat = upPoint.getLatitude()+downPoint.getLatitude();
+			double lon = upPoint.getLongitude()+downPoint.getLongitude();
+			LatLng midPoint = LatLng.newInstance(lat/2+(i-n/2.0)*0.001,lon/2+(i-n/2.0)*0.001);
+			points = new LatLng[] { upPoint, midPoint, downPoint };
+		} else{
+			points = new LatLng[] { upPoint, downPoint };
+		}
 		Polyline line = null;
 		if (!ENCODE_POLYLINES) {
 			line = new Polyline(points);
