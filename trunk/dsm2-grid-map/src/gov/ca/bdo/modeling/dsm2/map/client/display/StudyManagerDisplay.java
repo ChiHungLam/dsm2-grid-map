@@ -33,6 +33,7 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 	private ContainerDisplay containerDisplay;
 	private UploadStudyDataDisplay uploadStudyData;
 	private UploadStudyDisplay uploadStudy;
+	private StudySharingOptionsDialog dialog;
 
 	public StudyManagerDisplay(ContainerDisplay containerDisplay) {
 		this.containerDisplay = containerDisplay;
@@ -207,6 +208,17 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 
 	public void addSubmitCompleteHandler(SubmitCompleteHandler handler) {
 		uploadStudy.addSubmitCompleteHandler(handler);
+	}
+
+	public String getSharingType() {
+		if (dialog == null) {
+			return "unlisted";
+		}
+		return dialog.getSharingType();
+	}
+
+	public void showStudySharingOptions() {
+		dialog = new StudySharingOptionsDialog();
 	}
 
 }

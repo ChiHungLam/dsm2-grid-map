@@ -8,8 +8,13 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Text;
+
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class DSM2Study {
+	public static final String SHARING_PUBLIC = "public";
+	public static final String SHARING_PRIVATE = "private";
+	public static final String SHARING_UNLISTED = "unlisted";
 	/**
 	 * A unique id for this file
 	 */
@@ -24,6 +29,10 @@ public class DSM2Study {
 	private String sharingKey;
 	@Persistent
 	private Date dateFirstShared;
+	@Persistent
+	private String sharingType;
+	@Persistent
+	private Text sharedUsersEmails;
 
 	public Long getId() {
 		return id;
@@ -60,4 +69,21 @@ public class DSM2Study {
 	public Date getDateFirstShared() {
 		return dateFirstShared;
 	}
+
+	public String getSharingType() {
+		return sharingType;
+	}
+
+	public void setSharingType(String sharingType) {
+		this.sharingType = sharingType;
+	}
+
+	public String getSharedUsersEmails() {
+		return sharedUsersEmails.getValue();
+	}
+
+	public void setSharedUsersEmails(String sharedUsersEmails) {
+		this.sharedUsersEmails = new Text(sharedUsersEmails);
+	}
+
 }

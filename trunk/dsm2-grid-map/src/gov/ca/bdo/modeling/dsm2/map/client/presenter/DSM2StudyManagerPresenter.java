@@ -67,6 +67,10 @@ public class DSM2StudyManagerPresenter implements Presenter {
 		public void addSubmitDataCompleteHandler(
 				FormPanel.SubmitCompleteHandler handler);
 
+		public void showStudySharingOptions();
+
+		public String getSharingType();
+
 	}
 
 	private DSM2InputServiceAsync dsm2InputService;
@@ -145,9 +149,13 @@ public class DSM2StudyManagerPresenter implements Presenter {
 								}
 
 								public void onSuccess(String result) {
-									String url = GWT.getHostPageBaseURL()
-											+ "#map_view/" + result;
-									display.addShareUrl(study, url);
+									display.showStudySharingOptions();
+									if (display.getSharingType().equals(
+											"unlisted")) {
+										String url = GWT.getHostPageBaseURL()
+												+ "#map_view/" + result;
+										display.addShareUrl(study, url);
+									}
 								}
 							});
 				}
