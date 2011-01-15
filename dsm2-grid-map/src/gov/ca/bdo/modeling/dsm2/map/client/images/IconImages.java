@@ -61,7 +61,7 @@ public interface IconImages extends ClientBundle {
 
 	@Source("download.png")
 	public ImageResource downloadIcon();
-	
+
 	@Source("find.png")
 	public ImageResource findIcon();
 
@@ -82,4 +82,7 @@ public interface IconImages extends ClientBundle {
 
 	@Source("blue_MarkerR.png")
 	public ImageResource blueRMarkerIcon();
+
+	@Source("contact.jpg")
+	public ImageResource contact();
 }
