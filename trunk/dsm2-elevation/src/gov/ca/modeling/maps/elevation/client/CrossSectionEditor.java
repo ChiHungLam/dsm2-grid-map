@@ -54,7 +54,7 @@ public class CrossSectionEditor extends Composite {
 		return xyzs;
 	}
 
-	public native JavaScriptObject plot(String divId,
+	private native JavaScriptObject plot(String divId,
 			JavaScriptObject xsectionPoints, JavaScriptObject dsm2xpPoints,
 			JavaScriptObject profilePoints, JavaScriptObject points)/*-{
 		var w = this.@gov.ca.modeling.maps.elevation.client.CrossSectionEditor::width;
@@ -83,6 +83,6 @@ public class CrossSectionEditor extends Composite {
 	}
 
 	private native void redraw()/*-{
-		this.vis.render();
+		this.@gov.ca.modeling.maps.elevation.client.CrossSectionEditor::vis.render();
 	}-*/;
 }
