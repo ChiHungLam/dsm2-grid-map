@@ -58,6 +58,7 @@ import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.TileLayer;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
+import com.google.gwt.maps.client.event.PolylineClickHandler.PolylineClickEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
@@ -348,7 +349,7 @@ public class MapPanel extends ResizeComposite {
 		while (!getMap().getBounds().containsBounds(bounds)) {
 			getMap().setZoomLevel(getMap().getZoomLevel() - 1);
 		}
-		new ChannelClickHandler(this).onClick(null);
+		new ChannelClickHandler(this).onClick(new PolylineClickEvent(line, line.getVertex(0)));
 	}
 
 	public MapWidget getMapWidget() {

@@ -110,6 +110,8 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 		public HasClickHandlers getCancelEditButton();
 
+		public void showInfoPanel();
+
 	}
 
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
@@ -245,6 +247,7 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 
 			public void onClick(ClickEvent event) {
 				zoomAndCenterOnElement("channel");
+				d.showInfoPanel();
 			}
 
 		});

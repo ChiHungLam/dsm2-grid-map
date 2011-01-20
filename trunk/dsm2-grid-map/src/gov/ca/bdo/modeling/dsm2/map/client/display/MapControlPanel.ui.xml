@@ -8,7 +8,7 @@
 		field="images"></ui:with>
 	<ui:with type="gov.ca.modeling.maps.elevation.client.images.IconImages"
 		field="el_images"></ui:with>
-	<g:TabLayoutPanel barHeight="25" barUnit="PX">
+	<g:TabLayoutPanel barHeight="25" barUnit="PX" ui:field="tabLayoutPanel">
 		<g:tab>
 			<g:header>Edit</g:header>
 			<g:VerticalPanel>

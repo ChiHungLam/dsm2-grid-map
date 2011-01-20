@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,7 +30,8 @@ public class MapControlPanel extends Composite {
 
 	interface MapControlPanelUiBinder extends UiBinder<Widget, MapControlPanel> {
 	}
-
+	@UiField
+	TabLayoutPanel tabLayoutPanel;
 	@UiField
 	ToggleButton saveEditButton;
 	@UiField
@@ -171,6 +173,10 @@ public class MapControlPanel extends Composite {
 
 	public HashMap<String, Integer> getMapTypeToId() {
 		return mapTypeToId;
+	}
+	
+	public void showEditPanel(){
+		tabLayoutPanel.selectTab(0);
 	}
 
 }
