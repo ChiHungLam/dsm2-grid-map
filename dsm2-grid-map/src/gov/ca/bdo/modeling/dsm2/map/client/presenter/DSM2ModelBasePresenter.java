@@ -45,6 +45,7 @@ public class DSM2ModelBasePresenter implements Presenter {
 	protected SimpleEventBus eventBus;
 	protected DSM2InputServiceAsync dsm2InputService;
 	private ContainerPresenter containerPresenter;
+	private String currentStudy;
 	/*
 	 * flag to remember state of UI initialization, is true if bind() has
 	 * already been called.
@@ -71,7 +72,11 @@ public class DSM2ModelBasePresenter implements Presenter {
 
 	protected void bind() {
 		if (bound) {
-			containerPresenter.fireStudyLoadedEvent();
+			if (this.currentStudy == null || !this.currentStudy.equals(containerPresenter.getCurrentStudy())){
+				display.setModel(containerPresenter.getModel());
+				display.refresh();
+			}
+			return;
 		} 
 		eventBus.addHandler(DSM2StudyEvent.TYPE, new DSM2StudyEventHandler() {
 
@@ -79,6 +84,7 @@ public class DSM2ModelBasePresenter implements Presenter {
 			}
 
 			public void onChange(DSM2StudyEvent event) {
+				DSM2ModelBasePresenter.this.currentStudy = event.getStudy();
 				display.setModel(event.getModel());
 				display.refresh();
 			}

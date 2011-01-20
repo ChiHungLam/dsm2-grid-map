@@ -311,4 +311,8 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	public HasClickHandlers getCancelEditButton() {
 		return controlPanel.getCancelEditButton();
 	}
+
+	public void showInfoPanel() {
+		controlPanel.showEditPanel();
+	}
 }
