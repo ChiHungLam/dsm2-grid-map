@@ -44,8 +44,6 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 		TabLayoutPanel mainPanel = new TabLayoutPanel(22, Unit.PX);
 		mainPanel.add(studyPanel, "Manage");
 		mainPanel.add(uploadStudy = new UploadStudyDisplay(), "Upload Study");
-		mainPanel.add(uploadStudyData = new UploadStudyDataDisplay(),
-				"Upload Data");
 		initWidget(mainPanel);
 	}
 
