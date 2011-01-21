@@ -9,4 +9,5 @@ public interface DSM2StudyDAO extends GenericDAO<DSM2Study> {
 
 	public DSM2Study getStudyForName(String studyName, String email)
 			throws Exception;
+
 }

@@ -19,7 +19,10 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.service;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.StudyInfo;
 import gov.ca.dsm2.input.model.DSM2Model;
+
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -31,6 +34,10 @@ public interface DSM2InputService extends RemoteService {
 	public DSM2Model getInputModelForKey(String key);
 
 	public String[] getStudyNames();
+
+	public List<StudyInfo> getStudies();
+
+	public DSM2Model getInputModelForStudy(StudyInfo info);
 
 	public void saveModel(String studyName, DSM2Model model);
 

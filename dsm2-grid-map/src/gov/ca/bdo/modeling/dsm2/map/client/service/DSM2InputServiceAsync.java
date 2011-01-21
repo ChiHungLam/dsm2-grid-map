@@ -19,7 +19,10 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.client.service;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.StudyInfo;
 import gov.ca.dsm2.input.model.DSM2Model;
+
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -46,4 +49,8 @@ public interface DSM2InputServiceAsync {
 
 	void showInputForKey(String studyKey, String inputName,
 			AsyncCallback<String> callback);
+
+	void getStudies(AsyncCallback<List<StudyInfo>> callback);
+
+	void getInputModelForStudy(StudyInfo info, AsyncCallback<DSM2Model> callback);
 }

@@ -12,9 +12,6 @@ import com.google.appengine.api.datastore.Text;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class DSM2Study {
-	public static final String SHARING_PUBLIC = "public";
-	public static final String SHARING_PRIVATE = "private";
-	public static final String SHARING_UNLISTED = "unlisted";
 	/**
 	 * A unique id for this file
 	 */

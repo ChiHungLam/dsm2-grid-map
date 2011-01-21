@@ -19,6 +19,7 @@
  */
 package gov.ca.bdo.modeling.dsm2.map.server;
 
+import gov.ca.bdo.modeling.dsm2.map.client.model.StudyInfo;
 import gov.ca.bdo.modeling.dsm2.map.client.service.DSM2InputService;
 import gov.ca.bdo.modeling.dsm2.map.server.data.DSM2ModelFile;
 import gov.ca.bdo.modeling.dsm2.map.server.data.DSM2Study;
@@ -42,7 +43,6 @@ import javax.jdo.PersistenceManager;
 
 import org.apache.tools.ant.filters.StringInputStream;
 
-import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -143,12 +143,11 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			}
 			for (DSM2ModelFile dsm2ModelFile : filesForStudy) {
 				if (dsm2ModelFile.getName().equals("hydro_echo_inp")) {
-					dsm2ModelFile.setContents(hydro_echo_inp_builder
-							.toString());
+					dsm2ModelFile
+							.setContents(hydro_echo_inp_builder.toString());
 				}
 				if (dsm2ModelFile.getName().equals("gis_inp")) {
-					dsm2ModelFile.setContents(gis_inp_builder
-							.toString());
+					dsm2ModelFile.setContents(gis_inp_builder.toString());
 				}
 			}
 		} catch (Exception ex) {
@@ -314,6 +313,67 @@ public class DSM2InputServiceImpl extends RemoteServiceServlet implements
 			persistenceManager.close();
 		}
 
+	}
+
+	public DSM2Model getInputModelForStudy(StudyInfo info) {
+		PersistenceManager persistenceManager = PMF.get()
+				.getPersistenceManager();
+		DSM2Model model = null;
+		try {
+			DSM2StudyDAO dao = new DSM2StudyDAOImpl(persistenceManager);
+			DSM2Study study = dao.getStudyForName(info.getName(), info
+					.getOwnerEmail());
+			if (study == null) {
+				study = dao.getStudyForSharingKey(info.getSharingKey());
+			}
+			if (study == null) {
+				return null;
+			}
+			String sharingType = study.getSharingType();
+			if (sharingType.equals(StudyInfo.SHARING_PRIVATE)) {
+				// check current user is in shared email list
+				String userEmails = study.getSharedUsersEmails();
+				if (userEmails == null) {
+					return null;
+				}
+				String currentEmail = Utils.getCurrentUserEmail();
+				if (currentEmail == null) {
+					return null;
+				}
+				String[] emails = userEmails.split(",");
+				boolean found = false;
+				for (String email : emails) {
+					if (currentEmail.equals(email)) {
+						found = true;
+						break;
+					}
+				}
+				if (found) {
+					model = this.getInputModel(study.getStudyName(), study
+							.getOwnerName());
+				}
+			} else if (sharingType.equals(StudyInfo.SHARING_PUBLIC)) {
+				model = this.getInputModel(study.getStudyName(), study
+						.getOwnerName());
+			} else if (sharingType.equals(StudyInfo.SHARING_UNLISTED)) {
+				model = this.getInputModel(study.getStudyName(), study
+						.getOwnerName());
+			} else {
+				return null;
+			}
+			return model;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return model;
+		} finally {
+			persistenceManager.close();
+		}
+
+	}
+
+	public List<StudyInfo> getStudies() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
