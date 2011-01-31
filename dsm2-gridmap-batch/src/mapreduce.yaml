@@ -5,3 +5,9 @@ mapreduce:
     handler: main.update_insert_dem
     params:
     - name: blob_keys
+ - name: Update BathymetryDataFile(s) from blob
+   mapper:
+    input_reader: mapreduce.input_readers.BlobstoreLineInputReader
+    handler: main.update_insert_bathy
+    params:
+    - name: blob_keys
