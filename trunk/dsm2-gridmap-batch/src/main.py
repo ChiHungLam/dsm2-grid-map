@@ -24,7 +24,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 # 3rd party
 import base64
 # local
-from models import DEMDataFile
+from models import DEMDataFile, BathymetryDataFile
 import ops
 
 class MainHandler(webapp.RequestHandler):
@@ -38,7 +38,8 @@ class DisplayUploadDEMZipHandler(webapp.RequestHandler):
     def get(self):
         upload_url = blobstore.create_upload_url("/upload_dem_blob")
         self.response.out.write('<html><body>')
-        self.response.out.write("""<p>Upload a file of line(s) of DEMDataFile in csv format. The columns expected are y,x and contents and the first line is ignored</p>""")
+        self.response.out.write("""<p>Upload a file of line(s) of DEMDataFile/BathymetryDataFile in csv format.</p>
+        <p>The columns expected are y,x and contents and the first line is ignored</p>""")
         self.response.out.write('<form action="%s" method="POST" enctype="multipart/form-data">' % upload_url)
         self.response.out.write("""Upload File: <input type="file" name="file"><br> <input type="submit" 
         name="submit" value="Submit"> </form></body></html>""")
@@ -83,6 +84,21 @@ def update_insert_dem(input):
     y=int(fields[0])
     contents=db.Blob(base64.b64decode(fields[2]))
     e=DEMDataFile.get_or_insert(fields[1]+'_'+fields[0])
+    e.x=x
+    e.y=y
+    e.contents=contents
+    e.put()
+def update_insert_bathy(input):
+    startByte = input[0]
+    if int(startByte)==0: # ignore first line..its a header
+        return;
+    line = input[1]
+    fields=line.split(',')
+    print line, fields
+    x=int(fields[1])
+    y=int(fields[0])
+    contents=db.Blob(base64.b64decode(fields[2]))
+    e=BathymetryDataFile.get_or_insert(fields[1]+'_'+fields[0])
     e.x=x
     e.y=y
     e.contents=contents
