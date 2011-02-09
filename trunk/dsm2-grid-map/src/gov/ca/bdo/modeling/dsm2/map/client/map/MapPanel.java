@@ -131,14 +131,35 @@ public class MapPanel extends ResizeComposite {
 		options.setScaleControl(true);
 		options.setScrollwheel(true);
 		getMap().setUI(options);
-		map.addMapType(getTopoMapType());
+		map.addMapType(new MapType(new TileLayer[] { getUSTopoMapsLayer() },
+				MapType.getNormalMap().getProjection(), "US Topo"));
 	}
 
-	private final native MapType getTopoMapType()/*-{
-		var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
-		var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
-		return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
-	}-*/;
+	public static TileLayer getUSTopoMapsLayer() {
+		CopyrightCollection myCopyright = new CopyrightCollection(
+				"@ California USGS, ESRI");
+		LatLng southWest = LatLng.newInstance(36.5, -123.0);
+		LatLng northEast = LatLng.newInstance(39.5, -120.5);
+		myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
+				southWest, northEast), 10, "@ Copyright USGS, ESRI"));
+		TileLayer tileLayer = new TileLayer(myCopyright, 10, 15) {
+
+			public double getOpacity() {
+				return 1.0;
+			}
+
+			public String getTileURL(Point tile, int zoomLevel) {
+				return "http://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer/tile/"
+						+ zoomLevel + "/" + tile.getY() + "/" + tile.getX();
+			}
+
+			public boolean isPng() {
+				return false;
+			}
+		};
+		return tileLayer;
+
+	}
 
 	public void populateGrid() {
 		clearAllMarkers();
@@ -263,7 +284,7 @@ public class MapPanel extends ResizeComposite {
 	}
 
 	public void hideOutputMarkers(boolean hide) {
-		if (!hide && outputMarkerDataManager == null) {
+		if (!hide && (outputMarkerDataManager == null)) {
 			populateBoundaryMarkers();
 		}
 		if (outputMarkerDataManager != null) {
@@ -349,7 +370,8 @@ public class MapPanel extends ResizeComposite {
 		while (!getMap().getBounds().containsBounds(bounds)) {
 			getMap().setZoomLevel(getMap().getZoomLevel() - 1);
 		}
-		new ChannelClickHandler(this).onClick(new PolylineClickEvent(line, line.getVertex(0)));
+		new ChannelClickHandler(this).onClick(new PolylineClickEvent(line, line
+				.getVertex(0)));
 	}
 
 	public MapWidget getMapWidget() {
