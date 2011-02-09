@@ -112,7 +112,7 @@ public class ExportOverlays implements EntryPoint {
 		LatLng northEast = LatLng.newInstance(39.5, -120.5);
 		myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
 				southWest, northEast), 10, "@ Copyright California DWR"));
-		TileLayer tileLayer = new TileLayer(myCopyright, 10, 16) {
+		TileLayer tileLayer = new TileLayer(myCopyright, 10, 15) {
 
 			public double getOpacity() {
 				return 0.6;
@@ -129,6 +129,32 @@ public class ExportOverlays implements EntryPoint {
 			}
 		};
 		return tileLayer;
+	}
+
+	public static TileLayer getUSTopoMapsLayer() {
+		CopyrightCollection myCopyright = new CopyrightCollection(
+				"@ California USGS, ESRI");
+		LatLng southWest = LatLng.newInstance(36.5, -123.0);
+		LatLng northEast = LatLng.newInstance(39.5, -120.5);
+		myCopyright.addCopyright(new Copyright(1, LatLngBounds.newInstance(
+				southWest, northEast), 10, "@ Copyright USGS, ESRI"));
+		TileLayer tileLayer = new TileLayer(myCopyright, 10, 15) {
+
+			public double getOpacity() {
+				return 1.0;
+			}
+
+			public String getTileURL(Point tile, int zoomLevel) {
+				return "http://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer/tile/"
+						+ zoomLevel + "/" + tile.getY() + "/" + tile.getX();
+			}
+
+			public boolean isPng() {
+				return false;
+			}
+		};
+		return tileLayer;
+
 	}
 
 	/**

@@ -99,7 +99,9 @@ public class MapPanel extends Composite {
 		if (userAgent.contains("ie6") || userAgent.contains("unknown")) {
 
 		} else {
-			map.addMapType(getTopoMapType());
+			map.addMapType(new MapType(new TileLayer[] { ExportOverlays
+					.getUSTopoMapsLayer() }, MapType.getNormalMap()
+					.getProjection(), "US Topo"));
 		}
 		map.addMapType(new MapType(new TileLayer[] { ExportOverlays
 				.getNOAATileLayer() }, MapType.getNormalMap().getProjection(),
@@ -107,12 +109,6 @@ public class MapPanel extends Composite {
 		OverviewMapControl control = new OverviewMapControl();
 		map.addControl(control);
 	}
-
-	private final native MapType getTopoMapType()/*-{
-		var layer = new $wnd.USGSTopoTileLayer("http://orthoimage.er.usgs.gov/ogcmap.ashx?", "USGS Topo Maps", "Topo","DRG","EPSG:4326","1.1.1","","image/png",null,"0xFFFFFF");
-		var o = new $wnd.GMapType([layer], $wnd.G_NORMAL_MAP.getProjection(), "Topo");
-		return @com.google.gwt.maps.client.MapType::createPeer(Lcom/google/gwt/core/client/JavaScriptObject;)(o);
-	}-*/;
 
 	public void onResize() {
 		map.checkResizeAndCenter();
