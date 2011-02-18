@@ -174,31 +174,29 @@ public class ChannelLineDataManager {
 		LatLng downPoint = LatLng.newInstance(downNode.getLatitude(), downNode
 				.getLongitude());
 		LatLng[] points = null;
-		ArrayList<String> channelsWithNodes = ModelUtils.getChannelsWithNodes(upNode, downNode, this.getChannels());
-		if (channelsWithNodes.size()>1){
+		ArrayList<String> channelsWithNodes = ModelUtils.getChannelsWithNodes(
+				upNode, downNode, getChannels());
+		if (channelsWithNodes.size() > 1) {
 			Collections.sort(channelsWithNodes);
-			int n=channelsWithNodes.size();
-			int i=0;
-			for(i=0; i < channelsWithNodes.size(); i++){
-				if (channelsWithNodes.get(i).equals(channel.getId())){
+			int n = channelsWithNodes.size();
+			int i = 0;
+			for (i = 0; i < channelsWithNodes.size(); i++) {
+				if (channelsWithNodes.get(i).equals(channel.getId())) {
 					break;
 				}
 			}
-			double lat = upPoint.getLatitude()+downPoint.getLatitude();
-			double lon = upPoint.getLongitude()+downPoint.getLongitude();
-			LatLng midPoint = LatLng.newInstance(lat/2+(i-n/2.0)*0.001,lon/2+(i-n/2.0)*0.001);
+			double lat = upPoint.getLatitude() + downPoint.getLatitude();
+			double lon = upPoint.getLongitude() + downPoint.getLongitude();
+			LatLng midPoint = LatLng.newInstance(lat / 2 + (i - n / 2.0)
+					* 0.001, lon / 2 + (i - n / 2.0) * 0.001);
 			points = new LatLng[] { upPoint, midPoint, downPoint };
-		} else{
+		} else {
 			points = new LatLng[] { upPoint, downPoint };
 		}
 		Polyline line = null;
 		if (!ENCODE_POLYLINES) {
 			line = new Polyline(points);
-			PolyStyleOptions style = PolyStyleOptions
-					.newInstance(getLineColor());
-			style.setOpacity(opacity);
-			style.setWeight(weight);
-			line.setStrokeStyle(style);
+			line.setStrokeStyle(getPolylineStyle());
 		} else {
 			line = encoder.dpEncodeToGPolyline(points, getLineColor(), weight,
 					opacity);
@@ -214,6 +212,13 @@ public class ChannelLineDataManager {
 		line.addPolylineClickHandler(channelClickHandler);
 		mapPanel.getMap().addOverlay(line);
 		return line;
+	}
+
+	public PolyStyleOptions getPolylineStyle() {
+		PolyStyleOptions style = PolyStyleOptions.newInstance(getLineColor());
+		style.setOpacity(opacity);
+		style.setWeight(weight);
+		return style;
 	}
 
 	protected String getLineColor() {

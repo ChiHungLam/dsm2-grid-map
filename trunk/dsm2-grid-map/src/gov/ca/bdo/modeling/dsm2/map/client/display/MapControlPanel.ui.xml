@@ -8,7 +8,8 @@
 		field="images"></ui:with>
 	<ui:with type="gov.ca.modeling.maps.elevation.client.images.IconImages"
 		field="el_images"></ui:with>
-	<g:TabLayoutPanel barHeight="25" barUnit="PX" ui:field="tabLayoutPanel">
+	<g:TabLayoutPanel barHeight="25" barUnit="PX"
+		ui:field="tabLayoutPanel">
 		<g:tab>
 			<g:header>Edit</g:header>
 			<g:VerticalPanel>
@@ -82,6 +83,22 @@
 							</g:PushButton>
 						</g:VerticalPanel>
 						<g:TextBox ui:field="findTextBox"></g:TextBox>
+					</g:HorizontalPanel>
+				</g:CaptionPanel>
+				<g:CaptionPanel captionText="Colorize Channel connections">
+					<g:HorizontalPanel>
+						<g:VerticalPanel>
+							<g:ListBox ui:field="schemeTypeBox">
+							</g:ListBox>
+							<g:ListBox ui:field="colorTypeBox">
+							</g:ListBox>
+							<g:ToggleButton title="Colorize Channels"
+								ui:field="colorizeButton">
+								<g:upFace>Colorize</g:upFace>
+								<g:downFace>Remove Colorization</g:downFace>
+							</g:ToggleButton>
+						</g:VerticalPanel>
+						<g:FlowPanel ui:field="colorPanel"></g:FlowPanel>
 					</g:HorizontalPanel>
 				</g:CaptionPanel>
 			</g:VerticalPanel>

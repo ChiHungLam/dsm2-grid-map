@@ -1,35 +1,21 @@
 package gov.ca.bdo.modeling.dsm2.map.client.map;
 
-import gov.ca.bdo.modeling.dsm2.map.client.presenter.ColorSchemePresenter.Display;
-
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.maps.client.overlay.PolyStyleOptions;
-import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
 
-public class ColorSchemePanel extends Composite implements Display {
-	public static String CHANNEL_COLOR_PLAIN = "Plain";
-	public static String CHANNEL_COLOR_MANNINGS = "Mannings";
-	public static String CHANNEL_COLOR_DISPERSION = "Dispersion";
-
-	public static final String[] divergingColorsArray = new String[] {
-			"#5e3c99", "#b2abd2", "#ff99ff", "#fdb863", "#e66101" };
-	public static final String[] qualitativeColorsArray = new String[] {
-			"#6600cc", "#0000ff", "#006633", "#ff6600", "#ff3399" };
-	public static final String[] sequentialColorsArray = new String[] {
-			"#fee5d9", "#fcae91", "#fb6a4a", "#de2d26", "#a50f15" };
-	private static NumberFormat formatter = NumberFormat.getFormat("0.000");
-
-	private ChannelLineDataManager channelManager;
-	private int scheme;
+public class ColorSchemePanel extends Composite {
+	private String[] colors;
 	private double max;
 	private double min;
+	private static NumberFormat formatter = NumberFormat.getFormat("0.000");
 
-	public ColorSchemePanel(ChannelLineDataManager channelManager) {
-		this.channelManager = channelManager;
+	public ColorSchemePanel(String[] colors, double max, double min) {
+		this.colors = colors;
+		this.max = max;
+		this.min = min;
+		initWidget(getColorArraySchemePanel());
 	}
 
 	private String getColorFor(double value) {
@@ -47,16 +33,8 @@ public class ColorSchemePanel extends Composite implements Display {
 		return colorsArray[colorIndex];
 	}
 
-	public String[] getColorArray() {
-		String[] colorsArray = sequentialColorsArray;
-		if (scheme == Display.SCHEME_SEQUENTIAL) {
-			colorsArray = sequentialColorsArray;
-		} else if (scheme == Display.SCHEME_DIVERGING) {
-			colorsArray = divergingColorsArray;
-		} else if (scheme == Display.SCHEME_QUALITATIVE) {
-			colorsArray = qualitativeColorsArray;
-		}
-		return colorsArray;
+	private String[] getColorArray() {
+		return colors;
 	}
 
 	public Panel getColorArraySchemePanel() {
@@ -82,28 +60,6 @@ public class ColorSchemePanel extends Composite implements Display {
 		panel.setHTML(ncolors - 1, 0, " > " + max);
 		panel.setHTML(ncolors - 1, 1, html);
 		return panel;
-	}
-
-	public Widget asWidget() {
-		return this;
-	}
-
-	public void setChannelValue(String id, double value) {
-		Polyline line = channelManager.getPolyline(id);
-		String lineColor = getColorFor(value);
-		PolyStyleOptions style = PolyStyleOptions.newInstance(lineColor);
-		style.setOpacity(0.75);
-		style.setWeight(3);
-		line.setStrokeStyle(style);
-	}
-
-	public void setColorScheme(int scheme) {
-		this.scheme = scheme;
-	}
-
-	public void setValueRange(double max, double min) {
-		this.max = max;
-		this.min = min;
 	}
 
 }

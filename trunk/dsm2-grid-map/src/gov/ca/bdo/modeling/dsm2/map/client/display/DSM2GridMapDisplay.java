@@ -56,7 +56,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.overlay.GeoXmlLoadCallback;
 import com.google.gwt.maps.client.overlay.GeoXmlOverlay;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
@@ -75,7 +74,7 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly,
 			EventBus eventBus) {
 		super(display, viewOnly, eventBus);
-		controlPanel = new MapControlPanel(viewOnly);
+		controlPanel = new MapControlPanel(viewOnly, this);
 	}
 
 	@Override
