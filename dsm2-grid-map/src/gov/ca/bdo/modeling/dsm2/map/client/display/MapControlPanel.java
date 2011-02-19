@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -38,6 +39,8 @@ public class MapControlPanel extends Composite {
 
 	interface MapControlPanelUiBinder extends UiBinder<Widget, MapControlPanel> {
 	}
+
+	private static NumberFormat formatter = NumberFormat.getFormat("0.000");
 
 	@UiField
 	TabLayoutPanel tabLayoutPanel;
@@ -79,6 +82,10 @@ public class MapControlPanel extends Composite {
 	ToggleButton colorizeButton;
 	@UiField
 	FlowPanel colorPanel;
+	@UiField
+	TextBox minValueBox;
+	@UiField
+	TextBox maxValueBox;
 
 	private HashMap<String, Integer> mapTypeToId;
 	private DSM2GridMapDisplay display;
@@ -129,13 +136,13 @@ public class MapControlPanel extends Composite {
 		colorizeButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				colorizeChannels();
+				colorizeChannels(false);
 			}
 		});
 		schemeTypeBox.addChangeHandler(new ChangeHandler() {
 
 			public void onChange(ChangeEvent event) {
-				colorizeChannels();
+				colorizeChannels(false);
 			}
 		});
 		colorTypeBox.addItem("Mannings");
@@ -143,13 +150,35 @@ public class MapControlPanel extends Composite {
 		colorTypeBox.addChangeHandler(new ChangeHandler() {
 
 			public void onChange(ChangeEvent event) {
-				colorizeChannels();
+				colorizeChannels(false);
+			}
+		});
+		minValueBox.addChangeHandler(new ChangeHandler() {
+
+			public void onChange(ChangeEvent event) {
+				try {
+					Double.parseDouble(minValueBox.getText());
+					colorizeChannels(true);
+				} catch (NumberFormatException ex) {
+					return;
+				}
+			}
+		});
+		maxValueBox.addChangeHandler(new ChangeHandler() {
+
+			public void onChange(ChangeEvent event) {
+				try {
+					Double.parseDouble(maxValueBox.getText());
+					colorizeChannels(true);
+				} catch (NumberFormatException ex) {
+					return;
+				}
 			}
 		});
 
 	}
 
-	public void colorizeChannels() {
+	public void colorizeChannels(boolean useMinMaxBoxValue) {
 		colorPanel.clear();
 		if (!colorizeButton.isDown()) {
 			ChannelLineDataManager channelManager = display.getMapPanel()
@@ -178,14 +207,22 @@ public class MapControlPanel extends Composite {
 		ChannelLineDataManager channelManager = display.getMapPanel()
 				.getChannelManager();
 		double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
-		for (String id : channelIdToValueMap.keySet()) {
-			Double value = channelIdToValueMap.get(id);
-			max = Math.max(max, value);
-			min = Math.min(min, value);
+		if (useMinMaxBoxValue) {
+			min = Double.parseDouble(minValueBox.getText());
+			max = Double.parseDouble(maxValueBox.getText());
+		} else {
+			for (String id : channelIdToValueMap.keySet()) {
+				Double value = channelIdToValueMap.get(id);
+				max = Math.max(max, value);
+				min = Math.min(min, value);
+			}
+			// normalize with color array length
+			int l = colors.length - 2;
+			max = Math.ceil(max * l) / l;
+			min = Math.floor(min * l) / l;
+			minValueBox.setText(formatter.format(min));
+			maxValueBox.setText(formatter.format(max));
 		}
-		// normalize with color array length
-		max = Math.ceil(max * colors.length) / colors.length;
-		min = Math.floor(min * colors.length) / colors.length;
 		colorPanel.add(new ColorSchemePanel(colors, max, min));
 		for (String id : channelIdToValueMap.keySet()) {
 			Double value = channelIdToValueMap.get(id);

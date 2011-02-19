@@ -88,17 +88,25 @@
 				<g:CaptionPanel captionText="Colorize Channel connections">
 					<g:HorizontalPanel>
 						<g:VerticalPanel>
-							<g:ListBox ui:field="schemeTypeBox">
-							</g:ListBox>
-							<g:ListBox ui:field="colorTypeBox">
-							</g:ListBox>
+							<g:HorizontalPanel>
+								<g:ListBox ui:field="schemeTypeBox">
+								</g:ListBox>
+								<g:ListBox ui:field="colorTypeBox">
+								</g:ListBox>
+							</g:HorizontalPanel>
+							<g:VerticalPanel>
+								<g:FlowPanel ui:field="colorPanel"></g:FlowPanel>
+								<g:HorizontalPanel>
+									<g:TextBox ui:field="minValueBox"></g:TextBox>
+									<g:TextBox ui:field="maxValueBox"></g:TextBox>
+								</g:HorizontalPanel>
+							</g:VerticalPanel>
 							<g:ToggleButton title="Colorize Channels"
 								ui:field="colorizeButton">
 								<g:upFace>Colorize</g:upFace>
 								<g:downFace>Remove Colorization</g:downFace>
 							</g:ToggleButton>
 						</g:VerticalPanel>
-						<g:FlowPanel ui:field="colorPanel"></g:FlowPanel>
 					</g:HorizontalPanel>
 				</g:CaptionPanel>
 			</g:VerticalPanel>
