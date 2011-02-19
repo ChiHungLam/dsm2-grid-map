@@ -38,28 +38,28 @@ public class ColorSchemePanel extends Composite {
 	}
 
 	public Panel getColorArraySchemePanel() {
-		String[] colorsArray = getColorArray();
-		int ncolors = colorsArray.length;
-		Grid panel = new Grid(ncolors, 2);
+		Grid legend = new Grid(colors.length, 2);
+		legend.setStyleName("legend");
+		int ncolors = colors.length;
 		double step = (max - min) / (ncolors - 2);
-		String html = "<p style=\"background-color: "
-				+ colorsArray[0]
-				+ ";\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>";
-		panel.setHTML(0, 0, " < " + min);
-		panel.setHTML(0, 1, html);
+		setGridAtIndex(legend, 0, colors[0], " < " + formatter.format(min));
 		for (int i = 1; i < ncolors - 1; i++) {
 			double value = i * step + min;
-			panel.setHTML(i, 0, formatter.format(value - step) + " - "
-					+ formatter.format(value));
-			html = "<p style=\"background-color: " + colorsArray[i]
-					+ ";\">&nbsp;&nbsp;</p>";
-			panel.setHTML(i, 1, html);
+			setGridAtIndex(legend, i, colors[i], formatter.format(value - step)
+					+ " - " + formatter.format(value));
 		}
-		html = "<p style=\"background-color: " + colorsArray[ncolors - 1]
-				+ ";\">&nbsp;&nbsp;</p>";
-		panel.setHTML(ncolors - 1, 0, " > " + max);
-		panel.setHTML(ncolors - 1, 1, html);
-		return panel;
+		setGridAtIndex(legend, ncolors - 1, colors[ncolors - 1], " > "
+				+ formatter.format(max));
+		return legend;
+	}
+
+	private void setGridAtIndex(Grid legend, int i, String color, String value) {
+		legend.setHTML(i, 0, "&nbsp;");
+		legend.getCellFormatter().setWidth(i, 0, "15px");
+		legend.getCellFormatter().getElement(i, 0).getStyle()
+				.setBackgroundColor(color);
+		legend.setHTML(i, 1, value);
+
 	}
 
 }

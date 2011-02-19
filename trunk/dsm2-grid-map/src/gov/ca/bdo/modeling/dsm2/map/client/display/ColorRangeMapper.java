@@ -17,16 +17,17 @@ public class ColorRangeMapper {
 	}
 
 	public String convertValueToColor(double value, double min, double max) {
-		int index = 0;
-		if (value <= min) {
-			index = 0;
-		} else if (value >= max) {
-			index = colors.length - 1;
+		int ncolors = colors.length;
+		int colorIndex = 0;
+		if (value < min) {
+			colorIndex = 0;
+		} else if (value > max) {
+			colorIndex = ncolors - 1;
 		} else {
-			index = (int) Math.floor((value - min) / (max - min)
-					* colors.length);
+			double colorSlope = (ncolors - 2) / (max - min + 1e-6);
+			colorIndex = (int) Math.floor((value - min) * colorSlope) + 1;
 		}
-		return colors[index];
+		return colors[colorIndex];
 	}
 
 }
