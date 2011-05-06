@@ -21,7 +21,7 @@ package gov.ca.dsm2.input.model;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class Node implements Serializable {
+public class Node implements Serializable, Comparable<Node> {
 	private String id;
 	private double latitude;
 	private double longitude;
@@ -48,6 +48,11 @@ public class Node implements Serializable {
 
 	public double getLongitude() {
 		return longitude;
+	}
+
+	public int compareTo(Node o) {
+		return (int) Math.signum(Integer.parseInt(getId())
+				- Integer.parseInt(o.getId()));
 	}
 
 }

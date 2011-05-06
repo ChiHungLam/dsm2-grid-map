@@ -44,6 +44,7 @@ import gov.ca.dsm2.input.model.XSectionProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -220,14 +221,16 @@ public class Tables {
 					xrowValues.add(xsectLayer.getWettedPerimeter() + "");
 					xvalues.add(xrowValues);
 				}
-				if (xsection.getProfile() != null){
+				if (xsection.getProfile() != null) {
 					XSectionProfile profile = xsection.getProfile();
 					ArrayList<String> pvalues = new ArrayList<String>();
-					pvalues.add(profile.getId()+"");
-					pvalues.add(channel.getId()+"");
-					pvalues.add(profile.getDistance()+"");
-					pvalues.add(TableUtil.fromLatLngPoints(profile.getEndPoints()));
-					pvalues.add(TableUtil.fromProfilePoints(profile.getProfilePoints()));
+					pvalues.add(profile.getId() + "");
+					pvalues.add(channel.getId() + "");
+					pvalues.add(profile.getDistance() + "");
+					pvalues.add(TableUtil.fromLatLngPoints(profile
+							.getEndPoints()));
+					pvalues.add(TableUtil.fromProfilePoints(profile
+							.getProfilePoints()));
 					xpvalues.add(pvalues);
 				}
 			}
@@ -258,7 +261,8 @@ public class Tables {
 		//
 		InputTable xsectionProfileTable = new InputTable();
 		xsectionProfileTable.setName("XSECTION_GIS");
-		xsectionProfileTable.setHeaders(Arrays.asList(new String[]{"ID","CHAN_NO","DIST","LATLNG_ENDPOINTS", "PROFILE_POINTS"}));
+		xsectionProfileTable.setHeaders(Arrays.asList(new String[] { "ID",
+				"CHAN_NO", "DIST", "LATLNG_ENDPOINTS", "PROFILE_POINTS" }));
 		xsectionProfileTable.setValues(xpvalues);
 		list.add(xsectionProfileTable);
 		//
@@ -408,7 +412,10 @@ public class Tables {
 		nodeTable.setName("NODE_GIS");
 		nodeTable.setHeaders(Arrays.asList(new String[] { "ID", "LAT_LNG" }));
 		ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
-		for (Node node : nodes.getNodes()) {
+		List<Node> nodeList = new ArrayList<Node>();
+		nodeList.addAll(nodes.getNodes());
+		Collections.sort(nodeList);
+		for (Node node : nodeList) {
 			try {
 				ArrayList<String> rowValues = new ArrayList<String>();
 				rowValues.add(node.getId());
