@@ -27,7 +27,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
@@ -38,11 +37,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  * 
  */
 public class CrossSectionEditorPanel extends Composite {
-	
-	public static interface ElevationDataLoaded{
+
+	public static interface ElevationDataLoaded {
 		public void elevationDataLoaded();
 	}
-	
+
 	private static final Logger logger = Logger.getLogger("xsection");
 	private DEMDataServiceAsync demService;
 	private BathymetryDataServiceAsync bathyService;
@@ -59,26 +58,27 @@ public class CrossSectionEditorPanel extends Composite {
 	private Button setProfileButton;
 	private Button snapToElevationProfileButton;
 	private Button trimProfileButton;
+	private HorizontalPanel buttonPanel;
 
 	public CrossSectionEditorPanel(final MapPanel mapPanel) {
 		demService = GWT.create(DEMDataService.class);
 		bathyService = GWT.create(BathymetryDataService.class);
 		FlowPanel mainPanel = new FlowPanel();
-		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel = new HorizontalPanel();
+		buttonPanel.setVisible(mapPanel.isInEditMode());
 		mainPanel.add(buttonPanel);
 		xsEditorPanel = new FlowPanel();
 		mainPanel.add(xsEditorPanel);
 		xsEditorPanel.getElement().setId("xsection");
 		xsEditorPanel.clear();
-	    setProfileButton = new Button("Set Profile");
+		setProfileButton = new Button("Set Profile");
 		setProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
 				updateProfile(mapPanel);
 			}
 		});
-		snapToElevationProfileButton = new Button(
-				"Snap To Elevation Profile");
+		snapToElevationProfileButton = new Button("Snap To Elevation Profile");
 		snapToElevationProfileButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -99,8 +99,10 @@ public class CrossSectionEditorPanel extends Composite {
 	}
 
 	private final double TOL = 0.0001;
+
 	protected boolean isWithinPrecisionDifference(double[] cep1, double[] ep1) {
-		if (Math.abs(cep1[0]-ep1[0]) < TOL && Math.abs(cep1[1]-ep1[1]) < TOL){
+		if ((Math.abs(cep1[0] - ep1[0]) < TOL)
+				&& (Math.abs(cep1[1] - ep1[1]) < TOL)) {
 			return true;
 		} else {
 			return false;
@@ -108,10 +110,12 @@ public class CrossSectionEditorPanel extends Composite {
 	}
 
 	public void draw(Channel channel, int index, final MapPanel mapPanel) {
-		this.draw(channel,index,mapPanel,null);		
+		buttonPanel.setVisible(mapPanel.isInEditMode());
+		this.draw(channel, index, mapPanel, null);
 	}
-	
-	public void draw(Channel channel, int index, final MapPanel mapPanel, final ElevationDataLoaded loadedCallback) {
+
+	public void draw(Channel channel, int index, final MapPanel mapPanel,
+			final ElevationDataLoaded loadedCallback) {
 		xsection = channel.getXsections().get(index);
 		xsProfile = ModelUtils.getOrCalculateXSectionalProfile(xsection,
 				channel, mapPanel.getNodeManager().getNodes());
@@ -127,7 +131,8 @@ public class CrossSectionEditorPanel extends Composite {
 
 		mapPanel
 				.showMessage("Fetching elevation profile and bathymetry points...");
-		logger.info("Fetching elevations along: ("+profile.x1+","+profile.y1+") -> ("+profile.x2+","+profile.y2+")");
+		logger.info("Fetching elevations along: (" + profile.x1 + ","
+				+ profile.y1 + ") -> (" + profile.x2 + "," + profile.y2 + ")");
 		demService.getBilinearInterpolatedElevationAlong(profile.x1,
 				profile.y1, profile.x2, profile.y2,
 				new AsyncCallback<List<DataPoint>>() {
@@ -145,13 +150,17 @@ public class CrossSectionEditorPanel extends Composite {
 												profile.y1);
 										secondPointForLine = createUTMDataPoint(
 												profile.x2, profile.y2);
-										logger.fine("origin: "+origin.x+","+origin.y+","+origin.z);
-										logger.fine("secondPointForLine: "+secondPointForLine.x+","+secondPointForLine.y+","+secondPointForLine.z);
+										logger.fine("origin: " + origin.x + ","
+												+ origin.y + "," + origin.z);
+										logger.fine("secondPointForLine: "
+												+ secondPointForLine.x + ","
+												+ secondPointForLine.y + ","
+												+ secondPointForLine.z);
 										GeomUtils
 												.moveOriginAndProjectOntoLineAndConvertToFeet(
 														bathyPoints, origin,
 														secondPointForLine);
-										
+
 										GeomUtils
 												.moveOriginAndProjectOntoLineAndConvertToFeet(
 														demPoints, origin,
@@ -163,8 +172,9 @@ public class CrossSectionEditorPanel extends Composite {
 												dsm2Profile, demPoints,
 												bathyPoints, 600, 450);
 										mapPanel.showMessage("");
-										if (loadedCallback != null){
-											loadedCallback.elevationDataLoaded();
+										if (loadedCallback != null) {
+											loadedCallback
+													.elevationDataLoaded();
 										}
 									}
 
@@ -185,7 +195,6 @@ public class CrossSectionEditorPanel extends Composite {
 				});
 
 	}
-	
 
 	private void shiftOrigin(double rightShift) {
 		for (DataPoint p : profile.points) {
@@ -238,38 +247,40 @@ public class CrossSectionEditorPanel extends Composite {
 			logger.fine("origin is not null");
 
 			DataPoint xp1 = xSectionProfilePoints.get(0);
-			DataPoint xp2 = xSectionProfilePoints
-					.get(xSectionProfilePoints.size() - 1);
+			DataPoint xp2 = xSectionProfilePoints.get(xSectionProfilePoints
+					.size() - 1);
 			double[] ep1 = new double[] { xp1.x, xp1.z };
 			double[] ep2 = new double[] { xp2.x, xp2.z };
 			List<double[]> currentEndPoints = xsProfile.getEndPoints();
 			double[] cep1 = currentEndPoints.get(0);
 			double[] cep2 = currentEndPoints.get(1);
-			if (LogConfiguration.loggingIsEnabled()){
-				logger.fine("current ep1: "+cep1[0]+","+cep1[0]);
-				logger.fine("current ep2: "+cep2[0]+","+cep2[0]);
+			if (LogConfiguration.loggingIsEnabled()) {
+				logger.fine("current ep1: " + cep1[0] + "," + cep1[0]);
+				logger.fine("current ep2: " + cep2[0] + "," + cep2[0]);
 			}
-			logger.fine("ep1: "+ep1[0]+","+ep1[0]);
-			logger.fine("ep2: "+ep2[0]+","+ep2[0]);
-			ep1 = GeomUtils
-					.calculateUTMFromPointAtFeetDistanceAlongLine(
-							xp1.x, origin, secondPointForLine);
-			logger.fine("in utm coordinates ep1: "+ep1[0]+","+ep1[0]);
+			logger.fine("ep1: " + ep1[0] + "," + ep1[0]);
+			logger.fine("ep2: " + ep2[0] + "," + ep2[0]);
+			ep1 = GeomUtils.calculateUTMFromPointAtFeetDistanceAlongLine(xp1.x,
+					origin, secondPointForLine);
+			logger.fine("in utm coordinates ep1: " + ep1[0] + "," + ep1[0]);
 			ep1 = GeomUtils.convertToLatLng(ep1[0], ep1[1]);
-			logger.fine("in latlng coordinates ep1: "+ep1[0]+","+ep1[0]);
-			ep2 = GeomUtils
-					.calculateUTMFromPointAtFeetDistanceAlongLine(
-							xp2.x, origin, secondPointForLine);
-			logger.fine("in utm coordinates ep2: "+ep2[0]+","+ep2[0]);
+			logger.fine("in latlng coordinates ep1: " + ep1[0] + "," + ep1[0]);
+			ep2 = GeomUtils.calculateUTMFromPointAtFeetDistanceAlongLine(xp2.x,
+					origin, secondPointForLine);
+			logger.fine("in utm coordinates ep2: " + ep2[0] + "," + ep2[0]);
 			ep2 = GeomUtils.convertToLatLng(ep2[0], ep2[1]);
-			logger.fine("in latlng coordinates ep2: "+ep2[0]+","+ep2[0]);
+			logger.fine("in latlng coordinates ep2: " + ep2[0] + "," + ep2[0]);
 
 			List<double[]> endPoints = new ArrayList<double[]>();
-			if (isWithinPrecisionDifference(cep1,ep1)){ // needs this as UTM is only accurate to within 1 m
-				ep1=cep1;
+			if (isWithinPrecisionDifference(cep1, ep1)) { // needs this as UTM
+				// is only accurate
+				// to within 1 m
+				ep1 = cep1;
 			}
-			if (isWithinPrecisionDifference(cep2,ep2)){ // needs this as UTM is only accurate to within 1 m
-				ep2=cep2;
+			if (isWithinPrecisionDifference(cep2, ep2)) { // needs this as UTM
+				// is only accurate
+				// to within 1 m
+				ep2 = cep2;
 			}
 			endPoints.add(ep1);
 			endPoints.add(ep2);
