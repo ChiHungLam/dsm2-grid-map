@@ -33,6 +33,8 @@ public class DSM2StudyManagerPresenter implements Presenter {
 
 		public void addRowForStudy(String studyName);
 
+		public void addRowForStudyKey(String studyKey, String studyName);
+
 		public HasClickHandlers getDeleteButton();
 
 		public void removeStudy(String study);
@@ -94,7 +96,8 @@ public class DSM2StudyManagerPresenter implements Presenter {
 			display.clearTable();
 			String[] split = History.getToken().split("/");
 			String studyKey = split[1];
-			display.addRowForStudy(studyKey);
+			display.addRowForStudyKey(studyKey, containerPresenter
+					.getCurrentStudy());
 			return;
 		}
 		eventBus.fireEvent(new MessageEvent("Loading studies.."));

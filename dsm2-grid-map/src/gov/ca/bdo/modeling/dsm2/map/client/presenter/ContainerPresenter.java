@@ -137,11 +137,11 @@ public class ContainerPresenter implements Presenter {
 	public void loadViewOnlyStudy() {
 		String token = History.getToken();
 		String[] split = token.split("/");
-		if (split[0].equals("map_view")) {
+		if (split[0].equals("map_view") || split[0].equals("studies_view")) {
 			if (split.length > 1) {
 				final String studyKey = split[1];
-				dsm2InputService.getInputModelForKey(studyKey,
-						new AsyncCallback<DSM2Model>() {
+				dsm2InputService.getStudyNameForSharingKey(studyKey,
+						new AsyncCallback<String>() {
 
 							public void onFailure(Throwable caught) {
 								GWT.log("The study requested is not available");
@@ -150,14 +150,37 @@ public class ContainerPresenter implements Presenter {
 										MessageEvent.ERROR, 5000));
 							}
 
-							public void onSuccess(DSM2Model result) {
-								display.setCurrentStudy(studyKey);
-								modelLoaded = true;
-								display.setModel(result);
-								eventBus.fireEvent(new MessageEvent(
-										"Loaded study: " + studyKey, 2000));
-								eventBus.fireEvent(new DSM2StudyEvent(studyKey,
-										result));
+							public void onSuccess(final String study) {
+								display.setStudies(new String[] { study });
+								dsm2InputService.getInputModelForKey(studyKey,
+										new AsyncCallback<DSM2Model>() {
+
+											public void onFailure(
+													Throwable caught) {
+												GWT
+														.log("The study requested is not available");
+												eventBus
+														.fireEvent(new MessageEvent(
+																"The study requested is not available",
+																MessageEvent.ERROR,
+																5000));
+											}
+
+											public void onSuccess(
+													DSM2Model result) {
+												modelLoaded = true;
+												display.setModel(result);
+												eventBus
+														.fireEvent(new MessageEvent(
+																"Loaded study: "
+																		+ study,
+																2000));
+												eventBus
+														.fireEvent(new DSM2StudyEvent(
+																studyKey,
+																result));
+											}
+										});
 							}
 						});
 			}

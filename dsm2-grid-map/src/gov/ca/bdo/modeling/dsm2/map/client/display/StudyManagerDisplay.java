@@ -59,19 +59,23 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 		return this;
 	}
 
-	public void addRowForStudy(String study) {
+	public void addRowForStudyKey(String studyKey, String studyName) {
 		if (table == null) {
 			clearTable();
 		}
 		int rowIndex = table.getRowCount();
-		Label studyBox = new Label(study);
+		Label studyBox = new Label(studyName);
 		if (!viewOnly) {
 			table.setWidget(rowIndex, 0, new CheckBox());
 		}
 		table.setWidget(rowIndex, 1, studyBox);
-		table.setWidget(rowIndex, 2, createDownloadHydroButton(study));
-		table.setWidget(rowIndex, 3, createDownloadGisButton(study));
+		table.setWidget(rowIndex, 2, createDownloadHydroButton(studyKey));
+		table.setWidget(rowIndex, 3, createDownloadGisButton(studyKey));
 
+	}
+
+	public void addRowForStudy(String study) {
+		addRowForStudyKey(study, study);
 	}
 
 	private Widget createDownloadGisButton(final String study) {
