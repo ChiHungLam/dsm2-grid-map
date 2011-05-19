@@ -77,17 +77,26 @@ public class DSM2StudyManagerPresenter implements Presenter {
 	private SimpleEventBus eventBus;
 	private Display display;
 	private ContainerPresenter containerPresenter;
+	private boolean viewOnly;
 
 	public DSM2StudyManagerPresenter(DSM2InputServiceAsync dsm2InputService,
 			SimpleEventBus eventBus2, Display display,
-			ContainerPresenter containerPresenter) {
+			ContainerPresenter containerPresenter, boolean viewOnly) {
 		this.containerPresenter = containerPresenter;
 		this.dsm2InputService = dsm2InputService;
 		eventBus = eventBus2;
 		this.display = display;
+		this.viewOnly = viewOnly;
 	}
 
 	public void bind() {
+		if (viewOnly) {
+			display.clearTable();
+			String[] split = History.getToken().split("/");
+			String studyKey = split[1];
+			display.addRowForStudy(studyKey);
+			return;
+		}
 		eventBus.fireEvent(new MessageEvent("Loading studies.."));
 		dsm2InputService.getStudyNames(new AsyncCallback<String[]>() {
 

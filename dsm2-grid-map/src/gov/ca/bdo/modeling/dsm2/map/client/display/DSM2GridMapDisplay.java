@@ -74,7 +74,6 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	public DSM2GridMapDisplay(ContainerDisplay display, boolean viewOnly,
 			EventBus eventBus) {
 		super(display, viewOnly, eventBus);
-		controlPanel = new MapControlPanel(viewOnly, this);
 	}
 
 	@Override
@@ -101,19 +100,19 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	}
 
 	public HasClickHandlers getSaveEditButton() {
-		return controlPanel.getSaveEditButton();
+		return getSidePanel().getSaveEditButton();
 	}
 
 	public HasClickHandlers getAddButton() {
-		return controlPanel.getAddButton();
+		return getSidePanel().getAddButton();
 	}
 
 	public HasClickHandlers getDeleteButton() {
-		return controlPanel.getDeleteButton();
+		return getSidePanel().getDeleteButton();
 	}
 
 	public int getAddTypeSelected() {
-		return controlPanel.getAddTypeSelected();
+		return getSidePanel().getAddTypeSelected();
 	}
 
 	public void setAddingMode(boolean down) {
@@ -164,27 +163,27 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	}
 
 	public TextBox getFindTextBox() {
-		return controlPanel.getFindTextBox();
+		return getSidePanel().getFindTextBox();
 	}
 
 	public HasClickHandlers getFindNodeButton() {
-		return controlPanel.getFindNodeButton();
+		return getSidePanel().getFindNodeButton();
 	}
 
 	public HasClickHandlers getFindChannelButton() {
-		return controlPanel.getFindChannelButton();
+		return getSidePanel().getFindChannelButton();
 	}
 
 	public HasClickHandlers getShowFlowlinesButton() {
-		return controlPanel.getFlowlineButton();
+		return getSidePanel().getFlowlineButton();
 	}
 
 	public HasClickHandlers getMeasureLengthButton() {
-		return controlPanel.getMeasureLengthButton();
+		return getSidePanel().getMeasureLengthButton();
 	}
 
 	public HasClickHandlers getMeasureAreaButton() {
-		return controlPanel.getMeasureAreaButton();
+		return getSidePanel().getMeasureAreaButton();
 	}
 
 	public HasClickHandlers getMeasureVolumeButton() {
@@ -202,7 +201,7 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	}
 
 	public HasClickHandlers getDisplayElevationButton() {
-		return controlPanel.getDisplayElevationButton();
+		return getSidePanel().getDisplayElevationButton();
 	}
 
 	public void startMeasuringAreaInPolygon() {
@@ -303,15 +302,18 @@ public class DSM2GridMapDisplay extends MapDisplay implements Display {
 	}
 
 	@Override
-	public Widget getSidePanel() {
+	public MapControlPanel getSidePanel() {
+		if (controlPanel == null) {
+			controlPanel = new MapControlPanel(viewOnly, this);
+		}
 		return controlPanel;
 	}
 
 	public HasClickHandlers getCancelEditButton() {
-		return controlPanel.getCancelEditButton();
+		return getSidePanel().getCancelEditButton();
 	}
 
 	public void showInfoPanel() {
-		controlPanel.showEditPanel();
+		getSidePanel().showEditPanel();
 	}
 }

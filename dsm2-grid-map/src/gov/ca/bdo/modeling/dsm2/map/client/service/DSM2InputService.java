@@ -31,6 +31,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface DSM2InputService extends RemoteService {
 	public DSM2Model getInputModel(String studyPath);
 
+	/**
+	 * A way to support unlisted studies with a unique key that is impossible to
+	 * guess
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public DSM2Model getInputModelForKey(String key);
 
 	public String[] getStudyNames();

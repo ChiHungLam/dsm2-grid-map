@@ -101,6 +101,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		try {
 			DataFileDAO dao = new DataFileDAOImpl(persistenceManager);
 			String email = Utils.getCurrentUserEmail();
+			if (email == null) {
+				return null;
+			}
 			List<DataFile> filesForStudyAndName = dao.getFilesForStudyAndName(
 					studyName, "text.annotations", email);
 			if ((filesForStudyAndName == null)

@@ -54,7 +54,8 @@ public class RoleFilter implements Filter {
 	private static final String[] noLoginNeededURLS = new String[] { "/logout",
 			"/login", "welcome.jsp", "user_profile.jsp", "/public",
 			"upload_bathymetry", "/request_access", "/task",
-			"/dsm2_grid_map/dem", "/dsm2_grid_map/bathymetry", ".gwt.rpc" };
+			"dsm2_grid_map_view.html", "/dsm2_grid_map", "/dsm2_grid_map/dem",
+			"/dsm2_grid_map/bathymetry", "/dsm2_grid_map/dsm2input", ".gwt.rpc" };
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {

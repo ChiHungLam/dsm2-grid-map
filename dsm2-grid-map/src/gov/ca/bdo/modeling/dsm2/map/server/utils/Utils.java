@@ -23,6 +23,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 public class Utils {
 	public static String getCurrentUserEmail() {
-		return UserServiceFactory.getUserService().getCurrentUser().getEmail();
+		return UserServiceFactory.getUserService().getCurrentUser() == null ? null
+				: UserServiceFactory.getUserService().getCurrentUser()
+						.getEmail();
 	}
 }

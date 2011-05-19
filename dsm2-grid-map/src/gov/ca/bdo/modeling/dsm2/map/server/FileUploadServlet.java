@@ -40,11 +40,9 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 
-import com.google.appengine.api.datastore.Text;
-
 public class FileUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 8367618333138027430L;
-	private static final int MAX_SIZE_BYTES = 1024 * 1024;
+	private static final int MAX_SIZE_BYTES = 1024 * 1024 * 10;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
