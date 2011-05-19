@@ -51,20 +51,24 @@ public class DSM2ModelBasePresenter implements Presenter {
 	 * already been called.
 	 */
 	protected boolean bound;
+	private boolean viewOnly;
 
 	public DSM2ModelBasePresenter(DSM2InputServiceAsync dsm2InputService,
 			SimpleEventBus eventBus2, Display display,
-			ContainerPresenter containerPresenter) {
+			ContainerPresenter containerPresenter, boolean viewOnly) {
 		this.display = display;
 		this.containerPresenter = containerPresenter;
 		eventBus = eventBus2;
 		this.dsm2InputService = dsm2InputService;
 		bound = false;
+		this.viewOnly = viewOnly;
 	}
 
 	public void go(HasWidgets container) {
+		if ((containerPresenter.getModel() == null) && viewOnly) {
+			containerPresenter.loadViewOnlyStudy();
+		}
 		bind();
-
 		container.clear();
 		container.add(display.asWidget());
 		display.asWidget().setVisible(true);
@@ -72,24 +76,30 @@ public class DSM2ModelBasePresenter implements Presenter {
 
 	protected void bind() {
 		if (bound) {
-			if (this.currentStudy == null || !this.currentStudy.equals(containerPresenter.getCurrentStudy())){
+			if ((currentStudy == null)
+					|| !currentStudy.equals(containerPresenter
+							.getCurrentStudy())) {
 				display.setModel(containerPresenter.getModel());
 				display.refresh();
 			}
 			return;
-		} 
+		}
+
 		eventBus.addHandler(DSM2StudyEvent.TYPE, new DSM2StudyEventHandler() {
 
 			public void onStudyNameChange(DSM2StudyEvent event) {
 			}
 
 			public void onChange(DSM2StudyEvent event) {
-				DSM2ModelBasePresenter.this.currentStudy = event.getStudy();
+				currentStudy = event.getStudy();
 				display.setModel(event.getModel());
 				display.refresh();
 			}
 		});
 
+		if (viewOnly) {
+			return;
+		}
 		display.getSaveEditButton().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {

@@ -34,16 +34,24 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 	private UploadStudyDataDisplay uploadStudyData;
 	private UploadStudyDisplay uploadStudy;
 	private StudySharingOptionsDialog dialog;
+	private boolean viewOnly;
 
-	public StudyManagerDisplay(ContainerDisplay containerDisplay) {
+	public StudyManagerDisplay(ContainerDisplay containerDisplay,
+			boolean viewOnly) {
 		this.containerDisplay = containerDisplay;
+		this.viewOnly = viewOnly;
 		studyPanel = new FlowPanel();
 		clearTable();
-		studyPanel.add(deleteButton = new Button("Delete Selected"));
-		studyPanel.add(shareButton = new Button("Share Selected"));
+		if (!viewOnly) {
+			studyPanel.add(deleteButton = new Button("Delete Selected"));
+			studyPanel.add(shareButton = new Button("Share Selected"));
+		}
 		TabLayoutPanel mainPanel = new TabLayoutPanel(22, Unit.PX);
 		mainPanel.add(studyPanel, "Manage");
-		mainPanel.add(uploadStudy = new UploadStudyDisplay(), "Upload Study");
+		if (!viewOnly) {
+			mainPanel.add(uploadStudy = new UploadStudyDisplay(),
+					"Upload Study");
+		}
 		initWidget(mainPanel);
 	}
 
@@ -57,7 +65,9 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 		}
 		int rowIndex = table.getRowCount();
 		Label studyBox = new Label(study);
-		table.setWidget(rowIndex, 0, new CheckBox());
+		if (!viewOnly) {
+			table.setWidget(rowIndex, 0, new CheckBox());
+		}
 		table.setWidget(rowIndex, 1, studyBox);
 		table.setWidget(rowIndex, 2, createDownloadHydroButton(study));
 		table.setWidget(rowIndex, 3, createDownloadGisButton(study));
@@ -70,9 +80,13 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 		downloadButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				String url = GWT.getModuleBaseURL()
-						+ "dsm2_download?studyName=" + URL.encode(study)
-						+ "&inputName=" + URL.encode("gis_inp");
+				String studyParam = "studyName";
+				if (viewOnly) {
+					studyParam = "studyKey";
+				}
+				String url = GWT.getModuleBaseURL() + "dsm2_download?"
+						+ studyParam + "=" + URL.encode(study) + "&inputName="
+						+ URL.encode("gis_inp");
 				Window.open(url, "_blank", null);
 			}
 		});
@@ -84,9 +98,13 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 		downloadButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				String url = GWT.getModuleBaseURL()
-						+ "dsm2_download?studyName=" + URL.encode(study)
-						+ "&inputName=" + URL.encode("hydro_echo_inp");
+				String studyParam = "studyName";
+				if (viewOnly) {
+					studyParam = "studyKey";
+				}
+				String url = GWT.getModuleBaseURL() + "dsm2_download?"
+						+ studyParam + "=" + URL.encode(study) + "&inputName="
+						+ URL.encode("hydro_echo_inp");
 				Window.open(url, "_blank", null);
 			}
 		});
@@ -101,8 +119,11 @@ public class StudyManagerDisplay extends ResizeComposite implements Display {
 			table.setStyleName("blue-bordered");
 			studyPanel.add(table);
 		}
-		HTML header = new HTML("<b>Selected</b>");
-		table.setWidget(0, 0, header);
+		HTML header = null;
+		if (!viewOnly) {
+			header = new HTML("<b>Selected</b>");
+			table.setWidget(0, 0, header);
+		}
 		header = new HTML("<b>Study Name</b>");
 		table.setWidget(0, 1, header);
 		header = new HTML("<b>Download Hydro</b>");

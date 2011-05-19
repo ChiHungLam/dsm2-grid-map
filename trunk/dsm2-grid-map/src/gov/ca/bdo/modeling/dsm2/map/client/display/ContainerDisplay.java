@@ -19,10 +19,10 @@ import com.google.gwt.user.client.ui.Widget;
 public class ContainerDisplay implements Display {
 
 	private ContainerWithHeaderFooter container;
-	private String[] studies;
 	private DSM2Model model;
 	private ListBox studyBox;
 	private LoginInfo loginInfo;
+	private boolean viewOnly;
 
 	public ContainerDisplay() {
 		container = new ContainerWithHeaderFooter();
@@ -43,18 +43,33 @@ public class ContainerDisplay implements Display {
 				new Image("images/dsm2_icon.png"));
 		HTML studyLabel = new HTML("<b>Study :<b>");
 		container.getHeaderPanel().addWidgetToRight(studyLabel);
-		container.getHeaderPanel().addWidgetToRight(studyBox = new ListBox());
+		studyBox = new ListBox();
+		studyBox.setEnabled(result != null);
+		container.getHeaderPanel().addWidgetToRight(studyBox);
 		studyBox.getElement().getStyle().setFloat(Float.LEFT);
-		HTML emailLabel = new HTML("<b>" + result.getEmailAddress() + "</b>");
-		container.getHeaderPanel().addWidgetToRight(emailLabel);
-		container.getHeaderPanel().addWidgetToRight(
-				new Anchor("Profile", "/user_profile.jsp"));
-		container.getHeaderPanel().addWidgetToRight(
-				new Anchor("Sign out", result.getLogoutUrl()));
-		// setup link bar
-		container.addLinkToMainBar(new Anchor("Map", "#map"));
-		container.addLinkToMainBar(new Anchor("Studies", "#studies"));
-		setLinkBarActive(History.getToken());
+		if (result != null) {
+			HTML emailLabel = new HTML("<b>" + result.getEmailAddress()
+					+ "</b>");
+			container.getHeaderPanel().addWidgetToRight(emailLabel);
+			container.getHeaderPanel().addWidgetToRight(
+					new Anchor("Profile", "/user_profile.jsp"));
+			container.getHeaderPanel().addWidgetToRight(
+					new Anchor("Sign out", result.getLogoutUrl()));
+			// setup link bar
+			container.addLinkToMainBar(new Anchor("Map", "#map"));
+			container.addLinkToMainBar(new Anchor("Studies", "#studies"));
+			setLinkBarActive(History.getToken());
+		} else {
+			String[] split = History.getToken().split("/");
+			String studyKey = "";
+			if (split.length > 1) {
+				studyKey = split[1];
+			}
+			container.addLinkToMainBar(new Anchor("Map", "#map_view/"
+					+ studyKey));
+			container.addLinkToMainBar(new Anchor("Studies", "#studies_view/"
+					+ studyKey));
+		}
 		// setup footer
 		String footer = "<div align=\"center\" class=\"footer\"><font color=\"#666666\">"
 				+ "&copy;2010 California Department of Water Resources (DWR) </font>"
@@ -109,7 +124,6 @@ public class ContainerDisplay implements Display {
 	}
 
 	public void setStudies(String[] studies) {
-		this.studies = studies;
 		studyBox.clear();
 		if (studies == null) {
 			return;
@@ -144,5 +158,9 @@ public class ContainerDisplay implements Display {
 			token = token.substring(0, token.indexOf("/"));
 		}
 		container.setActiveMainLink('#' + token);
+	}
+
+	public void setViewOnly(boolean viewOnly) {
+		this.viewOnly = viewOnly;
 	}
 }

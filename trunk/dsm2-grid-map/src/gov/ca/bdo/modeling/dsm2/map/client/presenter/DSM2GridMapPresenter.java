@@ -117,7 +117,13 @@ public class DSM2GridMapPresenter extends DSM2ModelBasePresenter {
 	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
 			SimpleEventBus eventBus, Display display,
 			ContainerPresenter containerPresenter) {
-		super(dsm2InputService, eventBus, display, containerPresenter);
+		super(dsm2InputService, eventBus, display, containerPresenter, false);
+	}
+
+	public DSM2GridMapPresenter(DSM2InputServiceAsync dsm2InputService,
+			SimpleEventBus eventBus, Display display,
+			ContainerPresenter containerPresenter, boolean viewOnly) {
+		super(dsm2InputService, eventBus, display, containerPresenter, viewOnly);
 	}
 
 	public void go(HasWidgets container) {

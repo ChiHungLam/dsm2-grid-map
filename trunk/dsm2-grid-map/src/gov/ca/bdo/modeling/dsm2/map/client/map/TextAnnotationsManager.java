@@ -73,6 +73,9 @@ public class TextAnnotationsManager implements MapClickHandler {
 				new AsyncCallback<List<TextAnnotation>>() {
 
 					public void onSuccess(List<TextAnnotation> result) {
+						if (result == null) {
+							return;
+						}
 						addAllMarkers(result);
 					}
 

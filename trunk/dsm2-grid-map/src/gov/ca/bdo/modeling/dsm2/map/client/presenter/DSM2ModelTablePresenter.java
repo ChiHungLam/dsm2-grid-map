@@ -16,7 +16,7 @@ public class DSM2ModelTablePresenter extends DSM2ModelBasePresenter {
 	public DSM2ModelTablePresenter(DSM2InputServiceAsync dsm2InputService,
 			SimpleEventBus eventBus, Display display,
 			ContainerPresenter containerPresenter) {
-		super(dsm2InputService, eventBus, display, containerPresenter);
+		super(dsm2InputService, eventBus, display, containerPresenter, false);
 	}
 
 }
