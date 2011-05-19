@@ -162,7 +162,8 @@ public class DSM2StudyManagerPresenter implements Presenter {
 									if (display.getSharingType().equals(
 											"unlisted")) {
 										String url = GWT.getHostPageBaseURL()
-												+ "#map_view/" + result;
+												+ "dsm2_grid_map_view.html#map_view/"
+												+ result;
 										display.addShareUrl(study, url);
 									}
 								}

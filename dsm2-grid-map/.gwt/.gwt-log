@@ -1016,3 +1016,609 @@ Rebinding com.google.gwt.i18n.client.impl.LocaleInfoImpl
          Generating method body for defCurrencyCode()
    Adding '4' new generated units
       Removing invalidated units
+Module location: file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/classes/gov/ca/bdo/modeling/dsm2/map/gridmap.gwt.xml
+Loading inherited module 'com.google.gwt.user.User'
+   Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/User.gwt.xml
+   Loading inherited module 'com.google.gwt.core.Core'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/core/Core.gwt.xml
+      Loading inherited module 'com.google.gwt.dev.jjs.intrinsic.Intrinsic'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-dev.jar!/com/google/gwt/dev/jjs/intrinsic/Intrinsic.gwt.xml
+         Loading inherited module 'com.google.gwt.lang.LongLib'
+            Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gdt.eclipse.designer.hosted.2_0.super_2.3.0.r35x201105011707.jar!/com/google/gwt/lang/LongLib.gwt.xml
+      Loading inherited module 'com.google.gwt.emul.Emulation'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/emul/Emulation.gwt.xml
+         Loading inherited module 'com.google.gwt.logging.LogImpl'
+            Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/logging/LogImpl.gwt.xml
+      Loading inherited module 'com.google.gwt.xhr.XMLHttpRequest'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/xhr/XMLHttpRequest.gwt.xml
+         Loading inherited module 'com.google.gwt.core.Core'
+            Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.core.CompilerParameters'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/core/CompilerParameters.gwt.xml
+      Loading inherited module 'com.google.gwt.core.EmulateJsStack'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/core/EmulateJsStack.gwt.xml
+         Loading inherited module 'com.google.gwt.core.Core'
+            Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.core.AsyncFragmentLoader'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/core/AsyncFragmentLoader.gwt.xml
+      Loading inherited module 'com.google.gwt.core.XSLinker'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/core/XSLinker.gwt.xml
+      Loading inherited module 'com.google.gwt.core.CrossSiteIframeLinker'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/core/CrossSiteIframeLinker.gwt.xml
+   Loading inherited module 'com.google.gwt.text.Text'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/text/Text.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.event.Event'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/event/Event.gwt.xml
+      Loading inherited module 'com.google.gwt.event.EventBase'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/event/EventBase.gwt.xml
+         Loading inherited module 'com.google.gwt.core.Core'
+            Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.event.dom.DomEvent'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/event/dom/DomEvent.gwt.xml
+         Loading inherited module 'com.google.gwt.event.EventBase'
+            Module 'com.google.gwt.event.EventBase' has already been loaded and will be skipped
+         Loading inherited module 'com.google.gwt.dom.DOM'
+            Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/dom/DOM.gwt.xml
+            Loading inherited module 'com.google.gwt.core.Core'
+               Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+            Loading inherited module 'com.google.gwt.user.UserAgent'
+               Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/UserAgent.gwt.xml
+               Loading inherited module 'com.google.gwt.emul.EmulationWithUserAgent'
+                  Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/emul/EmulationWithUserAgent.gwt.xml
+                  Loading inherited module 'com.google.gwt.emul.Emulation'
+                     Module 'com.google.gwt.emul.Emulation' has already been loaded and will be skipped
+               Loading inherited module 'com.google.gwt.core.CoreWithUserAgent'
+                  Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/core/CoreWithUserAgent.gwt.xml
+                  Loading inherited module 'com.google.gwt.core.Core'
+                     Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.event.logical.LogicalEvent'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/event/logical/LogicalEvent.gwt.xml
+         Loading inherited module 'com.google.gwt.event.EventBase'
+            Module 'com.google.gwt.event.EventBase' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.animation.Animation'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/animation/Animation.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.User'
+         Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.editor.Editor'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/editor/Editor.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.resources.Resources'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/resources/Resources.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.dom.DOM'
+         Module 'com.google.gwt.dom.DOM' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.http.HTTP'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/http/HTTP.gwt.xml
+         Loading inherited module 'com.google.gwt.core.Core'
+            Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+         Loading inherited module 'com.google.gwt.xhr.XMLHttpRequest'
+            Module 'com.google.gwt.xhr.XMLHttpRequest' has already been loaded and will be skipped
+         Loading inherited module 'com.google.gwt.user.User'
+            Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.layout.Layout'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/layout/Layout.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.dom.DOM'
+         Module 'com.google.gwt.dom.DOM' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.animation.Animation'
+         Module 'com.google.gwt.animation.Animation' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.uibinder.UiBinder'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/uibinder/UiBinder.gwt.xml
+      Loading inherited module 'com.google.gwt.resources.Resources'
+         Module 'com.google.gwt.resources.Resources' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.AsyncProxy'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/AsyncProxy.gwt.xml
+   Loading inherited module 'com.google.gwt.user.RemoteService'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/RemoteService.gwt.xml
+      Loading inherited module 'com.google.gwt.http.HTTP'
+         Module 'com.google.gwt.http.HTTP' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.DocumentRoot'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/DocumentRoot.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.DOM'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/DOM.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.dom.DOM'
+         Module 'com.google.gwt.dom.DOM' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.Window'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/Window.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.HTTPRequest'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/HTTPRequest.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.xhr.XMLHttpRequest'
+         Module 'com.google.gwt.xhr.XMLHttpRequest' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.History'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/History.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.i18n.I18N'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/i18n/I18N.gwt.xml
+      Loading inherited module 'com.google.gwt.regexp.RegExp'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/regexp/RegExp.gwt.xml
+      Loading inherited module 'com.google.gwt.safehtml.SafeHtml'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/safehtml/SafeHtml.gwt.xml
+         Loading inherited module 'com.google.gwt.regexp.RegExp'
+            Module 'com.google.gwt.regexp.RegExp' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.Popup'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/Popup.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.Form'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/Form.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.TextBox'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/TextBox.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.Focus'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/Focus.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.ImageBundle'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/ImageBundle.gwt.xml
+      Loading inherited module 'com.google.gwt.user.ClippedImage'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/ClippedImage.gwt.xml
+         Loading inherited module 'com.google.gwt.core.Core'
+            Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+         Loading inherited module 'com.google.gwt.user.UserAgent'
+            Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.ClippedImage'
+      Module 'com.google.gwt.user.ClippedImage' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.RichText'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/RichText.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.SplitPanel'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/SplitPanel.gwt.xml
+      Loading inherited module 'com.google.gwt.user.User'
+         Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.CaptionPanel'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/CaptionPanel.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.Window'
+      Module 'com.google.gwt.user.Window' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.Tree'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/Tree.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.Hyperlink'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/Hyperlink.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.FileUpload'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/FileUpload.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.user.datepicker.DatePicker'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/datepicker/DatePicker.gwt.xml
+   Loading inherited module 'com.google.gwt.user.cellview.CellView'
+      Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/cellview/CellView.gwt.xml
+      Loading inherited module 'com.google.gwt.user.User'
+         Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.cell.Cell'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/cell/Cell.gwt.xml
+         Loading inherited module 'com.google.gwt.dom.DOM'
+            Module 'com.google.gwt.dom.DOM' has already been loaded and will be skipped
+         Loading inherited module 'com.google.gwt.safehtml.SafeHtml'
+            Module 'com.google.gwt.safehtml.SafeHtml' has already been loaded and will be skipped
+         Loading inherited module 'com.google.gwt.text.Text'
+            Module 'com.google.gwt.text.Text' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.view.View'
+         Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/view/View.gwt.xml
+         Loading inherited module 'com.google.gwt.core.Core'
+            Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.user.UserAgent'
+         Module 'com.google.gwt.user.UserAgent' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.safehtml.SafeHtml'
+      Module 'com.google.gwt.safehtml.SafeHtml' has already been loaded and will be skipped
+Loading inherited module 'com.google.gwt.user.theme.chrome.ChromeResources'
+   Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/user/theme/chrome/ChromeResources.gwt.xml
+Loading inherited module 'com.google.gwt.http.HTTP'
+   Module 'com.google.gwt.http.HTTP' has already been loaded and will be skipped
+Loading inherited module 'com.google.gwt.json.JSON'
+   Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/json/JSON.gwt.xml
+   Loading inherited module 'com.google.gwt.core.Core'
+      Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+Loading inherited module 'com.google.gwt.resources.Resources'
+   Module 'com.google.gwt.resources.Resources' has already been loaded and will be skipped
+Loading inherited module 'com.google.gwt.logging.Logging'
+   Module location: jar:file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar!/com/google/gwt/logging/Logging.gwt.xml
+   Loading inherited module 'com.google.gwt.json.JSON'
+      Module 'com.google.gwt.json.JSON' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.logging.LogImpl'
+      Module 'com.google.gwt.logging.LogImpl' has already been loaded and will be skipped
+Loading inherited module 'com.google.gwt.visualization.Visualization'
+   Module location: jar:file:/D:/dev/gwt-libraries/gwt-visualization-1.1.0/gwt-visualization-noredist.jar!/com/google/gwt/visualization/Visualization.gwt.xml
+   Loading inherited module 'com.google.gwt.core.Core'
+      Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.ajaxloader.AjaxLoader'
+      Module location: jar:file:/D:/dev/gwt-libraries/gwt-ajaxloader-1.1.0/gwt-ajaxloader.jar!/com/google/gwt/ajaxloader/AjaxLoader.gwt.xml
+      Loading inherited module 'com.google.gwt.user.User'
+         Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+      Loading inherited module 'com.google.gwt.i18n.I18N'
+         Module 'com.google.gwt.i18n.I18N' has already been loaded and will be skipped
+Loading inherited module 'com.google.gwt.maps.GoogleMaps'
+   Module location: jar:file:/D:/dev/gwt-libraries/gwt-maps-1.1.0/gwt-maps-noredist.jar!/com/google/gwt/maps/GoogleMaps.gwt.xml
+   Loading inherited module 'com.google.gwt.user.User'
+      Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.maps.jsio.JSIO'
+      Module location: jar:file:/D:/dev/gwt-libraries/gwt-maps-1.1.0/gwt-maps-noredist.jar!/com/google/gwt/maps/jsio/JSIO.gwt.xml
+      Loading inherited module 'com.google.gwt.core.Core'
+         Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.ajaxloader.AjaxLoader'
+      Module 'com.google.gwt.ajaxloader.AjaxLoader' has already been loaded and will be skipped
+Loading inherited module 'com.google.gwt.maps.utility.GoogleMapsUtility'
+   Module location: jar:file:/D:/dev/gwt-libraries/gwt-maps-utility-1.0/gwt-maps-utility.jar!/com/google/gwt/maps/utility/GoogleMapsUtility.gwt.xml
+   Loading inherited module 'com.google.gwt.user.User'
+      Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.maps.GoogleMaps'
+      Module 'com.google.gwt.maps.GoogleMaps' has already been loaded and will be skipped
+Loading inherited module 'gov.ca.modeling.maps.elevation.elevation'
+   Module location: jar:file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/dsm2-elevation.jar!/gov/ca/modeling/maps/elevation/elevation.gwt.xml
+   Loading inherited module 'com.google.gwt.user.User'
+      Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.visualization.Visualization'
+      Module 'com.google.gwt.visualization.Visualization' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.maps.GoogleMaps'
+      Module 'com.google.gwt.maps.GoogleMaps' has already been loaded and will be skipped
+Loading inherited module 'gov.ca.dsm2.input.dsm2input'
+   Module location: jar:file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/dsm2-input-model.jar!/gov/ca/dsm2/input/dsm2input.gwt.xml
+   Loading inherited module 'com.google.gwt.core.Core'
+      Module 'com.google.gwt.core.Core' has already been loaded and will be skipped
+Loading inherited module 'gov.ca.modeling.dsm2.widgets.HeaderPanel'
+   Module location: file:/D:/dev/wk-dsm2-grid/dsm2-widgets/war/WEB-INF/classes/gov/ca/modeling/dsm2/widgets/HeaderPanel.gwt.xml
+   Loading inherited module 'com.google.gwt.user.User'
+      Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.resources.Resources'
+      Module 'com.google.gwt.resources.Resources' has already been loaded and will be skipped
+Loading inherited module 'gov.ca.modeling.maps.widgets.ExpandContractMapControl'
+   Module location: file:/D:/dev/wk-dsm2-grid/dsm2-widgets/war/WEB-INF/classes/gov/ca/modeling/maps/widgets/ExpandContractMapControl.gwt.xml
+   Loading inherited module 'com.google.gwt.user.User'
+      Module 'com.google.gwt.user.User' has already been loaded and will be skipped
+   Loading inherited module 'com.google.gwt.maps.GoogleMaps'
+      Module 'com.google.gwt.maps.GoogleMaps' has already been loaded and will be skipped
+Public resources found in...
+   Refreshing resources
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/appengine-local-runtime-shared.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\appengine-local-runtime-shared.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/geronimo-el_1.0_spec-1.0.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\geronimo-el_1.0_spec-1.0.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/geronimo-jsp_2.1_spec-1.0.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\geronimo-jsp_2.1_spec-1.0.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/geronimo-servlet_2.5_spec-1.2.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\geronimo-servlet_2.5_spec-1.2.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-ant-1.7.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-ant-1.7.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-ant-launcher-1.7.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-ant-launcher-1.7.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-commons-el-1.0.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-commons-el-1.0.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-commons-logging-1.1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-commons-logging-1.1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-jasper-compiler-5.0.28.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-jasper-compiler-5.0.28.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-jasper-runtime-5.0.28.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-jasper-runtime-5.0.28.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/appengine-api-1.0-sdk-1.3.8.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\appengine-api-1.0-sdk-1.3.8.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/appengine-api-labs-1.3.8.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\appengine-api-labs-1.3.8.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/appengine-jsr107cache-1.3.8.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\appengine-jsr107cache-1.3.8.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/jsr107cache-1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\jsr107cache-1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/datanucleus-appengine-1.0.7.final.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\datanucleus-appengine-1.0.7.final.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/datanucleus-core-1.1.5.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\datanucleus-core-1.1.5.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/datanucleus-jpa-1.1.5.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\datanucleus-jpa-1.1.5.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/geronimo-jpa_3.0_spec-1.1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\geronimo-jpa_3.0_spec-1.1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/geronimo-jta_1.1_spec-1.1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\geronimo-jta_1.1_spec-1.1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/jdo2-api-2.3-eb.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\jdo2-api-2.3-eb.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/appengine-tools-api.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\appengine-tools-api.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/dsm2-input-model.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\dsm2-input-model.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/json_simple-1.1.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\json_simple-1.1.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/commons-fileupload-1.2.1.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\commons-fileupload-1.2.1.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/commons-io-1.3.2.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\commons-io-1.3.2.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-maps-utility-1.0/gwt-maps-utility.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-maps-utility-1.0\gwt-maps-utility.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-maps-1.1.0/gwt-maps-noredist.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-maps-1.1.0\gwt-maps-noredist.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-visualization-1.1.0/gwt-visualization-noredist.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-visualization-1.1.0\gwt-visualization-noredist.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-ajaxloader-1.1.0/gwt-ajaxloader.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-ajaxloader-1.1.0\gwt-ajaxloader.jar
+      Searching for resources within file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/org.junit_3.8.2.v20090203-1005/junit.jar
+         Indexing zip file: D:\Programs\eclipse-jee-galileo-SR2-win32\eclipse\plugins\org.junit_3.8.2.v20090203-1005\junit.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/dsm2-elevation.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\dsm2-elevation.jar
+      Searching for resources within file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar
+         Indexing zip file: D:\Programs\eclipse-jee-galileo-SR2-win32\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047\gwt-2.1.0\gwt-user.jar
+      Searching for resources within file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-dev.jar
+         Indexing zip file: D:\Programs\eclipse-jee-galileo-SR2-win32\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047\gwt-2.1.0\gwt-dev.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-api.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-api.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-api-labs.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-api-labs.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-api-stubs.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-api-stubs.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-local-runtime.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-local-runtime.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/testing/appengine-testing.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\testing\appengine-testing.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/commons-codec-1.4.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\commons-codec-1.4.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-widgets/war/WEB-INF/lib/objectify-2.2.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-widgets\war\WEB-INF\lib\objectify-2.2.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/resources.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\resources.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/rt.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\rt.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/jsse.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\jsse.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/jce.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\jce.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/charsets.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\charsets.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/dnsns.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\dnsns.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/localedata.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\localedata.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/sunjce_provider.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\sunjce_provider.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/sunmscapi.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\sunmscapi.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/sunpkcs11.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\sunpkcs11.jar
+Translatable source found in...
+   Refreshing resources
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/appengine-local-runtime-shared.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\appengine-local-runtime-shared.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/geronimo-el_1.0_spec-1.0.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\geronimo-el_1.0_spec-1.0.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/geronimo-jsp_2.1_spec-1.0.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\geronimo-jsp_2.1_spec-1.0.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/geronimo-servlet_2.5_spec-1.2.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\geronimo-servlet_2.5_spec-1.2.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-ant-1.7.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-ant-1.7.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-ant-launcher-1.7.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-ant-launcher-1.7.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-commons-el-1.0.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-commons-el-1.0.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-commons-logging-1.1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-commons-logging-1.1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-jasper-compiler-5.0.28.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-jasper-compiler-5.0.28.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/shared/jsp/repackaged-appengine-jasper-runtime-5.0.28.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\shared\jsp\repackaged-appengine-jasper-runtime-5.0.28.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/appengine-api-1.0-sdk-1.3.8.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\appengine-api-1.0-sdk-1.3.8.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/appengine-api-labs-1.3.8.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\appengine-api-labs-1.3.8.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/appengine-jsr107cache-1.3.8.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\appengine-jsr107cache-1.3.8.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/jsr107cache-1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\jsr107cache-1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/datanucleus-appengine-1.0.7.final.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\datanucleus-appengine-1.0.7.final.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/datanucleus-core-1.1.5.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\datanucleus-core-1.1.5.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/datanucleus-jpa-1.1.5.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\datanucleus-jpa-1.1.5.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/geronimo-jpa_3.0_spec-1.1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\geronimo-jpa_3.0_spec-1.1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/geronimo-jta_1.1_spec-1.1.1.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\geronimo-jta_1.1_spec-1.1.1.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/user/orm/jdo2-api-2.3-eb.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\user\orm\jdo2-api-2.3-eb.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/appengine-tools-api.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\appengine-tools-api.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/dsm2-input-model.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\dsm2-input-model.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/json_simple-1.1.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\json_simple-1.1.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/commons-fileupload-1.2.1.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\commons-fileupload-1.2.1.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/commons-io-1.3.2.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\commons-io-1.3.2.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-maps-utility-1.0/gwt-maps-utility.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-maps-utility-1.0\gwt-maps-utility.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-maps-1.1.0/gwt-maps-noredist.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-maps-1.1.0\gwt-maps-noredist.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-visualization-1.1.0/gwt-visualization-noredist.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-visualization-1.1.0\gwt-visualization-noredist.jar
+      Searching for resources within file:/D:/dev/gwt-libraries/gwt-ajaxloader-1.1.0/gwt-ajaxloader.jar
+         Indexing zip file: D:\dev\gwt-libraries\gwt-ajaxloader-1.1.0\gwt-ajaxloader.jar
+      Searching for resources within file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/org.junit_3.8.2.v20090203-1005/junit.jar
+         Indexing zip file: D:\Programs\eclipse-jee-galileo-SR2-win32\eclipse\plugins\org.junit_3.8.2.v20090203-1005\junit.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/dsm2-elevation.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\dsm2-elevation.jar
+      Searching for resources within file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-user.jar
+         Indexing zip file: D:\Programs\eclipse-jee-galileo-SR2-win32\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047\gwt-2.1.0\gwt-user.jar
+      Searching for resources within file:/D:/Programs/eclipse-jee-galileo-SR2-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047/gwt-2.1.0/gwt-dev.jar
+         Indexing zip file: D:\Programs\eclipse-jee-galileo-SR2-win32\eclipse\plugins\com.google.gwt.eclipse.sdkbundle.2.1.0_2.1.0.v201010280047\gwt-2.1.0\gwt-dev.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-api.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-api.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-api-labs.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-api-labs.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-api-stubs.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-api-stubs.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/impl/appengine-local-runtime.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\impl\appengine-local-runtime.jar
+      Searching for resources within file:/D:/dev/appengine-java-sdk-1.3.8/lib/testing/appengine-testing.jar
+         Indexing zip file: D:\dev\appengine-java-sdk-1.3.8\lib\testing\appengine-testing.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-grid-map/war/WEB-INF/lib/commons-codec-1.4.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-grid-map\war\WEB-INF\lib\commons-codec-1.4.jar
+      Searching for resources within file:/D:/dev/wk-dsm2-grid/dsm2-widgets/war/WEB-INF/lib/objectify-2.2.jar
+         Indexing zip file: D:\dev\wk-dsm2-grid\dsm2-widgets\war\WEB-INF\lib\objectify-2.2.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/resources.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\resources.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/rt.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\rt.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/jsse.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\jsse.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/jce.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\jce.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/charsets.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\charsets.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/dnsns.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\dnsns.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/localedata.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\localedata.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/sunjce_provider.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\sunjce_provider.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/sunmscapi.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\sunmscapi.jar
+      Searching for resources within file:/C:/Program%20Files%20(x86)/Java/jre6/lib/ext/sunpkcs11.jar
+         Indexing zip file: C:\Program Files (x86)\Java\jre6\lib\ext\sunpkcs11.jar
+Removing invalidated units
+Rebinding com.google.gwt.i18n.client.impl.LocaleInfoImpl
+   Invoking generator com.google.gwt.i18n.rebind.LocaleInfoGenerator
+      Processing interface com.google.gwt.i18n.client.constants.NumberConstantsImpl
+         Generating method body for percentPattern()
+         Generating method body for zeroDigit()
+         Generating method body for scientificPattern()
+         Generating method body for decimalSeparator()
+         Generating method body for notANumber()
+         Generating method body for minusSign()
+         Generating method body for infinity()
+         Generating method body for exponentialSymbol()
+         Generating method body for plusSign()
+         Generating method body for currencyPattern()
+         Generating method body for monetaryGroupingSeparator()
+         Generating method body for groupingSeparator()
+         Generating method body for perMill()
+         Generating method body for monetarySeparator()
+         Generating method body for decimalPattern()
+         Generating method body for percent()
+         Generating method body for defCurrencyCode()
+   Adding '3' new generated units
+      Removing invalidated units
+Rebinding gov.ca.bdo.modeling.dsm2.map.client.display.MapControlPanel.MapControlPanelUiBinder
+   Invoking generator com.google.gwt.uibinder.rebind.UiBinderGenerator
+      validating {images.measureLengthIcon}
+      validating {images.measureAreaIcon}
+      validating {el_images.elevationIcon}
+      validating {el_images.elevationProfileIcon}
+      validating {images.flowLineIcon}
+   Adding '3' new generated units
+      Removing invalidated units
+Rebinding gov.ca.bdo.modeling.dsm2.map.client.display.MapControlPanel_MapControlPanelUiBinderImpl_designTime1304968688408_GenBundle
+   Adding '1' new generated units
+      Removing invalidated units
+Rebinding gov.ca.bdo.modeling.dsm2.map.client.images.IconImages
+   Invoking generator com.google.gwt.resources.rebind.context.InlineClientBundleGenerator
+      Preparing method addIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.addIcon'
+      Preparing method addingTextIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.addingTextIcon'
+      Preparing method blueGMarkerIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.blueGMarkerIcon'
+      Preparing method blueNMarkerIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.blueNMarkerIcon'
+      Preparing method blueOMarkerIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.blueOMarkerIcon'
+      Preparing method blueRMarkerIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.blueRMarkerIcon'
+      Preparing method closeIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.closeIcon'
+      Preparing method contact
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.contact'
+      Preparing method deleteIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.deleteIcon'
+      Preparing method downloadIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.downloadIcon'
+      Preparing method editIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.editIcon'
+      Preparing method expandIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.expandIcon'
+      Preparing method findIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.findIcon'
+      Preparing method flowLineIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.flowLineIcon'
+      Preparing method hideIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.hideIcon'
+      Preparing method measureAreaIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.measureAreaIcon'
+      Preparing method measureLengthIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.measureLengthIcon'
+      Preparing method pinIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.pinIcon'
+      Preparing method saveIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.saveIcon'
+      Preparing method showIcon
+         Adding image 'gov.ca.bdo.modeling.dsm2.map.client.images.IconImages.showIcon'
+   Adding '1' new generated units
+      Removing invalidated units
+Rebinding gov.ca.modeling.maps.elevation.client.images.IconImages
+   Invoking generator com.google.gwt.resources.rebind.context.InlineClientBundleGenerator
+      Preparing method elevationIcon
+         Adding image 'gov.ca.modeling.maps.elevation.client.images.IconImages.elevationIcon'
+      Preparing method elevationProfileIcon
+         Adding image 'gov.ca.modeling.maps.elevation.client.images.IconImages.elevationProfileIcon'
+   Adding '1' new generated units
+      Removing invalidated units
+Rebinding gov.ca.bdo.modeling.dsm2.map.client.display.MapControlPanel.MapControlPanelUiBinder
+   Invoking generator com.google.gwt.uibinder.rebind.UiBinderGenerator
+      validating {images.measureLengthIcon}
+      validating {images.measureAreaIcon}
+      validating {el_images.elevationIcon}
+      validating {el_images.elevationProfileIcon}
+      validating {images.flowLineIcon}
+   Adding '3' new generated units
+      Removing invalidated units
+Rebinding gov.ca.bdo.modeling.dsm2.map.client.display.MapControlPanel_MapControlPanelUiBinderImpl_designTime1304968691464_GenBundle
+   Adding '1' new generated units
+      Removing invalidated units
