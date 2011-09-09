@@ -120,8 +120,10 @@ public class ExportOverlays implements EntryPoint {
 
 			public String getTileURL(Point tile, int zoomLevel) {
 				String genQrst = genQrst(tile.getX(), tile.getY(), zoomLevel);
+				int serverNumber = (tile.getX() + tile.getY()) % 4;
 				String path = genPathFromQrst(genQrst);
-				return "http://tiles5.geogarage.com/noaa/" + path;
+				return "http://publish" + serverNumber
+						+ ".b.geogarage.com/noaa/" + path;
 			}
 
 			public boolean isPng() {
@@ -247,24 +249,22 @@ public class ExportOverlays implements EntryPoint {
 		var ua = navigator.userAgent.toLowerCase();
 
 		if (ua.indexOf("opera") != -1) {
-		return "opera";
+			return "opera";
 		}
 		if (ua.indexOf("webkit") != -1) {
-		return "safari";
+			return "safari";
 		}
-		if ((ua.indexOf("msie 6.0") != -1)
-		||  (ua.indexOf("msie 7.0") != -1)) {
-		return "ie6";
+		if ((ua.indexOf("msie 6.0") != -1) || (ua.indexOf("msie 7.0") != -1)) {
+			return "ie6";
 		}
 		if (ua.indexOf("gecko") != -1) {
-		var result = /rv:([0-9]+)\.([0-9]+)/.exec(ua);
-		if (result && result.length == 3) {
-		var version = (parseInt(result[1]) * 10) +
-		parseInt(result[2]);
-		if (version >= 18)
-		return "gecko1_8";
-		}
-		return "gecko";
+			var result = /rv:([0-9]+)\.([0-9]+)/.exec(ua);
+			if (result && result.length == 3) {
+				var version = (parseInt(result[1]) * 10) + parseInt(result[2]);
+				if (version >= 18)
+					return "gecko1_8";
+			}
+			return "gecko";
 		}
 		return "unknown";
 	}-*/;
