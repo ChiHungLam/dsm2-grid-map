@@ -380,6 +380,13 @@ public class Tables {
 						double dist = Double.parseDouble(xsectGisTable
 								.getValue(i, "DIST"));
 						XSection xSectionAt = channel.getXSectionAt(dist);
+						if (xSectionAt == null) {
+							System.err
+									.println("No XSection in channel: "
+											+ channel.getId()
+											+ " at distance: " + dist);
+							continue;
+						}
 						xSectionAt.setProfile(xsProfile);
 						xsProfile.setDistance(dist);
 						xsProfile.setEndPoints(TableUtil
