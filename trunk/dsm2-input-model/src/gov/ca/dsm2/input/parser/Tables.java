@@ -362,7 +362,7 @@ public class Tables {
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		InputTable xsectGisTable = getTableNamed("XSECTION_GIS");
@@ -827,7 +827,7 @@ public class Tables {
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}

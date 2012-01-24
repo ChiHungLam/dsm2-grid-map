@@ -85,7 +85,13 @@ public class InputTable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	/**
+	 * 
+	 */
+	public int getNumberOfRows(){
+		return values != null ? values.size() : 0;
+	}
 	/**
 	 * Gets the array of headers in order
 	 * 
