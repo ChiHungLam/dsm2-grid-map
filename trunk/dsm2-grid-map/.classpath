@@ -2,22 +2,22 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/dsm2-input-model.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/json_simple-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.1.jar" sourcepath="/Users/nsandhu/dev/commons-fileupload-1.2.1/lib/commons-fileupload-1.2.1-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-1.3.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-maps-utility-1.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-maps-no-redist-1.1.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-visualization-no-redist-1.1.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-ajaxloader-1.1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/dsm2-elevation.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dsm2-elevation"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/gwt-2.1.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/appengine-local-stubs-1.3.8"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dsm2-widgets"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-maps-no-redist-1.1.1"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-ajaxloader-1.1.1"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gwt-visualization-no-redist-1.1.2"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/appengine-local-stubs-1.6.1"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
