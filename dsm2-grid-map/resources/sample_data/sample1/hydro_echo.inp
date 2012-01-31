@@ -286,8 +286,6 @@ orhrb_weirop_fall	last	../../../timeseries/gates_db.dss	/HIST+GATE/ORHRB_FALL/WE
 END
 OUTPUT_CHANNEL
 NAME	CHAN_NO	DISTANCE	VARIABLE	INTERVAL	PERIOD_OP	FILE
-14ml_sl	4	11385	flow	15MIN	inst	./output/hist_mini_calib.dss
-14ml_sl	4	11385	stage	15MIN	inst	./output/hist_mini_calib.dss
 vernalis	17	0	flow	15MIN	inst	./output/hist_mini_calib.dss
 vernalis	17	0	stage	15MIN	inst	./output/hist_mini_calib.dss
 yolo	398	0	flow	15MIN	inst	./output/hist_mini_calib.dss

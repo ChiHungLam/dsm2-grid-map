@@ -197,7 +197,7 @@ public class MapPanel extends ResizeComposite {
 
 	private void populateBoundaryMarkers() {
 		if (!visibilityControl.getHideBoundaries().getValue()) {
-			if (boundaryOverlayManager != null) {
+			if (boundaryOverlayManager == null) {
 				boundaryOverlayManager = new BoundaryMarkerDataManager();
 				boundaryOverlayManager.setModel(model, this);
 				boundaryOverlayManager.addMarkers(map);
@@ -285,7 +285,7 @@ public class MapPanel extends ResizeComposite {
 
 	public void hideOutputMarkers(boolean hide) {
 		if (!hide && (outputMarkerDataManager == null)) {
-			populateBoundaryMarkers();
+			populateOutputMarkers();
 		}
 		if (outputMarkerDataManager != null) {
 			outputMarkerDataManager.hideMarkers(hide);
@@ -298,12 +298,14 @@ public class MapPanel extends ResizeComposite {
 
 	public void hideBoundaryMarkers(boolean hide) {
 		if ((hide == false) && (boundaryOverlayManager == null)) {
-			boundaryOverlayManager = new BoundaryMarkerDataManager();
-			boundaryOverlayManager.setModel(model, this);
-			boundaryOverlayManager.addMarkers(map);
+			populateBoundaryMarkers();
 		}
-		boundaryOverlayManager.hideMarkers(hide);
-		boundaryOverlayManager = null;
+		if (boundaryOverlayManager != null) {
+			boundaryOverlayManager.hideMarkers(hide);
+		}
+		if (hide) {
+			boundaryOverlayManager = null;
+		}
 	}
 
 	public void showBathymetry(boolean show) {

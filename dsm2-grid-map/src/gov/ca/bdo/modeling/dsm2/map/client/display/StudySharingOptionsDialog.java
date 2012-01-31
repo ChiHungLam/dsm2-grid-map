@@ -137,7 +137,8 @@ public class StudySharingOptionsDialog extends DialogBox {
 		}
 
 		@Override
-		public void render(UserSharingInfo value, Object key, SafeHtmlBuilder sb) {
+		public void render(com.google.gwt.cell.client.Cell.Context context,
+				UserSharingInfo value, SafeHtmlBuilder sb) {
 			// Value can be null, so do a null check..
 			if (value == null) {
 				return;

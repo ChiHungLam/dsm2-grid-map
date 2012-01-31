@@ -336,7 +336,7 @@ public class ModelUtils {
 		}
 		return downChannels + "," + upChannels;
 	}
-	
+
 	/**
 	 * Get channels that have the given nodes as their end points
 	 * 
@@ -345,23 +345,31 @@ public class ModelUtils {
 	 * @param xSection
 	 * @param oldLength
 	 */
-	public static ArrayList<String> getChannelsWithNodes(Node node1, Node node2, Channels channels){
+	public static ArrayList<String> getChannelsWithNodes(Node node1,
+			Node node2, Channels channels) {
 		ArrayList<String> list = new ArrayList<String>();
 		String channels1 = getChannelsConnectedTo(channels, node1);
+		if (channels1 == null) {
+			return null;
+		}
 		String[] list1 = channels1.split(",");
 		String channels2 = getChannelsConnectedTo(channels, node2);
+		if (channels2 == null) {
+			return null;
+		}
 		String[] list2 = channels2.split(",");
 		HashMap<String, String> commonList = new HashMap<String, String>();
-		for(int i=0; i < list1.length; i++){
-			commonList.put(list1[i],list1[i]);
+		for (String element : list1) {
+			commonList.put(element, element);
 		}
-		for(int i=0; i < list2.length; i++){
-			if (commonList.containsKey(list2[i])){
-				list.add(list2[i]);
+		for (String element : list2) {
+			if (commonList.containsKey(element)) {
+				list.add(element);
 			}
 		}
 		return list;
 	}
+
 	public static void updateXSectionPosition(Channel channel, Nodes nodes,
 			XSection xSection, double oldLength) {
 		XSectionProfile profile = xSection.getProfile();
@@ -455,9 +463,9 @@ public class ModelUtils {
 	public static List<DataPoint> getTrimmedPoints(List<DataPoint> xsProfile) {
 		int trimBeginIndex = extractInflectionIndex(xsProfile, true);
 		int trimEndIndex = extractInflectionIndex(xsProfile, false);
-		if (trimBeginIndex==trimEndIndex){
-			trimBeginIndex=0;
-			trimEndIndex = xsProfile.size()-1;
+		if (trimBeginIndex == trimEndIndex) {
+			trimBeginIndex = 0;
+			trimEndIndex = xsProfile.size() - 1;
 		}
 		ArrayList<DataPoint> profile = new ArrayList<DataPoint>();
 		for (int i = trimBeginIndex; i <= trimEndIndex; i++) {
