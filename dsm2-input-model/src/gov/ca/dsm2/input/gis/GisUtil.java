@@ -1,9 +1,40 @@
 package gov.ca.dsm2.input.gis;
 
+import gov.ca.dsm2.input.model.Channel;
+import gov.ca.dsm2.input.model.DSM2Model;
+import gov.ca.dsm2.input.model.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GisUtil {
+	
+	public double[] getPointAtDistanceFromUpNode(String id, double distance, DSM2Model model){
+		CoordinateConversion cc = new CoordinateConversion();
+
+		Channel channel = model.getChannels().getChannel(id);
+		
+		List<double[]> latLngPoints = channel.getLatLngPoints();
+		List<double[]> utmPoints = new ArrayList<double[]>();
+		Node upNode = model.getNodes().getNode(channel.getUpNodeId());
+		utmPoints.add(cc.latLng2UTM(upNode.getLatitude(), upNode.getLongitude()));
+		for(double[] latLng: latLngPoints){
+			utmPoints.add(cc.latLng2UTM(latLng[0], latLng[1]));
+		}
+		Node downNode = model.getNodes().getNode(channel.getDownNodeId());
+		utmPoints.add(cc.latLng2UTM(downNode.getLatitude(), downNode.getLongitude()));
+		
+		int segmentIndex = findSegmentAtDistance(utmPoints, distance);
+		double[] point1 = utmPoints.get(segmentIndex);
+		double[] point2 = utmPoints.get(segmentIndex + 1);
+		double segmentDistance = findDistanceUptoSegment(segmentIndex,
+				utmPoints);
+		double[] point0 = findPointAtDistance(point1, point2, distance
+				- segmentDistance);
+		double[] utm2LatLon = cc.utm2LatLon("10 N "+point0[0]+" "+point0[1]);
+		return utm2LatLon;
+	}
+	
 	public List<double[]> calculateXSectRelativeProfile(
 			List<double[]> profilePoints, List<double[]> endPoints) {
 		List<double[]> relativeProfile = new ArrayList<double[]>();
@@ -127,7 +158,7 @@ public class GisUtil {
 		return Geometry.length(ds[0], ds[1], ds2[0], ds2[1]);
 	}
 
-	private int calculateLength(List<double[]> points) {
+	public int calculateLength(List<double[]> points) {
 		double l = 0;
 		int np = points.size();
 		for (int i = 1; i < np; i++) {

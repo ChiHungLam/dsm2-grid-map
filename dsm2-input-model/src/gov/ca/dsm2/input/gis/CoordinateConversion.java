@@ -24,6 +24,12 @@ public class CoordinateConversion {
 		return c.convertLatLonToUTM(latitude, longitude);
 
 	}
+	
+	public double[] latLng2UTM(double latitude, double longitude){
+		String latLon2UTM = latLon2UTM(latitude, longitude);
+		String[] utms = latLon2UTM.split("\\s");
+		return new double[]{Double.parseDouble(utms[2]),Double.parseDouble(utms[3])};
+	}
 
 	private void validate(double latitude, double longitude) {
 		if ((latitude < -90.0) || (latitude > 90.0) || (longitude < -180.0)
