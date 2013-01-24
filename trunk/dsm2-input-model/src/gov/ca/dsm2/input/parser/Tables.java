@@ -25,6 +25,7 @@ import gov.ca.dsm2.input.model.ChannelOutput;
 import gov.ca.dsm2.input.model.Channels;
 import gov.ca.dsm2.input.model.DSM2Model;
 import gov.ca.dsm2.input.model.Gate;
+import gov.ca.dsm2.input.model.GateDevice;
 import gov.ca.dsm2.input.model.GatePipeDevice;
 import gov.ca.dsm2.input.model.GateWeirDevice;
 import gov.ca.dsm2.input.model.Gates;
@@ -519,7 +520,15 @@ public class Tables {
 		gateTable.setName("GATE");
 		gateTable.setHeaders(Arrays.asList(new String[] { "NAME", "FROM_OBJ",
 				"FROM_IDENTIFIER", "TO_NODE" }));
+
+		InputTable gateWeirDeviceTable = new InputTable();
+		gateWeirDeviceTable.setName("GATE_WEIR_DEVICE");
+		gateWeirDeviceTable.setHeaders(Arrays.asList(new String[] {
+				"GATE_NAME", "DEVICE", "NDUPLICATE", "WIDTH", "ELEV", "HEIGHT",
+				"CF_FROM_NODE", "CF_TO_NODE", "DEFAULT_OP" }));
+		
 		ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> gateWeirValues = new ArrayList<ArrayList<String>>();
 		for (Gate gate : gates.getGates()) {
 			try {
 				ArrayList<String> rowValues = new ArrayList<String>();
@@ -528,13 +537,33 @@ public class Tables {
 				rowValues.add(gate.getFromIdentifier());
 				rowValues.add(gate.getToNode());
 				values.add(rowValues);
+				ArrayList<GateDevice> gateDevices = gate.getGateDevices();
+				for(GateDevice device: gateDevices){
+					if (device instanceof GateWeirDevice){
+						ArrayList<String> deviceRowValues = new ArrayList<String>();
+						deviceRowValues.add(gate.getName());
+						deviceRowValues.add(device.device);
+						deviceRowValues.add(device.numberOfDuplicates+"");
+						deviceRowValues.add(((GateWeirDevice) device).width+"");
+						deviceRowValues.add(device.elevation+"");
+						deviceRowValues.add(((GateWeirDevice) device).height+"");
+						deviceRowValues.add(device.coefficientFromNode+"");
+						deviceRowValues.add(device.coefficientToNode+"");
+						deviceRowValues.add(device.defaultOperation);
+						gateWeirValues.add(deviceRowValues);
+					}
+					//FIXME: for pipe devices implement here
+				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		gateTable.setValues(values);
+		gateWeirDeviceTable.setValues(gateWeirValues);
 		list.add(gateTable);
+		list.add(gateWeirDeviceTable);
+		//
 		//
 		InputTable gisTable = new InputTable();
 		gisTable.setName("GATE_GIS");
@@ -827,7 +856,7 @@ public class Tables {
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					//e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 		}
@@ -985,4 +1014,14 @@ public class Tables {
 		return transfers;
 	}
 
+	public HashMap<String, String> toExtIntMap(InputTable table) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		int count = table.getValues().size();
+		for (int i = 0; i < count; i++) {
+			String intVal = table.getValue(i, "INT");
+			String extVal = table.getValue(i, "EXT");
+			map.put(intVal, extVal);
+		}
+		return map;
+	}
 }
